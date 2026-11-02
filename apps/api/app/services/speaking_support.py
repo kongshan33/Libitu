@@ -25,6 +25,9 @@ def effective_support(session, document: dict) -> dict | None:
 
 
 def support_matches(policy: dict, session, document: dict) -> bool:
+    from app.services.speaking_opportunities import is_staged_plan
+    if is_staged_plan(session):
+        return True  # V2 modeling is a fixed Mission rule, not a support toggle.
     support = effective_support(session, document)
     if support is None:
         return policy.get("support_level") is None and policy.get("support_version") is None

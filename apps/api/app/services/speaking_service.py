@@ -30,6 +30,19 @@ _LOGIC_TEMPLATES = (
                   steps=["Acknowledge", "Reframe", "Evidence", "Propose"]),
     LogicTemplate(id="onboarding", title="Onboarding someone", description="Explain a complex system",
                   steps=["Big picture", "Parts", "Why", "Try it"]),
+    LogicTemplate(id="telling_story", title="Telling a story", description="Share something that happened",
+                  steps=["Setting", "Complication", "Outcome", "Reflection"]),
+    LogicTemplate(id="making_plans", title="Making plans", description="Agree on what to do together",
+                  steps=["Suggest", "Check", "Adjust", "Confirm"]),
+    LogicTemplate(id="catching_up", title="Catching up", description="Keep a friendly chat going",
+                  steps=["Open", "Share", "Relate", "Follow up"]),
+)
+_STAGE_FUNCTIONS = (
+    ("open", "inform", "ask", "stance"), ("inform", "inform", "ask", "clarify"),
+    ("open", "inform", "stance", "ask"), ("inform", "inform", "inform", "ask"),
+    ("align", "align", "inform", "ask"), ("open", "inform", "inform", "ask"),
+    ("open", "inform", "inform", "stance"), ("ask", "clarify", "align", "ask"),
+    ("social", "inform", "social", "ask"),
 )
 _MEMORY_LOCK = RLock()
 _Result = TypeVar("_Result")
@@ -37,7 +50,7 @@ _PERSISTENCE_ERROR = "Speaking sessions could not be saved or loaded. Please ret
 _RPC_ERRORS = {
     "PT404": (404, "One or more selected corpus items are unavailable. Refresh your library and try again."),
     "PT409": (409, "This submission ID already belongs to a different loadout. Start a new submission."),
-    "PT422": (422, "Choose at least one item, with up to three structures and five expressions."),
+    "PT422": (422, "Choose up to five targets, or start free conversation without a logic template."),
     "PT412": (409, "Selected language changed after planning. Generate new scenarios before starting."),
     "PT424": (422, "Some primary targets do not fit this scenario. Change targets or generate new scenarios."),
     "PT425": (409, "The earlier mission is unavailable or its language changed. Prepare a new practice round."),
@@ -46,7 +59,14 @@ _RPC_ERRORS = {
 
 
 def speaking_options() -> SpeakingOptions:
-    return SpeakingOptions(logic_templates=[item.model_copy(deep=True) for item in _LOGIC_TEMPLATES])
+    # Recommendation metadata belongs to the catalog, not old frozen snapshots.
+    return SpeakingOptions(
+        conversation_contract_versions=[1] if get_settings().speaking_realtime_provider == "openai" else [],
+        logic_templates=[item.model_copy(deep=True) for item in _LOGIC_TEMPLATES],
+        logic_metadata={item.id: {"family": "workplace" if index < 6 else "daily",
+                                  "stage_functions": list(_STAGE_FUNCTIONS[index]), "version": 1}
+                        for index, item in enumerate(_LOGIC_TEMPLATES)},
+    )
 
 
 def _repository() -> SpeakingRepository | None:
@@ -110,7 +130,9 @@ def create_speaking_session(user_id: str, payload: SpeakingSessionCreate) -> Spe
         if any(item is None or item.user_id != user_id for item in selected):
             raise HTTPException(status_code=404, detail=_RPC_ERRORS["PT404"][1])
         structures = sum(item.kind == "structure" for item in selected)
-        if structures > 3 or len(selected) - structures > 5:
+        # The new pool accepts any five kinds. Preserve the former eight-item
+        # composition for old unplanned entry paths and exact creation retries.
+        if len(selected) > 5 and (structures > 3 or len(selected) - structures > 5):
             raise HTTPException(status_code=422, detail=_RPC_ERRORS["PT422"][1])
         from app.services.speaking_planning import corpus_plan_snapshot, frozen_memory_plan
         items = [SpeakingSessionItem(
@@ -132,7 +154,8 @@ def create_speaking_session(user_id: str, payload: SpeakingSessionCreate) -> Spe
             id=uuid4(), user_id=user_id, client_id=payload.client_id,
             scenario_type=payload.scenario_type, goal=payload.goal,
             difficulty=payload.difficulty, feedback_level=payload.feedback_level,
-            logic_template=logic.model_copy(deep=True) if logic else None,
+            logic_template=(mission_plan.logic_template.model_copy(deep=True)
+                            if mission_plan and mission_plan.version == 2 else logic.model_copy(deep=True) if logic else None),
             created_at=datetime.now(timezone.utc),
             mission_plan=mission_plan,
             support_level=payload.support_level,

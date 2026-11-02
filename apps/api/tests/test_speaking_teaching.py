@@ -64,6 +64,14 @@ def test_exact_fallback_maps_unicode_offsets_and_counts_utterances_not_repetitio
     assert "score" not in json.dumps(state) and "mastery" not in json.dumps(state)
 
 
+def test_free_conversation_does_not_create_target_or_hint_evidence():
+    session = mission().model_copy(update={"items": [], "logic_template": None})
+    state = analyze(session, utterance("I had a nice walk this morning."))
+    assert state["evidence"] == [] and state["learning"] == []
+    assert teaching.hint_target(session, state) is None
+    assert "do not need to repeat a particular expression" in teaching.explicit_hint(session, state)
+
+
 @pytest.mark.parametrize("text", ["to be fairness", "to. Be fair", "fair to be", "to never be fair"])
 def test_lexical_fallback_rejects_partial_reordered_or_cross_sentence_match(text):
     assert analyze(mission(), utterance(text))["evidence"] == []

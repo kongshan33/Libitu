@@ -24,13 +24,39 @@ export const fixtureRecords = [
 }));
 
 const logicTemplates = [
-  ["persuasive_pitch", "Persuasive pitch", ["Context", "Tension", "Proposal", "Defend"]],
-  ["technical_troubleshoot", "Technical troubleshoot", ["Problem", "Evidence", "Cause", "Solution"]],
-  ["stakeholder_alignment", "Stakeholder alignment", ["Context", "Priorities", "Tradeoffs", "Agreement"]],
-  ["status_update", "Status update", ["Progress", "Blockers", "Next steps"]],
-  ["disagreement", "Constructive disagreement", ["Acknowledge", "Concern", "Alternative", "Align"]],
-  ["onboarding", "Onboarding", ["Welcome", "Context", "Steps", "Check"]]
-].map(([id, title, steps]) => ({ id, title, description: `Practice ${title.toLowerCase()}.`, steps }));
+  ["persuasive_pitch", "Persuasive pitch", "Make a case under pushback", ["Context", "Tension", "Proposal", "Defend"]],
+  ["technical_troubleshoot", "Technical troubleshoot", "Diagnose and explain a problem", ["Symptom", "Cause", "Fix", "Confirm"]],
+  ["stakeholder_alignment", "Stakeholder alignment", "Navigate competing priorities", ["Context", "Stakes", "Trade-off", "Commit"]],
+  ["status_update", "Status update", "Report progress, flag risks", ["Done", "Blockers", "Next", "Ask"]],
+  ["disagreement", "Disagreement", "Push back constructively", ["Acknowledge", "Reframe", "Evidence", "Propose"]],
+  ["onboarding", "Onboarding someone", "Explain a complex system", ["Big picture", "Parts", "Why", "Try it"]],
+  ["telling_story", "Telling a story", "Share something that happened", ["Setting", "Complication", "Outcome", "Reflection"]],
+  ["making_plans", "Making plans", "Agree on what to do together", ["Suggest", "Check", "Adjust", "Confirm"]],
+  ["catching_up", "Catching up", "Keep a friendly chat going", ["Open", "Share", "Relate", "Follow up"]]
+].map(([id, title, description, steps]) => ({ id, title, description, steps }));
+const stageFunctions = [
+  ["open", "inform", "ask", "stance"], ["inform", "inform", "ask", "clarify"],
+  ["open", "inform", "stance", "ask"], ["inform", "inform", "inform", "ask"],
+  ["align", "align", "inform", "ask"], ["open", "inform", "inform", "ask"],
+  ["open", "inform", "inform", "stance"], ["ask", "clarify", "align", "ask"],
+  ["social", "inform", "social", "ask"],
+];
+const logicMetadata = Object.fromEntries(logicTemplates.map((logic, index) => [logic.id, {
+  family: index < 6 ? "workplace" : "daily", stage_functions: stageFunctions[index], version: 1,
+}]));
+const usageAsOf = "2026-10-26T00:00:00Z";
+const unknownUsage = { state: "unknown", all_use_count: null, last_used_at: null, due_at: null, due: null,
+  unknown_reasons: ["Synthetic retained mission history is incomplete."] };
+const neverUsage = { state: "never", all_use_count: 0, last_used_at: null, due_at: null, due: false, unknown_reasons: [] };
+// Explicit synthetic retained-use histories, independent of the practice-rule
+// counts. Missing fixture evidence stays unknown; zero qualifying practice is
+// not evidence that an expression has never been used.
+const recordedUsage = new Map([
+  [fixtureRecords[0].key, neverUsage],
+  [fixtureRecords[4].key, neverUsage],
+  [fixtureRecords[1].key, { state: "used", all_use_count: 2, last_used_at: "2026-10-10T00:00:00Z", due_at: "2026-10-17T00:00:00Z", due: true, unknown_reasons: [] }],
+  [fixtureRecords[5].key, { state: "used", all_use_count: 1, last_used_at: "2026-10-24T00:00:00Z", due_at: "2026-10-31T00:00:00Z", due: false, unknown_reasons: [] }],
+]);
 
 // This exercises Clerk's React resource boundary with a synthetic identity. It
 // deliberately does not contact Clerk/OAuth or prove a real hosted sign-in.
@@ -117,6 +143,9 @@ export async function installLoadoutFixture(page, {
   const state = sharedState ?? { errors: [], requests: [], corpusSaves: [], creates: [], sessionReads: [],
     cloud: new Map(), sessions: new Map(), failNextCreate: false, corpusGate: null, createGate: null,
     practiceGate: null, practiceRequests: [], practiceRows: new Map(), practiceCompleted: 0 };
+  state.usageRequests ??= [];
+  state.sceneLogicRequests ??= [];
+  state.usageByKey ??= new Map(recordedUsage);
   page.on("pageerror", (error) => state.errors.push(error.message));
   await page.addInitScript(browserFixture, { records, initialOwner, shadow, seedCorpus });
   await page.route("**/*", async (route) => {
@@ -133,7 +162,7 @@ export async function installLoadoutFixture(page, {
         return route.fulfill({ status: 204, headers });
       }
       if (url.pathname === "/api/speaking/options") return route.fulfill({ headers,
-        json: { logic_templates: logicTemplates, max_structures: 3, max_expressions: 5, min_items: 1 } });
+        json: { logic_templates: logicTemplates, logic_metadata: logicMetadata, max_structures: 3, max_expressions: 5, min_items: 1, max_targets: 5 } });
       if (shadow) {
         if (url.pathname === `/api/content/${fixtureContentId}`) return route.fulfill({ json: contentContextFixture(shadowBlueprint, shadowJob), headers });
         if (url.pathname === `/api/jobs/${shadowJob.id}`) return route.fulfill({ json: shadowJob, headers });
@@ -172,12 +201,39 @@ export async function installLoadoutFixture(page, {
         cloud.set(key, row);
         return route.fulfill({ status: 201, json: row, headers });
       }
+      if (url.pathname === "/api/speaking/loadout-usage" && request.method() === "POST") {
+        const input = request.postDataJSON();
+        state.usageRequests.push({ owner, input });
+        assert.ok(Array.isArray(input.corpus_item_ids) && input.corpus_item_ids.length <= 500);
+        assert.equal(new Set(input.corpus_item_ids).size, input.corpus_item_ids.length);
+        const cloud = [...(state.cloud.get(owner)?.values() ?? [])];
+        const items = input.corpus_item_ids.map(id => {
+          const row = cloud.find(value => value.id === id);
+          assert.ok(row, "usage history must refer only to this owner's synchronized corpus");
+          return { corpus_item_id: id, usage: structuredClone(state.usageByKey.get(row.source_locator.client_key) ?? unknownUsage),
+            practice: { qualifying_missions: 0, practice_days: 0, scene_roots: 0, eligible: false, history_truncated: false } };
+        });
+        return route.fulfill({ headers, json: { as_of: usageAsOf, review_rule: { id: "recorded-use-7d-v1", interval_days: 7 }, items } });
+      }
+      if (url.pathname === "/api/speaking/scene-logic" && request.method() === "POST") {
+        const input = request.postDataJSON();
+        state.sceneLogicRequests.push({ owner, input });
+        assert.ok(["workplace", "everyday", "travel"].includes(input.scenario_type));
+        assert.ok(typeof input.brief === "string" && input.brief.trim().length > 0 && input.brief.length <= 500);
+        assert.ok(Array.isArray(input.corpus_item_ids) && input.corpus_item_ids.length <= 5);
+        assert.equal(new Set(input.corpus_item_ids).size, input.corpus_item_ids.length);
+        const cloud = [...(state.cloud.get(owner)?.values() ?? [])];
+        assert.ok(input.corpus_item_ids.every(id => cloud.some(row => row.id === id)), "scene matching must use this owner's corpus");
+        const logicId = state.nextSceneLogicId ?? (input.scenario_type === "workplace" ? "persuasive_pitch" : "making_plans");
+        assert.ok(logicTemplates.some(logic => logic.id === logicId));
+        return route.fulfill({ headers, json: { logic_template_id: logicId, reason: "Synthetic scene match: this structure supports the requested discussion." } });
+      }
       if (url.pathname === "/api/speaking/plans" && request.method() === "POST") {
         const input = request.postDataJSON();
         state.planRequests ??= []; state.plans ??= new Map();
         state.planRequests.push({ owner, input });
         const serial = state.planRequests.length;
-        const plan = { id: `20000000-0000-4000-8000-${String(serial).padStart(12, "0")}`, version: 1,
+        const plan = { id: `20000000-0000-4000-8000-${String(serial).padStart(12, "0")}`, version: input.logic_template_id ? 2 : 1, logic_template: logicTemplates.find(value => value.id === input.logic_template_id) ?? null,
           scenario_type: input.scenario_type, brief: input.brief, created_at: new Date().toISOString(),
           candidates: Array.from({ length: input.candidate_count ?? 2 }, (_, index) => ({ id: `30000000-0000-4000-8000-${String(serial * 10 + index).padStart(12, "0")}`,
             title: index ? "Agree on a team handoff" : "Plan a small launch", setting: "A short planning discussion with a colleague.",
@@ -185,6 +241,7 @@ export async function installLoadoutFixture(page, {
             register: "professional", targets: input.targets.map(target => ({ ...target, communicative_function: "Explain and align priorities",
               fit: state.nextPlanFit ?? "high", fit_reason: "The decision calls for the communicative function of this target.",
               trigger_question: "What would you recommend for our next step?", skip_when: "The conversation no longer needs this decision.", metadata_status: "partial",
+              model_line: (() => { const item = [...state.cloud.get(owner).values()].find(row => row.id === target.corpus_item_id); return item.text; })(),
               sentence_frame: (() => { const item = [...state.cloud.get(owner).values()].find(row => row.id === target.corpus_item_id); return item.kind === "structure" ? item.text : `${item.text}, [your idea].`; })() })) })) };
         state.plans.set(plan.id, { owner, plan });
         if (state.planGate) await state.planGate;
@@ -194,7 +251,11 @@ export async function installLoadoutFixture(page, {
       if (url.pathname === "/api/speaking/sessions" && request.method() === "POST") {
         const input = request.postDataJSON();
         state.creates.push({ owner, input });
-        assert.ok(input.corpus_item_ids.length >= 1);
+        if (!input.corpus_item_ids.length) {
+          assert.equal(input.logic_template_id, null, "free conversation has no logic template");
+          assert.equal(input.plan_id, undefined, "free conversation bypasses target planning");
+          assert.equal(input.candidate_id, undefined);
+        }
         const rows = input.corpus_item_ids.map((id) => [...state.cloud.get(owner).values()].find((row) => row.id === id));
         assert.ok(rows.every(Boolean), "submission must use synchronized server IDs, never blueprint candidate IDs");
         assert.equal(new Set(input.corpus_item_ids).size, input.corpus_item_ids.length);
@@ -217,7 +278,7 @@ export async function installLoadoutFixture(page, {
             items: rows.map((row, ordinal) => ({ id: `snapshot-${ordinal}`, corpus_item_id: row.id, ordinal,
               kind: row.kind, text: row.text, meaning: row.meaning, tags: row.tags, slots: row.slots,
               source_title: row.source_locator.source_title })) };
-          if (candidate) session.mission_plan = { ...candidate, plan_id: input.plan_id, candidate_id: candidate.id, version: 1,
+          if (candidate) session.mission_plan = { ...candidate, plan_id: input.plan_id, candidate_id: candidate.id, version: savedPlan.plan.version, logic_template: savedPlan.plan.logic_template,
             scenario_type: input.scenario_type, targets: candidate.targets.map((target, index) => ({ ...target, session_item_id: session.items[index].id })) };
           state.sessions.set(session.id, structuredClone(session));
         }

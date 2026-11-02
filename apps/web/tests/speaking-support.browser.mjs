@@ -45,7 +45,7 @@ function publish(state, change = {}) {
 }
 async function openSidebar(page, width) {
   if (width < 800) {
-    const toggle = page.getByRole("button", { name: "Loadout", exact: true });
+    const toggle = page.getByRole("button", { name: "Targets", exact: true });
     if (await toggle.getAttribute("aria-expanded") !== "true") await toggle.click();
   }
   const sidebar = page.getByRole("complementary", { name: "Training sidebar" });
@@ -54,11 +54,12 @@ async function openSidebar(page, width) {
 }
 async function connect(page, state) {
   await page.getByRole("button", { name: "Chat", exact: true }).click();
-  await page.getByRole("button", { name: "Connect for text", exact: true }).click();
+  await page.getByRole("button", { name: "Start conversation", exact: true }).click();
   await waitFor(() => state.events.some(event => event.type === "microphone"), "runtime connected");
 }
 try {
-  for (const width of [1440, 390]) {
+  // The legacy Loadout selector flow is independent of the Stage 4 route checks.
+  for (const width of process.env.LIBITU_SPEAKING_ONLY === "1" ? [] : [1440, 390]) {
     const context = await browser.newContext({ viewport: { width, height: 1000 } });
     const page = await context.newPage(); page.setDefaultTimeout(30_000);
     const state = await installLoadoutFixture(page, { origin, initialOwner: loadoutOwner });

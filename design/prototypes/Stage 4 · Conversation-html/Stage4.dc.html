@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Stage 4 · Conversation</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pg{--ink:#0C0A09;--ink2:#44403C;--ink3:#57534E;--muted:#78716C;--ls:#D6D3D1;--line:#E7E5E4;--soft:#F0EEEC;--surf:#FAFAF9;--brand:#5A43D6;
+font-family:Inter,system-ui,sans-serif;color:var(--ink);background:#fff;min-height:1120px;font-size:15px;line-height:1.6}
+.pg *{box-sizing:border-box}
+.pg p,.pg h1,.pg h2{margin:0}
+.lab{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.meta{font-size:13px;color:var(--muted);line-height:1.5}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)}
+.btn{font-family:inherit;cursor:pointer;border-radius:999px;font-weight:500}
+.pri{background:var(--ink);color:#fff;border:none;font-size:15px;padding:14px 26px}
+.sec{background:transparent;color:var(--ink);border:1px solid var(--ls);font-size:13px;padding:8px 14px}
+.sec:hover{background:var(--surf)}
+.lnk{font-family:inherit;background:none;border:none;padding:0;cursor:pointer;font-size:14px;color:var(--ink2)}
+.lnk.m{color:var(--muted);font-size:13px}
+.seg{font-family:inherit;font-size:13px;padding:6px 14px;border-radius:999px;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.seg.on{background:var(--ink);color:#fff}
+.cap{font-size:14px;padding:7px 14px;border-radius:999px;color:var(--muted)}
+.cap.on{background:var(--ink);color:#fff}
+.u{text-decoration:underline;text-decoration-color:var(--brand);text-decoration-thickness:2px;text-underline-offset:4px}
+.ud{text-decoration-style:dashed}
+.msg{display:grid;grid-template-columns:56px 1fr;gap:16px}
+.txt{font-size:18px;line-height:1.6}
+.blk{background:var(--surf);border-radius:14px;padding:14px 18px}
+.tcard{background:var(--surf);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.tcard.cur{background:#fff;border:1.5px solid var(--ink);padding:16.5px}
+.row4{display:grid;grid-template-columns:150px 1.3fr 1.3fr 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--soft);font-size:13px;color:var(--ink3);line-height:1.5}
+.orb{border-radius:50%;background:radial-gradient(circle at 28% 42%,#e6df4e 0,rgba(230,223,78,0) 38%),radial-gradient(circle at 70% 36%,#2b8793 0,rgba(43,135,147,0) 46%),radial-gradient(circle at 42% 85%,#2fb0d8,#85d8ec)}
+</style>
+</helmet>
+<div class="pg">
+  <header style="height:64px;border-bottom:1px solid var(--soft);padding:0 32px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center">
+    <div style="display:flex;align-items:baseline;gap:16px;min-width:0"><span style="font-size:20px;font-weight:600;color:var(--brand)">libitu.</span><span style="font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px">Secure leadership approval for a new market entry strategy</span></div>
+    <nav aria-label="Stages" style="display:flex;gap:4px"><span class="cap">Stage 1</span><span class="cap">Stage 2</span><span class="cap">Stage 3</span><span class="cap on" aria-current="step">Stage 4</span><span class="cap">Stage 5</span></nav>
+    <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><a href="#" style="font-size:14px;color:var(--ink2);padding:8px 10px;text-decoration:none">Corpus</a><a href="#" style="font-size:14px;color:var(--ink2);padding:8px 10px;text-decoration:none">My learning</a><span style="width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-left:8px">S</span></div>
+  </header>
+
+  <div style="max-width:1280px;margin:0 auto;padding:24px 32px 48px;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:center;gap:8px"><span class="meta">Prototype state</span>
+      <div style="display:flex;gap:4px;background:var(--surf);border-radius:999px;padding:4px"><sc-for list="{{ demo }}" as="d" hint-placeholder-count="6"><button class="seg {{d.on}}" onClick="{{d.pick}}">{{d.l}}</button></sc-for></div></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span class="lab">Stage 4 · Conversation</span>
+        <h2 style="font-size:22px;line-height:1.3;font-weight:500;letter-spacing:-.01em">Secure leadership approval for a new market entry strategy.</h2>
+        <p class="meta">Workplace · Guided · Detailed feedback</p>
+        <p style="font-size:14px;color:var(--ink3);max-width:760px">Quarterly leadership review. You are the senior product strategy manager. Your partner is a skeptical senior vice president of growth.</p>
+      </div>
+      <div style="display:flex;gap:8px"><button class="btn sec">Back to loadout</button><button class="btn sec">End mission</button></div>
+    </div>
+
+    <div style="background:var(--surf);border-radius:999px;padding:12px 24px;display:flex;align-items:center;gap:24px">
+      <div style="min-width:130px"><div style="font-size:14px;font-weight:500">Persuasive pitch</div><div class="meta">Practice guide</div></div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:12px">
+        <sc-for list="{{ stages }}" as="s" hint-placeholder-count="4"><li style="display:flex;align-items:center;gap:12px"><span style="width:6px;height:6px;border-radius:50%;{{s.dot}}"></span><span style="font-size:14px;{{s.name}}">{{s.label}}</span><span style="width:24px;height:1px;background:var(--ls);{{s.line}}"></span></li></sc-for>
+      </ol>
+      <span class="meta" style="margin-left:auto">{{stageCue}}</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 332px;gap:32px;align-items:start">
+      <section aria-label="Conversation" style="display:flex;flex-direction:column;gap:20px;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div role="group" aria-label="Conversation mode" style="display:flex;gap:4px;background:var(--surf);border-radius:999px;padding:4px"><sc-for list="{{ modes }}" as="m" hint-placeholder-count="2"><button class="seg {{m.on}}" aria-pressed="{{m.pressed}}" onClick="{{m.pick}}">{{m.l}}</button></sc-for></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;{{dotStyle}}"></span><span style="font-size:14px;font-weight:500">{{statusText}}</span><span class="meta">· AI partner</span></div>
+        </div>
+        <sc-if value="{{ isPaused }}" hint-placeholder-val="{{ false }}"><div class="blk" style="display:flex;align-items:center;gap:16px"><div style="flex:1"><div style="font-size:15px;font-weight:500">Conversation paused</div><div class="meta">Your transcript is saved. Resume when you are ready.</div></div><button class="btn pri" onClick="{{ start }}" style="padding:10px 20px;font-size:14px">Resume conversation</button></div></sc-if>
+        <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}"><div class="blk" style="display:flex;align-items:center;gap:16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4M12 16h.01"></path></svg><div style="flex:1"><div style="font-size:15px;font-weight:500">Connection lost</div><div class="meta">Your transcript is saved. Reconnect to continue.</div></div><button class="btn sec" onClick="{{ start }}">Reconnect</button></div></sc-if>
+
+        <sc-if value="{{ voiceMode }}" hint-placeholder-val="{{ true }}">
+          <div style="background:var(--surf);border-radius:16px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:520px">
+            <div class="orb" role="img" aria-label="AI partner" style="width:136px;height:136px"></div>
+            
+            <sc-if value="{{ isReady }}" hint-placeholder-val="{{ false }}"><button class="btn pri" onClick="{{ start }}">Start conversation</button></sc-if>
+            <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+              
+              <div style="max-width:620px;display:flex;flex-direction:column;gap:8px" aria-live="polite">
+                <span class="lab">{{capLabel}}</span>
+                <sc-if value="{{ isSpeaking }}" hint-placeholder-val="{{ false }}"><p style="font-size:22px;line-height:1.5">It isn’t a zero-sum game because …</p></sc-if>
+                <sc-if value="{{ showOrig }}" hint-placeholder-val="{{ true }}"><p style="font-size:22px;line-height:1.5">Got it, you plan to produce it there. But this isn’t a <span class="u ud">zero-sum game</span> for us. If we win premium share, who loses it?</p></sc-if><sc-if value="{{ partnerRephrase }}" hint-placeholder-val="{{ false }}"><p style="font-size:22px;line-height:1.5">Let me ask it differently. Which customers would we be taking share from?</p></sc-if>
+              </div>
+              <sc-if value="{{ partnerCap }}" hint-placeholder-val="{{ true }}"><div style="max-width:620px"><p class="meta">Your last turn, another way to say it</p><p style="font-size:16px;color:var(--ink3)">We plan to <span style="font-weight:600;color:var(--ink)">produce</span> our product there.</p></div></sc-if>
+              
+              <sc-if value="{{ hintOpen }}" hint-placeholder-val="{{ false }}"><div style="max-width:620px" aria-live="polite"><p class="meta">{{hintKind}}</p><p style="font-size:18px;line-height:1.5">{{hintText}}</p></div></sc-if>
+              <button aria-label="Microphone" class="btn" style="width:76px;height:76px;flex:none;display:flex;align-items:center;justify-content:center;border:none;{{micStyle}}"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ chatMode }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:20px">
+          <sc-if value="{{ isReady }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed var(--ls);border-radius:12px;padding:40px 24px;text-align:center"><p style="font-size:15px">Ready when you are</p><p class="meta" style="max-width:420px;margin:8px auto 16px">Your partner says each target once so you can say it back. Mistakes are corrected once, and pronunciation is reviewed after the mission.</p><button class="btn pri" onClick="{{ start }}">Start conversation</button></div></sc-if>
+        <sc-if value="{{ showTranscript }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div class="msg"><span class="mono" style="padding-top:6px">Partner</span><p class="txt" style="color:var(--muted)">Thanks for making time. Which market are you proposing we enter first, and why now?</p></div>
+            <div class="msg"><span class="mono" style="padding-top:20px">You</span>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="blk"><p class="txt" style="color:var(--ink3)">We can <span class="u ud" style="color:var(--ink)">eke out a beachhead</span> in the premium segment, because we plan to production our product there.</p></div>
+                
+                <div style="padding:0 4px"><p class="meta">Another way to say it</p><p style="font-size:15px;color:var(--ink3)">We can eke out a beachhead in the premium segment, because we plan to <span style="font-weight:600;color:var(--ink)">produce</span> our product there.</p></div>
+              </div></div>
+            <div style="display:flex;align-items:center;gap:16px"><span style="flex:1;height:1px;background:var(--soft)"></span><span class="lab">Tension</span><span style="flex:1;height:1px;background:var(--soft)"></span></div>
+            <div class="msg"><span class="mono" style="padding-top:6px">Partner</span><div style="display:flex;flex-direction:column;gap:8px"><p class="txt">Got it, you plan to produce it there. But this isn’t a <span class="u ud">zero-sum game</span> for us. If we win premium share, who loses it?</p></div></div>
+            <sc-if value="{{ isSpeaking }}" hint-placeholder-val="{{ false }}"><div class="msg"><span class="mono" style="padding-top:6px">You</span><p class="txt" style="color:var(--muted)">It isn’t a zero-sum game because …</p></div></sc-if>
+            
+          </div>
+        </sc-if>
+
+          </div>
+        </sc-if>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-if value="{{ hintChat }}" hint-placeholder-val="{{ false }}"><div class="blk" aria-live="polite"><p class="meta">{{hintKind}}</p><p style="font-size:16px;line-height:1.5">{{hintText}}</p></div></sc-if>
+          <sc-if value="{{ chatMode }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:16px;background:var(--surf);border-radius:999px;padding:8px 8px 8px 24px">
+              <div aria-hidden="true" style="flex:1;display:flex;align-items:center;gap:8px;height:40px;overflow:hidden"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="30"><span style="width:3px;border-radius:2px;flex:none;{{b.s}}"></span></sc-for></div>
+              <span class="meta">{{statusText}}</span>
+              <button aria-label="Microphone" class="btn" style="width:56px;height:56px;border:none;display:flex;align-items:center;justify-content:center;{{micStyle}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+            </div>
+          </sc-if>
+          <div style="display:flex;justify-content:space-between"><span class="meta">Transcript is saved. Audio is not retained by Libitu.</span><button class="lnk" onClick="{{ toggleHint }}" aria-expanded="{{ hintOpen }}">{{hintLabel}}</button></div>
+        </div>
+      </section>
+
+      <aside aria-label="Targets" style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lab">Your targets</span><span style="display:flex;gap:12px;align-items:baseline"><span class="meta">{{usedCount}}</span><button class="lnk m" onClick="{{ toggleReveal }}" aria-pressed="{{ reveal }}">{{revealLabel}}</button></span></div>
+        <sc-for list="{{ targets }}" as="t" hint-placeholder-count="3">
+          <div class="{{t.cls}}"><span class="lab">{{t.stage}}</span><div style="font-size:17px;font-weight:500;line-height:1.35;{{t.titleStyle}}">{{t.title}}</div><p class="meta" style="color:var(--ink3)">{{t.desc}}</p><p class="meta">{{t.status}}</p>
+            <sc-if value="{{ t.cur }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:16px;margin-top:4px"><button class="lnk" onClick="{{ toggleHint }}">Hint</button><button class="lnk m">Doesn’t fit this scene</button></div></sc-if></div>
+        </sc-for>
+        <p class="meta" style="margin-top:4px">Targets are matched to the stage where they fit best.</p>
+      </aside>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1120}}'>
+class Component extends DCLogic {
+renderVals() {
+  const st = Object.assign({ scene: 'live', hint: 0, mode: 'voice', reveal: false }, this.state || {});
+  const sc = st.scene;
+  const notReady = sc !== 'ready';
+  const active = sc === 'live' || sc === 'hint' || sc === 'speaking';
+  const names = ['Context', 'Tension', 'Proposal', 'Defend'];
+  const cur = notReady ? 1 : 0;
+  const cues = ['Set the scene and the goal.', 'Name the risk or objection.', 'Make your recommendation.', 'Answer pushback with evidence.'];
+  const stages = names.map((n, i) => ({
+    label: n,
+    dot: i < cur ? 'background:var(--ink)' : i === cur ? 'background:var(--brand)' : 'background:var(--ls)',
+    name: i === cur ? 'color:var(--ink);font-weight:600' : i < cur ? 'color:var(--ink3)' : 'color:var(--muted)',
+    line: i === names.length - 1 ? 'display:none' : ''
+  }));
+  const heights = [10, 18, 28, 16, 34, 22, 12, 30, 38, 20, 14, 26, 34, 18, 10, 24, 32, 16, 12, 28, 36, 20, 14, 30, 22, 12, 26, 34, 18, 10, 22, 28, 14, 8];
+  const bars = heights.map((h) => ({ s: active ? 'height:' + h + 'px;background:var(--ink)' : 'height:6px;background:var(--ls)' }));
+  const statusMap = { ready: 'Offline', speaking: 'Listening', live: 'Listening', silence: 'Waiting for you', hint: 'Listening', paused: 'Paused', error: 'Offline' };
+  const lineMap = { speaking: 'Speak naturally. Your words appear as you talk.', ready: 'Start, then speak naturally. You can also type below.', live: 'Speak or type. Voice and text stay in one conversation.', silence: 'Speak or type when you are ready.', hint: 'Speak or type. Voice and text stay in one conversation.', paused: 'Paused while you were away.', error: 'Reconnect to continue.' };
+  const base = [
+    { stage: 'Context', title: 'eke out a beachhead', desc: 'Gain a small, initial foothold in a new market.' },
+    { stage: 'Tension', title: 'zero-sum game', desc: 'One side gains only when the other loses.' },
+    { stage: 'Proposal', title: 'lean into', desc: 'Commit more strongly to something.' }
+  ];
+  const stat = notReady ? ['Used on your own', 'Modeled once · your turn', 'Coming up'] : ['Not started', 'Not started', 'Not started'];
+  const reveal = !!st.reveal;
+  const targets = base.map((b, i) => { const show = reveal || (notReady && i === 0); return Object.assign({}, b, { title: show ? b.title : 'Hidden until you ask', desc: show ? b.desc : '', titleStyle: show ? '' : 'color:var(--muted);font-weight:400;font-size:15px', status: stat[i], cur: notReady && i === 1, cls: notReady && i === 1 ? 'tcard cur' : 'tcard' }); });
+  const lv = st.hint;
+  return {
+    demo: [['ready', 'Ready'], ['live', 'Live'], ['speaking', 'Speaking'], ['silence', 'Silence'], ['hint', 'Hint'], ['paused', 'Paused'], ['error', 'Connection lost']].map((d) => ({ l: d[1], on: sc === d[0] ? 'on' : '', pick: () => this.setState({ scene: d[0], hint: d[0] === 'hint' ? 1 : 0 }) })),
+    stages: stages, stageCue: names[cur] + ' · ' + cues[cur], bars: bars, notReady: notReady,
+    isReady: sc === 'ready', isPaused: sc === 'paused', isError: sc === 'error', isSilent: sc === 'silence', showTranscript: notReady,
+    statusText: statusMap[sc], voiceLine: lineMap[sc],
+    dotStyle: active ? 'background:var(--ink)' : 'background:var(--ls)',
+    micStyle: active || sc === 'silence' ? 'background:var(--ink);color:#fff' : 'background:var(--line);color:var(--muted)',
+    targets: targets, usedCount: notReady ? '1 of 3 used' : '0 of 3 used',
+    hintOpen: lv > 0 && notReady, hintChat: lv > 0 && notReady && st.mode === 'chat', hintKind: ['', 'You could…', 'You could start with', 'For example'][lv], hintText: ['', 'explain why both sides can win.', '“This isn’t a zero-sum game…”', '“This isn’t a zero-sum game: premium buyers are new customers, not ours moving over.”'][lv], hint2: lv >= 2, hint3: lv >= 3, hintMore: lv < 3, hintMoreLabel: lv === 1 ? 'Show pattern' : 'Show example',
+    hintLabel: ['Need a hint?', 'Opening words', 'See an example', 'Hide hint'][lv],
+    start: () => this.setState({ scene: 'live', hint: 0 }),
+    toggleHint: () => this.setState({ hint: lv >= 3 ? 0 : lv + 1 }),
+    moreHint: () => this.setState({ hint: Math.min(3, lv + 1) }),
+    voiceMode: st.mode === 'voice', chatMode: st.mode === 'chat', isSpeaking: sc === 'speaking', partnerCap: sc !== 'speaking', showOrig: sc !== 'speaking' && sc !== 'silence', partnerRephrase: sc === 'silence', reveal: reveal, revealLabel: reveal ? 'Hide targets' : 'Show targets', toggleReveal: () => this.setState({ reveal: !reveal }),
+    capLabel: sc === 'speaking' ? 'You · now' : 'AI partner · now',
+    ph: st.mode === 'voice' ? 'Or send a message…' : 'Type a reply…',
+    modes: [['voice', 'Voice'], ['chat', 'Chat']].map((m) => ({ l: m[1], on: st.mode === m[0] ? 'on' : '', pressed: st.mode === m[0], pick: () => this.setState({ mode: m[0] }) }))
+  };
+}
+}
+</script>
+</body>
+</html>

@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { FeedbackController } from "../features/analytics/controller.ts";
 import { createFeedbackApi, FeedbackApiError } from "../features/analytics/api.ts";
-import { validReference, draftFromMission, retryMissionRequest, suggestionRecord } from "../features/analytics/model.ts";
-import { emptyDraft, importMissionDraft, readDraftEnvelope, saveDraft } from "../features/loadout/draft.ts";
+import { validReference, draftFromMission, feedbackUseCounts, retryMissionRequest, suggestionRecord } from "../features/analytics/model.ts";
+import { adoptDeviceDraft, emptyDraft, importMissionDraft, prepareFreeSubmission, readDraftEnvelope, saveDraft } from "../features/loadout/draft.ts";
 const delay = () => new Promise(resolve => setImmediate(resolve));
 const message = { id: "user-1", role: "user", status: "final", revision: 2, text: "🙂 To be fair, we need time." };
 const quote = { message_id: "user-1", transcript_revision: 2, quote: "To be fair", start: 3, end: 13 };
@@ -11,6 +11,16 @@ const mission = { id: "mission", user_id: "owner", scenario_type: "workplace", g
 const records = [{ serverId: "corpus-1", key: "key-1" }, { serverId: "corpus-2", key: "key-2" }];
 const report = (status = "ready", extra = {}) => ({ id: "report", session_id: "mission", session: mission, status, messages: [message], retryable: status === "failed", ...extra });
 function memoryStorage() { const values = new Map(); return { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }; }
+
+test("v2 report preserves server use counts and partitions imitation out of assisted use", () => {
+  const item = { independent_uses: 2, prompted_uses: 5, imitation_uses: 3, uncertain_assistance_uses: 1, evidence: [] };
+  assert.deepEqual(feedbackUseCounts(item), { independent: 2, imitation: 3, otherAssisted: 2, assisted: 5, uncertain: 1 });
+  const counts = feedbackUseCounts({ ...item, evidence: Array.from({ length: 12 }, () => quote) });
+  assert.deepEqual(counts, feedbackUseCounts(item), "UI must not reclassify uses from evidence quotes or their count");
+  assert.equal(counts.imitation + counts.otherAssisted, item.prompted_uses, "imitations are not counted twice");
+  assert.deepEqual(feedbackUseCounts({ ...item, imitation_uses: 0 }), { independent: 2, imitation: 0, otherAssisted: 5, assisted: 5, uncertain: 1 });
+  assert.deepEqual(feedbackUseCounts({ independent_uses: 1, prompted_uses: 4 }), { independent: 1, imitation: null, otherAssisted: null, assisted: 4, uncertain: 0 }, "an older report without a breakdown does not establish zero imitation");
+});
 
 test("evidence is bound to final USER revision and exact UTF-16 offsets", () => {
   assert.equal(validReference(quote, [message]), message);
@@ -41,6 +51,31 @@ test("retry and adjust preserve an explicit support choice while legacy missions
   }
   assert.equal(Object.hasOwn(draftFromMission(mission, records).draft, "supportLevel"), false);
   assert.equal(Object.hasOwn(retryMissionRequest({ ...mission, support_level: null }, records, "retry"), "support_level"), false);
+});
+test("free conversation report retry and adopted adjustment keep the target-free mode", async () => {
+  const free = { ...mission, goal: "Talk about your day", logic_template: null, mission_plan: null, items: [], support_level: "model_frame" };
+  const { draft, missing } = draftFromMission(free, []);
+  assert.equal(missing, 0);
+  assert.equal(draft.freeConversation, true);
+  assert.deepEqual(draft.selectedKeys, []);
+  assert.equal(draft.logicTemplateId, null);
+  const retry = retryMissionRequest(free, [], "new-free-request");
+  assert.deepEqual(retry.corpus_item_ids, []);
+  assert.equal(retry.logic_template_id, null);
+  assert.equal(retry.plan_id, undefined);
+  assert.equal(retry.support_level, "model_frame");
+  const storage = memoryStorage();
+  const previous = { ...emptyDraft(), goal: "Keep this existing setup", selectedKeys: ["old"] };
+  await saveDraft(storage, "owner", previous);
+  assert.equal(await importMissionDraft(storage, "owner", draft), "saved");
+  assert.deepEqual(readDraftEnvelope(storage).accounts.owner.draft, previous);
+  const adopted = await adoptDeviceDraft(storage, "owner", 0);
+  assert.equal(adopted.draft.freeConversation, true);
+  const prepared = prepareFreeSubmission(adopted.draft, () => "00000000-0000-4000-8000-000000000001");
+  assert.deepEqual(prepared.submission.request.corpus_item_ids, []);
+  assert.equal(prepared.submission.request.goal, "Talk about your day");
+  assert.equal(draftFromMission({ ...mission, items: [] }, []).draft.freeConversation, undefined);
+  assert.equal(draftFromMission(mission, []).draft.freeConversation, undefined);
 });
 test("explicit mission import preserves a current draft and deduplicates additional drafts", async () => {
   const storage = memoryStorage(); const current = { ...emptyDraft(), goal: "Do not replace my current work", selectedKeys: ["old"] };
@@ -75,9 +110,14 @@ test("first missing report is created once; polling and refresh never request pa
   await controller.refresh(); assert.deepEqual(creates, [false]); assert.equal(updates.at(-1).loading, false);
 });
 test("bounded pending polling pauses without recreating report", async t => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
   let reads = 0; const controller = new FeedbackController({ read: async () => { reads++; return report("processing"); }, create: async () => assert.fail("read-only polling") }, () => {}, 1, 2);
-  t.after(() => controller.dispose()); await controller.load(); await new Promise(resolve => setTimeout(resolve, 20));
+  t.after(() => controller.dispose()); await controller.load();
+  assert.equal(reads, 1);
+  t.mock.timers.tick(1); await delay(); assert.equal(reads, 2);
+  t.mock.timers.tick(1); await delay();
   assert.equal(reads, 3); assert.equal(controller.state.pollingPaused, true);
+  t.mock.timers.tick(2_000); await delay(); assert.equal(reads, 3, "the poll limit must stop subsequent reads");
 });
 test("only explicit retry on a retryable report POSTs retry=true", async t => {
   const creates = []; const controller = new FeedbackController({ read: async () => report("failed"), create: async retry => { creates.push(retry); return report(); } }, () => {});

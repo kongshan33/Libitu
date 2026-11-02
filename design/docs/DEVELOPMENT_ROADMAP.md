@@ -4,7 +4,7 @@
 meta:
   contentType: How-to
   status: active
-  updated: 2026-10-20
+  updated: 2026-10-26
 ```
 
 This roadmap orders implementation by dependency and product risk. Each phase must produce a testable learner outcome before the next phase expands scope.
@@ -16,7 +16,7 @@ Stage 2 practice refactor update (2026-10-12): execute [the accepted contract](S
 ## Doubao text-provider migration — 2026-10-23
 
 The current text provider is Doubao for Stage 1, corpus selection, Mission planning,
-Stage 4 analysis/help and Stage 5 assessment. Gemini Live remains the voice provider.
+Stage 4 analysis/help and Stage 5 assessment. OpenAI Realtime is the voice provider as of 2026-10-30.
 This infrastructure replacement preserves delivery order and product contracts;
 see `PROJECT.MD` and `TASK.MD` for configuration and verification boundaries.
 
@@ -102,6 +102,66 @@ Deliver:
 Exit when valid captions produce stable blueprint data and cache hits avoid repeated model calls.
 
 ## Phase 5: close the learning loop
+
+2026-11-01 target visibility correction: start with all target wording and meanings
+visible so learners know what to transfer. Retain manual Hide/Show, actual exposure
+receipts and separate learner-use evidence. This supersedes default concealment.
+
+2026-11-01 hint optimization: implement on-demand three-level generation,
+private context-bound cache and smooth switching first, with version/exposure
+regression. By user decision, background pre-generation is not in the active
+delivery queue: learners may never request hints, making speculative model calls
+wasteful. Keep on-demand generation; reconsider pre-generation only by explicit
+decision. Hint generation is not a session-entry prerequisite. Cold-request
+latency and live provider/device quality require their own measurements.
+
+2026-11-01: the post-step-4 alignment closes default legacy concealment,
+confirmed historical stage dividers, sidebar evidence, runtime Chat hint styling,
+silence status and the top stage cue. Full serial regression and scoped Stage 4
+synthetic desktop/mobile checks pass; `TASK.MD` records the legacy Loadout-script
+limitation. Real provider/audio acceptance remains separate.
+
+2026-10-31: the user reopened Stage 4 for the Conversation redesign and requested
+state/data contracts first. [The contract](STAGE_FOUR_CONVERSATION_CONTRACT.md)
+is documented; steps 2/3 implement the UI with fixtures and negotiated
+question/help runtime. Step 4 connects minimal recasts and frozen report
+classification. Real provider/audio acceptance remains step 5. Delivery order: contract → UI with fixtures →
+negotiated runtime/help/simplification → recasts/report integration → automated,
+visual and real-audio verification. Preserve confirmed-model target auto-reveal.
+The older pause/provider-only restrictions below are historical; Summary-only
+feedback and unrelated expansion remain outside this redesign. `TASK.MD` owns
+the current queue and verification status.
+
+2026-10-30: the user reopened Stage 4 for the OpenAI voice-provider migration
+and verification only; other deferred teaching work remains deferred.
+
+2026-10-26 scope correction: the user paused further Stage 4 work and prioritized
+finishing Stage 3 against the supplied prototype/development notes. Complete
+selection/scene state, nine logic templates, Travel, truthful usage filters and
+the confirmed seven-day review rule before resuming runtime work. Summary-only
+feedback remains unavailable pending that runtime work. This supersedes the
+older Stage 3 taxonomy/Travel/review deferrals below; verification is in `TASK.MD`.
+
+2026-10-26 first follow-up milestone connects target selection, existing logic,
+version 2 scenario planning, frozen stage/model-line snapshots, one natural
+Stage 4 demonstration and truthful independent/imitation records. Preserve v1
+and exact creation retries. This supersedes only the demonstration deferral in
+the earlier entry below. Code and automated checks are complete; real Gemini
+demonstration-to-imitation acceptance remains open. Verification and hosted
+status are in `TASK.MD`; new taxonomy/review ranking and the remaining runtime
+proposals follow separately.
+
+2026-10-25 Loadout follow-up: the Quick start page, local three-item suggestions,
+shared five-target selection/drawer and zero-target Free conversation are
+implemented locally. Reuse existing tags, six logic IDs, scenario seeds and
+support/history controls; new targets use the existing primary role internally.
+Preserve owner/source checks and exact retry snapshots. Root lint/build/test,
+desktop/mobile fixtures and hosted migration rollback checks pass; `TASK.MD`
+records the verification and its limits. The supplied
+[Loadout development notes](Stage%203%20Mission%20Loadout%20%E4%B8%8E%20Stage%204%20%E5%AF%B9%E8%AF%9D%EF%BC%9A%E5%BC%80%E5%8F%91%E8%A6%81%E7%82%B9.md)
+do not replace the delivery queue: new taxonomy, usage/review ranking, Travel,
+Summary-only feedback, streaming SessionBrief and new Stage 4 demonstration or
+correction rules remain separate proposals.
 
 2026-10-20 delivery sequence: [expression-led Mission planning](STAGE_THREE_FOUR_MISSION_PLAN.md)
 in order: P0 selection/plan/evidence contracts; P1 language-first Loadout, one-button

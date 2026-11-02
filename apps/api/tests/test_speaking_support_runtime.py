@@ -282,3 +282,39 @@ def test_provider_setup_does_not_receive_the_target_list(connection):
     assert "model_then_transfer" in str(instructions)
     assert "implicit_elicitation" in str(instructions)
     assert client.session.items[0].text not in str(instructions)
+
+
+def test_default_concealed_legacy_targets_reveal_only_revision_confirmed_models(connection):
+    client, _, _ = connection
+    client.session.support_level = None
+    text = "Good to see you. Who will you meet next?"
+    message = runtime.new_message("assistant", text, "text", response_id="response")
+    attempt = {"response_id": "response", "presented": True,
+        "assessment_message_id": message["id"], "assessment_revision": 1,
+        "presented_message_id": message["id"], "presented_revision": 1,
+        "policy": {"action": "model_then_transfer", "target_item_id": str(client.session.items[0].id)},
+        "assessment": {"outcome": "reflected", "model_quote": "Good to see you.", "transfer_question_quote": "Who will you meet next?"}}
+    document = {"messages": [message], "teaching_attempts": [attempt]}
+    assert support_workspace(client.session, document)["demonstrations"][0]["quote"] == "Good to see"
+    for mutate in (
+        lambda d: d["messages"][0].update(revision=2),
+        lambda d: d["messages"][0].update(playback_pending=True),
+        lambda d: d["teaching_attempts"][0].update(presented=False),
+        lambda d: d["teaching_attempts"][0].pop("assessment_revision"),
+    ):
+        changed = deepcopy(document); mutate(changed)
+        assert support_workspace(client.session, changed)["demonstrations"] == []
+
+
+def test_negotiated_legacy_visible_target_records_exposure_without_inventing_use(connection):
+    client, _, _ = connection
+    client.session.support_level = None
+    async def flow():
+        await client.commit(lambda d, _: d["runtime"].update(conversation_contract_version=1))
+        target = str(client.session.items[0].id)
+        client.target_shown({"target_item_id": target})
+        await settle(client)
+        assert client.state["document"]["controller"]["exposures"][0]["target_item_id"] == target
+        assert not client.state["document"].get("evidence")
+        with pytest.raises(ValueError): client.target_shown({"target_item_id": str(uuid4())})
+    asyncio.run(flow())

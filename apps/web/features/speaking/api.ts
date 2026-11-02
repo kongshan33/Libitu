@@ -55,7 +55,14 @@ export function createConversationApi(owner: string, sessionId: string, getToken
   }
   return {
     read: (signal: AbortSignal) => request<SpeakingWorkspace>("/workspace", signal),
-    connect: (clientId: string, takeover: boolean, signal: AbortSignal) => request<SpeakingRuntimeTicket>("/realtime", signal, "POST", { client_connection_id: clientId, takeover }),
+    connect: async (clientId: string, takeover: boolean, signal: AbortSignal) => {
+      let negotiated = false;
+      try {
+        const response = await fetch(`${apiBase()}/api/speaking/options`, { signal: AbortSignal.any([signal, AbortSignal.timeout(5000)]) });
+        if (response.ok) negotiated = (await response.json()).conversation_contract_versions?.includes(1) === true;
+      } catch { signal.throwIfAborted(); /* Older servers retain their original contract. */ }
+      return request<SpeakingRuntimeTicket>("/realtime", signal, "POST", { client_connection_id: clientId, takeover, ...(negotiated ? { conversation_contract_version: 1 } : {}) });
+    },
     end: (signal: AbortSignal) => request<SpeakingWorkspace>("/end", signal, "POST"),
     delete: (signal: AbortSignal) => request<void>("", signal, "DELETE")
   };

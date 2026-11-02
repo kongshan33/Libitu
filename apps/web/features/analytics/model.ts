@@ -1,4 +1,4 @@
-import type { FeedbackDimensionId, FeedbackReference, FeedbackRefactor, SpeakingFeedback, SpeakingMessage, SpeakingSession, SpeakingSessionCreate, SpeakingPlan, SpeakingSupportLevel } from "@libitu/types/speaking";
+import type { FeedbackDimensionId, FeedbackReference, FeedbackRefactor, FeedbackItem, SpeakingFeedback, SpeakingMessage, SpeakingSession, SpeakingSessionCreate, SpeakingPlan, SpeakingSupportLevel } from "@libitu/types/speaking";
 import type { SavedCorpusRecord } from "../corpus/corpus-storage.ts";
 import type { LoadoutDraft } from "../loadout/draft.ts";
 import { expressionText, missionInputSignature } from "../loadout/draft.ts";
@@ -8,6 +8,13 @@ export const DIMENSIONS: { id: FeedbackDimensionId; label: string; description: 
   { id: "scenario_fit", label: "Scenario fit", description: "Tone and choices for the situation" },
   { id: "naturalness", label: "Naturalness", description: "Clarity, grammar and expression" }
 ];
+/** Imitation is a server-confirmed subset of assisted use, never inferred from quotes. */
+export function feedbackUseCounts(item: Pick<FeedbackItem, "independent_uses" | "prompted_uses" | "imitation_uses" | "uncertain_assistance_uses">) {
+  const imitation = item.imitation_uses ?? null;
+  return { independent: item.independent_uses, imitation,
+    otherAssisted: imitation === null ? null : Math.max(0, item.prompted_uses - imitation),
+    assisted: item.prompted_uses, uncertain: item.uncertain_assistance_uses ?? 0 };
+}
 export function validReference(reference: FeedbackReference, messages: SpeakingMessage[]): SpeakingMessage | null {
   const message = messages.find(value => value.id === reference.message_id);
   return message?.role === "user" && message.status === "final" && message.revision === reference.transcript_revision
@@ -26,10 +33,15 @@ export function draftFromMission(session: SpeakingSession, records: SavedCorpusR
   const targetRoles = session.mission_plan ? Object.fromEntries(
     [...session.items].sort((a, b) => a.ordinal - b.ordinal).map((item, index) => [selectedKeys[index], targets.get(item.id) ?? "opportunity"])
   ) : undefined;
+  const targetStages = session.mission_plan?.version === 2 ? Object.fromEntries(
+    [...session.items].sort((a, b) => a.ordinal - b.ordinal).map((item, index) => [selectedKeys[index], session.mission_plan!.targets.find(target => target.session_item_id === item.id)?.stage_index ?? null])
+  ) : undefined;
   return { draft: { scenarioType: session.scenario_type, goal: session.goal, difficulty: session.difficulty, feedbackLevel: session.feedback_level, logicTemplateId: session.logic_template?.id ?? null, selectedKeys,
-    ...(targetRoles ? { targetRoles } : {}), ...(session.support_level != null ? { supportLevel: session.support_level } : {}) }, missing };
+    ...(!session.items.length && !session.logic_template && !session.mission_plan ? { freeConversation: true } : {}),
+    ...(targetRoles ? { targetRoles } : {}), ...(targetStages ? { targetStages } : {}), ...(session.support_level != null ? { supportLevel: session.support_level } : {}) }, missing };
 }
 export function secondRoundSupport(report: SpeakingFeedback): SpeakingSupportLevel {
+  if (report.session.mission_plan?.version === 2) return "model_frame";
   return report.effective_support_level === "no_hint" ? "no_hint" : "label_only";
 }
 export function practiceDraft(report: SpeakingFeedback, plan: SpeakingPlan, support: SpeakingSupportLevel, records: SavedCorpusRecord[]): LoadoutDraft {
@@ -48,7 +60,8 @@ export function practiceDraft(report: SpeakingFeedback, plan: SpeakingPlan, supp
     target.corpus_item_id !== items[index].corpus_item_id || target.role !== roles.find(role => role.session_item_id === items[index].id)?.role))) {
     throw new Error("The second round did not preserve your original targets and roles.");
   }
-  const result: LoadoutDraft = { ...draft, scenarioType: plan.scenario_type, goal: plan.brief, supportLevel: support };
+  const result: LoadoutDraft = { ...draft, scenarioType: plan.scenario_type, goal: plan.brief, supportLevel: plan.version === 2 ? "model_frame" : support,
+    plan: { signature: "", value: plan } };
   return { ...result, plan: { signature: missionInputSignature(result, records), value: plan }, selectedCandidateId: plan.candidates[0]?.id };
 }
 export function validMissedOpportunities(report: SpeakingFeedback) {

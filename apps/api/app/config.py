@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +11,12 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @model_validator(mode="after")
+    def ordered_conversation_thresholds(self):
+        if self.speaking_direction_seconds <= self.speaking_rephrase_seconds:
+            raise ValueError("speaking_direction_seconds must exceed speaking_rephrase_seconds")
+        return self
 
     clerk_secret_key: str | None = None
     clerk_jwt_key: str | None = None
@@ -48,15 +54,17 @@ class Settings(BaseSettings):
 
     # Stage 4 has separate, bounded requests; these never use Stage 1 token budgets.
     openai_api_key: str | None = None
-    speaking_realtime_provider: Literal["gemini", "openai"] = "gemini"
+    speaking_realtime_provider: Literal["gemini", "openai"] = "openai"
     gemini_api_key: str | None = None
     gemini_live_model: str = "gemini-3.8-live"
     gemini_live_voice: str = "Kore"
-    openai_realtime_model: str = "gpt-realtime"
+    openai_realtime_model: str = "gpt-realtime-2.1"
     openai_realtime_voice: str = "marin"
     openai_transcription_model: str = "gpt-4o-mini-transcribe"
     speaking_max_connection_seconds: int = Field(default=1200, ge=60, le=1800)
     speaking_max_turns: int = Field(default=100, ge=1, le=100)
+    speaking_rephrase_seconds: float = Field(default=8, ge=1, le=60)
+    speaking_direction_seconds: float = Field(default=20, ge=1, le=120)
     speaking_idle_seconds: int = Field(default=180, ge=30, le=600)
     speaking_lease_seconds: int = Field(default=60, ge=20, le=120)
     speaking_max_output_tokens: int = Field(default=450, ge=64, le=1000)

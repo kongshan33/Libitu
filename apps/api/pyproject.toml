@@ -12,6 +12,7 @@ dependencies = [
   "pydantic>=2.8.0",
   "pydantic-settings>=2.4.0",
   "python-multipart==0.0.32",
+  "python-socks[asyncio]>=2.7,<3",
   "sherpa-onnx>=1.13.6,<2",
   "sherpa-onnx-core>=1.13.6,<2",
   "spacy==3.8.16",

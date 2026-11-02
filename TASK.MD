@@ -1,13 +1,503 @@
 # Complete the next Libitu milestone
 
+## Stage 4 targets visible from entry — 2026-11-01
+
+User decision supersedes the earlier default concealment: show all target
+expressions and their meanings from the start, including Guided, so learners
+know which expressions to transfer into conversation. Keep manual Hide/Show
+controls; confirmed models and observed uses still reveal their targets when
+manual concealment is selected. Speaking does not hide target wording; only the
+current question hint fades. Actual visible wording records exposure, never
+learner use. Existing explicit legacy support choices remain unchanged.
+
+Verification: Web lint and root build/test pass (API 1854, Web 495, Extension
+114; unchanged tasks may use cache). Production-server browser regression passes
+at 1440/390px for v1/v2 entry visibility, manual Hide/Show and speech persistence;
+preview states pass at 1440/768/390px and real-route design checks at 1440/390px.
+These use synthetic sessions; no physical microphone was started.
+
+
 ```yaml
 meta:
   contentType: How-to
   status: active
-  updated: 2026-10-25
+  updated: 2026-11-01
 ```
 
 This is the living task queue for coding agents. Work from the first unblocked milestone. Update checkboxes, verification notes, and affected decisions in the same change.
+
+## Loadout scene preparation recovery — 2026-10-31
+
+- [x] Reproduce the reported three-expression setup against real Ark: copied UUID
+  mismatch triggered a targets-array repair that lost frame slots; another run
+  changed the fixed `you` anchors to `we`, including in its repair.
+- [x] Use short model references, exact server-side identity restoration, explicit
+  structure anchors and bounded rejected-field context. Keep normal semantic
+  checks, one repair, the shared deadline and durable creation/retry contracts.
+- [x] After the fix, the same-expression synthetic plan passed in one model call.
+  The actual signed-in browser retry also saved/opened its three-target Mission;
+  no microphone or conversation was started. These are pipeline checks, not a
+  measured model success rate or learning-quality evaluation.
+- [x] Focused provider, planning, field-repair, inspection, logic and CORS tests:
+  **180 passed**. Existing Starlette TestClient deprecation warning remains.
+
+## Stage 4 on-demand hint bundle — 2026-11-01
+
+The user authorized the first latency optimization only: generate three levels
+once, cache, smooth switching, preserve question versions and actual exposure.
+
+- [x] Generate/validate one coherent three-level bundle, cache privately per live
+  connection and coalesce same-context in-flight requests. Ready upgrades skip
+  generation and the server loading write. Failure retries do not reuse failure.
+- [x] Fence by question ID/version/quote revision, target/version, support/version,
+  activity epoch and transcript revisions; cancel on input/disconnect. Keep old
+  public protocol, legacy runtime and actual exposure semantics.
+- [x] Delay loading feedback by 250ms, retain the prior ready level during upgrade
+  and across mode changes, and acknowledge its exact painted ID/version. Retire
+  retention on context/input/support/disconnect; preserve same-level retries.
+- [x] Add sanitized bundle-generation and request-to-ready/cache-hit diagnostics.
+- [x] Validate focused tests, full regression and real-route desktop/mobile UI.
+Verification:
+
+- Cache-specific backend tests: **11 passed** (one generation for three levels,
+  single-level public snapshots, single-flight/retry, question/quote/support/target/
+  input fences, cancellation and old-result isolation). Existing conversation and
+  recast focused tests pass; frontend controller tests: **50 passed**, including
+  deterministic 250ms timing, retained-card receipts and context retirement.
+- Root lint/build pass. Real-route browser checks pass at **1440px and 390px**:
+  slow initial loading, retained upgrades across modes, quick-result no-flash,
+  exact displayed-level receipts, version rejection, same-level retry, input
+  retirement and no overflow. Screenshots inspected in
+  `/tmp/libitu-help-bundle-20261101`. Negotiated conversation, recast/report and
+  the six-item v1/v2 alignment browser regressions also pass.
+- One bounded live Ark request using an independent synthetic question passed
+  all three level validators in **2873ms**. This is a single cold-generation sample,
+  not an end-to-end latency distribution or measured improvement over a baseline.
+  Runtime/browser regressions use injected providers and synthetic sessions.
+- The first full run passed **API 1854 / Extension 114**, with **Web 494/495**:
+  the previously observed Analytics polling test again read twice instead of three
+  times within its real 20ms sleep; isolated reproduction also failed. Replaced
+  only that test's wall-clock sleep with controlled timer advancement, preserving
+  its two-poll bound and adding an assertion that no further polls occur. No
+  Analytics runtime behavior changed. Its full isolated file now passes **19/19**.
+- Final root serial regression passes: **API 1854 / Web 495 / Extension 114**,
+  with zero failures. Final root lint passes; the production build and all scoped
+  desktop/mobile browser suites pass. Existing Starlette/Node warnings remain.
+- Local documentation links: **167 valid**, with no missing files; whitespace
+  check passes. No schema migration or application deployment; no physical
+  microphone was started.
+
+- User decision: do not implement background pre-generation for now; learners
+  may not request hints, so unused generation would waste model calls and cost.
+  Remove it from the active follow-up queue; reconsider only by explicit decision.
+  Keep manual/eligible automatic help generation on demand and do not make it a
+  prerequisite for entering a session. The first cold request still waits for a model. No live provider/device latency improvement is claimed
+  from injected-provider/browser tests.
+
+## Stage 4 Conversation redesign — 2026-10-31
+
+Current scope: the 2026-11-01 request to close four functional gaps, align two
+visual differences, and rerun verification after steps 1–4. This supersedes
+the earlier UI-only and pause/provider-only scopes for the ordered redesign below. Contract:
+[Conversation states and data](design/docs/STAGE_FOUR_CONVERSATION_CONTRACT.md).
+
+- [x] Step 1: define help levels, stable question identity, timing and automatic
+  budgets, simpler-question planning, grounded correction results, presentation
+  receipts and old-session/client compatibility. Preserve automatic target reveal
+  after a confirmed model or observed learner use. Reconcile living documents.
+  This delivers a specification, not deployed or executable schemas/behavior.
+- [x] Step 2: rebuild the Conversation UI against synthetic fixtures, including
+  Voice/Chat, one help position, target reveal, stage strip and lifecycle states.
+- [x] Step 3: implement Python/TypeScript contracts and negotiated runtime,
+  question/timer state, simpler questions, progressive help and receipt fencing.
+- [x] Step 4: implement asynchronous minimal recasts, actual partner delivery,
+  changed-word emphasis and report-only correction classification.
+- [x] Step 5 automated/visual portion: contract and full serial regression,
+  desktop/mobile synthetic browser checks and screenshot inspection.
+- [ ] Step 5 remaining acceptance: real provider quality and physical microphone/
+  speaker checks; keep these separate from protocol/browser verification.
+
+2026-11-01 alignment follow-up:
+
+- [x] Apply concealed targets to v1/no-plan sessions without explicit support,
+  including before connection; keep v1 explicit settings. Require revision-bound
+  model confirmation for new auto-reveals and record visible owned-target receipts.
+- [x] Record the response's stage at request time and publish a divider only after
+  its question is actually presented. Validate source revision, persist through
+  reconnect/end, collapse adjacent same-stage markers, and never infer old history.
+- [x] Move evidence detail into the target panel; open it on mobile and preserve
+  original transcript/highlights. Keep the close action visible at 390px.
+- [x] Restore Chat hint 16px text, #fafaf9 surface and 14px/18px padding through
+  the runtime wrapper; retain the lighter Voice treatment.
+- [x] Show “Waiting for you” for a confirmed rephrase awaiting a reply; suppress
+  it on input, stronger help, pause or disconnected states.
+- [x] Restore the top guide's current-stage cue; keep Chat dividers stage-name only.
+
+Alignment verification:
+
+- Focused backend tests: **48 passed**; focused frontend tests: **45 passed**.
+  Root lint/build pass. Complete serial root regression
+  (`pnpm exec turbo run test --concurrency=1`): **API 1843 / Web 487 /
+  Extension 114 passed**, with no failures. Existing Starlette/Node warnings remain.
+- `speaking-alignment.browser.mjs`: all four combinations of 1440/390px and
+  v1/v2 pass, including preconnection concealment, model/use reveals, real-route
+  stage dividers, sidebar evidence/open/close, exact Chat hint styling, Voice
+  treatment, silence status, known/unknown stage cue and no overflow. Desktop
+  and mobile screenshots inspected in `/tmp/libitu-stage4-alignment-20261101`.
+- Preview at 1440/768/390px (15 states, both modes), real-route design, negotiated
+  help and recast/report browser regressions pass. Legacy Stage 4 support levels,
+  no-hint privacy, skip/undo and owned exposures pass with
+  `LIBITU_SPEAKING_ONLY=1`; legacy help and full conversation lifecycle checks
+  also pass, including synthetic AudioWorklet PCM/playback, interruption,
+  background pause, explicit resume, reconnect, end/reload and owner isolation.
+- The unfiltered legacy support browser script still stops in its separate
+  Loadout section at the removed `Mission support` selector. It was not counted
+  as passing; the Stage 4-only option isolates the relevant compatibility checks
+  without changing Loadout behavior. No real provider or physical microphone
+  quality acceptance is claimed, and no application deployment was performed.
+- Local documentation links: **167 valid**, no missing files; whitespace check passes.
+
+Step 1 verification: local documentation links and whitespace checks pass;
+runtime/code tests are not claimed for this documentation-only change. The
+contract's acceptance matrix remains work for steps 2–5.
+
+Step 4 implementation:
+
+- Analyze one minimal correction asynchronously per finalized learner turn. Bind
+  it to the exact source ID/revision and UTF-16 edits, reconstruct the replacement
+  and derive changed-word emphasis. Reject uncertain/incomplete ASR and changes
+  to protected meaning anchors; keep the original transcript unchanged.
+- Reserve a ready candidate before a normal reply without waiting for analysis.
+  Independently validate natural recasts in actual partner replies, including
+  voice replies whose learner ASR finalizes later. Late suggestions never trigger
+  an extra correction response. Deduplicate by rule plus normalized edit.
+- Require actual validated delivery and presentation receipts before live display.
+  Voice retires its line on new input; Chat retains confirmed history beside its
+  own learner turn. Grammar/word-choice categories and reasons remain report-only.
+  Recast exposure cannot create learner use or confirmed target demonstration.
+- Freeze whitelisted optional report annotations; preserve old sources, jobs,
+  hashes and retries. Hosted migration `20261031091811_speaking_conversation_recasts`
+  was applied to Libitu (`ulrdykwhggcaspylines`). Local PostgreSQL and hosted
+  rollback-only SQL checks pass, including private-field exclusion, owner
+  isolation, retry stability and service-role-only execution. No synthetic
+  profiles remain. Security/performance advisors are unchanged (informational
+  [private-table RLS](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy)
+  and [unused indexes](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index)).
+
+Step 4 verification:
+
+- Root lint/build pass; focused recast backend tests pass (29 cases). Web tests
+  pass (483) and Extension tests pass (114). A full backend run passed 1835 tests
+  with the existing Stage 2 90ms MFA lease test failing; its isolated retry passes.
+  An earlier parallel run also hit the existing 20ms Analytics polling assertion;
+  its isolated retry and the next full Web run pass. Final root serial regression
+  (`pnpm exec turbo run test --concurrency=1`) passes: API **1836**, Web **483**,
+  Extension **114**. No Stage 2 behavior was changed in this step.
+- `speaking-recasts.browser.mjs` passes at 1440/390px: no speculative line, only
+  changed words bold, no strike-through/live categories, unchanged original,
+  Voice retirement with no late revival, Chat history, one exposure receipt,
+  revision rejection and report source navigation without regeneration. Screenshots
+  inspected; no horizontal overflow or console errors. Negotiated help regression
+  also passes at both widths; its mode-change assertion now waits for the new
+  surface to paint before counting the single hint position.
+- Documentation links and whitespace checks pass. This step does not deploy the
+  application or qualify real model correction quality or physical microphone/
+  speaker behavior; those remain separate step 5 acceptance.
+
+Step 3 implementation:
+
+- OpenAI advertises Conversation protocol 1; clients negotiate before creating a
+  ticket. Missing negotiation preserves legacy behavior; unsupported versions
+  are rejected before claiming a runtime. Gemini remains explicit legacy mode.
+- Persist actual question UUID/UTF-16 refs/context version, per-question budgets,
+  closed/archived questions and presentation receipts. Rephrasing retains identity.
+  Eligible silence uses configurable 8/20-second defaults, excluding generation,
+  playback, stale/hidden activity, speech, drafts and pending transcription.
+- Direction → opening words → example replaces one position. Manual help closes
+  automatic budgets; speech/drafts retire all current help. Visible receipts,
+  including targetless receipts, remain distinct from generation and target use.
+- Optional `simpler_question` is generated/frozen without adding null fields to old
+  serialized plans. Existing support, plan versions and evidence meanings remain.
+- No correction generation or database migration is included.
+
+Step 3 verification:
+
+- Root lint/build pass; the final Web build also passes after adding the short
+  hint fade-out. Root tests pass: API 1792, Web 481, Extension 114 (the last run
+  reuses the passing Web/Extension cache). This includes 25 new API cases and
+  three controller cases for question/help identity, timing gates, receipts,
+  stale results, duplicate completion, optional-plan serialization and compatibility.
+- A parallel build/test run hit the existing Stage 2 90ms MFA lease timing test;
+  its isolated retry and the subsequent full run without a parallel build pass.
+  No Stage 2 code was changed in this step.
+- New negotiated-route browser checks pass at 1440/390px: direction → opening
+  words → example, one slot across Voice/Chat, visible-only receipts, immediate
+  speech/draft suppression and fade-out, no revival/overflow. Legacy-help browser
+  checks also pass at both sizes, including covered/hidden suppression and late
+  result fencing. Mobile screenshot inspected; artifacts are under
+  `/tmp/libitu-conversation-step3/`.
+- Logs: `/tmp/stage3-lint-complete.log`, `/tmp/stage3-build-final.log`,
+  `/tmp/stage3-web-build-verified.log`, `/tmp/stage3-tests-isolated.log`,
+  `/tmp/stage3-browser-complete.log`, `/tmp/stage3-legacy-browser.log`.
+- Local documentation links and `git diff --check` pass. Runtime tests inject
+  model/audio events; browser tests use synthetic auth/API/socket data. No live
+  model-quality, physical-microphone, hosted database or deployment acceptance
+  is claimed. Those checks remain in step 5.
+
+Step 2 verification:
+
+- Root lint/build/test pass (Web 478, API 1767, Extension 114; unchanged API and
+  Extension checks reused Turbo cache). Final web build and focused lint also
+  pass after scoped neutral-button and Free-conversation fixture corrections.
+  Logs: `/tmp/libitu-conversation-step2-{lint,build,test}.log`,
+  `/tmp/libitu-conversation-step2-{build,lint}-final.log`.
+- `speaking-design.browser.mjs` passes at 1440/768/390 px: both views, 15
+  synthetic states, replacement-only hints, speech/draft suppression, exact
+  changed-word emphasis, confirmed-model/use reveal, uncertain-model concealment,
+  Show/Hide, no overflow and zero speaking API calls from the preview. Actual
+  speaking-route/controller checks at 1440/390 px use synthetic auth/API/socket
+  data and confirm current captions, target use, view continuity and no new wire
+  controls. Screenshots inspected under `/tmp/libitu-conversation-step2/`;
+  log: `/tmp/libitu-conversation-step2-browser-final.log`.
+- Existing `speaking.browser.mjs` passes at 1440/768/390 px, including real browser
+  worklet/playback with synthetic media, interrupt/mute, lost text ACK recovery,
+  background pause/resume, account isolation, denied mic, takeover and end/delete.
+  `speaking-help.browser.mjs` passes at 1440/390 px for legacy Usage/Example,
+  visibility/occlusion receipts, late results and automatic-card retirement.
+  Logs: `/tmp/libitu-conversation-step2-{regression,legacy-help}.log`.
+- Preview is 404 on the existing server without its opt-in flag. No controller,
+  audio, backend, wire schema or real provider logic changed. This does not
+  validate new timers, real simplification/correction generation, physical
+  microphone quality or learning outcomes. Step 3/4 work remains unchecked.
+
+## Stage 2 Detailed / Review visual alignment — 2026-10-30
+
+- [x] Share the directory header and visual styles, including the 260 px desktop
+  expanded panel, 56 px collapsed rail, selection, numbering and metadata.
+  Use matching 680 px main content, header/navigation styles and 32/44 px
+  desktop/phone fold targets. Keep Review filters and take metadata distinct
+  from Detailed progress and skip-short controls.
+- [x] Preserve recording-driven collapse, manual fold preferences, sentence
+  selection, playback and analysis behavior. Verify desktop and 390 px phone
+  expanded/collapsed states through the local synthetic browser fixture;
+  no horizontal overflow. Screenshots: `/tmp/libitu-stage-two-unify/`.
+- [x] Root lint/build/test pass (Web 478, API 1767, Extension 114; unchanged
+  workspaces may reuse cache). Final web build passes after the responsive
+  header adjustment. Logs: `/tmp/libitu-stage-two-unify-{lint,build,test}.log`
+  and `/tmp/libitu-stage-two-unify-build-final.log`.
+- [x] Extended production browser regression passes at 1440/390 px for both
+  modes, including style parity, selection/filter retention, no autoplay on
+  fold, recording, history and the existing analysis gates. Log:
+  `/tmp/libitu-stage-two-unify-browser.log`. The harness isolates the video
+  iframe and waits for the async reference-arm event before checking its count.
+  These fixtures do not qualify live YouTube or acoustic-analysis quality.
+
+### Central result and analysis follow-up
+
+- [x] Align result/action spacing, primary/secondary button geometry, saved
+  analysis status ordering, neutral three-layer tabs, filters and guidance.
+  Keep graph/evidence colors and existing handlers/analysis gates. Use the
+  analysis container width to stack guidance on narrow screens.
+- [x] Root lint/build/test pass. Logs:
+  `/tmp/libitu-stage-two-analysis-{lint,build,test}.log`.
+- [x] Production browser regression passes at 1440/390 px for all three layers,
+  including matching buttons/layout, selected/locked states, keyboard controls
+  and absence of overflow. Existing recording/history/playback checks pass.
+  Log: `/tmp/libitu-stage-two-analysis-browser.log`; screenshots:
+  `/tmp/libitu-stage-two-analysis/`. Final web build passes after the narrow
+  tab layout and progressive-comparison typography adjustments:
+  `/tmp/libitu-stage-two-analysis-build-final.log`. Validation uses synthetic
+  fixtures; it does not qualify live media or acoustic-analysis quality.
+
+## Mission OpenAI voice migration — 2026-10-30
+
+- [x] User authorized reusing the existing API key and switching Mission voice.
+  Set code/example/local defaults to `openai` / `gpt-realtime-2.1` / `marin`.
+- [x] Preserve current Mission state/teaching contracts and Doubao text tasks.
+  Keep provider headers/audio out of WebSocket debug logs; add the missing
+  SOCKS transport dependency needed by the local proxy.
+- [x] Add an opt-in provider-only smoke and make the existing runtime smoke
+  select the configured provider instead of always instantiating Gemini.
+- [x] Real synthetic voice smoke: configuration, opening audio (244800 bytes),
+  cancellation, truncation, ASR (48 characters), post-interruption audio (148800
+  bytes), text-only response and fresh-connection assistant history all passed.
+  No learner records/database writes; this is not a physical-device or full
+  persistence/teaching-quality acceptance run.
+- [x] Focused runtime/transport/coaching/support/staged tests: 95 passed.
+- [x] Root `pnpm lint`, `pnpm build` and `pnpm test` pass: API 1767,
+  Web 478 and Extension 114 tests (extension cached). Existing Starlette/httpx
+  deprecation and Node module-type warnings remain. `git diff --check` passes. Logs:
+  `/tmp/libitu-openai-{lint,build,tests}.log`. Local API auto-reloaded and
+  `/health` returned OK.
+- [ ] Physical microphone/speaker and OpenAI-specific teaching-quality acceptance.
+
+This request authorizes the provider switch; deferred demonstration/correction
+and Summary-only expansion remain outside this increment.
+
+## Stage 3 reference completion — 2026-10-26
+
+- [x] Fix Hero Quick start being disabled by an empty saved custom scene/manual
+  selection despite having recommendations. It now validates and starts its own
+  shown recommendation; manual Start retains its validation. Reproduced on the
+  authenticated Chrome page and verified enabled after the fix without clearing
+  the learner's manual draft. Focused lint/typecheck and 52 regression tests pass.
+  A synthetic browser reproduction of zero manual targets plus a blank custom
+  scene completes Quick start planning/create/navigation with the displayed
+  recommendation. No Mission was created in the learner's actual account.
+- [x] Remove the general selection-tips disclosure and manual scene comparison.
+  AI scene mode uses the user-provided sentence; Start prepares the scene directly.
+  Fit recovery links to a custom scene description rather than scene comparison.
+
+Current priority: complete Stage 3 against the development notes, Quick start
+prototype and neutral design specification. The user paused further Stage 4
+work; the earlier runtime acceptance item below remains open and deferred.
+
+- [x] Add the nine-template catalog, explicit family/stage-function metadata and
+  Travel, without changing the shape of old frozen logic snapshots.
+- [x] Add owner-checked, bounded custom-scene logic matching; failures retain the
+  learner's scene/targets and do not create a Mission.
+- [x] Finish unified Quick/manual/custom-scene state, the four filters, shared
+  drawer, inline Adjust, four Advanced rows and Free-conversation preview.
+- [x] Connect read-only recorded-use history with the user-approved fixed
+  seven-day Due rule and explicit unknown states.
+- [x] Full API suite: 1764 passed (existing Starlette/httpx deprecation only).
+  Local and hosted catalog/usage SQL rollback contracts pass; both migrations
+  applied to hosted development, synthetic fixture profiles verified absent.
+  Security/performance advisors have no warning/error (existing INFO notices).
+- [x] Real Stage 3 Ark/Supabase synthetic smoke passes: owned usage, custom Travel
+  scene matching, Making plans v2 persistence/read, frozen targets, create and
+  exact retry; unstarted drafts do not manufacture usage. Successful run 19.30 s.
+  The first run failed with `persistence_transport_error`; cleanup was verified
+  after both runs. Logs: `/tmp/libitu-stage3-real-smoke{,-retry}.jsonl`.
+  Reproduce with `apps/api/scripts/smoke_loadout_stage_three.py --live --ipv4`.
+  A separate single custom-scene match passed in 2.75 s with no database writes.
+- [x] Root lint/build pass; API 1764, Web 476 and Extension 114 tests pass.
+  Logs: `/tmp/libitu-stage3-{lint,build}-final.log`,
+  `/tmp/libitu-stage3-api-tests.log`, `/tmp/libitu-stage3-web-tests-final.log`,
+  `/tmp/libitu-stage3-extension-tests.log`. `git diff --check` passes.
+- [x] CUA desktop and 390px mobile acceptance uses the real Loadout components
+  with explicitly synthetic auth/corpus/API responses: inline/shared preferences,
+  Travel, four filters, five-target limit, pinned Shuffle, drawer search retention,
+  custom scene matching/manual logic override and Free preview/confirmation pass.
+  Captured planning and create requests agree on targets and selected logic;
+  Free creates with zero targets and null logic. Mobile has no horizontal overflow,
+  44px filter controls and a working dismissible drawer. Screenshots and visible
+  request captures: `/tmp/libitu-stage3-acceptance/`.
+  The actual `localhost:3000/loadout` guest route also loads successfully.
+  Browser regression fixtures/scripts were updated and syntax checked, but the
+  automated browser suites and authenticated OAuth flow were not rerun.
+
+Summary-only feedback remains visibly unavailable because it requires the
+paused Stage 4 behavior. Existing Balanced drafts retain their original value.
+The preceding scope supersedes the earlier six-template/no-Travel/no-review
+boundaries below only for Stage 3; it adds no new Stage 4 runtime behavior.
+
+
+## Logic-constrained Mission milestone — 2026-10-26
+
+- [x] Bind selected logic and target stages to version 2 planning, cache identity,
+  scene validation and frozen Mission snapshots; retain v1 and exact retries.
+- [x] Validate one natural model line per target separately from its implicit
+  trigger; preserve stage assignments through bounded repair and linked rounds.
+- [x] Add stage-aware, once-per-target modeling with real presentation/effect
+  evidence; independently used targets need no demonstration.
+- [x] Conceal v2 target wording before explicit reveal or actual modeling;
+  record visual help and distinguish independent, imitation and other assistance.
+- [x] Verify service-only v2 SQL contracts locally: five targets, shared stages,
+  Any stage, frozen templates, linked-round preservation and durable exact retry.
+- [x] Root lint/build/test pass: API 1713, Web 462, Extension 114 tests.
+  Cross-layer tests cover planning → create/retry → live evidence projection →
+  frozen report for independent, imitation, visual-help and uncertain-audio paths.
+  Runtime tests cover receipt/effect order, duplicate ACK/reconnect, transcript
+  revisions, End with pending receipt persistence and v1/v2 modeling skip rules.
+  V2 no longer skips a demonstration merely because the learner performed the
+  same communicative task without using the target expression. Logs:
+  `/tmp/libitu-logic-milestone-{lint,build,test}-final.log`.
+- [x] Inspect the real guest Loadout in the browser: neutral/black styling,
+  disabled empty-state actions and v2 support-selector removal are intact.
+  Authenticated populated browser/real-microphone acceptance is not claimed.
+- [x] Apply `20261026063046_speaking_logic_stage_milestone` to hosted development.
+  V2 SQL rollback checks pass, with zero remaining synthetic records; security
+  and performance advisors report no warning/error.
+- [x] Real Ark/Supabase synthetic planning smoke: two targets (chunk + structure),
+  stage 0 + Any stage, one model call (8.21 s), no repair; durable plan read,
+  Mission creation/read and exact retry pass. Total 17.61 s; cleanup verified.
+  Reproduce with `apps/api/scripts/smoke_speaking_logic.py --live --ipv4`.
+- [ ] Complete real Gemini → confirmed demonstration → imitation acceptance.
+  After the v2 skip-rule fix, the final bounded synthetic text run delivered one
+  `model_then_transfer` attempt (sent, bound and presented). The saved reply
+  contains the target and a later question; assessment/presentation/response
+  revisions all equal 1. Effect assessment returned `unknown` with
+  `Effect assessment is unavailable.` (`AnalysisProviderError`); the underlying
+  provider error is not retained. The target correctly remains `exposed`, with
+  zero imitation uses; the run timed out after 120 seconds and two typed turns.
+  Runtime/database error lists are empty. Exact synthetic reply and assessment:
+  `/tmp/libitu-staged-runtime-smoke-v2-skip-fix.jsonl`.
+  The earlier `/tmp/libitu-staged-runtime-smoke-classified.jsonl` returned
+  `not_reflected` without retaining its reason; the skip-rule conflict was found
+  independently and is not established as that run's cause.
+  A separate default-transport run captured a Supabase `ConnectTimeout`; the
+  IPv4 diagnostic avoided that failure without changing product networking.
+  Typed inputs and synthetic text visibility receipts do not verify microphone
+  capture or audio playback. All generated records were verified cleaned up.
+
+Boundary: existing six logic IDs/tags and scenario enums remain. No taxonomy,
+review scheduling, Travel, Summary-only, once-per-error correction, pronunciation
+or streaming increment. Synthetic/provider checks do not establish teaching
+quality, real microphone behavior or OAuth acceptance.
+
+## Mission Loadout visual alignment — 2026-10-25
+
+- [x] Extend `design/docs/libitu 设计规范 v1.0.md` to Loadout while retaining
+  the Quick start reference layout. Use black primary actions/current navigation,
+  explicit gray disabled states, neutral cards, restrained typography and no shadows.
+- [x] Scope shared-control overrides to Loadout; preserve other pages and Mission creation.
+- [x] Keep Advanced rows initially visible with independently expandable settings.
+- [x] Web lint/build and all 455 Web tests pass. Live browser inspection covers
+  the guest empty state, disabled controls, expanded logic cards and corpus drawer.
+  The populated browser fixture assertions were updated but not rerun in this pass.
+
+## Mission Loadout Quick start — 2026-10-25
+
+- [x] Rebuild Loadout around the supplied Quick start reference, shared manual
+  selection, full-corpus drawer, preview and collapsible Advanced controls.
+- [x] Recommend up to three real saved items locally using existing tags and six
+  API logic templates; show matching stages or Any stage, with deterministic
+  scene seeds and Shuffle. Do not infer Never used or Due for review.
+- [x] Accept one shared pool of up to five targets of any supported corpus kind.
+  New selections use equal priority, represented by the existing `primary` role;
+  preserve legacy snapshots, linked-round roles and uncertain request payloads.
+- [x] Keep manual targets through Shuffle and share selection with the searchable
+  function-filtered drawer. Retain scene comparison, support and practice history.
+- [x] Add Free conversation with no targets, null logic and no target plan;
+  reuse the authenticated, durable create/confirm/retry lifecycle.
+- [x] Retain account/tab fences, queued draft persistence, source validation and
+  exact uncertain-create replay before planning another Mission.
+- [x] Focused verification: TypeScript and component lint pass; nine local
+  recommendation tests and 523 focused API tests pass. The migration and SQL
+  rollback checks pass on isolated local Postgres.
+- [x] Root lint/build/test pass: Web 455, API 1654, Extension 114 tests;
+  final lint has no warnings. API retains the existing Starlette deprecation.
+  Logs: `/tmp/libitu-loadout-redesign-{lint,build,test}-final.log`.
+- [x] Browser fixtures pass at 1440 / 390 px: three real recommended targets,
+  shared drawer/search/filters/five-target cap, keyboard modality and focus
+  restore, manual selection through Shuffle, preferences/history, empty corpus,
+  Free conversation and exact creation retry. Return starts a new request and
+  reuses a matching scene. Manual five-target Start and explicit hero replacement
+  of manual picks pass; Shuffle preserves the selected logic. Screenshots:
+  `/tmp/libitu-loadout-redesign/`.
+- [x] Apply `20261025123200_loadout_quick_start_targets` to hosted development;
+  rollback tests verify free creation/replay, five structures and owner isolation.
+  Security advisors have no warning/error; existing private-schema info remains.
+- [x] Free-conversation reports show transfer as not applicable; report Retry and
+  Adjust preserve free mode and do not depend on corpus availability.
+
+Boundary: existing `workplace` / `everyday`, difficulty, feedback and support
+enums remain. New taxonomy/eligibility metadata, usage statistics/review rules,
+Travel, Summary-only feedback, new daily-life logic IDs, streaming SessionBrief
+and the proposed Stage 4 one-demonstration/one-correction rules remain outside
+this increment. Local recommendations and fixture tests are not evidence of
+model quality, teaching effect, live voice or real OAuth.
 
 ## Practice workspace visual refresh — 2026-10-25
 

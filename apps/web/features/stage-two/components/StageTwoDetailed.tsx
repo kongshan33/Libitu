@@ -8,7 +8,7 @@ import { DirectionButton } from "@/components/ui/direction-button";
 import { Button } from "@/components/ui/button";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Info, Pause, Play } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Info, Pause, Play } from "lucide-react";
 import type { StageOneSegment, TranscriptLine } from "@libitu/types/stage-one";
 import type { SentenceUnit } from "@libitu/types/stage-two";
 import { WorkspacePlayer } from "../../learning-workspace/MediaHost";
@@ -28,6 +28,7 @@ import { buildReferenceKey } from "../analysis/reference-analysis-cache";
 
 import { useSoundGuide } from "../sound/use-sound-guide";
 import { PracticeLayers, type PracticeLayer } from "./PracticeLayers";
+import { SentenceDirectory } from './SentenceDirectory';
 import { PracticePrompt } from './PracticePrompt';
 import { PracticeOutcome } from './PracticeOutcome';
 import { PracticeLayerState } from './PracticeLayerState';
@@ -443,7 +444,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
 
   return (
     <section className={`stage-two-shadow ${styles.workspace}`} aria-label="Stage 2 shadowing">
-      <header className={`stage-two-shadow-header ${modes ? modeStyles.detailedHeader : ''}`}>
+      <header className={`stage-two-shadow-header ${modes ? modeStyles.header : ''}`}>
         <div>
           <div className="section-label">Stage 2 · Shadow</div>
           <h1>{segment.title}</h1>
@@ -455,19 +456,12 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
         </DirectionButton>
       </header>
       <div className="stage-two-practice-layout" data-directory-collapsed={collapseDirectory}>
-        <nav className="stage-two-sentences" aria-label="Sentences in this segment">
-
-          <div className="stage-two-sentences-heading">
-            <div className="shadow-directory-title"><h2>Sentences</h2>
-              <button className="shadow-directory-toggle" type="button" disabled={practiceBusy} aria-label={collapseDirectory ? "Expand sentence list" : "Collapse sentence list"}
-                aria-expanded={!collapseDirectory} aria-controls={directoryId} onClick={() => setDirectoryCollapsed(value => !value)}>
-                {collapseDirectory ? <ChevronsRight size={14} aria-hidden="true" /> : <ChevronsLeft size={14} aria-hidden="true" />}
-              </button>
-            </div>
-            <span className="shadow-directory-total">{sentences.length} in this segment</span>
-            <div className="shadow-directory-position" aria-hidden="true">{selected ? selectedIndex + 1 : '—'}<span>of {sentences.length}</span></div>
-            <label className="shadow-skip-short"><input type="checkbox" checked={skipShort} onChange={event=>setSkipShort(event.target.checked)}/>Skip sentences under 4 words</label>
-          </div>
+        <SentenceDirectory label="Sentences in this segment" title="Sentences"
+          summary={`${sentences.length} in this segment`} position={selected ? selectedIndex + 1 : null} total={sentences.length}
+          collapsed={collapseDirectory} disabled={practiceBusy} listId={directoryId}
+          toggleLabel={collapseDirectory ? 'Expand sentence list' : 'Collapse sentence list'}
+          onToggle={() => setDirectoryCollapsed(value => !value)}
+          controls={<label className="shadow-skip-short"><input type="checkbox" checked={skipShort} onChange={event=>setSkipShort(event.target.checked)}/>Skip sentences under 4 words</label>}>
           {progressState.loading ? <p role="status">Restoring practice progress…</p> : null}
           {progressState.error ? <p role="alert">Practice progress could not load. <Button size="sm" variant="secondary" onClick={progressState.reload}>Retry progress</Button></p> : null}
           {sentences.length ? (
@@ -495,8 +489,9 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
               );})}
             </ol>
           ) : <p className="empty-state">Sentence text is unavailable for this segment. You can still play the segment.</p>}
-        </nav>
+        </SentenceDirectory>
         <div className="stage-two-practice-main">
+          <div className="shadow-workspace-content">
           <div className="stage-two-sentence-navigation">
             <DirectionButton variant="secondary" type="button" aria-label="Previous sentence" disabled={previousIndex===null} onClick={() => navigate(-1)}>
               <ChevronLeft aria-hidden="true" /> Previous
@@ -610,7 +605,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
               onRate={value => cloud.available ? setRate(value) : playerRef.current?.setPlaybackRate(value)} />
             {timingRecovery}
           </section>
-          {reviewing&&!practiceBusy?<div ref={layerWorkspaceRef}>
+          {reviewing&&!practiceBusy?<div className="shadow-analysis-workspace" ref={layerWorkspaceRef}>
             <PracticeAnalysisPanel key={analysisAttempt??'none'} api={persistence?.api} attemptId={analysisAttempt} {...savedAnalysis}/>
             {analysisPresentation.visible&&soundGuide.error?<p role="alert">{soundGuide.error} <Button size="sm" onClick={soundGuide.retry}>Retry sound guide</Button></p>:null}
             {analysisPresentation.visible?<PracticeLayers active={activeLayer} onChange={setLayer} locked={locks} badges={analysisPresentation.badges}
@@ -636,6 +631,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
               recording.pauseReplay();
               cloud.pause();
             }} />
+          </div>
         </div>
       </div>
     </section>

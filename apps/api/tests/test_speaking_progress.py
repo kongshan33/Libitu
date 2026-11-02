@@ -69,6 +69,23 @@ def test_repeated_history_suggests_only_one_level_without_mutation(history):
     assert reports == before and request.current_level == "model_frame"
 
 
+def test_history_accepts_five_equal_priority_targets(monkeypatch):
+    corpus_ids = [str(uuid4()) for _ in range(5)]
+    monkeypatch.setattr(progress, "_repository", lambda: None)
+    monkeypatch.setattr(progress, "get_corpus_item", lambda owner, cid:
+                        SimpleNamespace(model_dump=lambda **kwargs: {"kind": "chunk", "text": cid}))
+    monkeypatch.setattr(progress, "read_support_history", lambda owner, ids:
+                        {"reports": [], "has_more": False})
+    request = SupportRecommendationRequest(
+        targets=[{"corpus_item_id": cid, "role": "primary"} for cid in corpus_ids],
+        current_level="model_frame",
+    )
+    result = progress.recommend_support("owner", request)
+    assert result.status == "insufficient_history"
+    assert [str(target.corpus_item_id) for target in result.targets] == corpus_ids
+    assert all(target.qualifying_missions == 0 for target in result.targets)
+
+
 @pytest.mark.parametrize("fault", [
     "partial", "old_report", "old_contract", "skipped", "excluded", "optional", "not_appropriate",
     "no_independent", "mixed_evidence_only", "invalid_quote", "wrong_revision", "assistant",

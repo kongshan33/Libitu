@@ -27,7 +27,7 @@ try {
       await page.goto(`${origin}/speaking/${speakingSessionId}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
       await page.getByRole("heading", { name: "Align the migration plan", exact: true }).waitFor();
       await page.getByRole("button", { name: "Chat", exact: true }).click();
-      await page.getByRole("button", { name: "Connect for text", exact: true }).click();
+      await page.getByRole("button", { name: "Start conversation", exact: true }).click();
       await waitFor(() => state.events.some(event => event.type === "microphone"), "socket must be ready");
       state.workspace.hint = "LEGACY_UNTRACKED_TARGET"; publish(null);
       await page.getByRole("button", { name: "Need a hint?", exact: true }).click();

@@ -1,5 +1,5 @@
-import type { SpeakingOptions, SpeakingSession, SpeakingSessionCreate, SpeakingPlan, SpeakingPlanCreate, PracticeVariation, PracticeComparison, SupportRecommendation, SupportRecommendationRequest } from "@libitu/types/speaking";
-import { validPlan } from "../draft.ts";
+import type { SpeakingOptions, SpeakingSession, SpeakingSessionCreate, SpeakingPlan, SpeakingPlanCreate, PracticeVariation, PracticeComparison, SupportRecommendation, SupportRecommendationRequest, SpeakingLogicTemplate, LoadoutUsageResponse, SceneLogicResponse, SpeakingScenario } from "@libitu/types/speaking";
+import { validPlan, LOGIC_IDS } from "../draft.ts";
 import { startMissionPhase } from "../../speaking/mission-timing.ts";
 
 const PLAN_ERROR_CODES = new Set([
@@ -23,7 +23,7 @@ async function request<T>(path: string, signal: AbortSignal, init: RequestInit =
   try {
     try {
       response = await fetch(`${(process.env.NEXT_PUBLIC_LIBITU_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "")}/api/speaking${path}`, {
-        ...init, signal: AbortSignal.any([signal, AbortSignal.timeout(planning ? 120_000 : 20_000)]),
+        ...init, signal: AbortSignal.any([signal, AbortSignal.timeout(planning ? 120_000 : path === "/scene-logic" ? 30_000 : 20_000)]),
         headers: { "Content-Type": "application/json", ...init.headers }
       });
     } catch (error) {
@@ -64,7 +64,7 @@ export function getSpeakingOptions(signal: AbortSignal): Promise<SpeakingOptions
 }
 
 export function createSpeakingApi(owner: string, getToken: () => Promise<string | null>) {
-  async function authorized<T extends SpeakingSession | SpeakingPlan | PracticeComparison | SupportRecommendation>(path: string, signal: AbortSignal, init: RequestInit = {}): Promise<T> {
+  async function authorized<T extends SpeakingSession | SpeakingPlan | PracticeComparison | SupportRecommendation | LoadoutUsageResponse | SceneLogicResponse>(path: string, signal: AbortSignal, init: RequestInit = {}): Promise<T> {
     signal.throwIfAborted();
     const token = await getToken();
     signal.throwIfAborted();
@@ -80,6 +80,25 @@ export function createSpeakingApi(owner: string, getToken: () => Promise<string 
     return result;
   }
   return {
+    loadoutUsage: async (corpusItemIds: string[], signal: AbortSignal) => {
+      const result = await authorized<LoadoutUsageResponse>("/loadout-usage", signal, { method: "POST", body: JSON.stringify({ corpus_item_ids: corpusItemIds }) });
+      const expected = new Set(corpusItemIds);
+      if (!Number.isFinite(Date.parse(result.as_of)) || result.review_rule?.id !== "recorded-use-7d-v1" || result.review_rule.interval_days !== 7
+        || !Array.isArray(result.items) || result.items.length !== expected.size || new Set(result.items.map(item => item.corpus_item_id)).size !== expected.size
+        || result.items.some(item => !expected.has(item.corpus_item_id) || !["used", "never", "unknown"].includes(item.usage?.state)
+          || !Array.isArray(item.usage.unknown_reasons) || !item.practice
+          || item.usage.state === "unknown" && [item.usage.all_use_count, item.usage.last_used_at, item.usage.due_at, item.usage.due].some(value => value !== null)
+          || item.usage.state === "never" && (item.usage.all_use_count !== 0 || item.usage.due !== false)
+          || item.usage.state === "used" && (!Number.isInteger(item.usage.all_use_count) || item.usage.all_use_count! < 1 || typeof item.usage.due !== "boolean" || !Number.isFinite(Date.parse(item.usage.last_used_at ?? "")) || !Number.isFinite(Date.parse(item.usage.due_at ?? "")) || Date.parse(item.usage.due_at!) - Date.parse(item.usage.last_used_at!) !== 7 * 86400000))) {
+        throw new SpeakingApiError("Usage history could not be verified. Review labels are unavailable.", 502);
+      }
+      return result;
+    },
+    sceneLogic: async (payload: { scenario_type: SpeakingScenario; brief: string; corpus_item_ids: string[] }, signal: AbortSignal) => {
+      const result = await authorized<SceneLogicResponse>("/scene-logic", signal, { method: "POST", body: JSON.stringify(payload) });
+      if (!LOGIC_IDS.includes(result.logic_template_id) || typeof result.reason !== "string" || !result.reason.trim() || result.reason.length > 500) throw new SpeakingApiError("The scene structure could not be verified. Choose a structure yourself.", 502);
+      return result;
+    },
     practicePlan: async (parentId: string, variation: PracticeVariation, signal: AbortSignal) => {
       const plan = await authorized<SpeakingPlan>(`/sessions/${encodeURIComponent(parentId)}/practice-plans`, signal, { method: "POST", body: JSON.stringify({ variation }) });
       if (!validPlan(plan) || plan.practice_source?.parent_session_id !== parentId || plan.practice_source.variation !== variation) {
@@ -101,12 +120,15 @@ export function createSpeakingApi(owner: string, getToken: () => Promise<string 
       }
       return recommendation;
     },
-    plan: async (payload: SpeakingPlanCreate, signal: AbortSignal) => {
+    plan: async (payload: SpeakingPlanCreate, signal: AbortSignal, expectedLogic?: SpeakingLogicTemplate) => {
       const plan = await authorized<SpeakingPlan>("/plans", signal, { method: "POST", body: JSON.stringify(payload) });
       if (!validPlan(plan) || plan.candidates.length !== (payload.candidate_count ?? 2)
         || plan.scenario_type !== payload.scenario_type || plan.brief !== payload.brief
+        || payload.logic_template_id != null && (plan.version !== 2 || plan.logic_template?.id !== payload.logic_template_id)
+        || expectedLogic && (plan.logic_template?.id !== expectedLogic.id || JSON.stringify(plan.logic_template.steps) !== JSON.stringify(expectedLogic.steps))
         || plan.candidates.some(candidate => candidate.targets.length !== payload.targets.length
-          || candidate.targets.some((target, index) => target.corpus_item_id !== payload.targets[index].corpus_item_id || target.role !== payload.targets[index].role))) {
+          || candidate.targets.some((target, index) => target.corpus_item_id !== payload.targets[index].corpus_item_id || target.role !== payload.targets[index].role
+            || payload.logic_template_id != null && target.stage_index !== payload.targets[index].stage_index))) {
         throw new SpeakingApiError("The generated scenes did not match your targets. Please generate again.", 502, "invalid_output_schema");
       }
       return plan;

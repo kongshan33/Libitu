@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mission loadout · Quick start</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pg{font-family:'Inter',system-ui,sans-serif;color:#111;background:#fafafa;min-height:1240px}
+.pg *{box-sizing:border-box}
+.pg p{margin:0}
+.nav a{font-size:13px;color:#4b5563;padding:7px 12px;border-radius:999px;text-decoration:none}
+.nav a.on{background:#f0f0f2;color:#111;font-weight:600}
+.btn{font-family:inherit;cursor:pointer;border-radius:999px;font-size:14px;font-weight:600;padding:11px 20px;border:1px solid transparent}
+.ghost{background:transparent;color:#fff;border-color:#4b5060}
+.ghost:hover{background:#26262b}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;background:#f0f0f2;color:#4b5563}
+.fchip{font-family:inherit;font-size:13px;padding:7px 14px;border-radius:999px;border:1px solid #e3e3e8;background:#fff;color:#374151;cursor:pointer}
+.fchip.on{background:#111;color:#fff;border-color:#111}
+.dp{font-family:inherit;font-size:13px;padding:6px 14px;border-radius:999px;border:1px solid #4b5060;background:transparent;color:#e5e7eb;cursor:pointer}
+.dp.on{background:#fff;color:#111;border-color:#fff;font-weight:600}
+.card{font-family:inherit;text-align:left;width:100%;cursor:pointer;color:#111;background:#fff;border:1px solid #e3e3e8;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card:hover{border-color:#b9bbf0}
+.card.sel{border:2px solid #4f46e5;background:#f5f5ff;padding:15px}
+.card b{font-size:15px;font-weight:600}
+.card .d{font-size:13px;line-height:1.45;color:#4b5563}
+.meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:2px}
+.why{font-size:12px;color:#5b6270;margin-left:auto}
+.role{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#4f46e5;color:#fff}
+.role.o{background:#fff;color:#4338ca;border:1px solid #c7c9f5}
+.row{font-family:inherit;width:100%;text-align:left;color:#111;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e3e3e8;border-radius:12px;padding:14px 18px;font-size:14px}
+.row span{color:#5b6270;font-size:13px}
+button.row{cursor:pointer}
+.side{background:#fff;border:1px solid #e3e3e8;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;position:sticky;top:24px}
+.lab{font-size:11px;font-weight:600;letter-spacing:.08em;color:#6b7280}
+.tgt{border:1px solid #e3e3e8;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:500;display:flex;flex-direction:column;gap:2px}
+.tgt.p{background:#f5f5ff;border-color:#c7c9f5}
+.cap{font-size:11px;font-weight:500;color:#5b6270}
+.pn{background:#fff;border:1px solid #e3e3e8;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;margin:-2px 0 4px}
+.opt{font-family:inherit;text-align:left;width:100%;cursor:pointer;color:#111;display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:10px;border:1px solid #e3e3e8;background:#fff}
+.opt.on{border:2px solid #4f46e5;background:#f5f5ff;padding:11px 13px}
+.opt b{font-size:14px;font-weight:600}
+.od{font-size:13px;color:#4b5563}
+.ta{width:100%;font-family:inherit;font-size:14px;padding:12px;border:1px solid #d4d4da;border-radius:10px;resize:vertical;color:#111}
+</style>
+</helmet>
+<div class="pg">
+  <div style="height:64px;background:#fff;border-bottom:1px solid #e8e8ec;display:flex;align-items:center;justify-content:space-between;padding:0 32px">
+    <div><div style="font-size:20px;font-weight:700;color:#4f46e5;line-height:1">libitu</div><div style="font-size:11px;color:#6b7280;margin-top:3px">Make it your English.</div></div>
+    <div class="nav" style="display:flex;gap:4px;align-items:center"><a href="#">Practice</a><a href="#" class="on">Mission</a><a href="#">Corpus</a><a href="#">My learning</a>
+      <div style="width:28px;height:28px;border-radius:50%;background:#be185d;color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-left:12px">S</div></div>
+  </div>
+
+  <div style="max-width:1216px;margin:0 auto;padding:32px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+        <button class="btn" style="background:#fff;border-color:#e3e3e8;color:#111;font-size:13px;padding:8px 14px;display:flex;gap:6px;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>Back to learning</button>
+        <div class="lab" style="margin-top:12px">STAGE 3 · PREPARE TO USE YOUR ENGLISH</div>
+        <h1 style="margin:0;font-size:34px;font-weight:700;letter-spacing:-.02em">Mission loadout</h1>
+        <p style="font-size:15px;color:#4b5563">Start in one click, or tune the details yourself.</p>
+      </div>
+
+      <div style="background:#111;color:#fff;border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;font-weight:600;letter-spacing:.08em;color:#c7c9f5"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg>QUICK START</div>
+          <div style="font-size:12px;color:#a1a6b3;text-align:right">{{heroNote}}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ aiPicks }}" as="p" hint-placeholder-count="3"><div style="display:flex;gap:14px;align-items:center;background:#1c1c20;border-radius:12px;padding:14px 16px"><span class="role o" style="background:transparent;color:#c7c9f5;border-color:#4b5060;min-width:92px;text-align:center">{{p.stage}}</span><b style="font-size:16px;font-weight:600">{{p.title}}</b><span style="margin-left:auto;font-size:12px;color:#a1a6b3">{{p.why}}</span></div></sc-for>
+          <div style="display:flex;gap:14px;align-items:center;background:#1c1c20;border-radius:12px;padding:14px 16px"><span class="role o" style="background:transparent;color:#c7c9f5;border-color:#4b5060">Logic</span><b style="font-size:15px;font-weight:600">{{logicName}}</b><span style="margin-left:auto;font-size:13px;color:#c9cbd3">{{logicChain}}</span></div>
+          <div style="font-size:13px;color:#c9cbd3;padding:2px 4px">{{sceneLabel}}: {{scene}}</div>
+        </div>
+        <sc-if value="{{ adjustOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#1c1c20;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="width:84px;font-size:12px;color:#a1a6b3">Scenario</span>
+              <sc-for list="{{ scOpts }}" as="o" hint-placeholder-count="3"><button class="{{o.cls}}" onClick="{{o.pick}}">{{o.l}}</button></sc-for></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="width:84px;font-size:12px;color:#a1a6b3">Difficulty</span>
+              <sc-for list="{{ dfOpts }}" as="o" hint-placeholder-count="3"><button class="{{o.cls}}" onClick="{{o.pick}}">{{o.l}}</button></sc-for></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="width:84px;font-size:12px;color:#a1a6b3">Feedback</span>
+              <sc-for list="{{ fbOpts }}" as="o" hint-placeholder-count="3"><button class="{{o.cls}}" onClick="{{o.pick}}">{{o.l}}</button></sc-for></div>
+          </div>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="btn" onClick="{{ heroStart }}" style="background:#fff;color:#111;padding:12px 26px">Start mission</button>
+          <button class="btn ghost" onClick="{{ shuffle }}">Shuffle picks</button>
+          <button class="btn ghost" onClick="{{ toggleAdjust }}" aria-expanded="{{ adjustOpen }}">{{adjustLabel}}</button>
+          <div style="margin-left:auto;font-size:13px;color:#a1a6b3">{{prefLine}}</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px">
+          <h2 style="margin:0;font-size:18px;font-weight:600">Or pick your own targets</h2>
+          <span style="font-size:13px;color:#5b6270;text-align:right">{{pickHint}}</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4"><button class="fchip {{f.on}}" onClick="{{f.pick}}">{{f.l}}</button></sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+          <sc-for list="{{ items }}" as="c" hint-placeholder-count="6">
+            <sc-if value="{{ c.isHead }}" hint-placeholder-val="{{ false }}"><div style="grid-column:1 / -1;display:flex;gap:10px;align-items:baseline;margin-top:8px"><b style="font-size:14px;font-weight:600">{{c.stageNames}}</b><span class="cap">{{c.fnLabel}}</span></div></sc-if>
+            <sc-if value="{{ c.isEmpty }}" hint-placeholder-val="{{ false }}"><div style="grid-column:1 / -1;font-size:13px;color:#5b6270">No saved expression for this function yet. The partner will model one.</div></sc-if>
+            <sc-if value="{{ c.isCard }}" hint-placeholder-val="{{ true }}"><button class="{{c.cls}}" onClick="{{c.toggle}}" aria-pressed="{{c.selected}}">
+              <div style="display:flex;justify-content:space-between;align-items:center;width:100%"><b>{{c.title}}</b>
+                <sc-if value="{{ c.selected }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></div>
+              <div class="d">{{c.desc}}</div>
+              <div class="meta" style="width:100%"><span class="tag">{{c.t1}}</span><span class="tag">{{c.t2}}</span><span class="why">{{c.why}}</span></div>
+            </button></sc-if>
+          </sc-for>
+        </div>
+        <button onClick="{{ openDrawer }}" style="align-self:flex-start;font-family:inherit;background:none;border:none;padding:0;cursor:pointer;font-size:14px;font-weight:500;color:#4338ca">Browse the full corpus by function</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="lab" style="margin-bottom:2px">ADVANCED</div>
+        <button class="row" onClick="{{ toggleAdjust }}" aria-expanded="{{ adjustOpen }}"><b style="font-weight:600">Mission preferences</b><span style="display:flex;gap:10px;align-items:center">{{prefSummary}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{chevPrefs}}"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+
+        <button class="row" onClick="{{ toggleScene }}" aria-expanded="{{ openScene }}"><b style="font-weight:600">Choose a scene myself</b><span style="display:flex;gap:10px;align-items:center">{{sceneSummary}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{chevScene}}"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+        <sc-if value="{{ openScene }}" hint-placeholder-val="{{ false }}">
+          <div class="pn">
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ sceneModes }}" as="m" hint-placeholder-count="2"><button class="fchip {{m.on}}" onClick="{{m.pick}}">{{m.l}}</button></sc-for></div>
+            <sc-if value="{{ sceneAi }}" hint-placeholder-val="{{ true }}"><p style="font-size:13px;line-height:1.5;color:#4b5563">AI plans a scene around your targets and your scenario. Switch to I will choose to describe your own.</p></sc-if>
+            <sc-if value="{{ sceneMine }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ sceneIdeas }}" as="i" hint-placeholder-count="3"><button class="fchip" onClick="{{i.pick}}">{{i.l}}</button></sc-for></div>
+              <label for="scene-text" style="font-size:13px;font-weight:500">Setting, role or outcome</label>
+              <textarea id="scene-text" class="ta" rows="3" maxlength="500" placeholder="For example: discussing a launch with a colleague" value="{{ sceneText }}" onChange="{{ setScene }}"></textarea>
+              <div style="font-size:12px;color:#5b6270;text-align:right">{{sceneLen}} / 500</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <button class="row" onClick="{{ toggleLogic }}" aria-expanded="{{ openLogic }}"><b style="font-weight:600">Logic template</b><span style="display:flex;gap:10px;align-items:center">{{logicSummary}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{chevLogic}}"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+        <sc-if value="{{ openLogic }}" hint-placeholder-val="{{ false }}">
+          <div class="pn">
+            <p style="font-size:13px;line-height:1.5;color:#4b5563">The structure of the conversation. AI picks one that fits your targets and scene. Click your choice again to go back to the AI pick.</p>
+            <div style="display:flex;gap:8px"><sc-for list="{{ logicFams }}" as="m" hint-placeholder-count="2"><button class="fchip {{m.on}}" onClick="{{m.pick}}">{{m.l}}</button></sc-for></div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><sc-for list="{{ logicOpts }}" as="g" hint-placeholder-count="6"><button class="{{g.cls}}" onClick="{{g.pick}}" aria-pressed="{{g.on}}"><b>{{g.l}}</b><span class="od">{{g.d}}</span><span class="cap" style="font-family:ui-monospace,Menlo,monospace">{{g.chain}}</span></button></sc-for></div>
+          </div>
+        </sc-if>
+
+        <button class="row" onClick="{{ toggleHist }}" aria-expanded="{{ openHist }}"><b style="font-weight:600">Practice history</b><span style="display:flex;gap:10px;align-items:center">{{histSummary}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{chevHist}}"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+        <sc-if value="{{ openHist }}" hint-placeholder-val="{{ false }}">
+          <div class="pn">
+            <p style="font-size:13px;line-height:1.5;color:#4b5563">Reliable independent use means 3 Missions, on 2 UTC dates, across 2 scene families. This is a practice rule, not a mastery score.</p>
+            <div><button class="btn" onClick="{{ checkHist }}" style="background:#111;color:#fff;padding:9px 18px;font-size:13px">{{histBtn}}</button></div>
+            <sc-if value="{{ histChecked }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ histRows }}" as="h" hint-placeholder-count="2">
+                <div class="tgt"><div style="display:flex;justify-content:space-between;align-items:center"><span>{{h.title}}</span><span class="{{h.cls}}">{{h.status}}</span></div><div class="cap">Missions {{h.m}} / 3 · Dates {{h.d}} / 2 · Scene families {{h.s}} / 2</div></div>
+              </sc-for>
+              <sc-if value="{{ histEmpty }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#4b5563">Free conversation has no targets to check.</p></sc-if>
+              <div class="cap">Sample data for this prototype.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="lab">LOADOUT PREVIEW</div>
+      <div style="font-size:20px;font-weight:700">Your mission</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ tagList }}" as="g" hint-placeholder-count="3"><span class="tag">{{g.l}}</span></sc-for></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ sideList }}" as="t" hint-placeholder-count="2">
+          <div class="{{t.cls}}"><div>{{t.title}}</div><div class="cap">{{t.role}}</div></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div class="lab">LOGIC</div><div class="tgt"><div>{{sideLogicName}}</div><div class="cap">{{sideLogicChain}}</div></div></div>
+      <p style="font-size:12px;line-height:1.5;color:#5b6270">{{sideNote}}</p>
+      <p style="font-size:12px;line-height:1.5;color:#5b6270">In every mission, the partner says target expressions once and corrects your mistakes once.</p>
+      <div style="border-top:1px solid #ececf0;padding-top:14px;display:flex;flex-direction:column;gap:10px">
+        <button class="btn" onClick="{{ sideStart }}" style="background:#111;color:#fff;width:100%;padding:14px">{{startLabel}}</button>
+        <button class="btn" onClick="{{ goFree }}" style="background:#fff;color:#111;border-color:#e3e3e8;width:100%">Free conversation, no targets</button>
+        <sc-if value="{{ started }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="font-size:13px;color:#4338ca;background:#f5f5ff;border-radius:10px;padding:10px 12px">{{startMsg}}</div>
+        </sc-if>
+      </div>
+    </aside>
+  </div>
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;display:flex;justify-content:flex-end;background:rgba(17,17,17,.4)">
+      <div role="dialog" aria-label="All corpus" style="width:520px;max-width:100%;height:100%;background:#fff;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15)">
+        <div style="padding:20px 24px 12px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid #ececf0">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:20px;font-weight:700">All corpus</div>
+            <button onClick="{{ closeDrawer }}" aria-label="Close" style="width:32px;height:32px;border-radius:50%;border:1px solid #e3e3e8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+          <label for="corpus-q" style="font-size:12px;font-weight:600;color:#6b7280">Search corpus</label>
+          <input id="corpus-q" type="search" class="ta" placeholder="Expression, meaning or function" value="{{ q }}" onChange="{{ setQ }}">
+          <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ drawerFns }}" as="f" hint-placeholder-count="6"><button class="fchip {{f.on}}" onClick="{{f.pick}}" style="padding:5px 12px;font-size:12px">{{f.l}}</button></sc-for></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:4px 24px 20px;display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ drawerItems }}" as="d" hint-placeholder-count="6">
+            <sc-if value="{{ d.isHead }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px" class="lab">{{d.fnLabel}}</div></sc-if>
+            <sc-if value="{{ d.isNone }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#5b6270;margin-top:14px">No expressions match your search.</p></sc-if>
+            <sc-if value="{{ d.isCard }}" hint-placeholder-val="{{ true }}"><button class="{{d.cls}}" onClick="{{d.toggle}}" aria-pressed="{{d.selected}}">
+              <div style="display:flex;justify-content:space-between;align-items:center;width:100%"><b>{{d.title}}</b>
+                <sc-if value="{{ d.selected }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></div>
+              <div class="d">{{d.desc}}</div>
+              <div class="meta" style="width:100%"><span class="tag">{{d.t1}}</span><span class="tag">{{d.t2}}</span></div>
+            </button></sc-if>
+          </sc-for>
+        </div>
+        <div style="padding:14px 24px;border-top:1px solid #ececf0;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;color:#5b6270">{{drawerCount}}</span>
+          <button class="btn" onClick="{{ closeDrawer }}" style="background:#111;color:#fff;padding:10px 26px">Done</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1240}}'>
+class Component extends DCLogic {
+renderVals() {
+  const st = Object.assign({ sel: [], free: false, filter: 'rec', aiIdx: 0, adjust: false, sc: 'Workplace', df: 'Guided', fb: 'Detailed', started: false, limit: false, open: null, sceneMode: 'ai', sceneText: '', strat: null, nudge: false, histChecked: false, logic: null, lfam: null, drawer: false, q: '', dfn: 'all' }, this.state || {});
+  const cards = [
+    { id: 'beachhead', title: 'eke out a beachhead', desc: 'Gain a small, initial foothold in a new market.', t1: 'idiom', t2: 'framing', why: 'Never used in a mission', key: 'never' },
+    { id: 'fruition', title: 'come to fruition', desc: 'Plans or efforts finally produce results.', t1: 'idiom', t2: 'discourse', why: 'From a recent video', key: 'recent' },
+    { id: 'pinch', title: 'pinch me moment', desc: 'A moment so good it feels unreal.', t1: 'idiom', t2: 'discourse', why: 'Due for review', key: 'due' },
+    { id: 'lean', title: 'lean into', desc: 'Commit more strongly to something.', t1: 'idiom', t2: 'framing', why: 'Never used in a mission', key: 'never' },
+    { id: 'hedging', title: 'hedging your bets', desc: 'Reduce risk by pursuing several options at once.', t1: 'chunk', t2: 'hedging', why: 'Due for review', key: 'due' },
+    { id: 'bylarge', title: 'by and large', desc: 'Generally; in most cases.', t1: 'chunk', t2: 'hedging', why: 'From a recent video', key: 'recent' }
+  ];
+  cards.push({ id: 'factmatter', title: 'the fact of the matter is that', desc: 'Introduces an indisputable truth or key point.', t1: 'chunk', t2: 'emphasising', why: 'From a recent video', key: 'recent' }, { id: 'zerosum', title: 'zero-sum game', desc: 'One side gains only when the other loses.', t1: 'idiom', t2: 'framing', why: 'Due for review', key: 'due' });
+  const fnOf = { beachhead: 'open', fruition: 'inform', pinch: 'social', lean: 'ask', hedging: 'stance', bylarge: 'open', factmatter: 'stance', zerosum: 'inform' };
+  const fnLabel = { open: 'Open & structure', inform: 'Inform & explain', stance: 'Stance', align: 'Align & respond', ask: 'Ask & propose', clarify: 'Clarify & repair', social: 'Social' };
+  cards.push(
+    { id: 'crosspoll', title: 'cross-pollinate', desc: 'Share ideas between teams or fields so each benefits.', t1: 'chunk', t2: 'framing', why: 'In your corpus', key: 'more' },
+    { id: 'alluding', title: 'was alluding to', desc: 'Refer indirectly to something without naming it.', t1: 'chunk', t2: 'clarifying', why: 'In your corpus', key: 'more' },
+    { id: 'lotways', title: 'in a lot of ways', desc: 'Hedge a statement by saying it holds from certain angles.', t1: 'chunk', t2: 'hedging', why: 'In your corpus', key: 'more' },
+    { id: 'bigdeal', title: 'as big of a deal as', desc: 'Compare how important two things are.', t1: 'chunk', t2: 'emphasising', why: 'In your corpus', key: 'more' },
+    { id: 'stuck', title: "that's something that has stuck with me", desc: 'An idea that has stayed memorable and influential.', t1: 'chunk', t2: 'emphasising', why: 'In your corpus', key: 'more' }
+  );
+  Object.assign(fnOf, { crosspoll: 'inform', alluding: 'clarify', lotways: 'stance', bigdeal: 'stance', stuck: 'social' });
+  const byId = {};
+  cards.forEach((c) => { c.fn = fnOf[c.id]; byId[c.id] = c; });
+  const pairs = [
+    { ids: ['beachhead', 'fruition'], scene: { 'Workplace': 'a quarterly planning sync where you pitch a new market entry to a colleague.', 'Daily life': 'a catch-up with a friend about a side project that is finally taking off.', 'Travel': 'a chat with a host abroad about a small business you are starting.' } },
+    { ids: ['lean', 'hedging'], scene: { 'Workplace': 'a roadmap review where you commit to one direction and explain the risk.', 'Daily life': 'a family talk about picking one plan for the holidays.', 'Travel': 'a planning chat about committing to one route for a trip.' } },
+    { ids: ['pinch', 'bylarge'], scene: { 'Workplace': 'a team retrospective after a launch that went better than expected.', 'Daily life': 'a dinner where you describe a surprisingly good week.', 'Travel': 'a conversation with a fellow traveler about a trip that exceeded expectations.' } }
+  ];
+  const pair = pairs[st.aiIdx % pairs.length];
+  const aiA = byId[pair.ids[0]];
+  const aiB = byId[pair.ids[1]];
+  const L = (id, fam, name, d, stg, fns) => ({ id: id, fam: fam, name: name, d: d, stages: stg, fns: fns, chain: stg.join(' → ') });
+  const logics = [
+    L('pitch', 'W', 'Persuasive pitch', 'Make a case under pushback', ['Context', 'Tension', 'Proposal', 'Defend'], ['open', 'inform', 'ask', 'stance']),
+    L('trouble', 'W', 'Technical troubleshoot', 'Diagnose and explain a problem', ['Symptom', 'Cause', 'Fix', 'Confirm'], ['inform', 'inform', 'ask', 'clarify']),
+    L('align', 'W', 'Stakeholder alignment', 'Navigate competing priorities', ['Context', 'Stakes', 'Trade-off', 'Commit'], ['open', 'inform', 'stance', 'ask']),
+    L('update', 'W', 'Status update', 'Report progress, flag risks', ['Done', 'Blockers', 'Next', 'Ask'], ['inform', 'inform', 'inform', 'ask']),
+    L('disagree', 'W', 'Disagreement', 'Push back constructively', ['Acknowledge', 'Reframe', 'Evidence', 'Propose'], ['align', 'align', 'inform', 'ask']),
+    L('onboard', 'W', 'Onboarding someone', 'Explain a complex system', ['Big picture', 'Parts', 'Why', 'Try it'], ['open', 'inform', 'inform', 'ask']),
+    L('story', 'D', 'Telling a story', 'Share something that happened', ['Setting', 'Complication', 'Outcome', 'Reflection'], ['open', 'inform', 'inform', 'stance']),
+    L('plans', 'D', 'Making plans', 'Agree on what to do together', ['Suggest', 'Check', 'Adjust', 'Confirm'], ['ask', 'clarify', 'align', 'ask']),
+    L('catchup', 'D', 'Catching up', 'Keep a friendly chat going', ['Open', 'Share', 'Relate', 'Follow up'], ['social', 'inform', 'social', 'ask'])
+  ];
+  const byLogic = {};
+  logics.forEach((l) => { byLogic[l.id] = l; });
+  const scFam = st.sc === 'Workplace' ? 'W' : 'D';
+  const aiLogic = byLogic[[['pitch', 'story'], ['align', 'plans'], ['update', 'catchup']][st.aiIdx % 3][scFam === 'W' ? 0 : 1]];
+  const effLogic = byLogic[st.logic] || aiLogic;
+  const pickFam = st.lfam || scFam;
+  const rank = { never: 0, due: 1, recent: 2 };
+  const pool = cards.filter((c) => c.key !== 'more');
+  const aiPicks = [];
+  const taken = (c) => aiPicks.some((p) => p.card.id === c.id);
+  effLogic.fns.forEach((fn, i) => {
+    if (aiPicks.length >= 3) return;
+    const cand = pool.filter((c) => c.fn === fn && !taken(c)).sort((a, b) => rank[a.key] - rank[b.key]);
+    if (!cand.length) return;
+    const c = cand[Math.floor(st.aiIdx / 3) % cand.length];
+    aiPicks.push({ card: c, title: c.title, why: c.why, stage: effLogic.stages[i] });
+  });
+  pool.filter((c) => !taken(c)).sort((a, b) => rank[a.key] - rank[b.key]).slice(0, Math.max(0, 3 - aiPicks.length)).forEach((c) => aiPicks.push({ card: c, title: c.title, why: c.why, stage: 'Any stage' }));
+  const stageOf = (c) => { const i = effLogic.fns.indexOf(c.fn); return i >= 0 ? effLogic.stages[i] : 'Any stage'; };
+  const n = st.sel.length;
+  const toggle = (id) => {
+    const sel = st.sel.slice();
+    const i = sel.indexOf(id);
+    if (i >= 0) { sel.splice(i, 1); this.setState({ sel: sel, free: false, started: false, limit: false }); }
+    else if (sel.length >= 5) { this.setState({ limit: true }); }
+    else { sel.push(id); this.setState({ sel: sel, free: false, started: false, limit: false }); }
+  };
+  const filterDefs = [['rec', 'Recommended'], ['due', 'Due for review'], ['never', 'Never used'], ['recent', 'From recent videos']];
+  const filters = filterDefs.map((f) => ({ l: f[1], on: st.filter === f[0] ? 'on' : '', pick: () => this.setState({ filter: f[0] }) }));
+  const cardItem = (c) => { const i = st.sel.indexOf(c.id); return Object.assign({}, c, { isHead: false, isCard: true, isEmpty: false, cls: i >= 0 ? 'card sel' : 'card', selected: i >= 0, toggle: () => toggle(c.id) }); };
+  const visible = cards.filter((c) => c.key !== 'more' && (st.filter === 'rec' || c.key === st.filter));
+  const seen = [];
+  const items = [];
+  effLogic.fns.forEach((fn) => {
+    if (seen.indexOf(fn) >= 0) return;
+    seen.push(fn);
+    const list = visible.filter((c) => c.fn === fn);
+    if (!list.length && st.filter !== 'rec') return;
+    items.push({ isHead: true, isCard: false, isEmpty: false, stageNames: effLogic.stages.filter((s, i) => effLogic.fns[i] === fn).join(' / '), fnLabel: fnLabel[fn] });
+    if (!list.length) items.push({ isHead: false, isCard: false, isEmpty: true });
+    list.forEach((c) => items.push(cardItem(c)));
+  });
+  const rest = visible.filter((c) => seen.indexOf(c.fn) < 0);
+  if (rest.length) { items.push({ isHead: true, isCard: false, isEmpty: false, stageNames: 'Also in your corpus', fnLabel: 'Other functions' }); rest.forEach((c) => items.push(cardItem(c))); }
+  const opts = (arr, cur, key) => arr.map((v) => ({ l: v, cls: v === cur ? 'dp on' : 'dp', pick: () => this.setState({ [key]: v, started: false }) }));
+  const picked = st.sel.map((id) => byId[id]);
+  const sideSrc = st.free ? [] : (picked.length ? picked : aiPicks.map((p) => p.card));
+  const sideList = sideSrc.map((c, i) => ({
+    title: c.title,
+    role: picked.length ? stageOf(c) : aiPicks[i].stage + ' · AI pick',
+    cls: 'tgt'
+  }));
+  let startLabel = 'Quick start';
+  if (st.free) startLabel = 'Start free conversation';
+  else if (n > 0) startLabel = 'Start with ' + n + (n === 1 ? ' target' : ' targets');
+  let sideNote = 'Nothing picked yet, so Quick start uses the AI picks.';
+  if (st.free) sideNote = 'No targets. AI chooses the scene, and afterwards flags expressions you could have used.';
+  else if (n > 0) sideNote = 'Pick up to 5. Click a selected card again to remove it.';
+  let startMsg = 'Preparing a scene around the AI picks…';
+  if (st.free) startMsg = 'Preparing an open conversation…';
+  else if (n > 0) startMsg = 'Preparing a scene for ' + n + (n === 1 ? ' target…' : ' targets…');
+  const custom = st.free || n > 0;
+  const mine = st.sceneMode === 'mine';
+  const txt = st.sceneText.trim();
+  const hasText = mine && txt.length > 0;
+  const sceneOut = hasText ? txt : pair.scene[st.sc];
+  const sceneSummary = !mine ? 'AI chooses by default' : (hasText ? (txt.length > 36 ? txt.slice(0, 36) + '…' : txt) : 'Describe your scene');
+  const stratDefs = [['flow', 'Let it flow', 'The partner follows the scene naturally and does not steer toward your targets.'], ['model', 'Model, then you', 'The partner uses your target once, then leaves room for you to use it.'], ['open', 'Create openings', 'The partner asks questions that make your target a natural answer.']];
+  const stratName = (stratDefs.filter((s) => s[0] === st.strat)[0] || [])[1];
+  const hist = { beachhead: [0, 0, 0], fruition: [1, 1, 1], pinch: [3, 2, 2], lean: [0, 0, 0], hedging: [2, 2, 1], bylarge: [1, 1, 1], factmatter: [0, 0, 0], zerosum: [1, 1, 1] };
+  const histRows = sideSrc.map((c) => { const h = hist[c.id] || [0, 0, 0]; const ok = h[0] >= 3 && h[1] >= 2 && h[2] >= 2; return { title: c.title, m: h[0], d: h[1], s: h[2], status: ok ? 'Reliable' : 'Not yet', cls: ok ? 'role' : 'tag' }; });
+  const rot = (o) => 'transform:' + (o ? 'rotate(180deg)' : 'none');
+  const tagList = [{ l: st.sc }, { l: st.df }, { l: 'Feedback: ' + st.fb }];
+  const toggleRow = (k) => () => this.setState({ open: st.open === k ? null : k });
+  const fnOrder = ['open', 'inform', 'stance', 'align', 'ask', 'clarify', 'social'].filter((fn) => cards.some((c) => c.fn === fn));
+  const dq = st.q.trim().toLowerCase();
+  const dMatch = (c) => (st.dfn === 'all' || c.fn === st.dfn) && (!dq || (c.title + ' ' + c.desc + ' ' + c.t1 + ' ' + c.t2 + ' ' + fnLabel[c.fn]).toLowerCase().indexOf(dq) >= 0);
+  const drawerItems = [];
+  fnOrder.forEach((fn) => {
+    const list = cards.filter((c) => c.fn === fn && dMatch(c));
+    if (!list.length) return;
+    drawerItems.push({ isHead: true, isCard: false, isNone: false, fnLabel: fnLabel[fn] });
+    list.forEach((c) => drawerItems.push(cardItem(c)));
+  });
+  if (!drawerItems.length) drawerItems.push({ isHead: false, isCard: false, isNone: true });
+  const extra = {
+    sceneLabel: hasText ? 'Your scene' : 'Scene', sceneSummary: sceneSummary,
+    openScene: st.open === 'scene', openStrat: st.open === 'strat', openHist: st.open === 'hist',
+    chevPrefs: rot(st.adjust), chevScene: rot(st.open === 'scene'), chevStrat: rot(st.open === 'strat'), chevHist: rot(st.open === 'hist'),
+    toggleScene: toggleRow('scene'), toggleStrat: toggleRow('strat'), toggleHist: toggleRow('hist'),
+    sceneMine: mine, sceneAi: !mine,
+    sceneModes: [['ai', 'Let AI choose'], ['mine', 'I will choose']].map((m) => ({ l: m[1], on: st.sceneMode === m[0] ? 'on' : '', pick: () => this.setState({ sceneMode: m[0], started: false }) })),
+    sceneIdeas: ['Pitching a new market to a colleague', 'Updating my manager after a launch', 'Explaining a delay to a client'].map((t) => ({ l: t, pick: () => this.setState({ sceneText: t, started: false }) })),
+    sceneText: st.sceneText, sceneLen: st.sceneText.length,
+    setScene: (e) => this.setState({ sceneText: e.target.value.slice(0, 500), started: false }),
+    stratSummary: 'Always on',
+    strategies: stratDefs.map((s) => ({ l: s[1], d: s[2], on: st.strat === s[0], cls: st.strat === s[0] ? 'opt on' : 'opt', pick: () => this.setState({ strat: st.strat === s[0] ? null : s[0], started: false }) })),
+    nudge: st.nudge, toggleNudge: () => this.setState({ nudge: !st.nudge }),
+    histBtn: st.histChecked ? 'Check again' : 'Check practice history',
+    histSummary: st.histChecked ? 'Checked for ' + histRows.length + (histRows.length === 1 ? ' target' : ' targets') : 'Check reliable independent use',
+    histChecked: st.histChecked, histRows: histRows, histEmpty: histRows.length === 0, checkHist: () => this.setState({ histChecked: true }),
+    tagList: tagList,
+    drawerOpen: st.drawer, drawerItems: drawerItems, q: st.q,
+    drawerFns: [['all', 'All']].concat(fnOrder.map((fn) => [fn, fnLabel[fn]])).map((f) => ({ l: f[1], on: st.dfn === f[0] ? 'on' : '', pick: () => this.setState({ dfn: f[0] }) })),
+    drawerCount: n + ' / 5 selected' + (st.limit ? ' · limit reached' : ''),
+    setQ: (e) => this.setState({ q: e.target.value }),
+    openDrawer: () => this.setState({ drawer: true }), closeDrawer: () => this.setState({ drawer: false }),
+    logicName: effLogic.name, logicChain: effLogic.chain,
+    sideLogicName: st.free ? 'No logic template' : effLogic.name,
+    sideLogicChain: st.free ? 'Free conversation' : effLogic.chain + (st.logic ? '' : ' · AI pick'),
+    logicSummary: st.logic ? effLogic.name : 'AI picks · ' + effLogic.name,
+    openLogic: st.open === 'logic', chevLogic: rot(st.open === 'logic'), toggleLogic: toggleRow('logic'),
+    logicFams: [['W', 'Workplace'], ['D', 'Daily life']].map((m) => ({ l: m[1], on: pickFam === m[0] ? 'on' : '', pick: () => this.setState({ lfam: m[0] }) })),
+    logicOpts: logics.filter((l) => l.fam === pickFam).map((l) => ({ l: l.name, d: l.d, chain: l.chain, on: st.logic === l.id, cls: st.logic === l.id ? 'opt on' : 'opt', pick: () => this.setState({ logic: st.logic === l.id ? null : l.id, started: false }) }))
+  };
+  return {
+    aiPicks: aiPicks, scene: sceneOut, ...extra,
+    heroNote: custom ? 'Your own selection is active. Start here to use the AI picks instead.' : 'Picked by AI from your corpus',
+    adjustOpen: st.adjust, adjustLabel: st.adjust ? 'Done' : 'Adjust',
+    prefLine: st.sc + ' · ' + st.df + ' · Feedback: ' + st.fb,
+    prefSummary: st.sc + ' · ' + st.df + ' · ' + st.fb + ' feedback',
+    scOpts: opts(['Workplace', 'Daily life', 'Travel'], st.sc, 'sc'),
+    dfOpts: opts(['Guided', 'Natural', 'Stretch'], st.df, 'df'),
+    fbOpts: opts(['Detailed', 'Light', 'Summary only'], st.fb, 'fb'),
+    filters: filters, items: items,
+    pickHint: st.limit ? 'Up to 5 targets per mission. Click a selected card to remove it.' : 'One is enough. Pick up to 5.',
+    sc: st.sc, df: st.df, fb: st.fb,
+    sideList: sideList, sideNote: sideNote, startLabel: startLabel,
+    started: st.started, startMsg: startMsg,
+    toggleAdjust: () => this.setState({ adjust: !st.adjust }),
+    shuffle: () => this.setState({ aiIdx: st.aiIdx + 1, started: false }),
+    heroStart: () => this.setState({ sel: [], free: false, started: true, limit: false }),
+    sideStart: () => this.setState({ started: true }),
+    goFree: () => this.setState({ free: true, sel: [], started: false, limit: false })
+  };
+}
+}
+</script>
+</body>
+</html>

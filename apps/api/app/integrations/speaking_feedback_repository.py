@@ -17,6 +17,8 @@ from app.integrations.speaking_runtime_repository import _document, _identity, _
 from app.integrations.supabase_repository import SupabaseRepository, get_supabase_repository
 from app.schemas.speaking_feedback import ANALYSIS_VERSION, RUBRIC_VERSION
 from app.services import store
+from app.schemas.speaking_conversation import ConversationRecast
+from app.services.speaking_recasts import PUBLIC_FIELDS, REPORT_FIELDS
 
 LEASE_SECONDS = 120
 MAX_ATTEMPTS = 3
@@ -30,7 +32,8 @@ _EVIDENCE_FIELDS = {"id", "session_item_id", "message_id", "transcript_revision"
                     "quote", "match_type", "appropriateness", "prompted", "assistance", "reason"}
 _EXPOSURE_FIELDS = {"id", "target_item_id", "source_message_id", "source_revision", "after_turn",
                     "kind", "level", "visible_at", "overlap", "response_id", "scope", "certainty"}
-_ATTEMPT_FIELDS = {"id", "response_id", "sent_at", "bound_at", "send_status", "presented", "presented_at"}
+_ATTEMPT_FIELDS = {"id", "response_id", "sent_at", "bound_at", "send_status", "presented", "presented_at",
+                   "assessment_message_id", "assessment_revision", "presented_message_id", "presented_revision"}
 _TARGET_STATE_FIELDS = {"skipped", "reason", "skipped_at", "restored_at", "version"}
 
 
@@ -210,6 +213,13 @@ def _freeze(session, document: dict) -> dict:
         support["support"] = select(document["support"], {"level", "version"})
     if isinstance(document.get("support_history"), list):
         support["support_history"] = rows("support_history", {"level", "version", "at"})
+    if isinstance(document.get("recasts"), list):
+        recasts = []
+        for record in document["recasts"][:100]:
+            if isinstance(record, dict) and record.get("validated") is True:
+                public = ConversationRecast.model_validate({key: record[key] for key in PUBLIC_FIELDS if key in record}).model_dump(mode="json")
+                recasts.append({**public, **select(record, REPORT_FIELDS - PUBLIC_FIELDS)})
+        support["recasts"] = recasts
     return _payload({"session": session.model_dump(mode="json"),
                      "messages": rows("messages", _MESSAGE_FIELDS),
                      "evidence": rows("evidence", _EVIDENCE_FIELDS),

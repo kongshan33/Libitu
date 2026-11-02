@@ -1,13 +1,196 @@
 # Understand the Libitu project
 
+## Stage 4 targets visible from entry — 2026-11-01
+
+User decision supersedes the earlier default concealment: show all target
+expressions and their meanings from the start, including Guided, so learners
+know which expressions to transfer into conversation. Keep manual Hide/Show
+controls; confirmed models and observed uses still reveal their targets when
+manual concealment is selected. Speaking does not hide target wording; only the
+current question hint fades. Actual visible wording records exposure, never
+learner use. Existing explicit legacy support choices remain unchanged.
+
+
 ```yaml
 meta:
   contentType: Reference
   status: active
-  updated: 2026-10-25
+  updated: 2026-11-01
 ```
 
 This file gives coding agents a fast, factual view of the repository. Read `AGENTS.md` first, then use this page to distinguish implemented behavior from planned product behavior.
+
+## Loadout scene preparation recovery — 2026-10-31
+
+The planner now uses request-local short target references and restores verified
+corpus IDs before validation/persistence. Structure examples receive explicit
+fixed anchors; field repair includes the bounded rejected value. This addresses
+live reproductions of UUID copying errors and pronoun changes in saved sentence
+structures, without relaxing target/frame/fit validation or extending retries.
+The authenticated browser retry successfully saved and opened a three-target
+Stakeholder alignment Mission. Voice remained offline; this checks preparation
+and creation, not conversation or learning quality. See `TASK.MD` for regression checks.
+
+## Stage 4 hint latency — 2026-11-01
+
+Negotiated help now generates all three levels once on demand, validates the
+whole bundle and keeps one private connection-local cache entry. Requests for the
+same pending context share a task; cached upgrades publish only their requested
+level. Context revisions, target/support changes, input and disconnect fence old
+work. First-request generation remains on demand; background pre-generation is
+explicitly deferred by user decision because learners may not request help and
+unused generation would waste model calls. It is not an active follow-up or a
+session-entry prerequisite. The frontend delays loading feedback by 250ms and
+retains the previous ready hint during upgrades. Exposure follows the actual
+painted card, including when switching Voice/Chat. Cache hit/generation diagnostics
+support later latency measurements. `TASK.MD` records verification and limits.
+
+## Stage 4 design alignment — 2026-11-01
+
+The six audit gaps are implemented: default concealment also covers legacy
+Missions without explicit support; confirmed modeling/use still auto-reveals.
+Explicit v1 support choices remain intact. Actual Chat stage dividers now use
+persisted, revision-valid presentation markers; old transcripts are not guessed
+from today's stage. Evidence detail opens in the target panel, including mobile.
+Chat hint typography/surface/padding now match the prototype through the runtime
+wrapper. Confirmed silent rephrases show “Waiting for you”; the top stage guide
+shows its known current-stage cue. No current stage means no invented cue.
+See `TASK.MD` for verification; real provider quality and physical audio remain
+separate acceptance work.
+
+## Stage 4 Conversation UI — 2026-10-31
+
+Step 2 applies the supplied neutral Conversation design to the actual speaking
+route: stage navigation/guide, current-utterance Voice, text-first Chat, neutral
+microphone controls and responsive targets. Staged targets reveal after confirmed
+modeling or valid learner use; Show/Hide targets reveals the rest explicitly.
+Existing v1 support and visibility receipts are retained.
+
+Shared presentation components also drive an explicitly synthetic preview at
+`/dev/conversation`, available only with server `LIBITU_CONVERSATION_PREVIEW=1`.
+It covers progressive hints, silence/rephrase, recasts and connection states
+without accessing a microphone, provider or learner storage. Step 3 now negotiates Conversation protocol 1 on OpenAI and connects actual
+question identity, eligible-silence timers, spoken simplification and progressive
+help with visibility receipts. Unnegotiated clients and Gemini keep legacy help.
+Optional simpler questions preserve old serialized Mission plans. Step 4 connects
+asynchronous minimal recasts to actual partner delivery and presentation receipts.
+Voice shows only the current eligible recast; Chat retains confirmed recasts next
+to their source turns. Only changed words are bold. Grammar/word-choice categories
+and explanations are confined to frozen reports; transcripts and use counts stay
+unchanged. Optional report snapshots preserve old sessions and exact retries.
+Runtime tests use injected providers; this is not model-quality or human microphone
+acceptance.
+See `TASK.MD` and [implementation notes](design/docs/STAGE_FOUR_IMPLEMENTATION.md).
+
+## Stage 4 Conversation contract — 2026-10-31
+
+The user reopened Stage 4 for the supplied Conversation redesign, starting with
+state/data contracts. [The new contract](design/docs/STAGE_FOUR_CONVERSATION_CONTRACT.md)
+defines question identity, one-position help, eligible-silence timing, simpler
+questions, evidence-linked recasts and legacy compatibility. Step 1 was documentation only. Steps 2–4 now implement the UI, negotiated
+question/help runtime and recast/report path described above. The existing
+15-second/two-follow-up runtime remains only for unnegotiated sessions.
+
+The accepted target-panel correction retains automatic reveal after a clearly
+confirmed partner demonstration, as well as actual learner use; other targets
+stay hidden until requested. Guided uses the same new default. The 8/20-second
+design permits one spoken simplification plus one automatic direction per
+question; opening words/examples require clicks. Implementation and validation
+follow the ordered queue in `TASK.MD`, not the earlier Stage 4 pause below.
+
+## Mission voice provider — 2026-10-30
+
+Mission now defaults to OpenAI Realtime (`gpt-realtime-2.1`, voice `marin`),
+using the existing server-only `OPENAI_API_KEY`. The ignored local configuration
+also selects OpenAI; Gemini remains an explicit legacy option. The user reopened
+Stage 4 only for this provider migration, not the deferred teaching expansion.
+Doubao continues to own planning, analysis, help and assessment.
+
+Reuse the existing authenticated socket, PCM24k audio, server-owned response
+controls, cancellation/truncation, presentation receipts and acknowledged-text
+recovery. OpenAI Chat requests text only; voice requests audio plus its transcript.
+The local SOCKS proxy required `python-socks[asyncio]`, now a declared dependency.
+Real bounded synthetic speech passed setup, opening audio, cancel/truncate,
+VAD/transcription, subsequent audio, text mode and fresh-connection history input.
+Physical microphone/speaker quality and OpenAI teaching outcomes remain unverified.
+See `design/docs/STAGE_FOUR_IMPLEMENTATION.md` and `TASK.MD` for checks.
+
+## Stage 3 reference completion — 2026-10-26
+
+The current increment follows the supplied Stage 3 development notes, Quick
+start prototype and neutral design specification. The user explicitly paused
+further Stage 4 implementation and runtime acceptance. Existing Stage 4 work
+below is retained with its recorded validation limits.
+
+Stage 3 now has nine logic templates, family/stage-function metadata and Travel.
+Catalog metadata is separate from frozen Mission templates, preserving old
+snapshots and exact retries. Custom-scene matching is an authenticated, bounded
+suggestion request, separate from generating a Mission. Recorded-use filtering
+uses an explicitly documented fixed seven-day interval; uncertain history must
+remain unknown rather than Never used. Practice reliability remains a separate
+three-Mission/two-date/two-scene-root measure, not mastery.
+
+Current implementation and validation status: `TASK.MD`. Summary-only feedback
+is unavailable pending Stage 4; old Balanced drafts remain compatible. These
+Stage 3 changes supersede older six-template/no-Travel/no-review statements.
+
+
+## Logic-constrained Mission milestone — 2026-10-26
+
+The first follow-up milestone connects equal-priority target selection to a
+version 2 scenario plan, frozen logic steps and target stage assignments. New
+logic selections enter the actual planner and invalidate its cache; old version
+1 sessions and exact pending retries retain their original contracts. Linked
+v2 rounds preserve the parent's logic and placements while changing the scene.
+
+Stage 4 schedules one natural demonstration per unused target across difficulty
+levels, with actual presentation and reflection required for a confirmed demo.
+Independent use before exposure suppresses that target's demonstration. Stage
+coverage is derived from opportunities and learner responses; a replied-to
+question is not a target use. The sidebar initially conceals target wording;
+explicit reveal records visual assistance. Reports distinguish independent use,
+imitation after a confirmed example, other assistance and uncertain exposure.
+These are observed-use records, not mastery or teaching-effect measurements.
+
+Automated cross-layer checks and real Ark/Supabase planning pass. Real Gemini
+demonstration-to-imitation acceptance is still open: the latest bounded text run
+delivered a target-bearing reply and question, but effect assessment was
+unavailable and returned `unknown`. It was correctly excluded from confirmed
+demonstration and imitation counts; the underlying provider error is unclassified.
+Verification and hosted migration status are recorded in `TASK.MD`. This
+milestone supersedes the earlier demonstration deferral below only for v2;
+taxonomy, review ranking, Travel, Summary-only, correction and streaming remain
+outside the increment.
+
+## Mission Loadout Quick start — 2026-10-25
+
+Loadout now leads with a local Quick start suggestion: up to three real saved
+items, their suggested logic stages, a scene seed and the current preferences.
+The deterministic helper uses existing functional tags and the six available
+logic templates; Shuffle rotates available suggestions without replacing manual
+targets. Manual selection uses one shared pool of up to five chunks, idioms or
+structures. New targets have equal priority in the UI and use the existing
+`primary` role internally. The full-corpus drawer shares the page's selection,
+and Advanced contains existing preferences, scene comparison, logic, support and
+practice history.
+
+Free conversation creates a session with no targets, logic or target plan.
+Starting still requires sign-in; targeted starts require synced account-owned
+corpus. Draft ownership, storage locks, source validation, immutable retries and
+confirmed-create acknowledgement remain in place. Local suggestions make no
+model request; targeted Start retains the existing scene planner and fit checks.
+
+The supplied development notes are a scoped reference, not a completed roadmap.
+This change does not add the proposed functional taxonomy, usage/review labels,
+Travel scenario, Summary-only feedback or new daily-life logic IDs. Stage 4's
+proposed once-per-target demonstration and once-per-error correction rules are
+not implemented by this redesign; the existing support/evidence policy remains.
+
+Root lint/build/test and desktop/mobile fixture checks pass.
+`20261025123200_loadout_quick_start_targets` is applied to hosted development;
+its synthetic rollback checks pass. Free-conversation reports keep transfer
+not applicable, and Retry/Adjust retain the free mode.
+See `TASK.MD` and [the Loadout contract](design/docs/LOADOUT_IMPLEMENTATION.md).
 
 ## Practice workspace visual refresh — 2026-10-25
 
@@ -27,6 +210,15 @@ Following the user's spacing feedback, practice workspace horizontal insets are
 uses a text-only Recommended badge.
 The outer workspace fills the viewport; the previous 1280 px cap and automatic
 side margins have been removed to address the user's 80 px margin report.
+Detailed and Review now share the sentence-directory presentation: 260 px on
+desktop when expanded, a 56 px numbered rail when collapsed, matching controls,
+and the same narrow-screen stacking. Both use a 680 px main content limit.
+Detailed retains its recording-driven fold; Review retains filters and take
+metadata. Selection, playback and analysis behavior are unchanged.
+The central result/actions area and Sound/Rhythm/Melody workspace also share
+spacing, typography and controls. Both place saved-analysis status before the
+layers, use neutral tabs with a purple selected underline, and keep comparison
+evidence colors. Guidance stacks beneath charts when the analysis area narrows.
 See `TASK.MD` for validation and fixture limitations.
 
 ## Release confirmed Mission starts — 2026-10-24
@@ -90,7 +282,7 @@ All former DeepSeek text requests now use Doubao through Volcengine Ark:
 Stage 1 streaming blueprints, selection explanations, Mission planning, background
 teaching analysis, explicit help and Stage 5 assessment. `ARK_API_KEY` is server-only;
 `ARK_MODEL` defaults to `doubao-seed-2-1-lite-260915` and `ARK_BASE_URL` to
-`https://ark.cn-beijing.volces.com/api/v3`. Gemini Live retains its own key/model.
+`https://ark.cn-beijing.volces.com/api/v3`. OpenAI Realtime now handles voice (2026-10-30); Gemini is optional.
 Text timeout and Stage 1 budgets use `ARK_*`. Obsolete `DEEPSEEK_*` and
 `GEMINI_TEXT_*` entries are ignored. Requests disable thinking and retain existing
 JSON/evidence validation, retries, streaming previews and bounded failure handling.
@@ -166,7 +358,7 @@ The two development-database migrations are applied. A bounded real DeepSeek/Sup
 
 ## Mission teaching control and private diagnostics — 2026-10-18
 
-Doubao text analysis observes each finalized learner utterance with frozen context while Gemini Live replies independently. The first two substantive learner utterances default to observation; subsequent automatic teaching needs a contextual recommendation, one pending target, bounded cross-turn eligibility and separate attempt/cooldown counters. Analysis completion now wakes safe-boundary dispatch. Immutable sent attempts, completed-response assessment and actual presentation are recorded separately.
+Doubao text analysis observes each finalized learner utterance with frozen context while OpenAI Realtime replies independently. The first two substantive learner utterances default to observation; subsequent automatic teaching needs a contextual recommendation, one pending target, bounded cross-turn eligibility and separate attempt/cooldown counters. Analysis completion now wakes safe-boundary dispatch. Immutable sent attempts, completed-response assessment and actual presentation are recorded separately.
 
 Voice and Chat share requested Usage/Example cards; automatic direction appears only after the AI reply is assessed as reflecting the teaching intent. Actual expression/example exposure remains assisted for the rest of that Mission; overlap/unknown provenance is not labeled independent. Detailed traces are owner-readable through GET `/api/speaking/sessions/{id}/diagnostics`, separate from the runtime snapshot. There is no diagnostic timeline UI. The hosted `20261018111206_speaking_teaching_diagnostics` migration and rollback checks pass. Root lint/build/test pass (1,111 API, 390 Web, 114 cached extension tests); hint-card browser checks pass at 1440/390 px with synthetic auth/API/provider events and inspected screenshots. Readable retention is 30 days, with same-session append cleanup and no scheduled global physical purge. See [behavior, API and reliability limits](design/docs/STAGE_FOUR_TEACHING_CONTROL.md).
 
@@ -364,7 +556,7 @@ verification target that local setup, not a deployed production website.
 | Auth | Clerk UI, Next.js middleware, and FastAPI identity verification are configured locally | Finish hosted Clerk-Supabase trust setup and add real-token integration tests |
 | Database | Supabase persists content, jobs, blueprints, corpus, speaking snapshots/transcripts/evidence and leased immutable-input assessment reports | Qualify operational recovery, retention and production supervision |
 | Cache | Upstash queue, versioned blueprint keys, pending-job recovery, bounded requests, worker heartbeat, and locks implemented | Add rate limiting and a durable retry scheduler |
-| AI | Local caption cleanup, Doubao text semantic blueprints, Gemini Live conversation/teaching control and bounded Doubao text session assessment with validated quotes | Calibrate conversation judgments against independent human-reviewed examples |
+| AI | Local caption cleanup, Doubao text semantic blueprints, OpenAI Realtime conversation/teaching control and bounded Doubao text session assessment with validated quotes | Calibrate conversation judgments against independent human-reviewed examples |
 
 ## Product references
 

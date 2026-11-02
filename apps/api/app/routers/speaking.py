@@ -25,6 +25,8 @@ from app.schemas.speaking_progress import (
     PracticeComparison, SupportRecommendation, SupportRecommendationRequest,
 )
 from app.services.speaking_progress import compare_practice, recommend_support
+from app.schemas.speaking_loadout_usage import LoadoutUsageRequest, LoadoutUsageSummary
+from app.services.speaking_loadout_usage import loadout_usage
 from app.services.speaking_timing import measure_phase, request_timing
 
 
@@ -92,6 +94,14 @@ def support_recommendations(
     payload: SupportRecommendationRequest, current_user: CurrentUserDep,
 ) -> SupportRecommendation:
     return recommend_support(current_user.id, payload)
+
+
+@router.post("/loadout-usage")
+def get_loadout_usage(
+    payload: LoadoutUsageRequest, current_user: CurrentUserDep, response: Response,
+) -> LoadoutUsageSummary:
+    response.headers["Cache-Control"] = "private, no-store"
+    return loadout_usage(current_user.id, payload)
 
 
 @router.post("/sessions/{session_id}/practice-plans", status_code=status.HTTP_201_CREATED)

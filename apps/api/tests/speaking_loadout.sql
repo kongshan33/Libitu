@@ -92,8 +92,8 @@ begin
   exception when sqlstate 'PT404' then null; end;
   begin
     perform public.create_speaking_loadout(owner_a, gen_random_uuid(), 'workplace', 'Goal',
-      'standard', 'balanced', null, array[]::uuid[]);
-    raise exception 'Expected empty-selection rejection';
+      'standard', 'balanced', template, array[]::uuid[]);
+    raise exception 'Expected logic in free-conversation rejection';
   exception when sqlstate 'PT422' then null; end;
   begin
     perform public.create_speaking_loadout(owner_a, gen_random_uuid(), 'workplace', 'Goal',
@@ -102,8 +102,8 @@ begin
   exception when sqlstate 'PT422' then null; end;
   begin
     perform public.create_speaking_loadout(owner_a, gen_random_uuid(), 'workplace', 'Goal',
-      'standard', 'balanced', null, structure_ids);
-    raise exception 'Expected structure-limit rejection';
+      'standard', 'balanced', null, structure_ids || expression_ids[1:2]);
+    raise exception 'Expected oversized non-legacy selection rejection';
   exception when sqlstate 'PT422' then null; end;
   begin
     perform public.create_speaking_loadout(owner_a, gen_random_uuid(), 'workplace', 'Goal',

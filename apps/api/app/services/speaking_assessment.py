@@ -26,6 +26,7 @@ from app.schemas.speaking_feedback import (
 from app.services import speaking_missed_opportunities as missed
 from app.services.speaking_teaching import _assistance, _exact_spans, _quoted, _structure_supported, _tokens
 from app.services.speaking_support import variant_supported as _variant_supported
+from app.services.speaking_opportunities import confirmed_imitation, is_staged_plan
 
 ASSESSMENT_TIMEOUT_SECONDS = 45.0
 ASSESSMENT_MAX_TOKENS = 8000
@@ -252,7 +253,10 @@ def baseline_result(source: dict) -> FeedbackResult:
     dimensions = [FeedbackDimension(id=dimension, basis="ai_assessment", summary="Not assessed.",
                                    criteria=[FeedbackCriterion(id=key, label=label, reason="Not assessed.")
                                              for key, label, _ in criteria]) for dimension, criteria in CRITERIA.items()]
-    dimensions.insert(1, FeedbackDimension(id="transfer", basis="coverage", summary="Selected-language use has not been fully assessed."))
+    dimensions.insert(1, FeedbackDimension(id="transfer", basis="coverage", summary=(
+        "Selected-language use has not been fully assessed." if session.items else
+        "Not applicable: free conversation has no selected language targets."
+    )))
     notices = []
     if len(users) != len(reliable):
         notices.append("Some user transcripts are missing or unconfirmed; they are excluded, and language transfer cannot receive a complete score.")
@@ -388,6 +392,8 @@ def _items(source: dict, session: SpeakingSession, users: list[dict], reliable: 
         status = "appropriate" if appropriate else "uncertain" if unresolved else "inappropriate" if inappropriate else "not_observed"
         new_items.append(FeedbackItem(session_item_id=str(item.id), kind=item.kind, text=item.text, status=status,
                             independent_uses=len(ids - prompted - attribution_unknown), prompted_uses=len(prompted),
+                            imitation_uses=sum(confirmed_imitation(source, str(item.id), by_message[message_id], session)
+                                               for message_id in prompted) if is_staged_plan(session) else 0,
                             uncertain_assistance_uses=len(attribution_unknown),
                             qualifying_independent_evidence=sorted(
                                 [ref for ref in appropriate if assistance[ref.message_id] == "independent"],
@@ -403,7 +409,10 @@ def _items(source: dict, session: SpeakingSession, users: list[dict], reliable: 
     result.statistics.used_expressions = sum(item.kind != "structure" for item in active_uses)
     result.statistics.used_structures = sum(item.kind == "structure" for item in active_uses)
     uncertain = invalid_coverage or duplicate_ids or bool(unresolved_items & eligible)
-    if not uncertain and opportunities_complete and len(users) == len(reliable) and eligible:
+    if not session.items:
+        transfer.score = None
+        transfer.summary = "Not applicable: free conversation has no selected language targets."
+    elif not uncertain and opportunities_complete and len(users) == len(reliable) and eligible:
         count = sum(item.status == "appropriate" and item.session_item_id in eligible for item in new_items)
         transfer.score = math.floor(100 * count / len(eligible) + .5)
         label = "applicable primary targets" if session.mission_plan else "selected items"
@@ -528,7 +537,8 @@ def compile_assessment(source: dict, model: _Assessment | dict, *,
     if not reviewed:
         result.notices.append("The assessment did not cover every final user utterance; scores are withheld.")
     result.notices.append("Scores are AI judgments of this transcript, not measurements of mastery, accent or pronunciation.")
-    complete = all(dimension.score is not None for dimension in result.dimensions) and len(users) == len(reliable)
+    complete = all(dimension.score is not None for dimension in result.dimensions
+                   if dimension.id != "transfer" or session.items) and len(users) == len(reliable)
     return ("ready" if complete else "partial"), result
 
 

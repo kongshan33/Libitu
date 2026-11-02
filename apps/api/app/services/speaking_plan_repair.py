@@ -7,7 +7,7 @@ from uuid import UUID
 
 SCENE_FIELDS = {"title", "setting", "goal", "user_role", "ai_role", "register"}
 TARGET_FIELDS = {"communicative_function", "fit", "fit_reason", "trigger_question",
-                 "skip_when", "sentence_frame"}
+                 "skip_when", "sentence_frame", "model_line", "simpler_question"}
 
 
 def ordered_output(raw: str, context: dict) -> dict:
@@ -71,10 +71,16 @@ def repair_context(document: dict, context: dict, issues: list[dict]) -> dict | 
         properties[task_id] = value_schema
         tasks.append({"id": task_id, "path": list(path), "field": path[-1],
                       "issues": [issue for issue in issues if tuple(issue["path"])[:len(path)] == path]})
+        value = candidates[path[1]]
+        for part in path[2:]:
+            value = value.get(part) if isinstance(value, dict) else value[part] if isinstance(value, list) else None
+        if isinstance(value, str) and len(value) <= 500:
+            tasks[-1]["current_value"] = value
     affected = sorted({path[1] for path in paths})
     return {
         "scenario_type": context["scenario_type"], "brief": context["brief"],
         "targets": context["targets"],
+        **({"logic_template": context["logic_template"]} if context.get("logic_template") else {}),
         **({"practice": context["practice"]} if context.get("practice") else {}),
         "scenes": [{"index": index, **{field: value for field, value in candidates[index].items()
                     if field in SCENE_FIELDS and isinstance(value, str) and len(value) <= 500}}

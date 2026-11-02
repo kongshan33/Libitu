@@ -18,6 +18,7 @@ from app.schemas.speaking import SpeakingSessionCreate
 from app.schemas.speaking_runtime import RealtimeStart
 from app.services import corpus_service, speaking_runtime_state, speaking_service
 from app.services.speaking_gemini_runtime import GeminiSpeakingConnection
+from app.services.speaking_runtime import SpeakingConnection
 
 
 class SyntheticBrowser:
@@ -40,7 +41,9 @@ async def exercise(owner, session_id, voice_pcm: bytes | None = None):
                                      RealtimeStart(client_connection_id=uuid4()))
     await asyncio.to_thread(speaking_runtime_state.consume_ticket, session_id, str(ticket.runtime_id), ticket.ticket)
     browser = SyntheticBrowser()
-    connection = GeminiSpeakingConnection(browser, owner, session_id, str(ticket.runtime_id))
+    settings = get_settings()
+    connection_type = GeminiSpeakingConnection if settings.speaking_realtime_provider == "gemini" else SpeakingConnection
+    connection = connection_type(browser, owner, session_id, str(ticket.runtime_id))
     running = asyncio.create_task(connection.run())
     client_id = str(uuid4())
     sent = False
@@ -90,7 +93,8 @@ async def exercise(owner, session_id, voice_pcm: bytes | None = None):
         completed = await asyncio.to_thread(speaking_runtime_state.end_session, owner, session_id)
         assert completed.session.status == "completed"
         assert len(saved.messages) == len(completed.messages)
-        return {"provider": "gemini", "model": get_settings().gemini_live_model,
+        return {"provider": settings.speaking_realtime_provider,
+                "model": settings.gemini_live_model if settings.speaking_realtime_provider == "gemini" else settings.openai_realtime_model,
                 "messages": len(saved.messages), "user_turns": saved.session.turn_count,
                 "evidence": len(saved.evidence), "analysis": saved.analysis_status,
                 "voice_input": voice_pcm is not None, "output_audio_bytes": audio_bytes,

@@ -1,6 +1,7 @@
 """Server-only OpenAI Realtime transport, with no browser-supplied provider events."""
 
 import json
+import logging
 import ssl
 from contextlib import asynccontextmanager
 from urllib.parse import urlencode
@@ -10,6 +11,13 @@ from websockets.asyncio.client import connect
 
 from app.config import Settings
 from app.schemas.speaking import SpeakingSession
+
+
+# WebSocket debug logs include authentication headers and raw audio frames.
+# Keep this private transport silent even when the application's root logs DEBUG.
+_TRANSPORT_LOGGER = logging.Logger("libitu.openai.realtime.transport", level=logging.CRITICAL + 1)
+_TRANSPORT_LOGGER.propagate = False
+_TRANSPORT_LOGGER.addHandler(logging.NullHandler())
 
 
 def role_instructions(session: SpeakingSession, *, include_language_targets: bool = True) -> str:
@@ -60,12 +68,14 @@ def session_configuration(settings: Settings, session: SpeakingSession) -> dict:
 
 @asynccontextmanager
 async def open_realtime(settings: Settings):
+    if not settings.openai_api_key:
+        raise ValueError("OpenAI Realtime is not configured.")
     # Fixed provider origin: private credentials cannot be redirected through client input.
     url = "wss://api.openai.com/v1/realtime?" + urlencode({"model": settings.openai_realtime_model})
     async with connect(
         url, additional_headers={"Authorization": f"Bearer {settings.openai_api_key}"},
         ssl=ssl.create_default_context(cafile=certifi.where()),
         open_timeout=15, close_timeout=3, ping_interval=20, ping_timeout=20,
-        max_size=2 * 1024 * 1024, max_queue=16,
+        max_size=2 * 1024 * 1024, max_queue=16, logger=_TRANSPORT_LOGGER,
     ) as socket:
         yield socket

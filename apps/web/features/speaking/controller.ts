@@ -1,4 +1,4 @@
-import type { SpeakingClientEvent, SpeakingHelpLevel, SpeakingServerEvent, SpeakingSupportLevel, SpeakingWorkspace } from "@libitu/types/speaking";
+import type { ConversationHelp, SpeakingClientEvent, SpeakingHelpLevel, SpeakingServerEvent, SpeakingSupportLevel, SpeakingWorkspace } from "@libitu/types/speaking";
 import { ConversationApiError, runtimeSocketUrl, type ConversationApi } from "./api.ts";
 import { ConversationAudio } from "./audio.ts";
 import { currentSupport, isSupportLevel } from "./support.ts";
@@ -11,8 +11,11 @@ export type ConversationState = {
   pending: { id: string; text: string; status: "sending" | "unconfirmed" } | null;
   supportPending: { requestId: string; level: SpeakingSupportLevel; expectedVersion: number } | null;
   supportError: string | null;
+  recastSourceRetired: string | null;
+  retainedConversationHelp: ConversationHelp | null;
+  helpLoadingVisible: boolean;
 };
-export const initialConversationState = (): ConversationState => ({ workspace: null, connection: "loading", phase: "listening", microphone: false, microphoneBusy: false, userSpeaking: false, error: null, conflict: false, busy: false, partials: {}, pending: null, supportPending: null, supportError: null });
+export const initialConversationState = (): ConversationState => ({ workspace: null, connection: "loading", phase: "listening", microphone: false, microphoneBusy: false, userSpeaking: false, error: null, conflict: false, busy: false, partials: {}, pending: null, supportPending: null, supportError: null, recastSourceRetired: null, retainedConversationHelp: null, helpLoadingVisible: false });
 type AudioPort = Pick<ConversationAudio, "prepare" | "enableMicrophone" | "disableMicrophone" | "append" | "report" | "clear" | "dispose">;
 type Dependencies = {
   socket?: (url: string) => WebSocket;
@@ -34,6 +37,14 @@ export class ConversationController {
   private hintTimer: ReturnType<typeof setTimeout> | null = null;
   private supportTimer: ReturnType<typeof setTimeout> | null = null;
   private unconfirmedSupport: ConversationState["supportPending"] = null;
+  private activitySequence = 0;
+  private draftPresent = false;
+  private surfaceVisible = true;
+  private retiredConversationHelp = new Set<string>();
+  private conversationRequest: string | null = null;
+  private conversationTimer: ReturnType<typeof setTimeout> | null = null;
+  private conversationLoadingTimer: ReturnType<typeof setTimeout> | null = null;
+  private conversationLoadingId: string | null = null;
   private hintRequest: string | null = null;
   private retiredHints = new Set<string>();
   private shownHints = new Set<string>();
@@ -103,6 +114,36 @@ export class ConversationController {
       if (this.hintTimer) clearTimeout(this.hintTimer);
       this.hintTimer = null;
     }
+    const conversation = workspace.conversation;
+    if (conversation) {
+      let card = conversation.help;
+      const previous = this.state.workspace?.conversation?.help;
+      if (this.conversationRequest && card?.id !== this.conversationRequest && previous?.id === this.conversationRequest && previous.question_id === conversation.question?.id) {
+        card = previous;
+        workspace = { ...workspace, conversation: { ...conversation, help: previous } };
+      }
+      if (card && (supportChanged || !!card.target_item_id && skipped.has(card.target_item_id) || this.state.userSpeaking || this.draftPresent)) this.retiredConversationHelp.add(card.id);
+      if (card && (this.retiredConversationHelp.has(card.id) || card.question_id !== conversation.question?.id || card.question_version !== conversation.question?.context_version)) {
+        workspace = { ...workspace, conversation: { ...conversation, help: null } };
+      }
+      if (this.conversationRequest && card?.id === this.conversationRequest && card.status !== "loading") {
+        this.conversationRequest = null;
+        if (this.conversationTimer) clearTimeout(this.conversationTimer);
+        this.conversationTimer = null;
+      }
+    }
+    const activeHelp = workspace.conversation?.help;
+    if (this.conversationRequest && activeHelp?.id !== this.conversationRequest) {
+      this.retiredConversationHelp.add(this.conversationRequest);
+      this.conversationRequest = null;
+      if (this.conversationTimer) clearTimeout(this.conversationTimer);
+      this.conversationTimer = null;
+    }
+    const retained = this.state.retainedConversationHelp;
+    const retainedConversationHelp = !supportChanged && !this.state.userSpeaking && !this.draftPresent
+      && activeHelp?.status === "loading" && retained?.question_id === workspace.conversation?.question?.id
+      && retained?.question_version === workspace.conversation?.question?.context_version
+      && retained?.target_item_id === activeHelp.target_item_id ? retained : null;
     const finalized = new Set(workspace.messages.filter(message => message.status !== "unavailable").map(message => message.provider_item_id).filter(Boolean));
     const partials = Object.fromEntries(Object.entries(this.state.partials).filter(([id]) => !finalized.has(id)));
     const pending = this.state.pending && !workspace.messages.some(message => message.client_turn_id === this.state.pending?.id) ? this.state.pending : null;
@@ -113,7 +154,7 @@ export class ConversationController {
       if (this.supportTimer) clearTimeout(this.supportTimer);
       this.supportTimer = null; this.unconfirmedSupport = null;
     }
-    this.patch({ workspace, partials, pending, ...(supportConfirmed ? {
+    this.patch({ workspace, partials, pending, retainedConversationHelp, helpLoadingVisible: this.syncHelpLoading(activeHelp), ...(supportConfirmed ? {
       supportPending: null,
       supportError: support?.level === supportRequest?.level ? null : "Support changed elsewhere. Review the current level before choosing again."
     } : {}) }); return true;
@@ -196,7 +237,8 @@ export class ConversationController {
             // Defer the opening until voice permission settles, without blocking
             // ready/text input on the browser's permission dialog.
             if ((microphoneSettled && !this.send({ type: "microphone", enabled: microphone })) || !this.current(epoch)) { finish(false); return; }
-            this.heartbeat = setInterval(() => { if (Date.now() - this.lastPong > 35_000) this.disconnect("Connection lost. Your saved transcript is safe."); else this.send({ type: "ping" }); }, 10_000);
+            this.sendActivity();
+            this.heartbeat = setInterval(() => { if (Date.now() - this.lastPong > 35_000) this.disconnect("Connection lost. Your saved transcript is safe."); else { this.send({ type: "ping" }); this.sendActivity(); } }, 10_000);
             this.boundary = setInterval(() => this.audio?.report(), 250);
             finish(true); return;
           }
@@ -239,6 +281,16 @@ export class ConversationController {
     }
     if (event.type === "audio.clear") { this.clearPlayback(); this.awaitingAudioClear = false; return; }
     if (event.type === "error") {
+      if (event.code === "help_unavailable") {
+        if (event.request_id === this.conversationRequest) {
+          this.conversationRequest = null;
+          if (this.conversationTimer) clearTimeout(this.conversationTimer);
+          this.conversationTimer = null;
+          const workspace = this.state.workspace;
+          if (workspace?.conversation?.help) this.patch({ retainedConversationHelp: null, helpLoadingVisible: this.syncHelpLoading(null), workspace: { ...workspace, conversation: { ...workspace.conversation, help: { ...workspace.conversation.help, status: "unavailable", error_code: "unavailable" } } } });
+        }
+        return;
+      }
       if (event.code === "support_changed" || event.code === "support_busy") {
         if (!this.state.supportPending || event.request_id && event.request_id !== this.state.supportPending.requestId) return;
         if (this.supportTimer) clearTimeout(this.supportTimer);
@@ -337,13 +389,90 @@ export class ConversationController {
   }
   targetShown(targetItemId: string): void {
     const workspace = this.state.workspace;
-    if (!workspace || !(workspace.session.mission_plan?.targets.some(value => value.session_item_id === targetItemId)
-      || currentSupport(workspace) && workspace.session.items.some(value => value.id === targetItemId))) return;
+    const planned = workspace?.session.mission_plan?.targets.some(value => value.session_item_id === targetItemId);
+    if (!workspace || !(planned || workspace.session.items.some(value => value.id === targetItemId))) return;
     this.visibleTargets.add(targetItemId);
+    if (!planned && !currentSupport(workspace) && workspace.runtime?.conversation_contract_version !== 1) return;
     if (this.state.connection !== "connected" || this.shownTargets.has(targetItemId)) return;
     if (this.send({ type: "target.shown", target_item_id: targetItemId })) this.shownTargets.add(targetItemId);
   }
+  setActivity(draftPresent: boolean, surfaceVisible: boolean): void {
+    if (draftPresent === this.draftPresent && surfaceVisible === this.surfaceVisible) return;
+    if ((draftPresent && !this.draftPresent) || (!surfaceVisible && this.surfaceVisible)) { this.retireVoiceRecast(); this.retireConversationHelp(); }
+    this.draftPresent = draftPresent; this.surfaceVisible = surfaceVisible; this.sendActivity();
+  }
+  private sendActivity(): void {
+    if (this.state.workspace?.runtime?.conversation_contract_version === 1) this.send({ type: "client.activity", sequence: ++this.activitySequence, draft_present: this.draftPresent, surface_visible: this.surfaceVisible });
+  }
+  private syncHelpLoading(card?: ConversationHelp | null): boolean {
+    const id = card?.status === "loading" ? card.id : null;
+    if (id && id === this.conversationLoadingId) return this.state.helpLoadingVisible;
+    if (this.conversationLoadingTimer) clearTimeout(this.conversationLoadingTimer);
+    this.conversationLoadingTimer = null;
+    this.conversationLoadingId = id;
+    if (id) this.conversationLoadingTimer = setTimeout(() => {
+      this.conversationLoadingTimer = null;
+      if (this.state.workspace?.conversation?.help?.id === id && this.state.workspace.conversation.help.status === "loading") this.patch({ helpLoadingVisible: true });
+    }, 250);
+    return false;
+  }
+  private retireConversationHelp(): void {
+    const workspace = this.state.workspace;
+    const card = workspace?.conversation?.help;
+    if (this.conversationRequest) this.retiredConversationHelp.add(this.conversationRequest);
+    this.conversationRequest = null;
+    if (this.conversationTimer) clearTimeout(this.conversationTimer);
+    this.conversationTimer = null;
+    this.patch({ retainedConversationHelp: null, helpLoadingVisible: this.syncHelpLoading(null) });
+    if (!workspace?.conversation || !card) return;
+    this.retiredConversationHelp.add(card.id);
+    this.send({ type: "help.dismiss", hint_id: card.id, version: card.version });
+    this.patch({ workspace: { ...workspace, conversation: { ...workspace.conversation, help: null } } });
+  }
+  requestHelp(targetItemId?: string): void {
+    const workspace = this.state.workspace, question = workspace?.conversation?.question;
+    if (!question || !workspace?.conversation || this.state.connection !== "connected" || this.state.userSpeaking || this.draftPresent || this.conversationRequest || !["presenting", "awaiting_reply", "responding"].includes(question.status)) return;
+    const previous = workspace.conversation.help;
+    const same = previous && previous.question_id === question.id && previous.question_version === question.context_version && previous.target_item_id === (targetItemId ?? question.target_item_id) && previous.status !== "retired";
+    if (same && previous.status === "ready" && previous.level === "example") { this.retireConversationHelp(); return; }
+    const level = same ? previous.status === "unavailable" ? previous.level : previous.level === "direction" ? "usage" : "example" : "direction";
+    const id = this.uuid();
+    if (!this.send({ type: "help.request", request_id: id, question_id: question.id, question_version: question.context_version, level, ...(targetItemId ? { target_item_id: targetItemId } : {}) })) return;
+    if (previous) this.retiredConversationHelp.add(previous.id);
+    this.conversationRequest = id;
+    const card = { id, version: 1, question_id: question.id, question_version: question.context_version, target_item_id: targetItemId ?? question.target_item_id, source: "requested" as const, level, status: "loading" as const, direction: null, opening_words: null, example: null, error_code: null };
+    this.patch({ workspace: { ...workspace, conversation: { ...workspace.conversation, help: card } },
+      retainedConversationHelp: same && previous.status === "ready" ? previous : null,
+      helpLoadingVisible: this.syncHelpLoading(card) });
+    this.conversationTimer = setTimeout(() => {
+      if (this.conversationRequest !== id) return;
+      this.conversationRequest = null;
+      const active = this.state.workspace;
+      if (active?.conversation?.help?.id === id) this.patch({ retainedConversationHelp: null, helpLoadingVisible: this.syncHelpLoading(null), workspace: { ...active, conversation: { ...active.conversation, help: { ...active.conversation.help, status: "unavailable", error_code: "unavailable" } } } });
+    }, 20_000);
+  }
+  conversationHelpShown(id?: string, version?: number): void {
+    const conversation = this.state.workspace?.conversation;
+    const current = conversation?.help;
+    const card = id ? [current, this.state.retainedConversationHelp].find(row => row?.id === id && row.version === version) : current;
+    if (!card || card.status !== "ready" || this.state.userSpeaking || this.draftPresent || !this.surfaceVisible) return;
+    if (card.question_id !== conversation?.question?.id || card.question_version !== conversation.question.context_version) return;
+    const key = `conversation:${card.id}:${card.version}`;
+    if (!this.shownHints.has(key) && this.send({ type: "help.shown", hint_id: card.id, version: card.version, question_id: card.question_id, question_version: card.question_version, level: card.level })) this.shownHints.add(key);
+  }
+  recastShown(id: string, version: number): void {
+    const recast = this.state.workspace?.conversation?.recasts?.find(row => row.id === id && row.version === version);
+    const key = `recast:${id}:${version}`;
+    if (recast?.status === "ready" && recast.delivery && !this.shownHints.has(key)
+      && this.send({ type: "recast.shown", recast_id: id, version })) this.shownHints.add(key);
+  }
+  private retireVoiceRecast(): void {
+    const source = this.state.workspace?.messages.findLast(message => message.role === "user")?.id ?? null;
+    if (source !== this.state.recastSourceRetired) this.patch({ recastSourceRetired: source });
+  }
   private retireAutomaticHint(): void {
+    this.retireVoiceRecast();
+    this.retireConversationHelp();
     const workspace = this.state.workspace;
     if (workspace?.help?.source !== "automatic") return;
     this.retiredHints.add(workspace.help.id);
@@ -396,11 +525,14 @@ export class ConversationController {
     this.playingResponse = null; this.suppressedResponses.clear(); this.awaitingAudioClear = false;
     if (this.hintTimer) clearTimeout(this.hintTimer);
     this.hintTimer = null; this.hintRequest = null;
+    if (this.conversationTimer) clearTimeout(this.conversationTimer);
+    this.conversationTimer = null; this.conversationRequest = null;
+    this.retiredConversationHelp.clear();
     this.retiredHints.clear(); this.shownHints.clear(); this.shownMessages.clear(); this.shownTargets.clear();
     if (this.supportTimer) clearTimeout(this.supportTimer);
     this.supportTimer = null;
     if (this.state.supportPending) this.unconfirmedSupport = this.state.supportPending;
-    this.patch({ userSpeaking: false, supportPending: null });
+    this.patch({ userSpeaking: false, supportPending: null, retainedConversationHelp: null, helpLoadingVisible: this.syncHelpLoading(null) });
     if (this.heartbeat) clearInterval(this.heartbeat); if (this.boundary) clearInterval(this.boundary); if (this.readyTimer) clearTimeout(this.readyTimer); if (this.acknowledgementTimer) clearTimeout(this.acknowledgementTimer);
     this.acknowledgementTimer = null;
     this.heartbeat = null; this.boundary = null; this.readyTimer = null;

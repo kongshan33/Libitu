@@ -98,6 +98,21 @@ def test_transfer_uses_all_selected_items_and_does_not_reward_repetition():
     assert result.statistics.selected_structures == 1
 
 
+def test_free_conversation_transfer_is_not_applicable_and_does_not_block_report_readiness():
+    data = source()
+    data["session"]["items"] = []
+    output = model(data)
+    output["item_results"] = []
+    baseline = assessment.baseline_result(data)
+    assert next(row for row in baseline.dimensions if row.id == "transfer").summary.startswith("Not applicable:")
+    status, result = assessment.compile_assessment(data, output)
+    transfer = next(row for row in result.dimensions if row.id == "transfer")
+    assert status == "ready" and transfer.score is None
+    assert transfer.summary == "Not applicable: free conversation has no selected language targets."
+    assert result.item_results == [] and result.logic_stages == []
+    assert scores(result)["task_fit"] == 75
+
+
 def test_non_bmp_utf16_and_stale_revision_hallucination_rejected():
     row = message("😊 One trade-off is flexibility.", revision=2)
     valid = reference(row, "One trade-off is")

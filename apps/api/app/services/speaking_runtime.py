@@ -16,6 +16,9 @@ from app.integrations.speaking_realtime import open_realtime, role_instructions,
 from app.schemas.speaking_runtime import SpeakingWorkspace
 from app.services import speaking_runtime_state as state_ops
 from app.services.speaking_coaching_runtime import CoachingRuntime
+from app.services.speaking_conversation_runtime import ConversationRuntime
+from app.services.speaking_recast_runtime import RecastRuntime
+from app.services.speaking_conversation_state import close_question, conversation_workspace
 from app.services.speaking_opportunities import opportunity_view, planned_targets, set_target_skipped
 from app.services.speaking_support_runtime import SupportConflict, change_support, support_workspace
 from app.services.speaking_teaching import (
@@ -82,6 +85,8 @@ async def capture_local_receipts(owner: str, session_id: str) -> dict | None:
                 "runtime_id": connection.runtime_id,
                 "exposures": deepcopy(connection.pending_exposures),
                 "presentations": dict(connection.pending_presentations),
+                "recast_receipts": deepcopy(connection.pending_recast_receipts),
+                "stage_receipts": deepcopy(connection.pending_stage_receipts),
             })
     # A slow authoritative read can overlap normal WS shutdown. Capture first:
     # registry cleanup must not erase already-received facts while this read waits.
@@ -98,6 +103,8 @@ async def capture_local_receipts(owner: str, session_id: str) -> dict | None:
         await asyncio.wait(list(connection.exposure_tasks), timeout=END_RECEIPT_DRAIN_SECONDS)
     receipts["exposures"].update(deepcopy(connection.pending_exposures))
     receipts["presentations"].update(connection.pending_presentations)
+    receipts["recast_receipts"].update(deepcopy(connection.pending_recast_receipts))
+    receipts["stage_receipts"].update(deepcopy(connection.pending_stage_receipts))
     return receipts
 
 
@@ -107,7 +114,7 @@ async def stop_local(session_id: str) -> None:
         connection.stop.set()
 
 
-class SpeakingConnection(CoachingRuntime):
+class SpeakingConnection(RecastRuntime, ConversationRuntime, CoachingRuntime):
     def __init__(self, websocket: WebSocket, owner: str, session_id: str, runtime_id: str):
         self.ws, self.owner, self.session_id, self.runtime_id = websocket, owner, session_id, runtime_id
         self.settings = get_settings()
@@ -143,6 +150,8 @@ class SpeakingConnection(CoachingRuntime):
         self.control_window = self.started
         self.control_count = 0
         self.init_coaching()
+        self.init_conversation()
+        self.init_recasts()
 
     async def send(self, document: dict) -> None:
         async with self.send_lock:
@@ -161,6 +170,7 @@ class SpeakingConnection(CoachingRuntime):
             **support_workspace(session, document),
             **{k: document[k] for k in ("runtime", "messages", "evidence", "learning", "policy", "analysis_status", "hint", "help")
                if k in document},
+            **conversation_workspace(document, session),
         }).model_dump(mode="json")
 
     async def commit(self, operation, publish: bool = True) -> None:
@@ -290,6 +300,9 @@ class SpeakingConnection(CoachingRuntime):
             self.silence_follow_ups = 0
 
     async def advance_silence(self, current: float) -> None:
+        if self.conversation_enabled():
+            await self.advance_conversation(current)
+            return
         playback_pending = any(not item.get("truncated") and
                                item["played_ms"] < item["generated_ms"] - 1
                                for item in self.audio_items.values())
@@ -318,14 +331,36 @@ class SpeakingConnection(CoachingRuntime):
             raise ProviderFailure("audio_rate", "Audio input exceeded the supported streaming rate. Reconnect to continue.", False)
         self.audio_budget -= size
 
-    async def request_response(self, opening: bool = False, follow_up: bool = False) -> None:
+    async def request_response(self, opening: bool = False, follow_up: bool = False, rephrase: dict | None = None) -> None:
         await self.fence()
+        if rephrase:
+            question = (self.state["document"].get("conversation_state") or {}).get("question")
+            if (not question or question["id"] != rephrase["id"] or question["context_version"] != rephrase["context_version"]
+                    or question["automatic_help_closed"] or question["id"] in self.closed_question_ids
+                    or self.user_speaking or self.draft_present or not self.microphone or not self.surface_visible):
+                return
         if self.active_response or self.response_requested:
-            self.queued_response = True
+            if not rephrase:
+                self.queued_response = True
             return
         request_id = str(uuid4())
-        policy = await self.eligible_policy()
+        recast_source = None
+        if self.conversation_enabled() and not (opening or follow_up or rephrase):
+            latest_user = next((m for m in reversed(self.state["document"].get("messages", [])) if m["role"] == "user"), None)
+            if latest_user:
+                recast_source = {"id": latest_user["id"], "revision": latest_user["revision"]}
+        recast_epoch = self.recast_epoch
+        recast = await self.reserve_recast(recast_source, request_id)
+        policy = None if rephrase else await self.eligible_policy()
         instruction = role_instructions(self.session, include_language_targets=False)
+        if recast_source:
+            instruction += ("\nIf the latest learner utterance contains one clear, local grammar or word-choice error, "
+                            "you may naturally restate that point correctly as their conversation partner, then continue the scene. "
+                            "Keep their meaning, names, numbers and commitments. Skip incomplete or uncertain transcription, "
+                            "acceptable wording and stylistic preferences. At most one brief recast; never repeat an earlier correction, "
+                            "announce a correction, explain grammar, ask them to repeat, or pause the conversation for a lesson.")
+            if recast and recast_epoch == self.recast_epoch and not self.user_speaking and not self.draft_present:
+                instruction += "\nAn optional wording for that same point is: " + recast['replacement'] + " Recast it naturally from your own viewpoint; do not introduce a new fact."
         policy_id = None
         if policy and policy.get("status") == "pending":
             source = next((m for m in self.state["document"].get("messages", [])
@@ -335,14 +370,20 @@ class SpeakingConnection(CoachingRuntime):
                 instruction += ("\nFor this response only: " + policy.get("instruction", "") +
                                 " Skip this teaching action if the current learner utterance already uses the target, "
                                 "changes topic, or asks a direct question that needs an answer. Keep the role-play natural.")
-        if opening:
+        if rephrase:
+            simpler = self.state["document"].get("conversation_state", {}).get("simpler_question")
+            instruction += ("\nRe-ask ONLY this question more simply, keeping the same intention: " + rephrase["current"]["quote"] +
+                            ". Do not supply an answer or any target wording. Then wait. " +
+                            ("Use this prepared wording: " + simpler if simpler else ""))
+        elif opening:
             instruction += "\nBegin now with one brief in-role opening. Do not list training objectives."
         elif follow_up:
             instruction += "\n" + SILENCE_FOLLOW_UP_INSTRUCTION
         self.silence_since = None
         attempt = self.new_attempt(policy) if policy_id else None
         self.pending_request = {"request_id": request_id, "policy_id": policy_id, "audio": self.microphone,
-                                "policy_attempt": attempt}
+                                "stage_index": (self.workspace().get("stage_progress") or {}).get("current_stage_index"),
+                                "policy_attempt": attempt, "rephrase": rephrase, "recast_source": recast_source, "recast_epoch": recast_epoch}
         self.response_requested = True
         await self.upstream({"type": "response.create", "response": {
             "instructions": instruction, "output_modalities": ["audio"] if self.microphone else ["text"],
@@ -413,9 +454,13 @@ class SpeakingConnection(CoachingRuntime):
             await self.save_assistant(response, "interrupted")
 
     async def save_assistant(self, response: dict, status: str) -> None:
+        if self.conversation_enabled() and response.get("persisted"):
+            return  # Duplicate provider completion must not replenish question budgets.
         message = new_message("assistant", response.get("text", "")[:8000], "voice" if response["audio"] else "text",
                               status=status, provider_item_id=response.get("item_id"), response_id=response["id"])
         def save(document, _):
+            if self.conversation_enabled() and not response.get("rephrase"):
+                close_question(document, "superseded")
             existing = next((m for m in document["messages"] if m.get("response_id") == response["id"]), None)
             if existing:
                 if existing["status"] != "unavailable":
@@ -430,6 +475,8 @@ class SpeakingConnection(CoachingRuntime):
         await self.commit(save)
         response["persisted"] = True
         self.response_saved(response, status)
+        self.conversation_response_saved(response, status)
+        self.recast_response_saved(response, status)
         if response.get("item_id"):
             # A playback ACK can arrive while this final transcript is saving.
             # Reconcile it after the save even if the browser sends no more ACKs.
@@ -483,6 +530,8 @@ class SpeakingConnection(CoachingRuntime):
             raise provider_failure(event)
         if kind == "input_audio_buffer.speech_started":
             self.user_speaking = True
+            self.recast_input()
+            self.conversation_input()
             self.user_activity_at = state_ops.iso_now()
             await self.send({"type": "user.activity", "speaking": True})
             self.silence_since = None
@@ -494,6 +543,8 @@ class SpeakingConnection(CoachingRuntime):
             await self.send({"type": "user.activity", "speaking": False})
             self.silence_since = None
         elif kind == "input_audio_buffer.committed":
+            self.transcription_pending = True
+            self.conversation_input()
             self.user_speaking = False
             item_id = event["item_id"]
             message = new_message("user", "", "voice", provider_item_id=item_id, status="unavailable",
@@ -511,11 +562,14 @@ class SpeakingConnection(CoachingRuntime):
             self.user_items[item_id] = message["id"]
             await self.request_response()
         elif kind == "conversation.item.input_audio_transcription.delta":
+            if event.get("delta", "").strip():
+                self.conversation_input()
             self.note_user_text(event.get("delta", ""))
             await self.send({"type": "transcript.delta", "role": "user", "item_id": event["item_id"], "delta": event.get("delta", "")[:4000]})
         elif kind == "conversation.item.input_audio_transcription.completed":
             await self.final_user_transcript(event["item_id"], event.get("transcript", ""))
         elif kind == "conversation.item.input_audio_transcription.failed":
+            self.transcription_pending = False
             await self.send({"type": "error", "code": "transcription_failed",
                              "message": "That utterance could not be transcribed. You can repeat it or type it.", "retryable": True})
         elif kind == "response.created":
@@ -580,6 +634,7 @@ class SpeakingConnection(CoachingRuntime):
 
     async def final_user_transcript(self, item_id: str, text: str) -> None:
         text = text.strip()
+        self.transcription_pending = False
         self.note_user_text(text)
         selected = None
         def save(document, _):
@@ -597,12 +652,17 @@ class SpeakingConnection(CoachingRuntime):
                 if policy and policy.get("status") == "pending" and policy.get("source_message_id") == message["id"]:
                     policy["status"] = "expired"
             message.update(text=text, status="final", finalized_at=state_ops.iso_now())
+            question = (document.get("conversation_state") or {}).get("question")
+            origin = next((m for m in document["messages"] if question and m["id"] == question["current"]["message_id"]), None)
+            if question and origin and origin["ordinal"] < message["ordinal"]:
+                close_question(document, "answered")
             if (document.get("help") or {}).get("source") == "automatic":
                 document["help"] = None
             document["analysis_status"] = "pending"
             selected = dict(message)
         await self.commit(save)
         if selected:
+            self.schedule_recast_source(selected)
             self.schedule_analysis(selected)
 
     def schedule_analysis(self, message: dict) -> None:
@@ -672,7 +732,7 @@ class SpeakingConnection(CoachingRuntime):
                 self.diagnostic("analysis.reconciled", {**identity, **outcome})
                 # Wakes a safe-boundary check even if turnComplete preceded the model result.
                 self.schedule_coaching()
-                if result.get("analysis_trace", {}).get("needs_help"):
+                if not self.conversation_enabled() and result.get("analysis_trace", {}).get("needs_help"):
                     latest = next((m for m in reversed(self.state["document"].get("messages", []))
                                    if m["role"] == "user"), None)
                     if latest and latest["id"] == message["id"] and latest["revision"] == message["revision"]:
@@ -700,7 +760,7 @@ class SpeakingConnection(CoachingRuntime):
                 # PCM and presentation receipts only touch client-owned or
                 # monotonic local state. Waiting for provider transcript storage
                 # here turns real-time PCM into an artificial catch-up burst.
-                if event.get("type") in {"audio.append", "ping", "playback", "message.shown", "hint.shown", "target.shown"}:
+                if event.get("type") in {"audio.append", "ping", "playback", "message.shown", "hint.shown", "target.shown", "client.activity", "help.shown", "recast.shown"}:
                     await self.client_event(event)
                 else:
                     # One reader preserves FIFO with microphone/text controls;
@@ -713,6 +773,15 @@ class SpeakingConnection(CoachingRuntime):
     async def client_event(self, event: dict) -> None:
         kind = event.get("type")
         current = time.monotonic()
+        if kind == "client.activity":
+            self.conversation_activity(event)
+            return
+        if kind == "recast.shown":
+            self.recast_shown(event)
+            return
+        if kind == "help.shown":
+            self.conversation_shown(event)
+            return
         if kind == "ping":
             self.last_ping = current
             await self.send({"type": "pong"})
@@ -743,9 +812,13 @@ class SpeakingConnection(CoachingRuntime):
                 item["played_ms"] = max(item["played_ms"], min(played, item["generated_ms"]))
                 self.confirm_playback(event["item_id"])
                 self.playback_logged(event["item_id"])
+                self.conversation_presentation()
+                self.recast_presentations()
             return
         if kind == "message.shown":
             self.message_shown(event)
+            self.conversation_presentation()
+            self.recast_presentations()
             return
         if kind == "hint.shown":
             await self.hint_shown(event)  # Capture receipt now; persistence runs outside the audio lock.
@@ -759,10 +832,22 @@ class SpeakingConnection(CoachingRuntime):
         if self.control_count > 25:
             raise ProviderFailure("control_rate", "Too many requests. Reconnect in a moment.", False)
         await self.fence()
-        if kind == "microphone":
+        if kind == "help.request":
+            try:
+                await self.conversation_help(event)
+            except ValueError:
+                await self.send({"type": "error", "code": "help_unavailable", "request_id": str(event.get("request_id", ""))[:64],
+                                 "message": "Help is unavailable for this question. Please try again.", "retryable": True})
+                await self.send({"type": "snapshot", "workspace": self.workspace()})
+        elif kind == "help.dismiss":
+            await self.conversation_dismiss(event)
+        elif kind == "microphone":
             if not isinstance(event.get("enabled"), bool):
                 raise ValueError
             enabled = event["enabled"]
+            if not enabled and self.microphone:
+                self.recast_input()
+                self.conversation_input("interrupted")
             self.silence_since = None
             if enabled != self.microphone:
                 await self.interrupt()
@@ -776,11 +861,15 @@ class SpeakingConnection(CoachingRuntime):
                 if not any(message["text"].strip() for message in self.state["document"].get("messages", [])):
                     await self.request_response(opening=True)
         elif kind == "interrupt":
+            self.recast_input()
+            self.conversation_input("interrupted")
             self.silence_since = None
             await self.interrupt()
         elif kind == "text.submit":
             await self.submit_text(event)
         elif kind == "hint":
+            if self.conversation_enabled():
+                raise ValueError
             self.request_help(event)
         elif kind == "support.set":
             level, expected = event.get("level"), event.get("expected_version")
@@ -808,6 +897,7 @@ class SpeakingConnection(CoachingRuntime):
                 await self.send({"type": "snapshot", "workspace": self.workspace()})
                 return
             self.help_request_id = None
+            self.conversation_input()
             self.diagnostic("support.changed", {"level": level, "at": timestamp,
                                                  "version": (self.state["document"].get("support") or {}).get("version", 0)})
         elif kind in {"target.skip", "target.restore"}:
@@ -826,6 +916,9 @@ class SpeakingConnection(CoachingRuntime):
             # immutable attempt, but fence every unsent or stale analysis action.
             if help_target == target:
                 self.help_request_id = None
+            conversation_state = self.state["document"].get("conversation_state", {})
+            if any((conversation_state.get(key) or {}).get("target_item_id") == target for key in ("help", "question")):
+                self.conversation_input()
             self.diagnostic(kind, {"target_item_id": target, "reason": reason, "at": timestamp})
         else:
             raise ValueError
@@ -843,6 +936,8 @@ class SpeakingConnection(CoachingRuntime):
             else:
                 await self.send({"type": "snapshot", "workspace": self.workspace()})
             return
+        self.recast_input()
+        self.conversation_input("answered")
         self.conversation_started = True
         self.user_speaking = False
         self.note_user_text(text)
@@ -862,6 +957,7 @@ class SpeakingConnection(CoachingRuntime):
                 document["help"] = None
             document["analysis_status"] = "pending"
         await self.commit(save)
+        self.schedule_recast_source(message)
         await self.upstream({"type": "conversation.item.create", "item": {
             "id": item_id, "type": "message", "role": "user", "content": [{"type": "input_text", "text": text}],
         }})
