@@ -16,14 +16,15 @@ import { useRouteIntent } from "../navigation/use-route-prefetch";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowUpRight, BookPlus, Check, ChevronRight, RefreshCw } from "lucide-react";
-import type { FeedbackDimension, FeedbackDimensionId, FeedbackReference, FeedbackRefactor, SpeakingFeedback, SpeakingSessionCreate } from "@libitu/types/speaking";
+import type { FeedbackDimension, FeedbackDimensionId, FeedbackReference, FeedbackRefactor, FeedbackItem, SpeakingFeedback, SpeakingSessionCreate } from "@libitu/types/speaking";
 import { createCorpusRemote } from "../corpus/corpus-api";
 import { createSpeakingApi } from "../loadout/api/speaking-api";
 import { missionHref } from "../navigation/return-location";
 import { importMissionDraft } from "../loadout/draft";
 import { createFeedbackApi } from "./api";
 import { FeedbackController, feedbackPending } from "./controller";
-import { DIMENSIONS, draftFromMission, retryMissionRequest, suggestionRecord, validReference } from "./model";
+import { RecastReport } from "./RecastReport";
+import { DIMENSIONS, draftFromMission, feedbackUseCounts, retryMissionRequest, suggestionRecord, validReference } from "./model";
 import { MissedOpportunities, PracticeComparisonSection, SecondRound } from "./PracticeSections";
 import styles from "./Analytics.module.css";
 
@@ -42,23 +43,29 @@ function DimensionDetail({ dimension, report, onSelect }: { dimension: FeedbackD
   if (!dimension) return <p className={styles.empty}>Assessment details are not available yet.</p>;
   if (dimension.id === "transfer") return <>
     <p className={styles.explainer}>{report.session.mission_plan
-      ? "Coverage considers applicable primary targets. Skipped targets and missing opportunities are not learner failures; opportunity targets are extra practice. Assisted use is shown separately."
+      ? report.session.mission_plan.version === 2 ? "Coverage considers all applicable targets equally. Skipped targets and missing opportunities are not learner failures. Assisted use is shown separately." : "Coverage considers applicable primary targets. Skipped targets and missing opportunities are not learner failures; opportunity targets are extra practice. Assisted use is shown separately."
       : "Each selected item counts once toward coverage. Prompted use counts and is shown separately."} These observations do not establish mastery.</p>
     {report.session.mission_plan && report.result ? <p className={styles.small}>
-      {report.result.statistics.offered_primary_targets ?? 0} primary opportunities presented · {report.result.statistics.used_primary_targets ?? 0} primary targets used · {report.result.statistics.skipped_targets ?? 0} skipped.
-      {" "}A percentage appears only when every applicable primary target has an assessable opportunity or a confirmed use.
+      {report.result.statistics.offered_primary_targets ?? 0} {report.session.mission_plan.version === 2 ? "target" : "primary"} opportunities presented · {report.result.statistics.used_primary_targets ?? 0} {report.session.mission_plan.version === 2 ? "targets" : "primary targets"} used · {report.result.statistics.skipped_targets ?? 0} skipped.
+      {" "}A percentage appears only when every applicable target has an assessable opportunity or a confirmed use.
     </p> : null}
     {(["Expressions", "Structures"] as const).map(group => {
       const items = report.result?.item_results.filter(item => group === "Structures" ? item.kind === "structure" : item.kind !== "structure") ?? [];
       return items.length ? <section className={styles.itemGroup} key={group}><h3>{group}</h3>{items.map(item => <article className={styles.item} key={item.session_item_id}>
         <div className={styles.itemHeading}><strong>{item.text}</strong><span className={`${styles.badge} ${item.status === "appropriate" ? styles.good : item.status === "inappropriate" ? styles.attention : ""}`}>{({ appropriate: "Appropriate use", inappropriate: "Needs context", uncertain: "Not confirmed", not_observed: "Not observed" })[item.status]}</span></div>
-        {item.role ? <p className={styles.small}>{item.role === "primary" ? "Primary target" : "Opportunity target"}{item.opportunity_status === "skipped" ? " · Skipped" : item.opportunity_status === "planned" ? " · No confirmed opportunity" : ""}</p> : null}
+        {item.role ? <p className={styles.small}>{report.session.mission_plan?.version === 2 ? "Target" : item.role === "primary" ? "Primary target" : "Opportunity target"}{item.opportunity_status === "skipped" ? " · Skipped" : item.opportunity_status === "planned" ? " · No confirmed opportunity" : ""}</p> : null}
         <p>{item.reason}</p>{item.excluded_reason ? <p className={styles.small}>{item.excluded_reason}</p> : null}
-        {item.independent_uses + item.prompted_uses + (item.uncertain_assistance_uses ?? 0) > 0 ? <p className={styles.small}>{item.independent_uses} without recorded wording help · {item.prompted_uses} assisted{item.uncertain_assistance_uses ? ` · ${item.uncertain_assistance_uses} with uncertain assistance timing` : ""}</p> : null}<EvidenceLinks references={item.evidence} report={report} onSelect={onSelect} />
+        {report.session.mission_plan?.version === 2 ? <StagedUseCounts item={item} /> : item.independent_uses + item.prompted_uses + (item.uncertain_assistance_uses ?? 0) > 0 ? <p className={styles.small}>{item.independent_uses} without recorded wording help · {item.prompted_uses} assisted{item.uncertain_assistance_uses ? ` · ${item.uncertain_assistance_uses} with uncertain assistance timing` : ""}</p> : null}<EvidenceLinks references={item.evidence} report={report} onSelect={onSelect} />
       </article>)}</section> : null;
     })}
   </>;
   return <div className={styles.criteria}>{dimension.criteria.length ? dimension.criteria.map(criterion => <article className={styles.criterion} key={criterion.id}><div className={styles.itemHeading}><h3>{criterion.label}</h3><span className={styles.rating}>{criterion.rating === null ? "Not assessed" : `${criterion.rating} / 4`}</span></div><p>{criterion.reason}</p><EvidenceLinks references={criterion.evidence} report={report} onSelect={onSelect} /></article>) : <p className={styles.empty}>There is not enough verified evidence to assess this dimension.</p>}</div>;
+}
+function StagedUseCounts({ item }: { item: FeedbackItem }) {
+  const counts = feedbackUseCounts(item);
+  return <p className={styles.small}>{counts.independent} independent · {counts.imitation === null
+    ? `${counts.assisted} assisted (imitation breakdown not recorded)`
+    : `${counts.imitation} imitated · ${counts.otherAssisted} after other help`} · {counts.uncertain} with uncertain assistance timing</p>;
 }
 function Overview({ report }: { report: SpeakingFeedback }) {
   const dimensions = DIMENSIONS.map(({ id }) => report.result?.dimensions.find(value => value.id === id));
@@ -136,7 +143,8 @@ function OwnedReport({ owner, sessionId, returnTo, getToken }: { owner: string; 
           router.push(missionHref("session", returnTo, recovered.id)); return;
         }
       }
-      const records = await createCorpusRemote(owner, getToken).list(signal); signal.throwIfAborted();
+      const records = report.session.items.length ? await createCorpusRemote(owner, getToken).list(signal) : [];
+      signal.throwIfAborted();
       const imported = draftFromMission(report.session, records);
       if (adjust || imported.missing) {
         const result = await importMissionDraft(window.localStorage, owner, imported.draft, { isCurrent: () => !signal.aborted });
@@ -160,7 +168,7 @@ function OwnedReport({ owner, sessionId, returnTo, getToken }: { owner: string; 
   const userNumbers = new Map(report?.messages.filter(message => message.role === "user").map((message, index) => [message.id, index + 1]));
   return <><AppHeader active="mission" /><main className={styles.page}><section className={styles.shell} aria-label="Speaking analytics">
     <div className={styles.topbar}><span className={styles.stagePill}>Stage 5 · Analytics</span></div>
-    <div className={styles.heading}><DirectionLink className={styles.back} href={missionHref("session", returnTo, sessionId)}><ArrowLeft size={14} aria-hidden="true" /> Conversation review</DirectionLink><div className={styles.eyebrow}>Reflect, then try again</div><h1>{report ? "Your mission report" : "Speaking report"}</h1><p>{report?.session.goal ?? "Feedback grounded in your conversation."}</p>{report ? <div className={styles.context}><span>{report.session.scenario_type === "workplace" ? "Workplace" : "Everyday life"}</span><span>{report.session.difficulty}</span>{report.session.logic_template ? <span>{report.session.logic_template.title}</span> : null}<span>{report.session.turn_count} user {report.session.turn_count === 1 ? "turn" : "turns"}</span></div> : null}</div>
+    <div className={styles.heading}><DirectionLink className={styles.back} href={missionHref("session", returnTo, sessionId)}><ArrowLeft size={14} aria-hidden="true" /> Conversation review</DirectionLink><div className={styles.eyebrow}>Reflect, then try again</div><h1>{report ? "Your mission report" : "Speaking report"}</h1><p>{report?.session.goal ?? "Feedback grounded in your conversation."}</p>{report ? <div className={styles.context}><span>{report.session.scenario_type === "workplace" ? "Workplace" : report.session.scenario_type === "travel" ? "Travel" : "Everyday life"}</span><span>{report.session.difficulty}</span>{report.session.logic_template ? <span>{report.session.logic_template.title}</span> : null}<span>{report.session.turn_count} user {report.session.turn_count === 1 ? "turn" : "turns"}</span></div> : null}</div>
     {state.error ? <div className={styles.statusBox} role="alert"><h2>{state.errorStatus === 404 ? "Report unavailable" : "Report not ready to show"}</h2><p>{state.error}</p>{state.errorStatus !== 404 && state.errorStatus !== 409 ? <Button variant="secondary" size="inherit" onClick={() => void controller.current?.refresh()} disabled={state.loading} loading={state.loading} loadingLabel="Loading…">Reload report</Button> : null}</div> : null}
     {!report && state.loading ? <ContentSkeleton label="Loading your saved report…" variant="cards" /> : null}
     {report ? <>
@@ -175,6 +183,7 @@ function OwnedReport({ owner, sessionId, returnTo, getToken }: { owner: string; 
         })}</div>
         <section className={styles.detail} role="tabpanel" id="dimension-detail" aria-labelledby={`tab-${activeDimension}`} tabIndex={0}><div className={styles.sectionHeading}><h2>{DIMENSIONS.find(dimension => dimension.id === activeDimension)?.label}</h2><span className={styles.badge}>{activeDimension === "transfer" ? "Coverage" : "AI assessment"}</span></div>{selected?.summary ? <p className={styles.summary}>{selected.summary}</p> : null}<DimensionDetail dimension={selected} report={report} onSelect={selectSource} /></section>
         {report.result?.logic_stages.length ? <section><div className={styles.sectionHeading}><h2>Conversation structure</h2><span className={styles.badge}>Separate from task fit</span></div><div className={styles.logicStages}>{report.result.logic_stages.map((stage, index) => <article key={`${stage.label}:${index}`}><h3>{stage.label}<span className={styles.small}>{stage.status === "observed" ? "Observed" : stage.status === "uncertain" ? "Not confirmed" : "Not observed"}</span></h3><p>{stage.reason}</p><EvidenceLinks references={stage.evidence} report={report} onSelect={selectSource} /></article>)}</div></section> : null}
+        <RecastReport report={report} onSelect={selectSource} />
         {report.result ? <section><div className={styles.sectionHeading}><h2>Ways to refine your language</h2><span className={styles.badge}>{Math.min(3, report.result.refactors.length)} {report.result.refactors.length === 1 ? "suggestion" : "suggestions"}</span></div><p className={styles.explainer}>AI suggestions aim to preserve your meaning. Choose wording that still says what you intend.</p><div className={styles.refactors}>{report.result.refactors.slice(0, 3).filter(refactor => validReference(refactor.original, report.messages)).map(refactor => <article className={styles.refactor} key={refactor.id}><div className={styles.refactorHeader}><span className={styles.badge}>Your turn {userNumbers.get(refactor.original.message_id)}</span><a href={`#source-${refactor.original.message_id}`} onClick={event => { event.preventDefault(); selectSource(refactor.original); }}>View source <ArrowUpRight size={12} aria-hidden="true" /></a></div><div className={styles.comparison}><div><h3>Your version</h3><p>{refactor.original.quote}</p></div><div><h3>Suggested wording</h3><p>{refactor.suggested}</p></div></div><div className={styles.refactorReason}><p>{refactor.reason}</p>{refactor.save_text ? <Button variant="primary" size="inherit" type="button" disabled={!!busy || saved.includes(refactor.id)} loading={busy === refactor.id} loadingLabel="Saving…" onClick={() => void saveSuggestion(refactor)}>{saved.includes(refactor.id) ? <Check size={14} aria-hidden="true" /> : <BookPlus size={14} aria-hidden="true" />}{saved.includes(refactor.id) ? "Saved to corpus" : "Save AI suggestion"}</Button> : null}</div></article>)}</div>{!report.result.refactors.length ? <p className={styles.empty}>No verified rewrite suggestions for this conversation.</p> : null}</section> : null}
         <MissedOpportunities report={report} onSelect={selectSource} />
         <PracticeComparisonSection report={report} owner={owner} getToken={getToken} returnTo={returnTo} />
@@ -188,8 +197,8 @@ function OwnedReport({ owner, sessionId, returnTo, getToken }: { owner: string; 
         <Overview report={report} />
         <section><h2 className={styles.sideTitle}>Session at a glance</h2><dl className={styles.stats}><div><dt>User turns</dt><dd>{stats?.user_turns ?? report.session.turn_count}</dd></div><div><dt>Assessed turns</dt><dd>{stats?.assessed_turns ?? "—"}</dd></div><div><dt>Unconfirmed turns</dt><dd>{stats?.excluded_turns ?? "—"}</dd></div><div><dt>Average words / turn</dt><dd>{stats ? stats.average_words.toFixed(1) : "—"}</dd></div>
           {report.session.mission_plan ? <>
-            <div><dt>Primary targets used</dt><dd>{stats?.used_primary_targets ?? "—"}</dd></div>
-            <div><dt>Opportunity targets used</dt><dd>{stats?.used_opportunity_targets ?? "—"}</dd></div>
+            <div><dt>{report.session.mission_plan.version === 2 ? "Targets used" : "Primary targets used"}</dt><dd>{stats?.used_primary_targets ?? "—"}</dd></div>
+            {report.session.mission_plan.version !== 2 ? <div><dt>Opportunity targets used</dt><dd>{stats?.used_opportunity_targets ?? "—"}</dd></div> : null}
             <div><dt>Skipped targets</dt><dd>{stats?.skipped_targets ?? "—"}</dd></div>
           </> : <><div><dt>Expressions used</dt><dd>{stats ? `${stats.used_expressions} / ${stats.selected_expressions}` : "—"}</dd></div><div><dt>Structures used</dt><dd>{stats ? `${stats.used_structures} / ${stats.selected_structures}` : "—"}</dd></div></>}
         </dl></section>

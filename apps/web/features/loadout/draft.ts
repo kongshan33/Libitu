@@ -1,11 +1,12 @@
-import type { LogicTemplateId, SpeakingDifficulty, SpeakingFeedbackLevel, SpeakingScenario, SpeakingSessionCreate, SpeakingPlan, SpeakingTargetRole, SpeakingSupportLevel } from "@libitu/types/speaking";
+import type { LogicTemplateId, SpeakingDifficulty, SpeakingFeedbackLevel, SpeakingScenario, SpeakingSessionCreate, SpeakingPlan, SpeakingTargetRole, SpeakingSupportLevel, SpeakingLogicTemplate, SpeakingPlanCreate, SpeakingOptions } from "@libitu/types/speaking";
 import type { SavedCorpusRecord } from "../corpus/corpus-storage.ts";
 import { isSupportLevel } from "../speaking/support.ts";
+import { targetStageIndex, mapTargetStages, sceneForLogic, type QuickStartRecommendation } from "./quick-start.ts";
 
 export const LOADOUT_STORAGE_KEY = "libitu:loadout:v1";
 export const MAX_STRUCTURES = 3;
 export const MAX_EXPRESSIONS = 5;
-export const LOGIC_IDS: LogicTemplateId[] = ["persuasive_pitch", "technical_troubleshoot", "stakeholder_alignment", "status_update", "disagreement", "onboarding"];
+export const LOGIC_IDS: LogicTemplateId[] = ["persuasive_pitch", "technical_troubleshoot", "stakeholder_alignment", "status_update", "disagreement", "onboarding", "telling_story", "making_plans", "catching_up"];
 
 export type LoadoutDraft = {
   scenarioType: SpeakingScenario;
@@ -14,7 +15,18 @@ export type LoadoutDraft = {
   feedbackLevel: SpeakingFeedbackLevel;
   logicTemplateId: LogicTemplateId | null;
   selectedKeys: string[];
+  freeConversation?: boolean;
+  origin?: "quick" | "manual";
+  pinnedKeys?: string[];
+  sceneMode?: "ai" | "custom";
+  customScene?: string;
+  logicSource?: "auto" | "manual" | "scene";
+  shuffleSeed?: number;
+  lastLogicId?: LogicTemplateId | null;
+  suggestedScene?: boolean;
+  suggestedLogic?: boolean;
   targetRoles?: Record<string, SpeakingTargetRole>;
+  targetStages?: Record<string, number | null>;
   supportLevel?: SpeakingSupportLevel | null;
   plan?: { signature: string; value: SpeakingPlan };
   selectedCandidateId?: string;
@@ -36,7 +48,7 @@ function mutateDraft<T>(operation: () => T, context: MutationContext): Promise<T
 }
 
 export function emptyDraft(): LoadoutDraft {
-  return { scenarioType: "workplace", goal: "", difficulty: "standard", feedbackLevel: "balanced", logicTemplateId: null, selectedKeys: [], supportLevel: "model_frame" };
+  return { scenarioType: "workplace", goal: "", difficulty: "guided", feedbackLevel: "detailed", logicTemplateId: null, selectedKeys: [], supportLevel: "model_frame", origin: "quick", pinnedKeys: [], sceneMode: "ai", logicSource: "auto", shuffleSeed: 0 };
 }
 
 export function draftSignature(draft: LoadoutDraft): string {
@@ -44,13 +56,15 @@ export function draftSignature(draft: LoadoutDraft): string {
   // Preserve the signature of legacy uncertain requests so they can be replayed.
   if (draft.targetRoles || draft.plan || draft.selectedCandidateId) values.push(draft.targetRoles ?? null, draft.plan?.value.id ?? null, draft.selectedCandidateId ?? null);
   if (draft.supportLevel != null) values.push(draft.supportLevel);
+  if (draft.freeConversation) values.push("free-conversation");
+  if (draft.targetStages) values.push(draft.targetStages);
   return JSON.stringify(values);
 }
 
 function validDraft(value: unknown): value is LoadoutDraft {
   if (!value || typeof value !== "object") return false;
   const draft = value as LoadoutDraft;
-  if (!["workplace", "everyday"].includes(draft.scenarioType) || typeof draft.goal !== "string" || draft.goal.length > 500
+  if (!["workplace", "everyday", "travel"].includes(draft.scenarioType) || typeof draft.goal !== "string" || draft.goal.length > 500
     || !["guided", "standard", "challenging"].includes(draft.difficulty)
     || !["light", "balanced", "detailed"].includes(draft.feedbackLevel)
     || !(draft.logicTemplateId === null || LOGIC_IDS.includes(draft.logicTemplateId))
@@ -58,10 +72,22 @@ function validDraft(value: unknown): value is LoadoutDraft {
     || !draft.selectedKeys.every((key) => typeof key === "string") || new Set(draft.selectedKeys).size !== draft.selectedKeys.length) return false;
   if (draft.targetRoles && (typeof draft.targetRoles !== "object" || Array.isArray(draft.targetRoles)
     || !Object.values(draft.targetRoles).every(role => role === "primary" || role === "opportunity"))) return false;
+  if (draft.targetStages && (typeof draft.targetStages !== "object" || Array.isArray(draft.targetStages)
+    || !Object.values(draft.targetStages).every(index => index === null || Number.isInteger(index) && index >= 0))) return false;
   if (draft.supportLevel != null && !isSupportLevel(draft.supportLevel)) return false;
+  if (draft.freeConversation !== undefined && typeof draft.freeConversation !== "boolean") return false;
+  if ([draft.suggestedScene, draft.suggestedLogic].some(value => value !== undefined && typeof value !== "boolean")) return false;
+  if (draft.freeConversation && (draft.selectedKeys.length || draft.logicTemplateId || draft.plan)) return false;
   if (draft.plan && !validPlan(draft.plan.value)) return false;
   if (draft.plan && typeof draft.plan.signature !== "string") return false;
   if (draft.selectedCandidateId !== undefined && typeof draft.selectedCandidateId !== "string") return false;
+  if (draft.origin !== undefined && !["quick", "manual"].includes(draft.origin)) return false;
+  if (draft.sceneMode !== undefined && !["ai", "custom"].includes(draft.sceneMode)) return false;
+  if (draft.logicSource !== undefined && !["auto", "manual", "scene"].includes(draft.logicSource)) return false;
+  if (draft.customScene !== undefined && (typeof draft.customScene !== "string" || draft.customScene.length > 500)) return false;
+  if (draft.pinnedKeys !== undefined && (!Array.isArray(draft.pinnedKeys) || draft.pinnedKeys.some(key => typeof key !== "string" || !draft.selectedKeys.includes(key)))) return false;
+  if (draft.shuffleSeed !== undefined && (!Number.isInteger(draft.shuffleSeed) || draft.shuffleSeed < 0)) return false;
+  if (draft.lastLogicId != null && !LOGIC_IDS.includes(draft.lastLogicId)) return false;
   if (!draft.submission) return true;
   const { signature, request } = draft.submission;
   const candidate = draft.plan?.value.candidates.find(value => value.id === draft.selectedCandidateId);
@@ -80,7 +106,10 @@ function validDraft(value: unknown): value is LoadoutDraft {
 export function validPlan(value: unknown): value is SpeakingPlan {
   if (!value || typeof value !== "object") return false;
   const plan = value as SpeakingPlan;
-  return typeof plan.id === "string" && plan.version === 1 && ["workplace", "everyday"].includes(plan.scenario_type)
+  const logic = plan.logic_template;
+  const validLogic = logic && LOGIC_IDS.includes(logic.id) && typeof logic.title === "string" && typeof logic.description === "string"
+    && Array.isArray(logic.steps) && logic.steps.length > 0 && logic.steps.every(step => typeof step === "string" && step.trim());
+  return typeof plan.id === "string" && [1, 2].includes(plan.version) && (plan.version !== 2 || Boolean(validLogic)) && ["workplace", "everyday", "travel"].includes(plan.scenario_type)
     && typeof plan.brief === "string" && typeof plan.created_at === "string"
     && (plan.practice_source == null || typeof plan.practice_source.parent_session_id === "string"
       && typeof plan.practice_source.root_session_id === "string" && ["details", "role_swap"].includes(plan.practice_source.variation)
@@ -97,6 +126,8 @@ export function validPlan(value: unknown): value is SpeakingPlan {
         && ["primary", "opportunity"].includes(target.role) && ["high", "medium", "low", "unknown"].includes(target.fit)
         && ["available", "partial", "unknown"].includes(target.metadata_status)
         && (target.sentence_frame == null || typeof target.sentence_frame === "string" && target.sentence_frame.trim().length > 0 && target.sentence_frame.length <= 500)
+        && (plan.version !== 2 || (target.stage_index === null || Number.isInteger(target.stage_index) && target.stage_index! >= 0 && target.stage_index! < logic!.steps.length)
+          && typeof target.model_line === "string" && target.model_line.trim().length > 0 && target.role === "primary")
         && ["communicative_function", "fit_reason", "trigger_question", "skip_when"].every(key => typeof target[key as keyof typeof target] === "string" && String(target[key as keyof typeof target]).trim().length > 0)));
 }
 
@@ -104,11 +135,13 @@ export function validPlan(value: unknown): value is SpeakingPlan {
 export function targetRole(draft: LoadoutDraft, key: string): SpeakingTargetRole {
   return draft.targetRoles?.[key] ?? (draft.selectedKeys.indexOf(key) < 2 || draft.selectedKeys.indexOf(key) >= 4 ? "primary" : "opportunity");
 }
-export function missionInputSignature(draft: LoadoutDraft, records: SavedCorpusRecord[]): string {
+export function missionInputSignature(draft: LoadoutDraft, records: SavedCorpusRecord[], suppliedLogic?: SpeakingLogicTemplate): string {
   const byKey = new Map(records.map(record => [record.key, record]));
   // Version the scene inputs separately from the immutable Mission-create request.
   // Settings used only during conversation/feedback must not spend another plan.
-  return JSON.stringify(["scene-input-v2", draft.scenarioType, draft.goal.trim(),
+  const legacyLinked = draft.plan?.value.version === 1 && draft.plan.value.practice_source;
+  const logic = suppliedLogic ?? (draft.plan?.value.logic_template?.id === draft.logicTemplateId ? draft.plan.value.logic_template : undefined);
+  return JSON.stringify([legacyLinked ? "scene-input-v2" : "scene-input-v3", draft.scenarioType, draft.goal.trim(),
     draft.selectedKeys.map(key => {
       const record = byKey.get(key);
       const item = record?.item;
@@ -118,30 +151,40 @@ export function missionInputSignature(draft: LoadoutDraft, records: SavedCorpusR
         record?.sourceTitle ?? null, item.register ?? null, item.scenarioTags ?? [],
         item.kind === "structure" ? item.patternFamily ?? null : null
       ] : null];
-    })]);
+    }), ...(!legacyLinked ? [draft.logicTemplateId, logic?.steps ?? null, draft.targetStages ?? null] : [])]);
+}
+
+export function planningRequest(draft: LoadoutDraft, records: SavedCorpusRecord[], logic: SpeakingLogicTemplate, candidateCount: 1 | 2): SpeakingPlanCreate {
+  return { scenario_type: draft.scenarioType, brief: draft.goal.trim(), candidate_count: candidateCount, logic_template_id: logic.id,
+    targets: draft.selectedKeys.map(key => {
+      const record = records.find(record => record.key === key);
+      if (!record?.serverId) throw new Error("Your selected targets must finish syncing before preparing a scene.");
+      return { corpus_item_id: record.serverId, role: "primary", stage_index: draft.targetStages && key in draft.targetStages ? draft.targetStages[key] : targetStageIndex(record, logic) };
+    }) };
 }
 /** Support is independent of scene fit, so a manual change can reuse the plan. */
 export function changeDraftSupport(draft: LoadoutDraft, level: SpeakingSupportLevel): LoadoutDraft {
   return draft.supportLevel === level ? draft : { ...draft, supportLevel: level, submission: undefined };
 }
 export function missionSelectionError(draft: LoadoutDraft, records: SavedCorpusRecord[], signedIn: boolean): string | null {
-  if (!draft.selectedKeys.length) return "Select at least one primary target.";
+  if (draft.freeConversation && !draft.selectedKeys.length && !draft.logicTemplateId && !draft.plan) return null;
+  if (!draft.selectedKeys.length) return "Choose a target or use Quick start.";
   const selection = resolveSelection(draft, records);
   if (selection.missing.length) return "Some selected items are no longer in your corpus. Remove them before continuing.";
-  if (selection.structures.length > MAX_STRUCTURES) return "Choose up to 3 structures for this mission. Your previous selections are kept until you adjust them.";
+  if (draft.selectedKeys.length > 5) return "Choose up to 5 targets for this mission. Your previous selections are kept until you adjust them.";
   const primary = draft.selectedKeys.filter(key => targetRole(draft, key) === "primary").length;
-  if (!primary || primary > 3 || draft.selectedKeys.length - primary > 2) return "Choose 1–3 primary targets and up to 2 opportunity targets. Your previous selections are kept until you adjust them.";
+  if (!primary) return "Choose at least one target for this mission.";
   if (signedIn && selection.unsynced.length) return "Your selected items are still waiting to sync. Retry corpus sync before continuing.";
   const ids = selection.selected.map(({ record }) => record?.serverId).filter(Boolean);
   if (new Set(ids).size !== ids.length) return "The same corpus item was selected twice. Remove the duplicate before continuing.";
   return null;
 }
-export function currentCandidate(draft: LoadoutDraft, records: SavedCorpusRecord[]) {
-  if (draft.plan?.signature !== missionInputSignature(draft, records)) return undefined;
+export function currentCandidate(draft: LoadoutDraft, records: SavedCorpusRecord[], logic?: SpeakingLogicTemplate) {
+  if (draft.plan?.signature !== missionInputSignature(draft, records, logic)) return undefined;
   return draft.plan.value.candidates.find(candidate => candidate.id === draft.selectedCandidateId);
 }
-function matchingCandidates(draft: LoadoutDraft, records: SavedCorpusRecord[]) {
-  if (draft.plan?.signature !== missionInputSignature(draft, records)) return [];
+function matchingCandidates(draft: LoadoutDraft, records: SavedCorpusRecord[], logic?: SpeakingLogicTemplate) {
+  if (draft.plan?.signature !== missionInputSignature(draft, records, logic)) return [];
   const expected = draft.selectedKeys.map(key => records.find(record => record.key === key)?.serverId);
   return draft.plan.value.candidates.filter(candidate => candidate.targets.length === expected.length
     && candidate.targets.every((target, index) => target.corpus_item_id === expected[index] && target.role === targetRole(draft, draft.selectedKeys[index]))
@@ -150,14 +193,14 @@ function matchingCandidates(draft: LoadoutDraft, records: SavedCorpusRecord[]) {
 const primaryFitGaps = (candidate: SpeakingPlan["candidates"][number]) => candidate.targets.filter(target => target.role === "primary" && (target.fit === "low" || target.fit === "unknown"));
 const highPrimaryFits = (candidate: SpeakingPlan["candidates"][number]) => candidate.targets.filter(target => target.role === "primary" && target.fit === "high").length;
 /** Reuse the learner's suitable choice, then rank suitable cached scenes stably. */
-export function automaticCandidate(draft: LoadoutDraft, records: SavedCorpusRecord[]) {
-  const candidates = matchingCandidates(draft, records).filter(candidate => !primaryFitGaps(candidate).length);
+export function automaticCandidate(draft: LoadoutDraft, records: SavedCorpusRecord[], logic?: SpeakingLogicTemplate) {
+  const candidates = matchingCandidates(draft, records, logic).filter(candidate => !primaryFitGaps(candidate).length);
   return candidates.find(candidate => candidate.id === draft.selectedCandidateId)
     ?? candidates.reduce<(typeof candidates)[number] | undefined>((best, candidate) => !best || highPrimaryFits(candidate) > highPrimaryFits(best) ? candidate : best, undefined);
 }
 /** Explain one verified scene; never combine incompatible reasons across scenes. */
-export function sceneFitAdvice(draft: LoadoutDraft, records: SavedCorpusRecord[]) {
-  const candidates = matchingCandidates(draft, records);
+export function sceneFitAdvice(draft: LoadoutDraft, records: SavedCorpusRecord[], logic?: SpeakingLogicTemplate) {
+  const candidates = matchingCandidates(draft, records, logic);
   const candidate = candidates.find(value => value.id === draft.selectedCandidateId)
     ?? candidates.reduce<(typeof candidates)[number] | undefined>((best, value) => {
       if (!best) return value;
@@ -175,9 +218,9 @@ export type SceneTargetAdjustment = "opportunity" | "remove";
 export function sceneAdjustmentError(draft: LoadoutDraft, key: string, action: SceneTargetAdjustment): string | null {
   if (draft.submission) return "Recover the pending mission before changing its targets.";
   if (draft.plan?.value.practice_source) return "Unlink this second round before changing its targets.";
-  if (!draft.selectedKeys.includes(key) || targetRole(draft, key) !== "primary") return "This primary target is no longer selected.";
+  if (!draft.selectedKeys.includes(key) || targetRole(draft, key) !== "primary") return "This target is no longer selected.";
   const primary = draft.selectedKeys.filter(value => targetRole(draft, value) === "primary").length;
-  if (primary <= 1) return "Keep at least one primary target. Choose a different scene or add another primary target first.";
+  if (primary <= 1) return "Keep at least one required target. Choose a different scene or add another target first.";
   if (action === "opportunity" && draft.selectedKeys.length - primary >= 2) return "You already have two opportunity targets. Remove one before moving this target.";
   return null;
 }
@@ -186,34 +229,92 @@ export function adjustSceneTarget(draft: LoadoutDraft, key: string, action: Scen
   if (sceneAdjustmentError(draft, key, action)) return draft;
   const roles = Object.fromEntries(draft.selectedKeys.map(value => [value, targetRole(draft, value)]));
   if (action === "remove") delete roles[key]; else roles[key] = "opportunity";
-  return { ...draft, selectedKeys: action === "remove" ? draft.selectedKeys.filter(value => value !== key) : draft.selectedKeys,
-    targetRoles: roles, plan: undefined, selectedCandidateId: undefined, submission: undefined };
+  const selectedKeys = action === "remove" ? draft.selectedKeys.filter(value => value !== key) : draft.selectedKeys;
+  return { ...draft, origin: "manual", selectedKeys, pinnedKeys: selectedKeys,
+    targetRoles: roles, targetStages: undefined, plan: undefined, selectedCandidateId: undefined, submission: undefined };
 }
-export function missionPlanError(draft: LoadoutDraft, records: SavedCorpusRecord[]): string | null {
+export function missionPlanError(draft: LoadoutDraft, records: SavedCorpusRecord[], logic?: SpeakingLogicTemplate): string | null {
   const error = missionSelectionError(draft, records, true);
   if (error) return error;
-  const candidate = currentCandidate(draft, records);
+  const candidate = currentCandidate(draft, records, logic);
   if (!candidate) return "Generate matching scenes, then choose one for your mission.";
-  if (candidate.targets.some(target => target.role === "primary" && (target.fit === "low" || target.fit === "unknown"))) return "This scene does not yet fit every primary target. Choose another scene or adjust your targets.";
+  if (candidate.targets.some(target => target.role === "primary" && (target.fit === "low" || target.fit === "unknown"))) return "This scene does not yet fit every required target. Choose another scene or adjust your targets.";
   return null;
 }
+/** Old user-selected drafts remain manual; old automatic suggestions can replan. */
+export function draftOrigin(draft: LoadoutDraft): "quick" | "manual" {
+  return draft.origin ?? (draft.selectedKeys.length && !draft.suggestedLogic ? "manual" : "quick");
+}
+export function explicitLogicId(draft: LoadoutDraft): LogicTemplateId | null {
+  return draft.logicSource === "manual" || draft.logicSource === undefined && !draft.suggestedLogic ? draft.logicTemplateId : null;
+}
+export function draftSceneMode(draft: LoadoutDraft): "ai" | "custom" {
+  return draft.sceneMode ?? (draft.goal.trim() && !draft.suggestedScene ? "custom" : "ai");
+}
+/** Include source content so an edit under the same corpus ID cannot reuse a stale scene match. */
+export function sceneLogicSignature(owner: string | null, draft: LoadoutDraft, records: SavedCorpusRecord[], keys: string[]): string {
+  const items = keys.flatMap(key => {
+    const record = records.find(value => value.key === key);
+    return record?.serverId ? [[record.serverId, record.item.kind, expressionText(record), record.item.meaning ?? null, record.item.tags,
+      Object.entries(record.item.slots ?? {}).sort(([a], [b]) => a.localeCompare(b)), record.item.usageNote ?? null, record.item.register ?? null, record.item.scenarioTags ?? [], record.sourceTitle]] : [];
+  }).slice(0, 5);
+  return JSON.stringify([owner, draft.scenarioType, draftSceneMode(draft), (draft.customScene ?? draft.goal).trim(), items, explicitLogicId(draft)]);
+}
+/** The preview and the request share this projection. Frozen requests bypass all replanning. */
+export function replanLoadout(draft: LoadoutDraft, quick: QuickStartRecommendation, records: SavedCorpusRecord[], options?: SpeakingOptions | null): LoadoutDraft {
+  if (draft.submission || draft.plan?.value.practice_source) return draft;
+  const cachedLogic = options?.logic_templates.find(value => value.id === draft.logicTemplateId);
+  if (draft.plan?.value.version === 2 && draft.plan.signature === missionInputSignature(draft, records, cachedLogic)) return draft;
+  if (draft.freeConversation) return { ...draft, selectedKeys: [], pinnedKeys: [], logicTemplateId: null, targetStages: undefined, targetRoles: {}, goal: draftSceneMode(draft) === "custom" ? (draft.customScene ?? draft.goal).trim() : "Have a relaxed conversation about your day and interests." };
+  const manual = draftOrigin(draft) === "manual";
+  const selectedKeys = manual ? draft.pinnedKeys ?? draft.selectedKeys : quick.picks.map(pick => pick.record.key);
+  const logic = (manual || explicitLogicId(draft) || draft.logicSource === "scene" ? options?.logic_templates.find(value => value.id === draft.logicTemplateId) : undefined) ?? quick.logic;
+  const selected = selectedKeys.flatMap(key => { const record = records.find(value => value.key === key); return record ? [record] : []; });
+  const stages = manual || logic?.id !== quick.logic?.id ? mapTargetStages(selected, logic, options?.logic_metadata) : Object.fromEntries(quick.picks.map(pick => [pick.record.key, pick.stageIndex]));
+  const goal = draftSceneMode(draft) === "custom" ? (draft.customScene ?? draft.goal).trim() : manual ? sceneForLogic(logic, draft.scenarioType, draft.shuffleSeed ?? 0) : quick.scene;
+  return { ...draft, origin: manual ? "manual" : "quick", pinnedKeys: manual ? selectedKeys : [], selectedKeys, logicTemplateId: logic?.id ?? null,
+    sceneMode: draftSceneMode(draft), goal, targetStages: stages, targetRoles: Object.fromEntries(selectedKeys.map(key => [key, "primary"])) };
+}
+
+/** Hero start adopts the displayed recommendation, not an unfinished manual scene. */
+export function quickStartDraft(draft: LoadoutDraft, quick: QuickStartRecommendation, records: SavedCorpusRecord[], options?: SpeakingOptions | null): LoadoutDraft {
+  if (draft.submission || draft.plan?.value.practice_source) return draft;
+  return replanLoadout({ ...draft, freeConversation: false, origin: "quick", pinnedKeys: [], selectedKeys: [],
+    sceneMode: "ai", customScene: undefined, goal: quick.scene, suggestedScene: true,
+    logicTemplateId: quick.logic?.id ?? null, logicSource: "auto", suggestedLogic: true,
+    targetRoles: {}, targetStages: undefined, plan: undefined, selectedCandidateId: undefined }, quick, records, options);
+}
+
 export function toggleMissionSelection(draft: LoadoutDraft, record: SavedCorpusRecord): LoadoutDraft {
   if (draft.plan?.value.practice_source || draft.submission) return draft;
-  const roles = Object.fromEntries(draft.selectedKeys.map(key => [key, targetRole(draft, key)]));
+  const previous = draft;
+  const keys = draftOrigin(draft) === "manual" ? draft.pinnedKeys ?? draft.selectedKeys : [];
+  draft = { ...draft, origin: "manual", selectedKeys: keys, pinnedKeys: keys };
+  const roles: Record<string, SpeakingTargetRole> = Object.fromEntries(keys.map(key => [key, "primary"]));
   if (draft.selectedKeys.includes(record.key)) {
     delete roles[record.key];
-    return { ...draft, selectedKeys: draft.selectedKeys.filter(key => key !== record.key), targetRoles: roles, plan: undefined, selectedCandidateId: undefined, submission: undefined };
+    return { ...draft, freeConversation: false, selectedKeys: draft.selectedKeys.filter(key => key !== record.key), pinnedKeys: draft.selectedKeys.filter(key => key !== record.key), targetRoles: roles, targetStages: undefined, plan: undefined, selectedCandidateId: undefined, submission: undefined };
   }
-  if (draft.selectedKeys.length >= 5) return draft;
-  const primary = Object.values(roles).filter(role => role === "primary").length;
-  roles[record.key] = primary < 2 || Object.values(roles).filter(role => role === "opportunity").length >= 2 ? "primary" : "opportunity";
-  return { ...draft, selectedKeys: [...draft.selectedKeys, record.key], targetRoles: roles, plan: undefined, selectedCandidateId: undefined, submission: undefined };
+  if (draft.selectedKeys.length >= 5) return previous;
+  roles[record.key] = "primary";
+  return { ...draft, freeConversation: false, selectedKeys: [...draft.selectedKeys, record.key], pinnedKeys: [...draft.selectedKeys, record.key], targetRoles: roles, targetStages: undefined, plan: undefined, selectedCandidateId: undefined, submission: undefined };
 }
-export function preparePlannedSubmission(draft: LoadoutDraft, records: SavedCorpusRecord[], uuid: () => string): LoadoutDraft {
+/** Free conversation uses the same durable, idempotent create/confirm boundary. */
+export function prepareFreeSubmission(draft: LoadoutDraft, uuid: () => string): LoadoutDraft {
   if (draft.submission?.signature === draftSignature(draft)) return draft;
-  const error = missionPlanError(draft, records);
+  if (!draft.freeConversation || draft.selectedKeys.length || draft.logicTemplateId || draft.plan) throw new Error("Free conversation cannot contain targets or a logic template.");
+  if (!draft.goal.trim()) throw new Error("A conversation topic is required.");
+  return { ...draft, submission: { signature: draftSignature(draft), request: {
+    client_id: uuid(), scenario_type: draft.scenarioType, goal: draft.goal.trim(),
+    difficulty: draft.difficulty, feedback_level: draft.feedbackLevel, logic_template_id: null,
+    corpus_item_ids: [], ...(draft.supportLevel != null ? { support_level: draft.supportLevel } : {})
+  } } };
+}
+export function preparePlannedSubmission(draft: LoadoutDraft, records: SavedCorpusRecord[], uuid: () => string, logic?: SpeakingLogicTemplate): LoadoutDraft {
+  if (draft.submission?.signature === draftSignature(draft)) return draft;
+  const error = missionPlanError(draft, records, logic);
   if (error) throw new Error(error);
-  const candidate = currentCandidate(draft, records)!;
+  const candidate = currentCandidate(draft, records, logic)!;
   if (draft.plan?.value.practice_source && draft.supportLevel == null) throw new Error("Choose a support level for this second round.");
   const expected = draft.selectedKeys.map(key => records.find(record => record.key === key)!.serverId!);
   if (candidate.targets.length !== expected.length || candidate.targets.some((target, index) => target.corpus_item_id !== expected[index] || target.role !== targetRole(draft, draft.selectedKeys[index]))) throw new Error("This scene no longer matches your selected targets. Generate matching scenes again.");
@@ -231,7 +332,7 @@ export function acknowledgeSubmission(draft: LoadoutDraft, clientId: string): Lo
     || draft.submission.signature !== draftSignature(draft)) {
     throw new Error("The mission confirmation no longer matches this pending request.");
   }
-  return { ...draft, submission: undefined };
+  return { ...draft, submission: undefined, ...(draft.logicTemplateId ? { lastLogicId: draft.logicTemplateId } : {}) };
 }
 
 export function readDraftEnvelope(storage: DraftStorage): DraftEnvelope {
@@ -381,14 +482,12 @@ export function addCorpusToDraft(storage: DraftStorage, owner: string | null, in
     const current = (owner ? account?.draft : envelope.guest) ?? emptyDraft();
     if (current.submission) throw new Error("A mission start is awaiting confirmation. Open Loadout to recover it before changing the selection.");
     if (current.plan?.value.practice_source) throw new Error("Open Loadout and unlink the second round before changing its targets.");
-    const selectedKeys = [...new Set([...current.selectedKeys, ...incoming])];
+    const selectedKeys = [...new Set([...(draftOrigin(current) === "manual" ? current.pinnedKeys ?? current.selectedKeys : []), ...incoming])];
     const byKey = new Map(records.map((record) => [record.key, record]));
     if (selectedKeys.some((key) => !byKey.has(key))) throw new Error("Your loadout contains an unavailable item. Open Loadout to remove it, then try again.");
-    const structures = selectedKeys.filter((key) => byKey.get(key)?.item.kind === "structure").length;
-    if (structures > MAX_STRUCTURES || selectedKeys.length - structures > MAX_EXPRESSIONS) {
-      throw new Error("Combined selection exceeds the loadout limit: 3 structures and 5 expressions (chunks + idioms). Adjust your selection or open Loadout to free slots.");
-    }
-    const draft = { ...current, selectedKeys, submission: undefined };
+    if (selectedKeys.length > 5) throw new Error("Combined selection exceeds the loadout limit of 5 targets. Adjust your selection or open Loadout to free slots.");
+    const draft: LoadoutDraft = { ...current, freeConversation: false, origin: "manual", selectedKeys, pinnedKeys: selectedKeys,
+      targetRoles: Object.fromEntries(selectedKeys.map(key => [key, "primary"])), targetStages: undefined, plan: undefined, selectedCandidateId: undefined, submission: undefined };
     if (owner) envelope.accounts = { ...envelope.accounts, [owner]: { draft, deviceDrafts: account?.deviceDrafts ?? [] } };
     else envelope.guest = draft;
     storage.setItem(LOADOUT_STORAGE_KEY, JSON.stringify(envelope));

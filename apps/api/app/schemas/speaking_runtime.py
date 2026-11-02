@@ -4,8 +4,9 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_serializer
 
+from app.schemas.speaking_conversation import ConversationView
 from app.schemas.speaking import SpeakingSession, SupportLevel
 
 
@@ -13,6 +14,7 @@ class RealtimeStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     client_connection_id: UUID
     takeover: bool = False
+    conversation_contract_version: int | None = Field(default=None, strict=True)
 
 
 class RealtimeTicket(BaseModel):
@@ -23,6 +25,14 @@ class RealtimeTicket(BaseModel):
 
 
 class RuntimeView(BaseModel):
+    @model_serializer(mode="wrap")
+    def omit_legacy_version(self, handler):
+        result = handler(self)
+        if self.conversation_contract_version is None:
+            result.pop("conversation_contract_version", None)
+        return result
+
+    conversation_contract_version: Literal[1] | None = None
     id: UUID
     generation: int
     state: Literal["connecting", "connected", "disconnected"]
@@ -121,7 +131,28 @@ class DemonstrationView(BaseModel):
     quote: str
 
 
+class StageProgressItem(BaseModel):
+    index: int = Field(ge=0)
+    label: str
+    status: Literal["pending", "current", "completed", "skipped"]
+
+
+class TargetStageProgress(BaseModel):
+    session_item_id: str
+    stage_index: int | None = None
+    modeling_status: Literal["pending", "modeled", "exposed", "uncertain", "not_needed"]
+    practice_status: Literal["pending", "offered", "responded", "attempted", "independent", "skipped"]
+    imitation_uses: int = Field(default=0, ge=0)
+
+
+class StageProgressView(BaseModel):
+    current_stage_index: int | None = None
+    stages: list[StageProgressItem]
+    targets: list[TargetStageProgress]
+
+
 class SpeakingWorkspace(BaseModel):
+    conversation: ConversationView | None = None
     session: SpeakingSession
     version: int
     runtime: RuntimeView | None = None
@@ -135,3 +166,4 @@ class SpeakingWorkspace(BaseModel):
     opportunities: list[SpeakingOpportunity] = Field(default_factory=list)
     support: SupportView | None = None
     demonstrations: list[DemonstrationView] = Field(default_factory=list)
+    stage_progress: StageProgressView | None = None

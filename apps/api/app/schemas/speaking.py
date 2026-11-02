@@ -4,32 +4,29 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator, model_validator
 
-from app.schemas.speaking_plan import PracticeVariation, ScenarioChange, SpeakingMissionPlan
+from app.schemas.speaking_plan import LogicTemplate, LogicTemplateId, PracticeVariation, ScenarioChange, ScenarioType, SpeakingMissionPlan
 
 
-LogicTemplateId = Literal[
-    "persuasive_pitch", "technical_troubleshoot", "stakeholder_alignment",
-    "status_update", "disagreement", "onboarding",
-]
-ScenarioType = Literal["workplace", "everyday"]
 SpeakingDifficulty = Literal["guided", "standard", "challenging"]
 FeedbackLevel = Literal["light", "balanced", "detailed"]
 SupportLevel = Literal["model_frame", "model_label", "label_only", "no_hint"]
 EVIDENCE_CONTRACT_VERSION = "speaking-evidence-v3"
 
 
-class LogicTemplate(BaseModel):
-    id: LogicTemplateId
-    title: str
-    description: str
-    steps: list[str]
+class LogicMetadata(BaseModel):
+    family: Literal["workplace", "daily"]
+    stage_functions: list[Literal["open", "inform", "stance", "align", "ask", "clarify", "social", "narrate"]]
+    version: Literal[1] = 1
 
 
 class SpeakingOptions(BaseModel):
+    conversation_contract_versions: list[int] = Field(default_factory=list)
     logic_templates: list[LogicTemplate]
-    max_structures: int = 3
+    logic_metadata: dict[LogicTemplateId, LogicMetadata] = Field(default_factory=dict)
+    max_structures: int = 5
     max_expressions: int = 5
-    min_items: int = 1
+    max_targets: int = 5
+    min_items: int = 0
 
 
 class SpeakingSessionCreate(BaseModel):
@@ -41,7 +38,9 @@ class SpeakingSessionCreate(BaseModel):
     difficulty: SpeakingDifficulty = "standard"
     feedback_level: FeedbackLevel = "balanced"
     logic_template_id: LogicTemplateId | None = None
-    corpus_item_ids: list[UUID] = Field(min_length=1, max_length=8)
+    # Keep legacy eight-item requests readable/retryable. New planned Missions
+    # use one pool of at most five; an empty pool is free conversation.
+    corpus_item_ids: list[UUID] = Field(max_length=8)
     plan_id: UUID | None = None
     candidate_id: UUID | None = None
     support_level: SupportLevel | None = None
@@ -50,6 +49,8 @@ class SpeakingSessionCreate(BaseModel):
     def require_plan_pair(self) -> "SpeakingSessionCreate":
         if (self.plan_id is None) != (self.candidate_id is None):
             raise ValueError("Choose both a saved plan and its scenario.")
+        if not self.corpus_item_ids and (self.logic_template_id is not None or self.plan_id is not None):
+            raise ValueError("Free conversation cannot include a logic template or a target plan.")
         return self
 
     @field_validator("corpus_item_ids")

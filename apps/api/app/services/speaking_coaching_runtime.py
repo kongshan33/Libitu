@@ -9,11 +9,15 @@ from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from fastapi import HTTPException
 
+from app.services.speaking_conversation_state import record_conversation_receipt
 from app.services import speaking_runtime_state as state_ops
 from app.services.speaking_teaching import (
     _exact_spans, _structure_supported, effective_user_turn, find_target_quote, hint_target, record_hint_exposure,
 )
-from app.services.speaking_opportunities import planned_targets, target_is_skipped, target_version
+from app.services.speaking_opportunities import (
+    apply_presentation_receipt, is_staged_plan, planned_targets, staged_policy_invalid_reason,
+    target_is_skipped, target_version,
+)
 from app.services.speaking_support import effective_support, find_variant_quote, support_matches
 
 _logger = logging.getLogger(__name__)
@@ -54,6 +58,8 @@ def policy_invalid_reason(document: dict, policy: dict, session=None) -> str | N
     if any(e.get("session_item_id") == policy.get("target_item_id")
            and e.get("appropriateness") == "appropriate" for e in document.get("evidence", [])):
         return "target_demonstrated"
+    if is_staged_plan(session):
+        return staged_policy_invalid_reason(session, document, policy)
     controller = document.get("controller", {})
     if policy.get("action") in {"implicit_elicitation", "model_then_transfer"} and controller.get("automatic_attempts", {}).get(policy.get("target_item_id"), 0) >= 2:
         return "attempt_limit"
@@ -90,7 +96,7 @@ class CoachingRuntime:
         self.user_activity_at: str | None = None
         self.coaching_closed = False
         self.pending_exposures: dict[str, dict] = {}
-        self.pending_presentations: dict[str, str] = {}
+        self.pending_presentations: dict[str, dict] = {}
         self.expiring_policies: set[str] = set()
 
     async def _append_diagnostic(self, event: dict) -> None:
@@ -155,6 +161,7 @@ class CoachingRuntime:
 
     async def close_coaching(self) -> None:
         self.coaching_closed = True
+        self.conversation_help_cache.clear()
         for task in list(self.coaching_tasks):
             task.cancel()
         await asyncio.gather(*self.coaching_tasks, return_exceptions=True)
@@ -208,7 +215,14 @@ class CoachingRuntime:
             "implicit_elicitation", "model_then_transfer", "explicit_hint",
         }:
             return None
-        reason = policy_invalid_reason(self.state["document"], policy, self.session)
+        eligibility_document = self.state["document"]
+        if is_staged_plan(self.session) and self.pending_exposures:
+            # A real playback/text ACK must block a duplicate demonstration even
+            # while its background database CAS is delayed.
+            controller = eligibility_document.get("controller") or {}
+            eligibility_document = {**eligibility_document, "controller": {**controller,
+                "exposures": [*controller.get("exposures", []), *self.pending_exposures.values()]}}
+        reason = policy_invalid_reason(eligibility_document, policy, self.session)
         if reason:
             if policy["id"] in self.expiring_policies:
                 return None
@@ -312,12 +326,17 @@ class CoachingRuntime:
                 if record is not None:
                     record["assessment"] = {key: result.get(key) for key in (
                         "outcome", "reason", "exact_quote", "model_quote", "transfer_question_quote")}
+                    message = next((row for row in document.get("messages", [])
+                                    if row.get("response_id") == response["id"] and row.get("role") == "assistant"
+                                    and row.get("text") == response.get("text")), None)
+                    if message:
+                        record.update(assessment_message_id=message["id"], assessment_revision=message["revision"])
             await self.commit(save_assessment)
             if result.get("outcome") != "reflected" or self.coaching_closed or self.stop.is_set():
                 return
             # Explicit modes already provide the chosen label/frame surface.
             # Never add an automatic card after a change to reduced support.
-            if effective_support(self.session, self.state["document"]) is not None:
+            if is_staged_plan(self.session) or effective_support(self.session, self.state["document"]) is not None:
                 return
             await self.fence()
             # Never display an old automatic card over a newer user request/turn.
@@ -339,7 +358,7 @@ class CoachingRuntime:
             card["response_id"] = response["id"]
             self.help_cards[(card["id"], card["version"])] = deepcopy(card)
             def show(document, _):
-                if (effective_support(self.session, document) is not None
+                if (getattr(self, "conversation_enabled", lambda: False)() or effective_support(self.session, document) is not None
                         or target_is_skipped(document, policy.get("target_item_id"))
                         or policy.get("target_state_version", 0) != target_version(document, policy.get("target_item_id"))):
                     return
@@ -491,6 +510,7 @@ class CoachingRuntime:
         visible_targets = (
             {str(item.id) for item in self.session.items}
             if effective_support(self.session, self.state["document"]) is not None
+            or (self.state["document"].get("runtime") or {}).get("conversation_contract_version") == 1
             else planned_targets(self.session)
         )
         if not isinstance(target, str) or target not in visible_targets:
@@ -517,6 +537,7 @@ class CoachingRuntime:
             try:
                 def save(document, _):
                     document["controller"] = record_hint_exposure(self.session, document, exposure)
+                    record_conversation_receipt(document, exposure)
                 await self.commit(save, False)
                 self.pending_exposures.pop(exposure["id"], None)
             except asyncio.CancelledError:
@@ -543,6 +564,7 @@ class CoachingRuntime:
                 f"libitu:assistant-exposure:{self.session_id}:{message['id']}:{message['revision']}:{item.id}:{channel}")),
                 "kind": "assistant_" + channel,
                 "level": "example" if str(item.id) == modeled_target else "usage", "scope": "session",
+                "response_id": message.get("response_id"),
                 "target_item_id": str(item.id), "visible_at": state_ops.iso_now(),
                 "overlap": self.user_speaking or bool(getattr(self, "gemini_user_text", "")),
                 "source_message_id": latest.get("id"), "source_revision": latest.get("revision", 0)}
@@ -569,16 +591,23 @@ class CoachingRuntime:
         if not response_id or not any(row.get("response_id") == response_id
                                       for row in self.state["document"].get("teaching_attempts", [])):
             return
-        shown_at = state_ops.iso_now()
-        self.pending_presentations.setdefault(response_id, shown_at)
+        receipt = {"at": state_ops.iso_now(), "message_id": message["id"], "revision": message["revision"]}
+        previous = self.pending_presentations.get(response_id)
+        if previous and previous["message_id"] == receipt["message_id"]:
+            if previous["revision"] > receipt["revision"]:
+                return
+            if previous["revision"] == receipt["revision"]:
+                receipt = previous
+        self.pending_presentations[response_id] = receipt
         async def persist():
             try:
                 def save(document, _):
                     for attempt in document.get("teaching_attempts", []):
                         if attempt.get("response_id") == response_id:
-                            attempt.update(presented=True, presented_at=attempt.get("presented_at") or shown_at)
+                            apply_presentation_receipt(attempt, receipt)
                 await self.commit(save)
-                self.pending_presentations.pop(response_id, None)
+                if self.pending_presentations.get(response_id) is receipt:
+                    self.pending_presentations.pop(response_id, None)
             except Exception:
                 self.diagnostic("policy.presentation_uncommitted", {"response_id": response_id})
         self.background(persist(), exposure=True)

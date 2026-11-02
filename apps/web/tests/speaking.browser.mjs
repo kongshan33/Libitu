@@ -53,8 +53,10 @@ try {
       await page.getByText("A committed turn with a lost acknowledgement.", { exact: true }).waitFor();
       assert.equal(state.workspace.session.turn_count, 2, "recovery cannot duplicate committed user turn");
       assert.equal(state.events.filter(event => event.type === "text.submit").length, 2, "hydrated ack prevents resubmit");
-      await page.getByRole("button", { name: "Expand conversation", exact: true }).click();
-      await page.getByRole("button", { name: "Restore training sidebar", exact: true }).click();
+      if (width > 420) {
+        await page.getByRole("button", { name: "Expand conversation", exact: true }).click();
+        await page.getByRole("button", { name: "Restore training sidebar", exact: true }).click();
+      }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `no overflow ${width}`);
       await page.screenshot({ path: join(artifacts, `conversation-${width}.png`), fullPage: true });
       await page.getByRole("button", { name: "End mission", exact: true }).click();

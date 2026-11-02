@@ -24,6 +24,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true,args:['--use
 try {for(const width of [1440,390]){
  const context=await browser.newContext({viewport:{width,height:1000},permissions:['microphone'],reducedMotion:'reduce'});const page=await context.newPage();page.setDefaultTimeout(30000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await installSignedInPractice(page, {serverAnalysis:true});
+ await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({contentType:'text/html',body:'<!doctype html><title>Fixture video</title>'}));
  await page.addInitScript(()=>{
   // The media fixture belongs to the app, not opaque embedded video frames.
   if (window.top !== window) return;
@@ -132,6 +133,7 @@ try {for(const width of [1440,390]){
  await page.getByRole('button',{name:'Listen',exact:true}).click();assert.equal(await page.evaluate(()=>window.__micCalls),0,'listening cannot request microphone');
  await page.getByRole('button',{name:'Pause',exact:true}).click();
  await page.getByRole('button',{name:'Enable reference audio',exact:true}).click();await page.getByText('Preparing reference audio…',{exact:true}).first().waitFor();
+ await page.waitForFunction(()=>window.__referenceActions.includes('arm'));
  assert.equal(await page.evaluate(()=>window.__referenceActions.filter(a=>a==='arm').length),1);
  await page.getByRole('button',{name:'Prepare this sentence at 1×',exact:true}).click();
  await page.getByRole('button',{name:'Cancel preparation',exact:true}).waitFor();
@@ -180,7 +182,8 @@ try {for(const width of [1440,390]){
  analysisStage='complete';
  await page.locator('.sound-reveal-bar').waitFor();
  assert.deepEqual(await page.locator('.stage-two-layer-tabs .paired-tab-badge').allTextContents(),['✓*','🔒','🔒']);
- assert.equal(await page.getByRole('tab',{name:'Sound',exact:true}).locator('.paired-tab-badge').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(252, 235, 235)');
+ assert.equal(await page.getByRole('tab',{name:'Sound',exact:true}).locator('.paired-tab-badge').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(240, 238, 236)');
+ assert.equal(await page.getByRole('tab',{name:'Sound',exact:true}).evaluate(el=>getComputedStyle(el).borderBottomColor),'rgb(90, 67, 214)');
  assert.equal(await page.getByRole('tab',{name:'Sound',exact:true}).evaluate(el=>getComputedStyle(el).minHeight),'52px');
  await page.getByRole('button',{name:'Hide text',exact:true}).click();
  assert.ok(await page.locator('.sound-word-flow .comparison-peek').count()>0);
@@ -214,10 +217,90 @@ try {for(const width of [1440,390]){
  await page.getByRole('button',{name:'View analysis',exact:true}).last().click();await page.getByText('40% of words matched',{exact:false}).waitFor();assert.equal(await page.getByRole('tab',{name:'Sound',exact:true}).isDisabled(),true);
  assert.equal(await page.locator('.stage-two-sentences ol button').first().getAttribute('data-passed'),'true','viewing a lower historical take does not lower the best');
  await page.reload({waitUntil:'domcontentloaded'});await page.locator('.shadow-directory-status').first().filter({hasText:'Passed · Best 100% words'}).waitFor();
+ await page.getByText('100% of words matched',{exact:false}).waitFor();
+ const analysisStyles=()=>page.locator('.shadow-analysis-workspace').evaluate(el=>{
+  const style=(node,keys)=>Object.fromEntries(keys.map(key=>[key,getComputedStyle(node)[key]]));
+  const root=el.closest('.stage-two-shadow'),flow=root.querySelector('.shadow-practice-flow');
+  const panel=el.querySelector('[role="tabpanel"]:not([hidden])');
+  return {gap:getComputedStyle(el).gap,statusFirst:el.firstElementChild.classList.contains('practice-analysis-status'),
+   status:style(el.querySelector('.practice-analysis-status'),['padding','borderWidth','borderRadius','backgroundColor']),
+   flow:style(flow,['gap','padding','textAlign']),
+   primary:style(flow.querySelector('.shadow-practice-actions .ui-button[data-variant="primary"]'),['padding','minHeight','fontSize','borderRadius','backgroundColor']),
+   secondary:style(flow.querySelector('.shadow-practice-actions .ui-button[data-variant="secondary"]'),['padding','minHeight','fontSize','borderRadius']),
+   tabs:[...el.querySelectorAll('[role="tab"]')].map(tab=>style(tab,['padding','minHeight','color','backgroundColor','borderBottomColor'])),
+   canvas:style(panel.querySelector('.stage-two-comparison-canvas'),['padding']),
+   focus:style(panel.querySelector('.stage-two-layer-focus'),['padding','backgroundColor','borderWidth']),
+   columns:getComputedStyle(panel.querySelector('.stage-two-layer-workspace')).gridTemplateColumns};
+ });
+ const detailedLayers={};
+ for(const layer of ['Sound','Rhythm','Melody']){
+  await page.getByRole('tab',{name:layer,exact:true}).click();
+  await page.waitForFunction(label=>[...document.querySelectorAll('.stage-two-layer-tabs [role="tab"]')].every(tab=>{
+   const selected=tab.getAttribute('aria-label')===label,style=getComputedStyle(tab);
+   return tab.getAttribute('aria-selected')===String(selected)&&style.borderBottomColor===(selected?'rgb(90, 67, 214)':'rgba(0, 0, 0, 0)')&&style.color===(selected?'rgb(12, 10, 9)':'rgb(120, 113, 108)');
+  }),layer);
+  detailedLayers[layer]=await analysisStyles();
+  await page.locator('.stage-two-layers').screenshot({path:`${output}/detailed-${layer.toLowerCase()}-${width}.png`});
+ }
+ await page.getByRole('button',{name:'Review',exact:true}).click();
+ await page.getByText('100% of words matched',{exact:false}).waitFor();
+ for(const layer of ['Sound','Rhythm','Melody']){
+  await page.getByRole('tab',{name:layer,exact:true}).click();
+  await page.waitForFunction(label=>[...document.querySelectorAll('.stage-two-layer-tabs [role="tab"]')].every(tab=>{
+   const selected=tab.getAttribute('aria-label')===label,style=getComputedStyle(tab);
+   return tab.getAttribute('aria-selected')===String(selected)&&style.borderBottomColor===(selected?'rgb(90, 67, 214)':'rgba(0, 0, 0, 0)')&&style.color===(selected?'rgb(12, 10, 9)':'rgb(120, 113, 108)');
+  }),layer);
+  assert.deepEqual(await analysisStyles(),detailedLayers[layer],`${layer} uses the same analysis layout and buttons in both modes`);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  await page.locator('.stage-two-layers').screenshot({path:`${output}/review-${layer.toLowerCase()}-${width}.png`});
+ }
+ assert.equal(await page.evaluate(()=>window.__player.playing),false,'switching analysis tabs does not start playback');
+ await page.getByRole('tab',{name:'Melody',exact:true}).press('Home');
+ await page.waitForFunction(()=>document.querySelector('[role="tab"][aria-label="Sound"]')?.getAttribute('aria-selected')==='true');
+ await page.getByRole('tab',{name:'Sound',exact:true}).press('End');
+ await page.waitForFunction(()=>document.querySelector('[role="tab"][aria-label="Melody"]')?.getAttribute('aria-selected')==='true');
+ await page.getByRole('button',{name:'Detailed',exact:true}).click();
+ await page.getByText('100% of words matched',{exact:false}).waitFor();
  await page.getByRole('button',{name:'Delete analysis',exact:true}).click();
  await page.locator('.shadow-directory-status').first().filter({hasText:'Not passed · Best 60% words'}).waitFor();
  assert.equal(await page.locator('.stage-two-layers').count(),0,'deleted analysis hides layers');
  assert.equal(await page.locator('.stage-two-sentences ol button').first().getAttribute('data-practiced'),'true','analysis deletion keeps practiced but recomputes maximum');
+ // Start the filter checks with freshly restored history after deletion.
+ await page.reload({waitUntil:'domcontentloaded'});
+ await page.locator('.shadow-directory-status').first().filter({hasText:'Not passed · Best 60% words'}).waitFor();
+ const directoryStyle=()=>page.locator('.stage-two-sentences').evaluate(el=>{
+  const row=el.querySelector('ol button'),toggle=el.querySelector('.shadow-directory-toggle');
+  return {width:el.getBoundingClientRect().width,background:getComputedStyle(el).backgroundColor,
+   rowBackground:getComputedStyle(row).backgroundColor,rowPadding:getComputedStyle(row).padding,
+   rowRadius:getComputedStyle(row).borderRadius,numberSize:getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize,
+   toggleWidth:toggle.getBoundingClientRect().width,toggleRadius:getComputedStyle(toggle).borderRadius};
+ });
+ const expandedStyle=await directoryStyle();
+ await page.getByRole('button',{name:'Collapse sentence list',exact:true}).click();
+ await page.waitForFunction(()=>{const row=document.querySelector('.stage-two-sentences [aria-current="true"]');return getComputedStyle(row).backgroundColor==='rgb(90, 67, 214)'&&getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize==='10px';});
+ const collapsedStyle=await directoryStyle();
+ await page.getByRole('button',{name:'Review',exact:true}).click();
+ const review=page.getByRole('navigation',{name:'Practiced sentences',exact:true});
+ await review.getByRole('button',{name:'Sentence 1',exact:true}).waitFor();
+ assert.deepEqual(await directoryStyle(),expandedStyle,'Detailed and Review share expanded directory styles');
+ const selectedBeforeFold=new URL(page.url()).searchParams.get('sentenceId');
+ await page.getByRole('button',{name:'Collapse review list',exact:true}).click();
+ await page.waitForFunction(()=>{const row=document.querySelector('.stage-two-sentences [aria-current="true"]');return getComputedStyle(row).backgroundColor==='rgb(90, 67, 214)'&&getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize==='10px';});
+ assert.deepEqual(await directoryStyle(),collapsedStyle,'Detailed and Review share collapsed directory styles');
+ assert.equal(await page.getByRole('button',{name:'Expand review list',exact:true}).getAttribute('aria-expanded'),'false');
+ assert.equal(new URL(page.url()).searchParams.get('sentenceId'),selectedBeforeFold,'folding preserves sentence selection');
+ assert.equal(await page.evaluate(()=>window.__player.playing),false,'folding does not start playback');
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ await page.screenshot({path:`${output}/review-collapsed-${width}.png`,fullPage:true});
+ await page.getByRole('button',{name:'Expand review list',exact:true}).click();
+ await review.getByRole('button',{name:'Matched',exact:true}).click();
+ await page.getByText('No sentences in this filter.',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Collapse review list',exact:true}).click();
+ await page.getByRole('button',{name:'Expand review list',exact:true}).click();
+ assert.equal(await review.getByRole('button',{name:'Matched',exact:true}).getAttribute('aria-pressed'),'true','folding preserves the review filter');
+ await review.getByRole('button',{name:'All',exact:true}).click();
+ await review.getByRole('button',{name:'Sentence 1',exact:true}).waitFor();
+ await page.screenshot({path:`${output}/review-expanded-${width}.png`,fullPage:true});
  assert.deepEqual(errors,[]);await context.close();
  console.log(`Practice flow passed at ${width}px`);
  }}finally{await browser.close();}

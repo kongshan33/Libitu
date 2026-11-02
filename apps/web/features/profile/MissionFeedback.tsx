@@ -42,7 +42,7 @@ function FeedbackDetails({ report, timezone }: { report: ProfileFeedback; timezo
   const label = dimensions.find((dimension) => dimension.id === active)!;
   return <div className={styles.feedbackBody}>
     <div className={styles.feedbackHeading}><div><h3>{report.goal}</h3><p><time dateTime={report.practiced_at}>{new Date(report.practiced_at).toLocaleDateString("en", { timeZone: timezone, month: "short", day: "numeric", year: "numeric" })}</time>
-      <span aria-hidden="true"> · </span>{report.scenario_type === "workplace" ? "Workplace" : "Everyday life"}<span aria-hidden="true"> · </span>{report.difficulty[0].toUpperCase() + report.difficulty.slice(1)}</p></div>
+      <span aria-hidden="true"> · </span>{report.scenario_type === "workplace" ? "Workplace" : report.scenario_type === "travel" ? "Travel" : "Everyday life"}<span aria-hidden="true"> · </span>{report.difficulty[0].toUpperCase() + report.difficulty.slice(1)}</p></div>
       <DirectionLink href={`/speaking/${encodeURIComponent(report.session_id)}/analytics`} className={styles.textLink}>View full report <ArrowRight size={14} aria-hidden="true" /></DirectionLink>
     </div>
     <div className={styles.feedbackScores} role="group" aria-label="Mission feedback dimensions">

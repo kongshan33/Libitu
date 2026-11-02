@@ -4,7 +4,8 @@ import { currentAuthReturnUrl } from "@/features/navigation/return-location";
 
 import { DirectionLink } from "@/components/ui/direction-button";
 
-import { AppHeader } from "@/components/AppHeader";
+import { AuthControls } from "@/features/auth/components/AuthControls";
+import { ConversationHeader, MissionIntro, StageGuide, ConversationToolbar, VoiceSurface, MicrophoneButton, MicrophoneBar, ConversationMessage, StageDivider, TargetPanel } from "./ConversationPresentation";
 
 import { Textarea } from "@/components/ui/field";
 
@@ -14,12 +15,16 @@ import { useAuth, useClerk } from "@clerk/nextjs";
 import { BrandLogo } from "@/components/BrandLogo";
 import { useRouteIntent, useRoutePrefetch } from "../navigation/use-route-prefetch";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowUp, Check, ChevronDown, ChevronRight, Expand, MessageSquare, Mic, MicOff, Minimize, Pause, Radio, RefreshCw, Square, Trash2, X } from "lucide-react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowUp, Check, ChevronDown, ChevronRight, Expand, LoaderCircle, Minimize, Pause, Square, Trash2, X } from "lucide-react";
 import type { SpeakingDemonstration, SpeakingEvidence, SpeakingHelpLevel, SpeakingMessage, SpeakingOpportunity, SpeakingSupportLevel, SpeakingWorkspace } from "@libitu/types/speaking";
 import { missionHref } from "../navigation/return-location";
 import { useConversation } from "./use-conversation";
 import { validEvidence, observedItemIds, assistanceLabel } from "./evidence";
+import { ConfirmedRecast } from "./ConfirmedRecast";
+import { validRecasts } from "./recasts";
+import { concealedTargets, stageMarkers, waitingForReply } from "./conversation-view";
+import { QuestionHelp } from "./QuestionHelp";
 import { HintCard } from "./HintCard";
 import { observeVisible } from "./visibility";
 import { currentSupport, validDemonstrations } from "./support";
@@ -27,16 +32,20 @@ import { SupportControls } from "./SupportControls";
 import { finishMissionNavigation } from "./mission-timing";
 import styles from "./Speaking.module.css";
 
+function MissionNavigation({ returnTo, title, reportHref }: { returnTo: string; title?: string; reportHref?: string }) {
+  return <ConversationHeader title={title} loadoutHref={missionHref("loadout", returnTo)} practiceHref={returnTo} reportHref={reportHref} account={<AuthControls showProfileLink={false} buttonSize="sm" />} />;
+}
+
 export function ConversationWorkspace({ sessionId, returnTo = "/" }: { sessionId: string; returnTo?: string }) {
   const { isLoaded, userId, getToken } = useAuth();
   const clerk = useClerk();
   if (!isLoaded) return <MissionLoading returnTo={returnTo} />;
-  if (!userId) return <><AppHeader active="mission" /><main className={styles.page}><section className={styles.gate}><BrandLogo className={styles.logo} /><h1>Sign in to view your mission</h1><p>Your saved mission and conversation belong to your account.</p><Button variant="primary" size="inherit" className={styles.primary} onClick={() => { const url = currentAuthReturnUrl(); clerk.openSignIn({ forceRedirectUrl: url, signUpForceRedirectUrl: url }); }}>Sign in</Button></section></main></>;
+  if (!userId) return <><MissionNavigation returnTo={returnTo} /><main className={styles.page}><section className={styles.gate}><BrandLogo className={styles.logo} /><h1>Sign in to view your mission</h1><p>Your saved mission and conversation belong to your account.</p><Button variant="primary" size="inherit" className={styles.primary} onClick={() => { const url = currentAuthReturnUrl(); clerk.openSignIn({ forceRedirectUrl: url, signUpForceRedirectUrl: url }); }}>Sign in</Button></section></main></>;
   return <OwnedConversation key={`${userId}:${sessionId}`} owner={userId} sessionId={sessionId} returnTo={returnTo} getToken={getToken} />;
 }
 /** Keep auth and workspace loading visually identical; route transitions retain Loadout. */
 function MissionLoading({ returnTo }: { returnTo: string }) {
-  return <><AppHeader active="mission" /><main className={styles.page}><section className={styles.shell} aria-label="Speaking mission" aria-busy="true">
+  return <><MissionNavigation returnTo={returnTo} /><main className={styles.page}><section className={styles.shell} aria-label="Speaking mission" aria-busy="true">
     <div className={styles.topbar} aria-label="Mission controls"><DirectionLink className={styles.back} href={missionHref("loadout", returnTo)}><ArrowLeft size={14} aria-hidden="true" /><span>Loadout</span></DirectionLink></div>
     <div role="status" aria-label="Loading your saved mission…">
       <span className={styles.loadingLabel}>Loading your saved mission…</span>
@@ -85,9 +94,9 @@ function VisibleMessage({ message, active, onShown, children }: { message: Speak
   }, [active, message.id, message.revision, message.role, message.status, onShown]);
   return <div ref={ref} className={styles.bubble}>{children}</div>;
 }
-function OpportunityStatus({ value, version, canChange, hideReason, onSkip, onRestore }: {
+function OpportunityStatus({ value, version, canChange, hideReason, onSkip, onRestore, compact }: {
   value: SpeakingOpportunity; version: number; canChange: boolean;
-  hideReason?: boolean;
+  hideReason?: boolean; compact?: boolean;
   onSkip: (id: string) => boolean | undefined; onRestore: (id: string) => boolean | undefined;
 }) {
   const [pending, setPending] = useState<number | null>(null);
@@ -106,9 +115,9 @@ function OpportunityStatus({ value, version, canChange, hideReason, onSkip, onRe
     : value.status === "used" ? "Used in this mission"
       : value.status === "offered" ? "Opportunity confirmed" : "Opportunity not yet confirmed";
   return <div className={styles.opportunity}>
-    <span className={styles.opportunityStatus} data-status={value.status} role="status">{label}</span>
-    {value.status === "skipped" ? <p>{hideReason ? null : value.skipped_reason} Skipping this target does not count as a failed attempt.</p>
-      : value.role === "opportunity" ? <p>Optional: use this only when it fits.</p> : value.status === "planned" ? <p>Your partner has a planned opportunity. It has not yet been confirmed in the conversation.</p> : null}
+    {!compact ? <span className={styles.opportunityStatus} data-status={value.status} role="status">{label}</span> : null}
+    {!compact && value.status === "skipped" ? <p>{hideReason ? null : value.skipped_reason} Skipping this target does not count as a failed attempt.</p>
+      : !compact && value.role === "opportunity" ? <p>Optional: use this only when it fits.</p> : !compact && value.status === "planned" ? <p>Your partner has a planned opportunity. It has not yet been confirmed in the conversation.</p> : null}
     <button type="button" className={styles.itemHelp} disabled={!canChange || waiting} onClick={change}>{waiting ? "Saving change…" : value.status === "skipped" ? "Undo skip" : "Doesn't fit this scene"}</button>
     {unconfirmed ? <p role="status">The change was not confirmed. Check your connection and retry.</p> : null}
   </div>;
@@ -135,6 +144,7 @@ function TrainingSidebar({ workspace, onSelect, onHint, onSkip, onRestore, onTar
   onSkip: (id: string) => boolean | undefined; onRestore: (id: string) => boolean | undefined; canHint: boolean;
   onTargetShown: (id: string) => void;
 }) {
+  if (concealedTargets(workspace)) return <ConcealedTrainingSidebar workspace={workspace} onSelect={onSelect} onHint={onHint} onSkip={onSkip} onRestore={onRestore} onTargetShown={onTargetShown} canHint={canHint} />;
   const items = [...workspace.session.items].sort((a, b) => a.ordinal - b.ordinal);
   const valid = workspace.messages.flatMap(message => validEvidence(message, workspace.evidence));
   const observed = observedItemIds(workspace);
@@ -146,7 +156,7 @@ function TrainingSidebar({ workspace, onSelect, onHint, onSkip, onRestore, onTar
   const groups = planned ? ["primary", "opportunity"] : ["expression", "structure"];
   const skipped = new Set(workspace.opportunities?.filter(value => value.status === "skipped").map(value => value.session_item_id));
   return <>
-    <div className={styles.sidebarHeading}><span>Your loadout</span><span>{items.length} items</span></div>
+    <div className={styles.sidebarHeading}><span>Your loadout</span><span>{items.length ? `${items.length} targets` : "Free conversation"}</span></div>
     {groups.map(group => <section className={group === "structure" ? styles.structures : undefined} key={group}>
       <h2 className={styles.groupTitle}>{group === "primary" ? "Primary targets" : group === "opportunity" ? "Opportunity targets" : group === "structure" ? "Structures" : "Expressions"}</h2>
       {items.filter(item => planned ? workspace.session.mission_plan?.targets.find(target => target.session_item_id === item.id)?.role === group : group === "structure" ? item.kind === "structure" : item.kind !== "structure").map(item => {
@@ -169,11 +179,48 @@ function TrainingSidebar({ workspace, onSelect, onHint, onSkip, onRestore, onTar
         </article>;
       })}
     </section>)}
-    <section className={styles.observations}><h2>Practice so far</h2><div><span>User turns</span><strong>{workspace.session.turn_count}</strong></div>{planned ? <><div><span>Primary used</span><strong>{workspace.opportunities?.filter(value => value.role === "primary" && value.status === "used").length ?? 0}</strong></div><div><span>Opportunity used</span><strong>{workspace.opportunities?.filter(value => value.role === "opportunity" && value.status === "used").length ?? 0}</strong></div><div><span>Skipped</span><strong>{skipped.size}</strong></div></> : <div><span>Language observed</span><strong>{observed.size}/{items.length}</strong></div>}<p>Observations in this conversation, not a mastery score.</p>
+    <section className={styles.observations}><h2>Practice so far</h2><div><span>User turns</span><strong>{workspace.session.turn_count}</strong></div>{planned ? <><div><span>Primary used</span><strong>{workspace.opportunities?.filter(value => value.role === "primary" && value.status === "used").length ?? 0}</strong></div><div><span>Opportunity used</span><strong>{workspace.opportunities?.filter(value => value.role === "opportunity" && value.status === "used").length ?? 0}</strong></div><div><span>Skipped</span><strong>{skipped.size}</strong></div></> : items.length ? <div><span>Language observed</span><strong>{observed.size}/{items.length}</strong></div> : <p>No target expressions in this conversation.</p>}<p>Observations in this conversation, not a mastery score.</p>
       <p role="status">{workspace.analysis_status === "pending" ? "Checking your latest turn…" : workspace.analysis_status === "unavailable" ? "Language analysis is unavailable for the latest turn." : workspace.analysis_status === "ready" ? "Evidence is up to date." : "Evidence appears after a finalized turn."}</p>
     </section>
   </>;
 }
+
+function ConcealedTrainingSidebar({ workspace, onSelect, onHint, onSkip, onRestore, onTargetShown, canHint }: {
+  workspace: SpeakingWorkspace; onSelect: (value: SpeakingEvidence) => void;
+  onHint: (level: "usage" | "example", targetItemId?: string) => void;
+  onSkip: (id: string) => boolean | undefined; onRestore: (id: string) => boolean | undefined;
+  onTargetShown: (id: string) => void; canHint: boolean;
+}) {
+  const [revealed, setRevealed] = useState(true);
+  const plan = workspace.session.mission_plan;
+  const progress = workspace.stage_progress;
+  const active = !["completed", "abandoned"].includes(workspace.session.status);
+  const valid = workspace.messages.flatMap(message => validEvidence(message, workspace.evidence));
+  const targets = [...workspace.session.items].sort((a, b) => a.ordinal - b.ordinal).map(item => {
+    const target = plan?.targets.find(value => value.session_item_id === item.id);
+    const state = progress?.targets.find(value => value.session_item_id === item.id);
+    const evidence = valid.filter(value => value.session_item_id === item.id);
+    const used = evidence.length > 0;
+    const modeled = plan?.version === 2 ? state?.modeling_status === "modeled"
+      : workspace.messages.some(message => validDemonstrations(message, workspace.demonstrations).some(value => value.target_item_id === item.id));
+    const opportunity = workspace.opportunities?.find(value => value.session_item_id === item.id);
+    const current = plan?.version === 2 ? target?.stage_index != null && target.stage_index === progress?.current_stage_index
+      : workspace.conversation?.question?.target_item_id === item.id;
+    const status = opportunity?.status === "skipped" ? "Skipped" : used
+      ? evidence.some(value => value.assistance === "independent" || (!value.assistance && !value.prompted)) ? "Used on your own" : "Used with help"
+      : modeled ? "Partner example confirmed" : state?.modeling_status === "uncertain" ? "Example delivery uncertain" : "Not used yet";
+    return { id: item.id, stage: target?.stage_index == null ? "Any stage" : plan?.logic_template?.steps[target.stage_index] ?? "Any stage",
+      text: item.text, meaning: item.meaning, used, modeled, current, status,
+      actions: <>{used ? <button type="button" className={styles.evidenceLink} onClick={() => onSelect(evidence[evidence.length - 1])}><Check size={12} aria-hidden="true" />View use<ChevronRight size={12} aria-hidden="true" /></button> : null}
+        {active && (plan?.version !== 2 || current || opportunity?.status === "skipped") ? <div className={styles.targetActions}>
+          <button type="button" className={styles.itemHelp} disabled={!canHint || opportunity?.status === "skipped"} onClick={() => onHint("usage", item.id)}>Hint</button>
+          {opportunity ? <OpportunityStatus compact value={opportunity} version={workspace.version} canChange={canHint} hideReason={!revealed && !modeled && !used} onSkip={onSkip} onRestore={onRestore} /> : null}
+        </div> : null}</> };
+  });
+  return <TargetPanel targets={targets} reveal={revealed} onReveal={() => setRevealed(value => !value)} active={active} onShown={onTargetShown}
+    footer={workspace.analysis_status === "unavailable" ? <p className={styles.meta} role="status">Language analysis is unavailable for the latest turn.</p> : null} />;
+}
+
 function OwnedConversation({ owner, sessionId, returnTo, getToken }: { owner: string; sessionId: string; returnTo: string; getToken: () => Promise<string | null> }) {
   const router = useRouter();
   const reportIntent = useRouteIntent(missionHref("analytics", returnTo, sessionId));
@@ -197,17 +244,27 @@ function OwnedConversation({ owner, sessionId, returnTo, getToken }: { owner: st
   const connected = state.connection === "connected";
   const connecting = state.connection === "connecting";
   const allTargetsSkipped = !!workspace?.session.mission_plan && !!workspace.opportunities?.length && workspace.opportunities.every(value => value.status === "skipped");
-  const requestHint = useCallback((level: "usage" | "example" = "usage", targetItemId?: string) => controller?.hint(level, targetItemId), [controller]);
+  const newHelp = workspace?.runtime?.conversation_contract_version === 1;
+  const requestHint = useCallback((level: "usage" | "example" = "usage", targetItemId?: string) => {
+    if (newHelp) controller?.requestHelp(targetItemId); else controller?.hint(level, targetItemId);
+  }, [controller, newHelp]);
+  const conversationHelpShown = useCallback((id: string, version: number) => controller?.conversationHelpShown(id, version), [controller]);
+  useEffect(() => {
+    const activity = () => controller?.setActivity(!!text.trim(), document.visibilityState === "visible" && !confirmAction);
+    activity(); document.addEventListener("visibilitychange", activity);
+    return () => document.removeEventListener("visibilitychange", activity);
+  }, [controller, text, confirmAction]);
   const skipTarget = useCallback((id: string) => controller?.skipTarget(id), [controller]);
   const restoreTarget = useCallback((id: string) => controller?.restoreTarget(id), [controller]);
   const targetShown = useCallback((id: string) => controller?.targetShown(id), [controller]);
   const changeSupport = useCallback((level: SpeakingSupportLevel) => { controller?.setSupport(level); }, [controller]);
   const hintShown = useCallback((id: string, version: number, level: SpeakingHelpLevel) => controller?.hintShown(id, version, level), [controller]);
+  const recastShown = useCallback((id: string, version: number) => controller?.recastShown(id, version), [controller]);
   const messageShown = useCallback((id: string, revision: number) => controller?.messageShown(id, revision), [controller]);
   const canStart = !!workspace && !ended && !connecting && !state.busy;
   const evidence = selectedEvidence && workspace?.messages.some(message => validEvidence(message, workspace.evidence).some(item => item.id === selectedEvidence.id)) ? selectedEvidence : null;
   useEffect(() => { if (view === "chat") bottom.current?.scrollIntoView({ block: "nearest", behavior: "instant" }); }, [visibleMessages.length, visiblePartials.length, state.pending?.id, view]);
-  function chooseEvidence(value: SpeakingEvidence) { setSelectedEvidence(value); setView("chat"); requestAnimationFrame(() => document.getElementById(`turn-${value.message_id}`)?.scrollIntoView({ block: "nearest", behavior: "smooth" })); }
+  function chooseEvidence(value: SpeakingEvidence) { setSelectedEvidence(value); setTrainingOpen(true); setFocused(false); requestAnimationFrame(() => document.getElementById("language-evidence")?.scrollIntoView({ block: "nearest", behavior: "smooth" })); }
   async function submit() { const value = text.trim(); if (!value || !controller || state.pending || ended) return; setView("chat"); setText(""); await controller.submit(value); }
   async function confirm() {
     if (!controller) return;
@@ -216,30 +273,62 @@ function OwnedConversation({ owner, sessionId, returnTo, getToken }: { owner: st
     else { if (await controller.end()) { setConfirmAction(null); router.push(missionHref("analytics", returnTo, sessionId)); } }
   }
   if (!workspace && !state.error) return <MissionLoading returnTo={returnTo} />;
-  const voiceTitle = ended ? "Conversation ended" : connecting ? "Connecting…" : state.connection === "paused" ? "Conversation paused" : state.connection === "disconnected" ? "Ready to reconnect" : !connected ? "Ready when you are" : state.phase === "thinking" ? "Thinking…" : state.phase === "speaking" ? "Your partner is speaking" : state.microphone ? "Listening…" : "Microphone off";
-  const voiceHelp = ended ? "Review your transcript and language evidence." : connecting ? "Preparing your conversation." : state.connection === "paused" ? "Paused while you were away. Resume when ready." : state.connection === "disconnected" ? "Your finalized transcript is saved. Reconnect when ready." : !connected ? "Start, then speak naturally. You can also type below." : state.phase === "speaking" ? "Speak to interrupt, or use Stop speaking." : state.microphone ? "Turns are detected automatically." : "Keep typing, or enable your microphone.";
-  return <><AppHeader active="mission" /><main className={styles.page}><section className={`${styles.shell} ${focused ? styles.focused : ""}`} aria-label="Speaking mission">
-    <div className={styles.topbar} aria-label="Mission controls"><DirectionLink className={styles.back} href={missionHref("loadout", returnTo)}><ArrowLeft size={14} aria-hidden="true" /><span>Loadout</span></DirectionLink><span className={styles.topspacer} />{workspace && !ended ? <Button {...reportIntent} variant="secondary" size="inherit" type="button" className={styles.endButton} onClick={() => setConfirmAction("end")} disabled={state.busy}>End mission</Button> : null}</div>
-    {!workspace ? <div className={styles.empty}>{state.error ? <><h1>Mission unavailable</h1><p role="alert">{state.error}</p><Button variant="primary" size="inherit" type="button" className={styles.primary} onClick={() => void controller?.load()}>Retry loading mission</Button></> : null}</div> : <>
-      <div className={styles.mission}><div className={styles.eyebrow}>{workspace.session.scenario_type === "workplace" ? "Workplace" : "Everyday life"} · {workspace.session.difficulty} · {workspace.session.feedback_level} feedback</div><h1>{workspace.session.goal}</h1><p>{ended ? "Saved conversation · read-only review" : "Use your selected language in a natural conversation."}</p>{workspace.session.mission_plan ? <p>{workspace.session.mission_plan.setting} You: {workspace.session.mission_plan.user_role}. AI partner: {workspace.session.mission_plan.ai_role}.</p> : null}</div>
-      {workspace.session.logic_template ? <section className={styles.logic} aria-label="Conversation strategy"><div><strong>{workspace.session.logic_template.title}</strong><span>Practice guide</span></div><ol>{workspace.session.logic_template.steps.map((step, index) => <li key={`${index}:${step}`}>{index > 0 ? <ChevronRight size={12} aria-hidden="true" /> : null}<span>{step}</span></li>)}</ol></section> : null}
-      {!ended ? <SupportControls workspace={workspace} disabled={!connected || state.busy || state.phase !== "listening" || state.userSpeaking} pending={!!state.supportPending} error={state.supportError} onChange={changeSupport} /> : null}
-      {state.error ? <div className={styles.notice} role="alert"><span>{state.error}</span>{state.conflict ? <Button variant="secondary" size="inherit" type="button" onClick={() => void controller?.start(view === "voice", true)} disabled={connecting}>Take over here</Button> : null}</div> : null}
-      {confirmAction ? <section className={styles.confirm} aria-label={confirmAction === "delete" ? "Delete conversation confirmation" : "End mission confirmation"}><h2>{confirmAction === "delete" ? "Delete this mission?" : "End this mission?"}</h2><p>{confirmAction === "delete" ? "Your saved transcript, language evidence and mission will be permanently deleted." : state.pending ? "One message is still unconfirmed. Ending closes the connection and saves the finalized conversation for review." : "This stops the microphone and closes the conversation. Your finalized transcript and evidence stay available."}</p><div><Button variant={confirmAction === "delete" ? "danger-solid" : "primary"} size="inherit" type="button" className={styles.primary} disabled={state.busy} loading={state.busy} loadingLabel="Saving…" onClick={() => void confirm()}>{confirmAction === "delete" ? "Delete permanently" : "End and review"}</Button><Button variant="secondary" size="inherit" type="button" disabled={state.busy} onClick={() => setConfirmAction(null)}>Cancel</Button></div></section> : null}
+  const status = ended ? "Completed" : connecting ? "Connecting…" : state.connection === "paused" ? "Paused" : !connected ? "Offline" : state.userSpeaking ? "Listening" : state.phase === "thinking" ? "Thinking…" : state.phase === "speaking" ? "Speaking" : state.microphone ? workspace && !text.trim() && !state.pending && !confirmAction && waitingForReply(workspace) ? "Waiting for you" : "Listening" : "Microphone off";
+  const latestPartial = visiblePartials.at(-1)?.[1];
+  const latestMessage = visibleMessages.at(-1);
+  const caption = state.userSpeaking ? visiblePartials.findLast(([, value]) => value.role === "user")?.[1] : latestPartial;
+  const currentMessage = state.userSpeaking ? undefined : latestMessage;
+  const dividers = workspace ? stageMarkers(workspace) : new Map();
+  const recasts = validRecasts(workspace?.conversation?.recasts, workspace?.messages ?? []);
+  const latestUser = workspace?.messages.findLast(message => message.role === "user");
+  const voiceRecast = connected && !state.userSpeaking && !text.trim() && !state.pending && !confirmAction
+    ? recasts.findLast(row => row.source.message_id === latestUser?.id && row.source.message_id !== state.recastSourceRetired && row.delivery?.message_id === currentMessage?.id) : null;
+  const micDisabled = state.microphoneBusy || connecting || state.busy || state.conflict;
+  const toggleMicrophone = () => { if (!connected) void controller?.start(true); else void controller?.setMicrophone(!state.microphone); };
+  const startLabel = state.connection === "paused" ? "Resume conversation" : state.connection === "disconnected" ? "Reconnect" : "Start conversation";
+  const startAction = !connected && !ended ? <Button variant="primary" size="inherit" className={styles.primary} disabled={!canStart || state.conflict} loading={connecting} loadingLabel="Connecting…" onClick={() => void controller?.start(view === "voice")}>{startLabel}</Button> : null;
+  const helpCard = workspace?.conversation?.help;
+  const labelCard = helpCard?.status === "loading" && !state.helpLoadingVisible ? state.retainedConversationHelp : helpCard;
+  const helpLabel = labelCard?.status === "unavailable" ? "Try again" : labelCard?.status === "loading" ? "Finding help…" : labelCard?.status === "ready" ? labelCard.level === "direction" ? "Opening words" : labelCard.level === "usage" ? "See an example" : "Hide hint" : "Need a hint?";
+  const hint = !ended && newHelp ? <QuestionHelp retained={state.retainedConversationHelp} loadingVisible={state.helpLoadingVisible} conversation={workspace?.conversation} hidden={!connected || state.userSpeaking || !!text.trim() || !!state.pending || !!confirmAction} onShown={conversationHelpShown} /> : !ended ? <HintCard card={support && workspace?.help?.source === "automatic" ? null : workspace?.help ?? null} connected={connected} userSpeaking={state.userSpeaking || !!text.trim() || !!state.pending} onHint={requestHint} onShown={hintShown} /> : null;
+  return <><MissionNavigation returnTo={returnTo} title={workspace?.session.goal} reportHref={ended ? missionHref("analytics", returnTo, sessionId) : undefined} /><main className={styles.page}><section className={`${styles.shell} ${focused ? styles.focused : ""}`} aria-label="Speaking mission">
+    {!workspace ? <div className={styles.empty}><h1>Mission unavailable</h1><p role="alert">{state.error}</p><Button variant="primary" className={styles.primary} onClick={() => void controller?.load()}>Retry loading mission</Button></div> : <>
+      <MissionIntro goal={workspace.session.goal} metadata={ended ? "Saved conversation · read-only review" : `${workspace.session.scenario_type === "workplace" ? "Workplace" : workspace.session.scenario_type === "travel" ? "Travel" : "Everyday life"} · ${workspace.session.difficulty} · ${workspace.session.feedback_level} feedback`}
+        setting={workspace.session.mission_plan ? `${workspace.session.mission_plan.setting} You are ${workspace.session.mission_plan.user_role}. Your partner is ${workspace.session.mission_plan.ai_role}.` : undefined}
+        actions={<><DirectionLink href={missionHref("loadout", returnTo)}>Back to loadout</DirectionLink>{!ended ? <Button {...reportIntent} variant="secondary" size="inherit" className={styles.endButton} onClick={() => setConfirmAction("end")} disabled={state.busy}>End mission</Button> : null}</>} />
+      {workspace.session.logic_template ? <StageGuide title={workspace.session.logic_template.title} steps={workspace.session.logic_template.steps} currentIndex={workspace.stage_progress?.current_stage_index} statuses={workspace.session.logic_template.steps.map((_, index) => workspace.stage_progress?.stages.find(stage => stage.index === index)?.status ?? "pending")} /> : null}
+      {!ended && workspace.session.mission_plan?.version !== 2 ? <SupportControls workspace={workspace} disabled={!connected || state.busy || state.phase !== "listening" || state.userSpeaking} pending={!!state.supportPending} error={state.supportError} onChange={changeSupport} /> : null}
+      {state.error ? <div className={styles.notice} role="alert"><span>{state.error}</span>{state.conflict ? <Button variant="secondary" size="inherit" onClick={() => void controller?.start(view === "voice", true)} disabled={connecting}>Take over here</Button> : null}</div> : null}
+      {confirmAction ? <section className={styles.confirm} aria-label={confirmAction === "delete" ? "Delete conversation confirmation" : "End mission confirmation"}><h2>{confirmAction === "delete" ? "Delete this mission?" : "End this mission?"}</h2><p>{confirmAction === "delete" ? "Your saved transcript, language evidence and mission will be permanently deleted." : state.pending ? "One message is still unconfirmed. Ending closes the connection and saves the finalized conversation for review." : "This stops the microphone and closes the conversation. Your finalized transcript and evidence stay available."}</p><div><Button variant={confirmAction === "delete" ? "danger-solid" : "primary"} size="inherit" className={styles.primary} disabled={state.busy} loading={state.busy} loadingLabel="Saving…" onClick={() => void confirm()}>{confirmAction === "delete" ? "Delete permanently" : "End and review"}</Button><Button variant="secondary" size="inherit" disabled={state.busy} onClick={() => setConfirmAction(null)}>Cancel</Button></div></section> : null}
       <div className={styles.workspace}>
         <section className={styles.conversation} aria-label="Conversation">
-          <div className={styles.toolbar}><div className={styles.views} aria-label="Conversation view"><button type="button" aria-pressed={view === "voice"} onClick={() => setView("voice")}><Radio size={14} aria-hidden="true" />Voice</button><button type="button" aria-pressed={view === "chat"} onClick={() => setView("chat")}><MessageSquare size={14} aria-hidden="true" />Chat</button></div><span className={styles.connection} role="status"><span className={connected ? styles.connectedDot : styles.dot} />{ended ? "Completed" : connected ? "Connected" : connecting ? "Connecting" : state.connection === "paused" ? "Paused" : "Offline"}</span><Button variant="secondary" size="inherit" type="button" className={styles.trainingToggle} aria-expanded={trainingOpen} onClick={() => { setTrainingOpen(!trainingOpen); setFocused(false); }}>Loadout<ChevronDown size={14} aria-hidden="true" /></Button><Button variant="ghost" size="inherit" shape="circle" type="button" className={styles.iconButton} aria-label={focused ? "Restore training sidebar" : "Expand conversation"} aria-pressed={focused} onClick={() => setFocused(!focused)}>{focused ? <Minimize size={16} /> : <Expand size={16} />}</Button></div>
-          {view === "voice" ? <div className={styles.voice} data-phase={connected ? state.phase : "idle"}><div className={styles.orb} aria-hidden="true" /><h2>{voiceTitle}</h2><p>{voiceHelp}</p>{!connected && !ended ? <Button variant="record" size="inherit" shape="pill" type="button" className={styles.primary} disabled={!canStart || state.conflict} loading={connecting} loadingLabel="Connecting…" onClick={() => void controller?.start(true)}>{state.connection === "paused" ? "Resume conversation" : state.connection === "disconnected" ? "Reconnect" : "Start conversation"}</Button> : null}{connected && state.phase === "speaking" ? <Button variant="secondary" size="inherit" type="button" onClick={() => controller?.interrupt()}><Square size={12} aria-hidden="true" />Stop speaking</Button> : null}{connected ? <Button variant="ghost" size="inherit" type="button" className={styles.quiet} onClick={() => controller?.pause()}><Pause size={12} aria-hidden="true" />Pause conversation</Button> : null}<span className={styles.voicePrivacy}>{state.microphone ? "Microphone on · audio sent for this conversation" : "Microphone off"}</span>{Object.values(state.partials).length ? <p className={styles.liveCaption}>{Object.values(state.partials).at(-1)?.text}<span>Live transcript · not finalized</span></p> : null}</div>
-            : <div className={styles.chat} aria-label="Conversation transcript">{!visibleMessages.length && !visiblePartials.length && !state.pending ? <div className={styles.chatEmpty}><MessageSquare size={24} aria-hidden="true" /><h2>Start with your idea</h2><p>Type a message below or switch to Voice. Your partner will respond within your mission.</p></div> : visibleMessages.map(message => <article id={`turn-${message.id}`} className={`${styles.message} ${message.role === "user" ? styles.userMessage : styles.aiMessage}`} key={message.id}><div className={styles.speaker}>{message.role === "user" ? "You" : "AI partner"}<span>{message.input_source === "voice" ? "Voice" : "Text"}</span></div><VisibleMessage message={message} active={connected} onShown={messageShown}><HighlightedMessage message={message} evidence={workspace.evidence} demonstrations={support?.level === "no_hint" ? [] : workspace.demonstrations} onSelect={chooseEvidence} /></VisibleMessage>{message.status !== "final" ? <p className={styles.messageStatus}>{message.status === "interrupted" ? "Interrupted · generated text may include words not played" : message.text ? "Transcript not confirmed" : "Transcript unavailable"}</p> : null}</article>)}
-              {visiblePartials.map(([id, partial]) => <article className={`${styles.message} ${partial.role === "user" ? styles.userMessage : styles.aiMessage}`} key={id}><div className={styles.speaker}>{partial.role === "user" ? "You" : "AI partner"}<span>Live · not finalized</span></div><div className={styles.bubble}>{partial.text}</div></article>)}
-              {state.pending ? <article className={`${styles.message} ${styles.userMessage}`}><div className={styles.speaker}>You<span>{state.pending.status === "sending" ? "Awaiting confirmation…" : "Not yet confirmed"}</span></div><div className={styles.bubble}>{state.pending.text}</div>{state.pending.status === "unconfirmed" ? <Button variant="secondary" size="inherit" type="button" onClick={() => void controller?.retryText()} disabled={connecting || state.conflict}>Retry same message</Button> : null}</article> : null}<div ref={bottom} />
+          <ConversationToolbar view={view} onView={setView} status={status} online={connected} actions={<>
+            <button type="button" className={styles.trainingToggle} aria-expanded={trainingOpen} aria-controls="mission-targets" onClick={() => { setTrainingOpen(!trainingOpen); setFocused(false); }}>Targets<ChevronDown size={14} aria-hidden="true" /></button>
+            <button type="button" className={styles.iconButton} aria-label={focused ? "Restore training sidebar" : "Expand conversation"} aria-pressed={focused} onClick={() => setFocused(!focused)}>{focused ? <Minimize size={16} /> : <Expand size={16} />}</button></>} />
+          {state.connection === "paused" || state.connection === "disconnected" ? <div className={styles.connectionNotice}><div><strong>{state.connection === "paused" ? "Conversation paused" : "Connection lost"}</strong><p>Your finalized transcript is saved.</p></div>{startAction}</div> : null}
+          {view === "voice" ? <VoiceSurface recast={voiceRecast ? <ConfirmedRecast recast={voiceRecast} voice active={connected} onShown={recastShown} /> : null} phase={connected ? state.phase : "idle"} speaker={caption?.role === "user" || currentMessage?.role === "user" ? "You · now" : "AI partner · now"}
+            utterance={caption ? caption.text : currentMessage ? <><VisibleMessage message={currentMessage} active={connected} onShown={messageShown}><HighlightedMessage message={currentMessage} evidence={workspace.evidence} demonstrations={support?.level === "no_hint" && workspace.session.mission_plan?.version !== 2 ? [] : workspace.demonstrations} onSelect={chooseEvidence} /></VisibleMessage>{currentMessage.status !== "final" ? <p className={styles.messageStatus}>Transcript may include words not played.</p> : null}</> : undefined}
+            hint={hint}
+            action={state.connection !== "paused" && state.connection !== "disconnected" ? startAction : null}
+            controls={connected ? <div className={styles.voiceControls}><MicrophoneButton large enabled={state.microphone} disabled={micDisabled} onClick={toggleMicrophone} /><div className={styles.voiceActions}>{state.phase === "speaking" ? <button type="button" className={styles.quiet} onClick={() => controller?.interrupt()}><Square size={12} aria-hidden="true" />Stop speaking</button> : null}<button type="button" className={styles.quiet} onClick={() => controller?.pause()}><Pause size={12} aria-hidden="true" />Pause conversation</button></div></div> : undefined} />
+            : <div className={styles.chat} aria-label="Conversation transcript">
+              {!visibleMessages.length && !visiblePartials.length && !state.pending ? <div className={styles.chatEmpty}><h2>Ready when you are</h2>{startAction}</div> : null}
+              {visibleMessages.map(message => <Fragment key={message.id}>{dividers.has(message.id) ? <StageDivider label={dividers.get(message.id)!.label} /> : null}<ConversationMessage id={`turn-${message.id}`} speaker={message.role === "user" ? "You" : "Partner"} user={message.role === "user"} note={message.status !== "final" ? <p className={styles.messageStatus}>{message.status === "interrupted" ? "Interrupted · generated text may include words not played" : "Transcript not confirmed"}</p> : null}>
+                <VisibleMessage message={message} active={connected} onShown={messageShown}><HighlightedMessage message={message} evidence={workspace.evidence} demonstrations={support?.level === "no_hint" && workspace.session.mission_plan?.version !== 2 ? [] : workspace.demonstrations} onSelect={chooseEvidence} /></VisibleMessage>
+                {message.role === "user" ? recasts.filter(row => row.source.message_id === message.id).map(row => <ConfirmedRecast key={row.id} recast={row} active={connected && !confirmAction} onShown={recastShown} />) : null}
+              </ConversationMessage></Fragment>)}
+              {visiblePartials.map(([id, partial]) => <ConversationMessage key={id} speaker={partial.role === "user" ? "You" : "Partner"} user={partial.role === "user"} note={<span className={styles.messageStatus}>Live · not finalized</span>}><div className={styles.bubble}>{partial.text}</div></ConversationMessage>)}
+              {state.pending ? <ConversationMessage speaker="You" user note={<><span className={styles.messageStatus}>{state.pending.status === "sending" ? "Awaiting confirmation…" : "Not yet confirmed"}</span>{state.pending.status === "unconfirmed" ? <Button variant="secondary" size="inherit" onClick={() => void controller?.retryText()} disabled={connecting || state.conflict}>Retry same message</Button> : null}</>}><div className={styles.bubble}>{state.pending.text}</div></ConversationMessage> : null}<div ref={bottom} />
             </div>}
-          {evidence ? <section className={styles.evidenceDetail} aria-label="Language evidence"><Button variant="ghost" size="inherit" shape="circle" type="button" className={styles.iconButton} aria-label="Close evidence" onClick={() => setSelectedEvidence(null)}><X size={14} /></Button><strong>“{evidence.quote}”</strong><p>{evidence.reason}</p><span>{evidence.match_type} match · {evidence.appropriateness === "appropriate" ? "Appropriate in this context" : evidence.appropriateness === "uncertain" ? "Context not confirmed" : "Context needs attention"} · {assistanceLabel(evidence)}</span></section> : null}
-          {!ended ? <HintCard card={support && workspace.help?.source === "automatic" ? null : workspace.help ?? null} connected={connected} userSpeaking={state.userSpeaking || !!text.trim() || !!state.pending} onHint={requestHint} onShown={hintShown} /> : null}
-          {!ended ? <div className={styles.composerArea}><form className={styles.composer} onSubmit={event => { event.preventDefault(); void submit(); }}><Textarea shape="pill" aria-label="Message your AI partner" placeholder="Or send a message…" value={text} rows={1} maxLength={4000} disabled={state.busy} onChange={event => setText(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void submit(); } }} /><Button variant="primary" size="inherit" shape="circle" type="submit" className={styles.sendButton} aria-label="Send message" disabled={!text.trim() || !!state.pending || connecting || state.busy || state.conflict}><ArrowUp size={18} /></Button><Button variant="record" size="inherit" shape="circle" recording={state.microphone} type="button" className={`${styles.micButton} ${state.microphone ? styles.micActive : ""}`} aria-label={state.microphone ? "Mute microphone" : "Enable microphone"} aria-pressed={state.microphone} disabled={state.microphoneBusy || connecting || state.busy || state.conflict} onClick={() => { if (!connected) void controller?.start(true); else void controller?.setMicrophone(!state.microphone); }}>{state.microphone ? <Mic size={20} /> : <MicOff size={20} />}</Button></form><div className={styles.composerHelp}><span>{text.length ? `${text.length}/4000 · Shift+Enter for a new line` : "Text is saved · audio is not retained by Libitu"}</span><Button variant="ghost" size="inherit" type="button" disabled={!connected || allTargetsSkipped} onClick={() => requestHint()}>Need a hint?</Button></div>{!connected && view === "chat" ? <Button variant="ghost" size="inherit" type="button" className={styles.quiet} loading={connecting} loadingLabel="Connecting…" onClick={() => void controller?.start(false)} disabled={!canStart || state.conflict}><RefreshCw size={12} aria-hidden="true" />Connect for text</Button> : null}</div>
-            : <div className={styles.review}><Check size={16} aria-hidden="true" /><p>Mission complete. Review the actual transcript and evidence above.</p><ButtonLink variant="primary" size="inherit" className={styles.primary} href={missionHref("analytics", returnTo, sessionId)}>View mission report</ButtonLink><Button variant="danger" size="inherit" type="button" className={styles.deleteButton} onClick={() => setConfirmAction("delete")}><Trash2 size={13} aria-hidden="true" />Delete mission</Button></div>}
+
+          {view === "chat" ? hint : null}
+          {!ended ? <div className={styles.composerArea}>
+            {view === "chat" ? <MicrophoneBar enabled={state.microphone} disabled={micDisabled} onClick={toggleMicrophone} status={status} active={connected && (state.userSpeaking || state.phase === "speaking")} /> : null}
+            <form className={styles.composer} onSubmit={event => { event.preventDefault(); void submit(); }}><Textarea shape="pill" aria-label="Message your AI partner" placeholder={view === "voice" ? "Or send a message…" : "Type a reply…"} value={text} rows={1} maxLength={4000} disabled={state.busy} onChange={event => setText(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void submit(); } }} /><button type="submit" className={styles.sendButton} aria-label="Send message" disabled={!text.trim() || !!state.pending || connecting || state.busy || state.conflict}><ArrowUp size={18} /></button></form>
+            <div className={styles.composerHelp}><span>{text.length ? `${text.length}/4000 · Shift+Enter for a new line` : "Transcript is saved. Audio is not retained by Libitu."}</span><button type="button" disabled={!connected || allTargetsSkipped || (newHelp && (!workspace?.conversation?.question || !["presenting", "awaiting_reply", "responding"].includes(workspace.conversation.question.status) || helpCard?.status === "loading" || state.userSpeaking || !!text.trim() || state.phase !== "listening"))} aria-busy={newHelp && helpCard?.status === "loading"} onClick={() => requestHint()}>{newHelp && state.helpLoadingVisible ? <LoaderCircle className={styles.helpSpinner} size={14} aria-hidden="true" /> : null}{newHelp ? helpLabel : "Need a hint?"}</button></div>
+          </div> : <div className={styles.review}><Check size={16} aria-hidden="true" /><p>Mission complete.</p><ButtonLink variant="primary" size="inherit" className={styles.primary} href={missionHref("analytics", returnTo, sessionId)}>View mission report</ButtonLink><Button variant="danger" size="inherit" className={styles.deleteButton} onClick={() => setConfirmAction("delete")}><Trash2 size={13} aria-hidden="true" />Delete mission</Button></div>}
         </section>
-        <aside className={`${styles.sidebar} ${workspace.session.mission_plan ? styles.plannedSidebar : ""} ${trainingOpen ? styles.sidebarOpen : ""}`} aria-label="Training sidebar"><TrainingSidebar workspace={workspace} onSelect={chooseEvidence} onHint={requestHint} onSkip={skipTarget} onRestore={restoreTarget} onTargetShown={targetShown} canHint={connected} /></aside>
+        <aside id="mission-targets" className={`${styles.sidebar} ${trainingOpen ? styles.sidebarOpen : ""}`} aria-label="Training sidebar"><TrainingSidebar workspace={workspace} onSelect={chooseEvidence} onHint={requestHint} onSkip={skipTarget} onRestore={restoreTarget} onTargetShown={targetShown} canHint={connected} />{evidence ? <section id="language-evidence" className={styles.evidenceDetail} aria-label="Language evidence"><button type="button" className={styles.iconButton} aria-label="Close evidence" onClick={() => setSelectedEvidence(null)}><X size={14} /></button><strong>“{evidence.quote}”</strong><p>{evidence.reason}</p><span>{evidence.match_type} match · {evidence.appropriateness === "appropriate" ? "Appropriate in this context" : evidence.appropriateness === "uncertain" ? "Context not confirmed" : "Context needs attention"} · {assistanceLabel(evidence)}</span></section> : null}</aside>
       </div>
     </>}
   </section></main></>;

@@ -1,10 +1,18 @@
 # Stage 4 runtime contract
 
-Implemented contract, updated 2026-10-18. See [verification and provider-specific boundaries](STAGE_FOUR_IMPLEMENTATION.md) and [teaching control/diagnostic details](STAGE_FOUR_TEACHING_CONTROL.md).
+Implemented contract, updated 2026-10-31. See [verification and provider-specific boundaries](STAGE_FOUR_IMPLEMENTATION.md) and [teaching control/diagnostic details](STAGE_FOUR_TEACHING_CONTROL.md).
+
+2026-10-31: [Conversation redesign states/data](STAGE_FOUR_CONVERSATION_CONTRACT.md)
+are implemented for negotiated OpenAI protocol 1: actual question identity,
+8/20-second eligible-silence budgets, simpler rephrasing, progressive help and
+visibility receipts. Step 4 adds grounded minimal recasts with actual partner
+presentation and report-only classification. This document describes the base
+transport and legacy help semantics; the linked contract defines the selected
+protocol's additions. Missing negotiation and Gemini retain legacy behavior.
 
 ## Transport and lifecycle
 
-Browser → authenticated Libitu WebSocket → Gemini Live WebSocket (user-selected default); an optional OpenAI adapter shares the application contract. Browser sends PCM16LE mono 24 kHz, text and allowed controls only. Gemini input is resampled to 16 kHz; native audio output remains 24 kHz. Text mode displays output transcription without playing native audio. Server owns provider instructions, responses, transcript persistence, teaching policy and interruption. Analyzer is asynchronous and never blocks the current response. No raw audio persistence. One leased runtime per session; explicit takeover fences the former runtime. Reconnect hydrates finalized messages; never reopens microphone without an action. Maximum 20 minutes per connection, 100 user utterances per mission, bounded input/output and 60-second lost-lease expiry. Text works without microphone permission.
+Browser → authenticated Libitu WebSocket → OpenAI Realtime WebSocket (user-selected default, `gpt-realtime-2.1` / `marin`); the optional Gemini adapter shares the application contract. Browser sends PCM16LE mono 24 kHz, text and allowed controls only. OpenAI input/output remain PCM24k; voice responses include audio transcripts and microphone-off responses request text only. OpenAI semantic VAD uses low eagerness with automatic response creation/interruption disabled: the application owns both. The legacy Gemini adapter resamples input to 16 kHz and suppresses native audio in text mode. Server owns provider instructions, responses, transcript persistence, teaching policy and interruption. Analyzer is asynchronous and never blocks the current response. No raw audio persistence. One leased runtime per session; explicit takeover fences the former runtime. Reconnect hydrates finalized messages; never reopens microphone without an action. Maximum 20 minutes per connection, 100 user utterances per mission, bounded input/output and 60-second lost-lease expiry. Text works without microphone permission.
 
 HTTP prefix `/api/speaking/sessions/{id}` (Clerk bearer auth):
 
@@ -38,7 +46,7 @@ Audio input uses a token bucket: 240,000 decoded bytes of maximum burst credit (
 
 PCM, ping and playback/message/hint presentation receipts bypass the provider/state operation lock so transcript persistence cannot accumulate those frames behind it. One client reader retains FIFO with microphone/text controls; provider writes remain serialized and resampler convert/reset ordering is unchanged. Completed-playback ACK persistence is deduplicated in the bounded background exposure drain. Storage failure retains pending state and records `response.playback_uncommitted`; cancellation records unknown commit status. Shutdown reconciles complete locally received ACKs while partial or unknown playback remains interrupted. `input.audio_rate_exceeded` records rejected byte count and remaining budget, without audio content. This does not relax input bounds or guarantee progress through every provider, database or host stall.
 
-While the microphone is enabled, a server timer waits at least 15 seconds after generation and acknowledged playback have both finished before requesting one brief in-role follow-up. Idle detection and triggering both use the approximately two-second heartbeat, so the observed delay can be a few seconds longer. User speech, pending Gemini transcription, provider generation/request, incomplete playback, mute, stop and lifecycle fencing prevent a follow-up. At most two follow-ups per silent stretch in a connection; nonblank user text/transcription resets the count, VAD noise alone does not. These are private provider controls, never fabricated user messages/evidence. No silent follow-ups run in microphone-off text mode. Reconnect starts a new timer/budget; the existing idle and connection ceilings remain.
+While the microphone is enabled, a server timer waits at least 15 seconds after generation and acknowledged playback have both finished before requesting one brief in-role follow-up. Idle detection and triggering both use the approximately two-second heartbeat, so the observed delay can be a few seconds longer. User speech, pending transcription, provider generation/request, incomplete playback, mute, stop and lifecycle fencing prevent a follow-up. At most two follow-ups per silent stretch in a connection; nonblank user text/transcription resets the count, VAD noise alone does not. These are private provider controls, never fabricated user messages/evidence. No silent follow-ups run in microphone-off text mode. Reconnect starts a new timer/budget; the existing idle and connection ceilings remain.
 
 Server WS events:
 - `{type:"ready",workspace}` after provider configured/hydrated.

@@ -59,10 +59,10 @@ export function SecondRound({ report, owner, getToken, returnTo, disabled }: { r
   }
   if (!report.session.mission_plan || report.session.status !== "completed") return null;
   return <section className={styles.practicePanel} aria-label="Prepare a second round"><h2 className={styles.sideTitle}>Prepare a second round</h2>
-    <p className={styles.small}>Keep the same language and target roles while changing the conversation. Your existing draft is kept.</p>
+    <p className={styles.small}>Keep the same target language while changing the conversation. Your existing draft is kept.</p>
     <label>Variation<SelectField aria-label="Practice variation" value={variation} disabled={!!busy || disabled} onValueChange={value => { setVariation(value as PracticeVariation); setPlan(null); setError(null); }} options={[{ value: "details", label: "Change details" }, { value: "role_swap", label: "Swap roles", disabled: report.session.mission_plan.user_role === report.session.mission_plan.ai_role }]} /></label>
-    <label>Support for this round<SelectField aria-label="Second-round support" value={support} disabled={!!busy || disabled} onValueChange={value => { if (isSupportLevel(value)) setSupport(value); }} options={SUPPORT_OPTIONS} /></label>
-    <p className={styles.small}>This support choice is a practice preference, not a mastery assessment.</p>
+    {report.session.mission_plan.version !== 2 ? <><label>Support for this round<SelectField aria-label="Second-round support" value={support} disabled={!!busy || disabled} onValueChange={value => { if (isSupportLevel(value)) setSupport(value); }} options={SUPPORT_OPTIONS} /></label>
+    <p className={styles.small}>This support choice is a practice preference, not a mastery assessment.</p></> : <p className={styles.small}>Your partner models each target once unless you use it independently first.</p>}
     <Button variant="secondary" size="inherit" disabled={!!busy || disabled} loading={busy === "prepare"} loadingLabel="Preparing second round…" onClick={() => void run(false)}>Prepare second round</Button>
     {plan ? <div className={styles.practiceReview}><h3>Review the changes</h3>{plan.candidates.map(candidate => <article key={candidate.id}><strong>{candidate.title}</strong><p>{candidate.goal}</p><dl>{candidate.changes?.map(change => <div key={change.field}><dt>{changeLabels[change.field]}</dt><dd><span>Before: {change.before}</span><span>After: {change.after}</span></dd></div>)}</dl></article>)}
       <p className={styles.small}>Confirm to import these scenes into Loadout, where you can choose one before starting.</p>
@@ -96,7 +96,7 @@ export function PracticeComparisonSection({ report, owner, getToken, returnTo }:
     {error ? <p className={styles.error} role="alert">{error}</p> : !value ? <p role="status">Loading existing reports…</p> : <p>{value.reason}</p>}
     {value?.status === "ready" ? <>
       <p className={styles.small}>Before: {supportLabel(value.parent_support_level)} · After: {supportLabel(value.child_support_level)}</p>
-      {value.items.map(item => <article className={styles.refactor} key={item.session_item_id}><h3>{item.text} <span className={styles.badge}>{item.role}</span></h3><div className={styles.comparison}><div><h3>Before</h3><UseSummary value={item.before} /></div><div><h3>After</h3><UseSummary value={item.after} /></div></div></article>)}
+      {value.items.map(item => <article className={styles.refactor} key={item.session_item_id}><h3>{item.text} {report.session.mission_plan?.version !== 2 ? <span className={styles.badge}>{item.role}</span> : null}</h3><div className={styles.comparison}><div><h3>Before</h3><UseSummary value={item.before} /></div><div><h3>After</h3><UseSummary value={item.after} /></div></div></article>)}
     </> : null}
     {value?.parent_session_id ? <Link className={styles.small} href={missionHref("analytics", returnTo, value.parent_session_id)}>View original report</Link> : null}
     {error || value?.status === "pending" ? <Button variant="secondary" size="inherit" onClick={() => setAttempt(current => current + 1)}>Check comparison</Button> : null}

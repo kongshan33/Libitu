@@ -1,0 +1,104 @@
+/* Mission Quick start structure with design v1.0 neutrals. */
+.hero { display: flex; flex-direction: column; gap: 18px; min-width: 0; padding: 24px; border-radius: 20px; background: #0c0a09; color: #fff; }
+.heroHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.heroHeading h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: #e7e5e4; font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+.heroHeading > span { color: #d6d3d1; font-size: 12px; text-align: right; }
+.heroPlan { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.picks { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.pick, .logic { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 14px 16px; border-radius: 12px; background: #1c1917; }
+.stage { flex: 0 0 auto; padding: 3px 9px; border: 1px solid #78716c; border-radius: 999px; color: #e7e5e4; font-size: 11px; font-weight: 500; line-height: 1.5; text-align: center; }
+.pick .stage { min-width: 92px; }
+.pick strong { font-size: 16px; }
+.pick strong, .logic strong { min-width: 0; color: #fff; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.logic strong { font-size: 15px; }
+.reason { margin-left: auto; flex: 0 1 120px; color: #d6d3d1; font-size: 12px; line-height: 1.5; text-align: right; }
+.chain { margin-left: auto; color: #e7e5e4; font-size: 13px; line-height: 1.7; text-align: right; }
+.scene { margin: 0; padding: 2px 4px; color: #e7e5e4; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.scene > span { color: #d6d3d1; }
+.emptyPicks { padding: 20px 16px; border: 1px dashed #78716c; border-radius: 12px; }
+.emptyPicks strong { font-size: 15px; font-weight: 500; }
+.emptyPicks p { margin: 8px 0 0; color: #e7e5e4; font-size: 13px; line-height: 1.6; }
+.heroActions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 11px 20px; border: 1px solid transparent; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 500; line-height: 1.4; text-decoration: none; cursor: pointer; }
+.heroStart { padding: 14px 26px; background: #fff; color: #0c0a09; font-size: 15px; }
+.heroStart:hover:not(:disabled) { background: #f0eeec; }
+.heroSecondary { padding: 8px 14px; font-size: 13px; border-color: #d6d3d1; background: transparent; color: #fff; }
+.heroSecondary:hover:not(:disabled) { background: #44403c; }
+.hero .button:disabled, .hero .preferenceChip:disabled { background: #e7e5e4; color: #78716c; border-color: transparent; opacity: 1; cursor: not-allowed; }
+.hero button:focus-visible { outline: 2px solid #5a43d6; outline-offset: 2px; }
+.preferenceSummary { margin: 0 0 0 auto; color: #d6d3d1; font-size: 13px; line-height: 1.6; }
+
+.drawer { position: fixed; inset: 0 0 0 auto; width: min(520px, 100vw); max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; background: #fff; color: #0c0a09; box-shadow: none; }
+.drawer::backdrop { background: rgb(17 17 17 / 40%); }
+.drawer, .drawer * { box-sizing: border-box; }
+.drawerPanel { display: flex; flex-direction: column; height: 100%; }
+.drawerHeader { flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px; padding: 20px 24px 12px; border-bottom: 1px solid #f0eeec; }
+.drawerTitle { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.drawerTitle h2 { margin: 0; font-size: 22px; line-height: 1.3; font-weight: 500; letter-spacing: -.01em; }
+.closeButton { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 1px solid #d6d3d1; border-radius: 50%; background: #fff; color: #0c0a09; cursor: pointer; }
+.closeButton:hover { background: #f0eeec; }
+.searchLabel { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.searchField { position: relative; }
+.searchField input { display: block; width: 100%; min-height: 44px; margin: 0; padding: 11px 12px; border: 1px solid #d6d3d1; border-radius: 10px; background: #fff; color: #0c0a09; font: inherit; font-size: 14px; line-height: 1.5; }
+.searchField input::placeholder { color: #78716c; }
+.functionFilters { display: flex; flex-wrap: wrap; gap: 6px; max-height: 144px; overflow-y: auto; padding: 3px; margin: -3px; }
+.filterChip { min-height: 32px; padding: 5px 12px; border: 1px solid #d6d3d1; border-radius: 999px; background: #fff; color: #44403c; font: inherit; font-size: 12px; line-height: 1.5; cursor: pointer; }
+.filterChip:hover:not([aria-pressed="true"]) { background: #f0eeec; }
+.filterChip[aria-pressed="true"] { border-color: #0c0a09; background: #0c0a09; color: #fff; }
+.drawerContent { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 24px 20px; }
+.corpusGroup { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.corpusGroup h3 { margin: 0 0 2px; color: #78716c; font-size: 11px; font-weight: 500; line-height: 1.5; letter-spacing: .08em; text-transform: uppercase; }
+.corpusCard { display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 18px; border: 1.5px solid transparent; border-radius: 14px; background: #fafaf9; color: #0c0a09; font: inherit; text-align: left; cursor: pointer; }
+.corpusCard:hover:not(:disabled):not([aria-pressed="true"]) { background: #f0eeec; }
+.corpusCard[aria-pressed="true"] { border-color: #5a43d6; background: #fff; }
+.corpusCard:disabled { opacity: 1; color: #78716c; cursor: not-allowed; }
+.corpusCardTitle { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
+.corpusCardTitle strong { font-size: 15px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.corpusCardTitle svg { flex-shrink: 0; color: #0c0a09; }
+.meaning { color: #57534e; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.tags > span { color: #78716c; font-size: 12px; font-weight: 400; line-height: 1.5; }
+.tags > span + span::before { content: "·"; margin-right: 6px; }
+.selectionNotice, .emptyCorpus { margin: 16px 0 0; color: #78716c; font-size: 13px; line-height: 1.6; }
+.drawerFooter { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px max(14px, env(safe-area-inset-bottom)); border-top: 1px solid #f0eeec; }
+.drawerFooter > span { color: #78716c; font-size: 13px; }
+.doneButton { padding: 10px 26px; background: #0c0a09; color: #fff; }
+.doneButton:hover { background: #44403c; }
+.drawer button:focus-visible, .drawer input:focus-visible { outline: 2px solid #5a43d6; outline-offset: 2px; }
+
+/* Preferences share the page state and expand inside Quick start. */
+.preferences { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding: 16px; border: 0; border-radius: 12px; background: #1c1917; }
+.preferenceRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.preferenceLabel { flex: 0 0 84px; color: #d6d3d1; font-size: 12px; line-height: 1.5; }
+.preferenceChips { display: flex; flex: 1; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.preferenceChip { min-height: 32px; padding: 5px 12px; border: 1px solid #78716c; border-radius: 999px; background: transparent; color: #e7e5e4; font: inherit; font-size: 12px; line-height: 1.5; cursor: pointer; }
+.preferenceChip:hover:not(:disabled):not([aria-pressed="true"]) { background: #44403c; }
+.preferenceChip[aria-pressed="true"] { border-color: #fff; background: #fff; color: #0c0a09; }
+.preferenceHelp { margin: 0; color: #d6d3d1; font-size: 12px; line-height: 1.5; }
+
+@media (max-width: 1100px) {
+  .pick { flex-wrap: wrap; gap: 8px 12px; }
+  .pick strong { flex: 1 1 160px; }
+  .reason { flex-basis: 100%; margin-left: 0; text-align: left; }
+  .logic { flex-wrap: wrap; gap: 8px 12px; }
+  .chain { flex-basis: 100%; margin-left: 0; text-align: left; }
+  .preferenceSummary { flex-basis: 100%; margin-left: 0; }
+}
+@media (max-width: 800px) {
+  .closeButton { width: 44px; height: 44px; }
+  .filterChip, .preferenceChip { min-height: 44px; }
+}
+@media (max-width: 480px) {
+  .hero { padding: 20px 16px; }
+  .heroHeading { align-items: flex-start; }
+  .heroHeading > span { max-width: 145px; font-size: 11px; }
+  .pick, .logic { padding: 12px; }
+  .pick strong { flex-basis: 100%; }
+  .heroStart { width: 100%; }
+  .heroSecondary { flex: 1 1 auto; padding: 10px 14px; }
+  .drawerHeader { padding: 16px; }
+  .drawerContent { padding: 0 16px 20px; }
+  .drawerFooter { padding-right: 16px; padding-left: 16px; }
+  .preferences { padding: 12px; }
+  .preferenceLabel { flex-basis: 100%; }
+}

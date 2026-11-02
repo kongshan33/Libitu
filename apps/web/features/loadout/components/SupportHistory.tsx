@@ -13,8 +13,9 @@ import styles from "./Loadout.module.css";
 export function supportHistoryRequest(draft: LoadoutDraft, records: SavedCorpusRecord[]): SupportRecommendationRequest {
   return { current_level: draft.supportLevel ?? null, targets: draft.selectedKeys.map(key => ({ corpus_item_id: records.find(record => record.key === key)?.serverId ?? "", role: targetRole(draft, key) })) };
 }
-export function SupportHistory({ owner, getToken, draft, records, disabled, onApply }: {
+export function SupportHistory({ owner, getToken, draft, records, disabled, onApply, allowSupportAdjustment = true }: {
   owner: string | null; getToken: () => Promise<string | null>; draft: LoadoutDraft; records: SavedCorpusRecord[]; disabled: boolean; onApply: (level: SpeakingSupportLevel) => void;
+  allowSupportAdjustment?: boolean;
 }) {
   const request = supportHistoryRequest(draft, records);
   const signature = JSON.stringify([owner, request]);
@@ -38,19 +39,19 @@ export function SupportHistory({ owner, getToken, draft, records, disabled, onAp
   const suggestion = result?.suggested_level;
   const canApply = result?.status === "suggest_reduce" && suggestion && draft.supportLevel && reducedSupport(draft.supportLevel) === suggestion
     && !disabled && !draft.submission;
-  return <section className={styles.historyPanel} aria-label="Practice history"><h3>Practice history</h3>
-    <p className={styles.fieldHelp}>Check whether each primary target has reliable independent use in 3 Missions, on 2 UTC practice dates, across 2 scene families. This is a practice rule, not a mastery score.</p>
-    <Button variant="secondary" size="inherit" type="button" disabled={disabled || !owner || !!draft.submission || !!value?.busy} loading={value?.busy} loadingLabel="Checking practice history…" onClick={() => void check()}>Check practice history</Button>
+  return <section className={styles.historyPanel} aria-label="Practice history">
+    <p className={styles.fieldHelp}>Reliable independent use means 3 Missions, on 2 UTC practice dates, across 2 different practice scenarios. Repeated or linked rounds of the same scene count together. This is a practice rule, not a mastery score.</p>
+    <Button variant="secondary" size="inherit" type="button" disabled={disabled || !owner || !!draft.submission || !!value?.busy} onClick={() => void check()}>{value?.busy ? "Checking practice history…" : "Check practice history"}</Button>
     {value?.error ? <p className={styles.fieldHelp} role="status">{value.error} Your selected support remains available and you can still start.</p> : null}
-    {result ? <><p className={styles.fieldHelp} role="status">{result.reason}</p>
+    {result ? <><p className={styles.fieldHelp} role="status">{allowSupportAdjustment ? result.reason : result.targets.every(target => target.eligible) ? "Each target meets the independent-use practice rule." : "Some targets do not yet meet the independent-use practice rule."}</p>
       <div className={styles.historyTargets}>{result.targets.map(target => {
         const record = records.find(record => record.serverId === target.corpus_item_id);
-        return <article key={target.corpus_item_id}><strong>{record ? expressionText(record) : "Selected target"}</strong><p>{target.role === "primary" ? "Primary" : "Opportunity"} · {target.qualifying_missions} Missions · {target.practice_days} UTC dates · {target.scene_roots} scene families</p>
+        return <article key={target.corpus_item_id}><div className={styles.historyTargetHeading}><strong>{record ? expressionText(record) : "Selected target"}</strong><span>{target.eligible ? "Reliable independent use" : "Building practice"}</span></div><p>Missions {target.qualifying_missions} / 3 · UTC dates {target.practice_days} / 2 · Scenarios {target.scene_roots} / 2</p>
           {target.evidence.length ? <ul>{target.evidence.map(evidence => <li key={`${evidence.session_id}:${evidence.report_id}`}><Link href={`/speaking/${encodeURIComponent(evidence.session_id)}/analytics`}>Practice on {new Date(evidence.practiced_at).toISOString().slice(0, 10)} UTC</Link></li>)}</ul> : <p>No qualifying independent evidence found.</p>}
         </article>;
       })}</div>
       {result.history_truncated ? <p className={styles.fieldHelp}>Only the 100 most recent matching reports were checked. Older history may be missing.</p> : null}
-      {result.status === "suggest_reduce" && suggestion ? <><p className={styles.fieldHelp}>Suggested support: {SUPPORT_OPTIONS.find(option => option.value === suggestion)?.label}. You decide whether to apply it.</p><Button variant="primary" size="inherit" type="button" disabled={!canApply} onClick={() => { if (canApply && current.current === signature) onApply(suggestion); }}>Apply suggested support</Button></> : null}
+      {allowSupportAdjustment && result.status === "suggest_reduce" && suggestion ? <><p className={styles.fieldHelp}>Suggested support: {SUPPORT_OPTIONS.find(option => option.value === suggestion)?.label}. You decide whether to apply it.</p><Button variant="primary" size="inherit" type="button" disabled={!canApply} onClick={() => { if (canApply && current.current === signature) onApply(suggestion); }}>Apply suggested support</Button></> : null}
     </> : null}
   </section>;
 }

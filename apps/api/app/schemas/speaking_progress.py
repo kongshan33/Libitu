@@ -19,8 +19,8 @@ class SupportRecommendationRequest(BaseModel):
     def valid_selection(self):
         ids = [target.corpus_item_id for target in self.targets]
         primary = sum(target.role == "primary" for target in self.targets)
-        if len(set(ids)) != len(ids) or not 1 <= primary <= 3 or len(ids) - primary > 2:
-            raise ValueError("Choose one to three primary and up to two opportunity targets.")
+        if len(set(ids)) != len(ids) or not 1 <= primary <= 5 or len(ids) - primary > 2:
+            raise ValueError("Choose one to five targets; legacy opportunity selections are limited to two.")
         return self
 
 

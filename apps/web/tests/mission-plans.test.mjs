@@ -15,13 +15,13 @@ function planned(draft = { ...emptyDraft(), selectedKeys: ["key-0", "key-4", "ke
 
 test("conversation settings reuse a scene while scene inputs and saved language invalidate it", () => {
   const draft = planned();
-  for (const patch of [{ difficulty: "guided" }, { feedbackLevel: "detailed" }, { logicTemplateId: "status_update" }, { supportLevel: "no_hint" }]) {
+  for (const patch of [{ difficulty: "standard" }, { feedbackLevel: "light" }, { supportLevel: "no_hint" }]) {
     const changed = { ...draft, ...patch };
     assert.equal(missionInputSignature(changed, records), draft.plan.signature);
     assert.equal(automaticCandidate(changed, records).id, draft.selectedCandidateId);
     assert.notEqual(draftSignature(changed), draftSignature(draft), "create settings keep their own immutable request signature");
   }
-  for (const patch of [{ goal: "Different task" }, { scenarioType: "everyday" }, { selectedKeys: ["key-0", "key-4"] }, { targetRoles: { "key-0": "opportunity" } }]) {
+  for (const patch of [{ logicTemplateId: "status_update" }, { goal: "Different task" }, { scenarioType: "everyday" }, { selectedKeys: ["key-0", "key-4"] }, { targetRoles: { "key-0": "opportunity" } }]) {
     assert.equal(automaticCandidate({ ...draft, ...patch }, records), undefined);
   }
   for (const patch of [{ text: "Changed target" }, { meaning: "Changed meaning" }, { usageNote: "Different usage" }, { tags: ["suggestion"] },
@@ -112,19 +112,19 @@ test("old support-free drafts keep their exact signature and uncertain request t
   assert.deepEqual(preparePlannedSubmission(restored, [], () => assert.fail("must replay")).submission.request, prepared.submission.request);
 });
 
-test("new missions share five target slots across kinds, with explicit primary and opportunity roles", () => {
+test("new missions share five target slots across kinds, without a role distinction for new selections", () => {
   let draft = emptyDraft();
   for (const record of [...records.slice(0, 3), ...records.slice(4), records[3]]) draft = toggleMissionSelection(draft, record);
   assert.equal(draft.selectedKeys.length, 5);
-  assert.deepEqual(draft.selectedKeys.map(key => targetRole(draft, key)), ["primary", "primary", "opportunity", "opportunity", "primary"]);
+  assert.deepEqual(draft.selectedKeys.map(key => targetRole(draft, key)), ["primary", "primary", "primary", "primary", "primary"]);
   assert.equal(missionSelectionError(draft, records, true), null, "three structures and two chunks fit the shared target budget");
-  assert.match(missionSelectionError({ ...draft, targetRoles: Object.fromEntries(draft.selectedKeys.map(key => [key, "opportunity"])) }, records, true), /1–3 primary/);
+  assert.match(missionSelectionError({ ...draft, targetRoles: Object.fromEntries(draft.selectedKeys.map(key => [key, "opportunity"])) }, records, true), /at least one target/);
   assert.match(missionPlanError(draft, records), /Generate matching scenes/);
 });
 
-test("more than three structures stays preserved but blocks generation before a paid request", () => {
+test("structures share the five-target budget with expressions", () => {
   const draft = { ...emptyDraft(), selectedKeys: records.slice(0, 4).map(record => record.key) };
-  assert.match(missionSelectionError(draft, records, true), /up to 3 structures/);
+  assert.equal(missionSelectionError(draft, records, true), null);
   assert.equal(draft.selectedKeys.length, 4);
 });
 
@@ -196,7 +196,7 @@ test("adjustments never swap full opportunity slots, remove the last primary, or
   assert.deepEqual(adjustSceneTarget(full, "key-0", "remove").selectedKeys, ["key-4", "key-5", "key-6"], "explicit removal stays available");
   const single = planned({ ...emptyDraft(), selectedKeys: ["key-4"] });
   for (const action of ["opportunity", "remove"]) {
-    assert.match(sceneAdjustmentError(single, "key-4", action), /at least one primary/);
+    assert.match(sceneAdjustmentError(single, "key-4", action), /at least one required/);
     assert.equal(adjustSceneTarget(single, "key-4", action), single);
   }
   const pending = preparePlannedSubmission(planned(), records, () => uuid);
@@ -262,7 +262,7 @@ test("changing inputs, role, source identity or candidate order invalidates a sc
 test("low or unknown primary fit blocks start; an opportunity target can remain uncertain", () => {
   for (const fit of ["low", "unknown"]) {
     const draft = planned(); draft.plan.value.candidates[0].targets[0].fit = fit;
-    assert.match(missionPlanError(draft, records), /does not yet fit every primary/);
+    assert.match(missionPlanError(draft, records), /does not yet fit every required/);
   }
   const draft = planned(); draft.plan.value.candidates[0].targets[2].fit = "unknown";
   assert.equal(missionPlanError(draft, records), null);

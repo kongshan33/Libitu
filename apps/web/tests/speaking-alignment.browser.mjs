@@ -1,0 +1,88 @@
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { mkdir } from "node:fs/promises";
+import { installSpeakingFixture, speakingSessionId } from "./helpers/speaking-fixture.mjs";
+const { chromium } = createRequire(import.meta.url)(process.env.LIBITU_PLAYWRIGHT_MODULE ?? "playwright");
+const origin = process.env.LIBITU_TEST_URL ?? "http://localhost:3104";
+const artifacts = "/tmp/libitu-stage4-alignment-20261101";
+await mkdir(artifacts, { recursive: true });
+const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] });
+const ref = m => ({ message_id: m.id, revision: m.revision, start: 0, end: m.text.length, quote: m.text });
+try {
+  for (const width of [1440, 390]) for (const version of [1, 2]) {
+    const context = await browser.newContext({ viewport: { width, height: 1100 }, permissions: ["microphone"], reducedMotion: "reduce" });
+    const page = await context.newPage(); page.setDefaultTimeout(15000);
+    const { state, errors } = await installSpeakingFixture(page, { origin, conversationContract: true });
+    const w = state.workspace;
+    w.session.mission_plan = { version, title: "Align a delivery", setting: "A planning discussion.", goal: w.session.goal, user_role: "Project lead", ai_role: "Colleague", register: "professional", logic_template: w.session.logic_template, targets: w.session.items.map((item, index) => ({ session_item_id: item.id, role: "primary", stage_index: index })) };
+    if (version === 2) w.stage_progress = { current_stage_index: 1, stages: w.session.logic_template.steps.map((label, index) => ({ index, label, status: index === 1 ? "current" : index === 0 ? "completed" : "pending" })), targets: w.session.items.map((item, index) => ({ session_item_id: item.id, stage_index: index, modeling_status: "pending", practice_status: "pending", imitation_uses: 0 })) };
+    w.runtime = { id: "runtime", generation: 1, state: "connected", expires_at: new Date(Date.now() + 60000).toISOString(), conversation_contract_version: 1 };
+    const messages = [{ id: "u", role: "user", text: "To be fair, we need another week." }, { id: "a", role: "assistant", text: "We should be on the same page. Which customers would benefit?" }].map((m, ordinal) => ({ ...m, ordinal, status: "final", revision: 1, input_source: "text", created_at: new Date().toISOString() }));
+    w.messages = messages;
+    w.conversation = { contract_version: 1, question: { id: "q", context_version: 1, origin: ref(messages[1]), current: ref(messages[1]), stage_index: version === 2 ? 1 : null, target_item_id: "item-2", status: "awaiting_reply", auto_rephrase: "available", auto_direction: "available", automatic_help_closed: false }, help: null, recasts: [], stage_markers: [] };
+    const publish = () => { w.version++; state.sockets.at(-1).send(JSON.stringify({ type: "snapshot", workspace: w })); };
+    try {
+      await page.goto(`${origin}/speaking/${speakingSessionId}`);
+      const conversation = page.getByRole("region", { name: "Conversation", exact: true });
+      const sidebar = page.getByRole("complementary", { name: "Training sidebar" });
+      if (width < 800) await conversation.getByRole("button", { name: "Targets", exact: true }).click();
+      await sidebar.getByRole("button", { name: "Hide targets", exact: true }).waitFor();
+      assert.equal(await sidebar.getByRole("heading", { name: "Hidden until you ask", exact: true }).count(), 0, "all targets visible before connection");
+      for (const item of w.session.items) await sidebar.getByRole("heading", { name: item.text, exact: true }).waitFor();
+      assert.equal(state.connections.length, 0);
+      await conversation.getByRole("button", { name: "Start conversation", exact: true }).click();
+      await conversation.getByRole("button", { name: "Pause conversation", exact: true }).waitFor();
+      await conversation.getByRole("button", { name: "Chat", exact: true }).click();
+      assert.equal(await conversation.locator('[class*="stageDivider"]').count(), 0, "no inferred history");
+      w.evidence = [{ id: "e", session_item_id: "item-1", message_id: "u", transcript_revision: 1, start: 0, end: 10, quote: "To be fair", match_type: "exact", appropriateness: "appropriate", prompted: false, assistance: "independent", reason: "Acknowledges another perspective." }];
+      const start = messages[1].text.indexOf("on the same page");
+      w.demonstrations = [{ target_item_id: "item-2", message_id: "a", revision: 1, start, end: start + 16, quote: "on the same page" }];
+      if (version === 2) w.stage_progress.targets[1].modeling_status = "modeled";
+      w.conversation.stage_markers = [{ source: ref(messages[1]), stage_index: 1, label: "Tension" }];
+      publish();
+      await sidebar.getByRole("heading", { name: "on the same page", exact: true }).waitFor();
+      await sidebar.getByRole("heading", { name: "To be fair", exact: true }).waitFor();
+      assert.equal(await sidebar.getByRole("heading", { name: "Hidden until you ask", exact: true }).count(), 0);
+      assert.deepEqual(await conversation.locator('[class*="stageDivider"]').allTextContents(), ["Tension"]);
+      if (version === 2) await page.getByRole("region", { name: "Conversation strategy" }).getByText("Tension · Name the risk or objection.", { exact: true }).waitFor();
+      else assert.equal(await page.locator('[class*="stageCue"]').count(), 0, "legacy unknown stage has no invented cue");
+      await sidebar.getByRole("heading", { name: "What matters most is [priority].", exact: true }).waitFor();
+      await sidebar.getByRole("button", { name: "Hide targets", exact: true }).click();
+      assert.equal(await sidebar.getByRole("heading", { name: "Hidden until you ask", exact: true }).count(), 1);
+      if (width < 800) await conversation.getByRole("button", { name: "Targets", exact: true }).click();
+      await conversation.getByRole("button", { name: "View evidence for To be fair", exact: true }).click();
+      const detail = sidebar.getByRole("region", { name: "Language evidence" }); await detail.waitFor();
+      assert.equal(await conversation.getByRole("region", { name: "Language evidence" }).count(), 0);
+      assert.match(await detail.innerText(), /Independent/);
+      await detail.getByRole("button", { name: "Close evidence", exact: true }).click();
+      await detail.waitFor({ state: "detached" });
+      await sidebar.getByRole("button", { name: "View use", exact: true }).click(); await detail.waitFor();
+      await detail.getByRole("button", { name: "Close evidence", exact: true }).click();
+      await conversation.getByRole("button", { name: "Need a hint?", exact: true }).click();
+      const hint = conversation.getByRole("region", { name: "Speaking hint" });
+      await hint.getByText("explain why both sides can win.", { exact: true }).waitFor();
+      assert.deepEqual(await hint.evaluate(e => ({ font: getComputedStyle(e).fontSize, background: getComputedStyle(e).backgroundColor, padding: getComputedStyle(e).padding })), { font: "16px", background: "rgb(250, 250, 249)", padding: "14px 18px" });
+      await page.screenshot({ path: `${artifacts}/${width}-v${version}-chat.png`, fullPage: true });
+      await conversation.getByRole("button", { name: "Voice", exact: true }).click();
+      assert.equal(await hint.evaluate(e => getComputedStyle(e).fontSize), "18px");
+      assert.equal(await conversation.getByText(messages[0].text, { exact: true }).count(), 0);
+      w.conversation.help = null; w.conversation.question.auto_rephrase = "completed"; publish();
+      await conversation.getByRole("status").filter({ hasText: "Waiting for you" }).waitFor();
+      await hint.getByText("Take your time.", { exact: true }).waitFor();
+      await page.screenshot({ path: `${artifacts}/${width}-v${version}-silence.png`, fullPage: true });
+      await sidebar.getByRole("button", { name: "Show targets", exact: true }).click();
+      state.sockets.at(-1).send(JSON.stringify({ type: "user.activity", speaking: true }));
+      await hint.waitFor({ state: "detached" });
+      assert.equal(await sidebar.getByRole("heading", { name: "Hidden until you ask", exact: true }).count(), 0, "speech does not hide target wording");
+      assert.equal(await conversation.getByRole("status").filter({ hasText: "Waiting for you" }).count(), 0);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
+      assert.deepEqual(errors, []);
+      console.log(`PASS ${width} v${version}: default visibility/manual conceal/model/use, stage history, sidebar evidence, hint styles, silence status, stage cue, overflow`);
+    } catch (error) {
+      console.log(await page.locator("body").innerText());
+      console.log("Fixture question", w.conversation.question, "mic events", state.events.filter(e => e.type === "microphone"));
+      throw error;
+    } finally { await context.close(); }
+  }
+} finally { await browser.close(); }
+console.log(`Screenshots: ${artifacts}`);

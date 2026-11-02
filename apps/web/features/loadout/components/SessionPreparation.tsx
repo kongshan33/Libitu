@@ -49,7 +49,7 @@ export function SessionPreparation({ sessionId }: { sessionId: string }) {
           : !session ? <ContentSkeleton label="Loading your saved mission…" variant="cards" /> : <>
             <div className={styles.savedBadge}><Check size={15} aria-hidden="true" /> Saved to your account</div>
             <h1>Your mission is prepared</h1><p className={styles.sessionGoal}>{session.goal}</p>
-            <dl className={styles.sessionSettings}><div><dt>Scenario</dt><dd>{session.scenario_type === "workplace" ? "Workplace" : "Everyday life"}</dd></div><div><dt>Difficulty</dt><dd>{session.difficulty}</dd></div><div><dt>Feedback</dt><dd>{session.feedback_level}</dd></div></dl>
+            <dl className={styles.sessionSettings}><div><dt>Scenario</dt><dd>{session.scenario_type === "workplace" ? "Workplace" : session.scenario_type === "travel" ? "Travel" : "Everyday life"}</dd></div><div><dt>Difficulty</dt><dd>{session.difficulty}</dd></div><div><dt>Feedback</dt><dd>{session.feedback_level}</dd></div></dl>
             <div className={styles.preparationBanner}><h2>AI role-play is not available yet</h2><p>Your goal and selected language are saved. You can return to this page after refreshing or signing in again.</p></div>
             <section className={styles.section}><h2>Conversation strategy</h2><p>{session.logic_template?.title ?? "Free conversation"}</p>{session.logic_template ? <p className={styles.logicFlow}>{session.logic_template.steps.join(" → ")}</p> : <p className={styles.fieldHelp}>No logic template selected.</p>}</section>
             <section className={styles.section}><h2>Selected language</h2><p className={styles.sectionIntro}>This saved selection stays the same if you later edit or remove corpus items.</p><div className={styles.savedItems}>

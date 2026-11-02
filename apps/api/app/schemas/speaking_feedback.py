@@ -4,6 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.speaking import SpeakingSession, SupportLevel
 from app.schemas.speaking_runtime import SpeakingMessage
+from app.schemas.speaking_conversation import QuoteRef, ChangedSpan
 
 RUBRIC_VERSION = "speaking-rubric-v2"
 ANALYSIS_VERSION = "speaking-feedback-v3"
@@ -47,6 +48,8 @@ class FeedbackItem(BaseModel):
     status: Literal["appropriate", "inappropriate", "uncertain", "not_observed"]
     independent_uses: int = Field(default=0, ge=0)
     prompted_uses: int = Field(default=0, ge=0)
+    # Subset of prompted_uses: actual assistant demonstration preceded the use.
+    imitation_uses: int = Field(default=0, ge=0)
     uncertain_assistance_uses: int = Field(default=0, ge=0)
     role: Literal["primary", "opportunity"] | None = None
     opportunity_status: Literal["planned", "offered", "used", "skipped"] | None = None
@@ -114,6 +117,16 @@ class FeedbackResult(BaseModel):
     notices: list[str] = Field(default_factory=list)
 
 
+class FeedbackRecast(BaseModel):
+    id: str
+    source: QuoteRef
+    replacement: str
+    changed_spans: list[ChangedSpan]
+    category: Literal["grammar", "word_choice"]
+    reason: str
+    delivered: bool
+
+
 class SpeakingFeedback(BaseModel):
     id: str
     session_id: str
@@ -128,6 +141,7 @@ class SpeakingFeedback(BaseModel):
     updated_at: str
     session: SpeakingSession
     effective_support_level: SupportLevel | None = None
+    recasts: list[FeedbackRecast] = Field(default_factory=list, max_length=100)
     messages: list[SpeakingMessage]
     result: FeedbackResult | None = None
 

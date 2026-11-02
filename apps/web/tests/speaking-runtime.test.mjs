@@ -507,3 +507,125 @@ test("stopped visibility observers ignore subsequent overlay animations", () => 
   fixture.cover(false); fixture.view.dispatchEvent(new Event("animationend")); fixture.painted();
   assert.equal(shown, 0);
 });
+
+function negotiatedWorkspace(version = 1) {
+  const ref = { message_id: "question-message", revision: 1, start: 0, end: 12, quote: "Who benefits?" };
+  return { ...workspace(version), runtime: { id: "runtime", conversation_contract_version: 1 }, conversation: { contract_version: 1,
+    question: { id: "question", context_version: 1, origin: ref, current: ref, target_item_id: null, stage_index: null,
+      status: "awaiting_reply", auto_rephrase: "available", auto_direction: "available", automatic_help_closed: false }, help: null } };
+}
+
+test("negotiated help replaces levels and reports only actually shown content", async t => {
+  const fixture = setup(); t.after(() => fixture.controller.dispose()); await fixture.controller.load();
+  const snapshot = negotiatedWorkspace();
+  const socket = await fixture.connect(false, snapshot);
+  assert.ok(socket.sent.some(event => event.type === "client.activity" && event.surface_visible && !event.draft_present));
+  for (const [index, level] of ["direction", "usage", "example"].entries()) {
+    fixture.controller.requestHelp();
+    const request = socket.sent.at(-1);
+    assert.equal(request.type, "help.request"); assert.equal(request.level, level);
+    assert.equal(request.question_id, "question");
+    fixture.controller.conversationHelpShown();
+    assert.equal(socket.sent.at(-1).type, "help.request", "loading cannot be exposed");
+    const card = { ...fixture.controller.state.workspace.conversation.help, version: 2, status: "ready", [level === "usage" ? "opening_words" : level]: "Fixture words" };
+    socket.message({ type: "snapshot", workspace: { ...snapshot, version: index + 2, conversation: { ...snapshot.conversation, help: card } } });
+    fixture.controller.conversationHelpShown(); fixture.controller.conversationHelpShown();
+    assert.equal(socket.sent.filter(event => event.type === "help.shown").length, index + 1);
+  }
+  assert.equal(socket.sent.some(event => event.type === "hint" || event.type === "hint.shown"), false);
+});
+
+test("typing retires pending help, transmits no draft text, and late results cannot revive it", async t => {
+  const fixture = setup(); t.after(() => fixture.controller.dispose()); await fixture.controller.load();
+  const snapshot = negotiatedWorkspace(); const socket = await fixture.connect(false, snapshot);
+  fixture.controller.requestHelp(); const old = structuredClone(fixture.controller.state.workspace.conversation.help);
+  fixture.controller.setActivity(true, true);
+  assert.equal(fixture.controller.state.workspace.conversation.help, null);
+  assert.deepEqual(Object.keys(socket.sent.at(-1)).sort(), ["type", "sequence", "draft_present", "surface_visible"].sort());
+  fixture.controller.setActivity(false, true);
+  socket.message({ type: "snapshot", workspace: { ...snapshot, version: 3, conversation: { ...snapshot.conversation, help: { ...old, version: 2, status: "ready", direction: "You could… explain why." } } } });
+  assert.equal(fixture.controller.state.workspace.conversation.help, null);
+  fixture.controller.requestHelp(); assert.equal(socket.sent.at(-1).level, "direction", "manual help remains available after clearing a draft");
+});
+
+test("question changes reject old content and failed help does not disconnect", async t => {
+  const fixture = setup(); t.after(() => fixture.controller.dispose()); await fixture.controller.load();
+  const snapshot = negotiatedWorkspace(); const socket = await fixture.connect(false, snapshot);
+  fixture.controller.requestHelp(); const request = socket.sent.at(-1); const old = structuredClone(fixture.controller.state.workspace.conversation.help);
+  socket.message({ type: "error", code: "help_unavailable", request_id: request.request_id, message: "Unavailable", retryable: true });
+  assert.equal(fixture.controller.state.connection, "connected");
+  assert.equal(fixture.controller.state.workspace.conversation.help.status, "unavailable");
+  socket.message({ type: "snapshot", workspace: { ...snapshot, version: 4, conversation: { ...snapshot.conversation, question: { ...snapshot.conversation.question, context_version: 2 }, help: { ...old, version: 2, status: "ready", direction: "Old words" } } } });
+  assert.equal(fixture.controller.state.workspace.conversation.help, null);
+});
+
+test("negotiated legacy targets seen before connection produce one owned exposure before submission", async t => {
+  const fixture = setup(); t.after(() => fixture.controller.dispose());
+  const snapshot = { ...workspace(1), session: { ...workspace().session, items: [{ id: "legacy-item" }] } };
+  fixture.setSaved(snapshot); await fixture.controller.load();
+  fixture.controller.targetShown("legacy-item"); fixture.controller.targetShown("foreign-item");
+  const pending = fixture.controller.submit("My own idea");
+  await new Promise(resolve => setImmediate(resolve));
+  const socket = fixture.sockets[0]; socket.onopen();
+  socket.message({ type: "ready", workspace: { ...snapshot, runtime: { conversation_contract_version: 1 } } });
+  assert.equal(await pending, true);
+  fixture.controller.targetShown("legacy-item");
+  assert.deepEqual(socket.sent.filter(e => e.type === "target.shown"), [{ type: "target.shown", target_item_id: "legacy-item" }]);
+  assert.ok(socket.sent.findIndex(e => e.type === "target.shown") < socket.sent.findIndex(e => e.type === "text.submit"));
+});
+
+test("help upgrades retain the actual prior card, delay loading and never acknowledge unseen next content", async t => {
+  const fixture = setup(); t.after(() => fixture.controller.dispose()); await fixture.controller.load();
+  const snapshot = negotiatedWorkspace(); const socket = await fixture.connect(false, snapshot);
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const ready = () => {
+    const current = fixture.controller.state.workspace.conversation.help;
+    const card = { ...current, status: "ready", version: 2, [current.level === "usage" ? "opening_words" : current.level]: "Prepared wording" };
+    snapshot.version++;
+    socket.message({ type: "snapshot", workspace: { ...snapshot, conversation: { ...snapshot.conversation, help: card } } });
+    return card;
+  };
+  fixture.controller.requestHelp();
+  t.mock.timers.tick(249); assert.equal(fixture.controller.state.helpLoadingVisible, false);
+  t.mock.timers.tick(1); assert.equal(fixture.controller.state.helpLoadingVisible, true);
+  const first = ready(); assert.equal(fixture.controller.state.helpLoadingVisible, false);
+  fixture.controller.requestHelp(); const next = fixture.controller.state.workspace.conversation.help;
+  assert.equal(fixture.controller.state.retainedConversationHelp.id, first.id);
+  fixture.controller.conversationHelpShown(next.id, 2);
+  assert.equal(socket.sent.filter(e => e.type === "help.shown").length, 0);
+  fixture.controller.conversationHelpShown(first.id, first.version);
+  fixture.controller.conversationHelpShown(first.id, first.version);
+  assert.deepEqual(socket.sent.filter(e => e.type === "help.shown").map(e => e.level), ["direction"]);
+  t.mock.timers.tick(250); assert.equal(fixture.controller.state.helpLoadingVisible, true);
+  const second = ready(); assert.equal(fixture.controller.state.retainedConversationHelp, null);
+  fixture.controller.conversationHelpShown(second.id, second.version);
+  assert.deepEqual(socket.sent.filter(e => e.type === "help.shown").map(e => e.level), ["direction", "usage"]);
+  fixture.controller.requestHelp();
+  t.mock.timers.tick(100); ready(); t.mock.timers.tick(500);
+  assert.equal(fixture.controller.state.helpLoadingVisible, false, "a fast cache response cancels the spinner timer");
+});
+
+for (const change of ["version", "target", "support", "input", "speech", "disconnect", "error"]) test(`pending help retention is fenced by ${change}`, async t => {
+  const fixture = setup(); t.after(() => fixture.controller.dispose()); await fixture.controller.load();
+  const snapshot = negotiatedWorkspace(); const socket = await fixture.connect(false, snapshot);
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  fixture.controller.requestHelp();
+  const card = { ...fixture.controller.state.workspace.conversation.help, status: "ready", version: 2, direction: "You could… explain why." };
+  socket.message({ type: "snapshot", workspace: { ...snapshot, version: 2, conversation: { ...snapshot.conversation, help: card } } });
+  fixture.controller.requestHelp(change === "target" ? "different-target" : undefined);
+  const pending = fixture.controller.state.workspace.conversation.help;
+  if (change === "input") fixture.controller.setActivity(true, true);
+  if (change === "speech") socket.message({ type: "user.activity", speaking: true });
+  if (change === "disconnect") fixture.controller.pause();
+  if (change === "error") socket.message({ type: "error", code: "help_unavailable", request_id: pending.id });
+  if (change === "version" || change === "support") socket.message({ type: "snapshot", workspace: { ...snapshot, version: 3,
+    ...(change === "support" ? { support: { level: "label_only", version: 1 } } : {}),
+    conversation: { ...snapshot.conversation, question: { ...snapshot.conversation.question, context_version: change === "version" ? 2 : 1 }, help: pending } } });
+  assert.equal(fixture.controller.state.retainedConversationHelp, null);
+  fixture.controller.conversationHelpShown(card.id, card.version);
+  assert.equal(socket.sent.some(e => e.type === "help.shown"), false, "old wording cannot be acknowledged after retirement");
+  if (change !== "target") { t.mock.timers.tick(300); assert.equal(fixture.controller.state.helpLoadingVisible, false); }
+  if (change === "version") {
+    fixture.controller.requestHelp(); assert.equal(socket.sent.at(-1).question_version, 2, "old request cannot block the new version");
+  }
+});

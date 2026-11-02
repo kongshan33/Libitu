@@ -1,5 +1,40 @@
 # Stage 4 teaching control and diagnostics
 
+2026-10-31: the user has authorized the Conversation redesign, beginning with
+[state/data contracts](STAGE_FOUR_CONVERSATION_CONTRACT.md). That specification
+defines single-position help, question-scoped timing and minimal recasts. Step 3
+implements negotiated help/timing; step 4 adds minimal recasts with validated
+actual delivery and report-only classification. Existing behavior
+below remains the legacy baseline; negotiated sessions suppress legacy help cards. Confirmed-model target
+auto-reveal is retained by the user's explicit correction.
+
+## Version 2 logic-stage control — 2026-10-26
+
+New v2 Missions freeze ordered logic steps, per-target stage assignment and a
+natural model line. The scheduler derives current stage/target progress from
+existing messages, opportunities, attempts and exposures rather than maintaining
+a second success ledger. Targets sharing a stage and Any stage remain eligible.
+Stages without targets are marked skipped for teaching coverage, not completed
+by the learner. A substantive reply after a presented opportunity may advance
+coverage; it does not count as target use.
+
+V2 schedules one natural demonstration for an unused target across all difficulty
+levels. Independent use before exposure makes modeling unnecessary; completing
+the communicative task with other wording does not. Topic changes and closing
+remain valid skip conditions, and the frozen model line is an adaptable scene
+reference. Confirmed or
+possible prior exposure also suppresses redundant modeling. Sent/bound attempts
+are not confirmed demos. A public demonstration requires reflected content and
+actual presentation, preserving the existing exact-quote/revision checks. V1
+continues to use the manual support contract below.
+
+The v2 sidebar conceals target wording until explicit Reveal or actual modeling.
+Explicit reveal records session-scoped visual assistance. Independently produced
+uses, target uses after a confirmed example (imitation), other prompted uses and
+uncertain exposure remain distinct in live evidence and final reports. A turn
+without the target does not clear session-scoped exposure. No new mastery score,
+error-correction or pronunciation policy is introduced.
+
 2026-10-20 amendment: [expression-led Mission planning P0/P1 and P2](STAGE_THREE_FOUR_MISSION_PLAN.md)
 adds confirmed scenario context, primary/opportunity roles, bounded planned
 elicitation, skip/restore and actual opportunity states. Current prompt versions

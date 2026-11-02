@@ -9,8 +9,9 @@ export function speakingWorkspace(owner = loadoutOwner) {
         { id: "item-3", corpus_item_id: null, ordinal: 2, kind: "structure", text: "What matters most is [priority].", meaning: "State the priority", tags: [], slots: { priority: "the most important outcome" }, source_title: null }
       ] } };
 }
-export async function installSpeakingFixture(page, { origin, denyMicrophone = false, deferHints = false, deferSupport = false } = {}) {
+export async function installSpeakingFixture(page, { origin, denyMicrophone = false, deferHints = false, deferSupport = false, conversationContract = false } = {}) {
   const auth = await installLoadoutFixture(page, { origin, initialOwner: loadoutOwner, records: [] });
+  if (conversationContract) await page.route("**/api/speaking/options", route => route.fulfill({ headers: { "access-control-allow-origin": "*" }, json: { conversation_contract_versions: [1] } }));
   await page.addInitScript(({ deny }) => {
     window.__speakingTracks = []; window.__denySpeakingMic = deny;
     const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
@@ -66,6 +67,14 @@ export async function installSpeakingFixture(page, { origin, denyMicrophone = fa
           if (state.workspace.help?.target_item_id === target.session_item_id) state.workspace.help = null;
           state.workspace.version++; socket.send(JSON.stringify({ type: "snapshot", workspace: state.workspace }));
         }
+      }
+      if (event.type === "help.request" && !deferHints) {
+        const field = event.level === "usage" ? "opening_words" : event.level;
+        state.workspace.conversation.help = { id: event.request_id, version: 2, question_id: event.question_id, question_version: event.question_version,
+          target_item_id: event.target_item_id ?? state.workspace.conversation.question.target_item_id, source: "requested", level: event.level, status: "ready",
+          direction: null, opening_words: null, example: null, error_code: null,
+          [field]: { direction: "You could… explain why both sides can win.", usage: "We could be on the same page…", example: "We could be on the same page about the deadline." }[event.level] };
+        state.workspace.version++; socket.send(JSON.stringify({ type: "snapshot", workspace: state.workspace }));
       }
       if (event.type === "hint" && !deferHints) {
         const item = state.workspace.session.items.find(value => value.id === event.target_item_id) ?? state.workspace.session.items[1];

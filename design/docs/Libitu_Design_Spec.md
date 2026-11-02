@@ -6,7 +6,7 @@ meta:
   version: 1.1
   status: active
   audience: product, design, engineering, coding agents
-  updated: 2026-10-25
+  updated: 2026-10-31
 ```
 
 This specification defines the current Libitu MVP product and interaction model. Use it for product behavior and user experience. Use `MVP_SYSTEM_DESIGN.md` for system boundaries, `BACKEND_SYSTEM_DESIGN.md` for API implementation, and `DESIGN.md` for visual direction.
@@ -35,16 +35,37 @@ timeline, cards and footer to the same inset; place Back on the right and render
 Recommended without its star icon. The outer workspace fills the available width
 without automatic side margins; keep the inner Quick content-width limit.
 
+Detailed/Review alignment (2026-10-30): share header, navigation and directory
+styles. Both use a 260 px expanded left panel and a 56 px numbered collapsed
+rail; on phones the expanded panel stacks above content and the collapsed rail
+stays beside it. Match surface, typography, selected state and fold controls,
+with 32 px desktop and 44 px phone hit targets. Main content uses the same 680 px
+maximum width. Detailed shows its existing practice progress and skip-short
+control; Review shows its existing filters, word-match overview and take counts.
+Keep their selection, automatic recording fold and manual fold states separate.
+
+The central result and analysis areas share 16 px internal gaps and 24 px
+desktop section gaps (20 px on phones). Main actions use black pill buttons,
+secondary actions use neutral outlines, with matching sizes across both modes.
+Saved-analysis status precedes the layers in both modes. Sound/Rhythm/Melody
+tabs use neutral surfaces and a purple selected underline; disabled layers keep
+their lock and explicit disabled appearance. Use 14 px medium tab labels,
+13 px supporting text, 14 px surface corners and no decorative shadows.
+Keep word-match, sound-marker and chart colors as evidence. Layer Focus,
+Feedback and Tip use the same neutral typography and spacing in all layers;
+guidance stacks below the chart at analysis widths of 600 px or less. Existing
+analysis gates, keyboard controls, text disclosure and chart interactions stay.
+
 This is a visual change only. Quick/Detailed/Review retain current text support,
 video visibility, recording/countdown behavior, authorization, historical results,
 analysis gates and retention settings. The mockup does not change these behaviors
 or replace real progress/errors with illustrative waveforms or scores.
 
-## Current AI providers — 2026-10-23
+## Current AI providers — 2026-10-30
 
 Doubao text analysis replaces DeepSeek for new blueprint/selection, Mission
-planning/teaching/help and assessment requests. Gemini Live continues to handle
-real-time conversations. This provider change preserves interaction behavior,
+planning/teaching/help and assessment requests. OpenAI Realtime now handles
+real-time conversations (`gpt-realtime-2.1`, voice `marin`); Gemini is optional. This provider change preserves interaction behavior,
 source/evidence validation and visible failure/retry states. Existing saved results
 remain available; software verification does not establish model-quality parity.
 
@@ -450,51 +471,149 @@ Deleting a corpus item must not delete its source content or old session transcr
 
 ## Speaking loadout
 
-2026-10-20 P0/P1 supersedes the setup order and default target budget below for new
-Missions: choose language first, assign one to three primary targets and up to two
-opportunity targets, then click Start mission. This action generates one
-matching scene if needed, accepts it when suitable for every primary target, saves
-the Mission and opens it. Show preparation and saving progress. Reuse a valid
-selected scene or matching cached plan; retry an uncertain creation with its exact
-saved request before planning again. Successful creation confirmation clears only
-the pending request before navigation, retaining the setup so returning after End
-can start a new Mission. Optional Choose a scene myself generates two scenes for
-comparison and selection. Changes to difficulty,
-feedback, logic template or support reuse the scene; changed language, roles or
-scene preferences require a new plan. Structures share the target budget. Preserve old drafts and sessions without
-silent truncation. See [the Mission planning contract](STAGE_THREE_FOUR_MISSION_PLAN.md)
-for scenario fit, immutable plans, opportunity dispatch, skip/restore and reporting.
+2026-10-26 Stage 3 follow-up: finish the supplied Quick start interaction using
+the newer neutral design specification. The catalog now includes six workplace
+and three daily templates; Daily life/Travel share the daily recommendation
+family. Expose recorded-use filters with the user-approved seven-day Due rule,
+keep unknown history explicit, and distinguish independent-practice progress.
+Use one resolved setup for preview and Start, preserve pinned manual targets,
+match custom scenes asynchronously, and present Free conversation before starting.
+Summary-only feedback remains unavailable while the user pauses further Stage 4
+work. See [the Stage 3 contract](LOADOUT_IMPLEMENTATION.md) for current behavior,
+compatibility and verification; it supersedes the older Stage 3 limits below.
 
-Recommend beginning with two primary targets and zero or one opportunity target
-that serve the same communication task with a compatible tone; a single primary
-target is also valid. This recommendation does not reduce the permitted budget.
-System generation failures preserve selections and offer recovery without blaming
-the learner's choices. Locatable generated-content errors permit one field repair
-inside the existing model time budget. When validated scenes have low or unknown
-primary fit, name one scene and show the affected targets' actual fit reasons.
-Offer explicit role/removal changes or scene preferences, preserving at least one
-primary and the opportunity limit. Selection changes are explicit and invalidate
-the old plan; a changed selection is planned only after the learner presses Start
-mission again.
+2026-10-26 milestone: selected logic and target stage placement now constrain
+version 2 scene generation and are frozen into the Mission. Changing logic or
+steps requires a new matching plan. Default Stage 4 behavior demonstrates each
+unused target once, across difficulties, and skips modeling if the learner used
+it independently first. Presentation/effect evidence is required for a confirmed
+demonstration. The original sidebar concealment default is superseded by the
+2026-11-01 decision below: targets start visible; actual visibility counts as visual help. Live and final records distinguish independent
+use, imitation after an actual example, other assistance and uncertainty. See
+[the implementation contract](LOADOUT_IMPLEMENTATION.md) for v1 compatibility
+and [teaching control](STAGE_FOUR_TEACHING_CONTROL.md) for coverage semantics.
+This supersedes the older logic-cache reuse and demonstration deferral below
+for v2. Legacy support choices remain available for old Missions/linked rounds;
+new v2 setups use the default demonstration behavior instead of that selector.
 
-The loadout limits active language so the learner can focus during role-play.
+2026-10-25 Quick start supersedes the earlier target-selection budgets for new
+Loadout selections. Lead with a ready suggestion of up to three actual saved
+items, each labelled with its suggested logic stage and a factual recommendation
+reason. Use the current functional tags and six available logic templates for
+deterministic local recommendations; preserve returned stage names and use Any
+stage when no stage fits. Rank logic by tag coverage and rotate tied choices,
+candidate items and local scene seeds with Shuffle. These suggestions do not
+establish usage history, mastery or validated scene fit.
+
+Manual choices use one shared pool of up to five chunks, idioms or structures,
+with no primary/opportunity selector. New selections use `primary` internally
+to preserve existing planning/evidence contracts. Keep the Quick start proposal
+available after manual selection: its Start explicitly replaces that selection
+with the proposal, while Shuffle leaves manual targets intact. The page and
+searchable, function-filtered full-corpus drawer share the same selection and
+limit. Keep explicit user scene/template choices distinct from generated
+suggestions. Advanced contains existing preferences, optional scene comparison,
+logic templates, support and practice history.
+
+Targeted Start generates one matching scene if needed, validates its targets,
+saves the Mission and opens it. Optional Choose a scene myself generates two
+scenes for comparison. Keep the existing bounded field repair, source-aware
+plan reuse and fit-error recovery; show actual scene-specific reasons and offer
+target removal, other scenes or changed preferences. Changing target selection
+invalidates its plan and requires another explicit Start. Legacy linked rounds
+retain their stored roles and existing support controls.
+
+Free conversation starts with no targets, null logic and no target plan. It uses
+the same authenticated creation lifecycle and current conversation settings.
+Persist a chosen setup before starting. Retry an uncertain creation with its
+exact saved request before any new planning; confirmation clears only that
+pending request before navigation. Preserve old drafts and snapshots without
+silent truncation. See [the Loadout contract](LOADOUT_IMPLEMENTATION.md) and
+[Mission planning contract](STAGE_THREE_FOUR_MISSION_PLAN.md) for immutable plans,
+opportunities and evidence compatibility.
 
 ### Speaking setup fields
 
 - Scenario type: workplace or everyday life
-- Specific goal stated as an outcome
+- Optional scene preferences, with a suggested scene when using Quick start
 - Difficulty
 - Support: model plus frame, model plus label, label only, or no hint; independent of difficulty and manually chosen
 - Feedback level
-- Optional logic template
-- Up to three structures
-- Up to five expressions, with chunks and idioms sharing the same slots
+- Recommended or explicitly chosen existing logic template; none for Free conversation
+- Up to five targets in total, shared by structures, chunks and idioms
 
-At least one saved corpus item is required in total. The learner may start with fewer than the maximum: structures are optional (0–3), expressions are optional (0–5), and the logic template is optional. The interface must explain selection limits before the learner reaches them. Loadout is directly accessible from Stage 1 or Stage 2; Shadow completion is not a prerequisite.
+Targeted practice needs at least one saved corpus item; Quick start uses fewer
+than three when fewer are available. Free conversation requires none. Explain
+the five-target limit before it is reached. Loadout is directly accessible from
+Stage 1 or Stage 2; Shadow completion is not a prerequisite.
 
-Anonymous learners can keep a browser-local draft. On login, the draft binds to that account; an existing account draft must be preserved unless the learner explicitly adopts the incoming guest draft. Account-bound drafts never transfer on logout or account switching. Starting a mission requires login and confirmed account-owned corpus records. Creation snapshots the selected language and settings, is idempotent across retries, and supports authenticated recovery after refresh. The current delivery scope ends at the saved session preparation page; real role-play remains a separate increment. See [the loadout contract](LOADOUT_IMPLEMENTATION.md).
+Anonymous learners can keep a browser-local draft. On login, it binds to that
+account; preserve an existing account draft unless the learner explicitly adopts
+the incoming guest draft. Account-bound drafts never transfer on logout or
+account switching. Starting requires login, plus confirmed account-owned corpus
+records for targeted practice. Creation snapshots selected language/settings,
+is idempotent across retries and supports authenticated recovery after refresh.
+
+The supplied 2026-10-25 development notes also contain proposals outside this
+increment: new functional taxonomy/eligibility fields, Never used and Due for
+review ranking, Travel, Summary-only feedback, dedicated daily-life logic IDs,
+streaming SessionBrief and revised Stage 4 demonstration/correction rules.
+Keep existing enums and support/evidence behavior; do not present these proposals
+or prototype history values as implemented. Final verification and hosted
+migration status are recorded in `TASK.MD`.
 
 ## AI role-play
+
+### Conversation redesign target — 2026-10-31
+
+The user requested a redesign against the Stage 4 Conversation prototype.
+[The state/data contract](STAGE_FOUR_CONVERSATION_CONTRACT.md) is defined. Step 2
+implements the page layout and shared display components, including synthetic
+new-help/recast states. Step 3 connects negotiated OpenAI question identity,
+timers, spoken simplification and progressive help/receipts. Unnegotiated clients
+and Gemini retain legacy help. Step 4 connects grounded minimal recasts, actual
+partner presentation and report-only correction categories. This section supersedes conflicting older interaction
+requirements below for the new negotiated experience, not historical evidence
+or existing explicit legacy support choices.
+
+Help comes from the partner first. Default UI has no hint. After approximately
+8 eligible silent seconds, the partner may simplify the same question once;
+after approximately 20 eligible seconds, one automatic “You could…” direction
+may appear. Exclude generation/playback time. This is one spoken simplification
+plus one UI escalation per question, not two recurring prompts. Opening words
+and a full example require successive clicks; every level replaces the prior
+content. Speech/drafts retire help and prevent its automatic return. Pure text
+chat is user-paced. Reconnect does not reset consumed budgets.
+
+Hint latency update (2026-11-01): prepare three validated levels in one call when
+help is first requested, cache them privately for the current context and reveal
+only the clicked level. Cache hits should avoid a loading flash. Delay waiting
+feedback by 250ms; retain the previous ready hint while its next level loads,
+then replace it in place. Keep actual display receipts and invalidate old
+context/input results. Pre-generation before the request is deferred.
+
+Voice shows only the current utterance, with help between it and the microphone;
+Chat places help above the bottom controls and uses stage-name-only dividers.
+Implemented alignment (2026-11-01): dividers require persisted confirmed
+presentation markers, not an inference from current progress. Evidence opens in
+Targets on desktop/mobile. The top guide retains its known current-stage cue;
+confirmed silent rephrases show “Waiting for you”. Chat hints use the prototype's
+16px text, #fafaf9 surface and 14px/18px padding.
+Corrections are light partner recasts of actual learner text, with only changed
+words bold. Categories and teaching/evidence labels belong in the report/target
+panel. Recast generation and actual delivery remain separate facts.
+
+Targets default visible with meanings, including Guided, so learners know which
+expressions to transfer (2026-11-01 user decision superseding concealment).
+Speaking never hides this wording; only question hints fade. When manually
+hidden, **a clearly confirmed partner model
+or an observed learner use automatically reveals its target.** Show targets
+reveals the rest; Hide targets preserves those automatic reveals. Keep verified
+partner examples underlined in purple. Do not treat an uncertain/partial model
+as confirmed or a target reveal as learner use. Preserve legacy explicit-support
+exceptions as specified in the contract.
+
+### Existing runtime and earlier support behavior
 
 Planned Missions use their frozen roles and scene. Starting with the third
 substantive user turn, suitable unused primary targets receive bounded scheduling

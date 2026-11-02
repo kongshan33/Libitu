@@ -11,12 +11,15 @@ from uuid import uuid4
 
 from fastapi import HTTPException
 
+from app.services.speaking_recasts import close_recasts, apply_recast_receipt
+from app.services.speaking_conversation_state import record_conversation_receipt, apply_stage_receipt
 from app.config import get_settings
 from app.integrations.speaking_runtime_repository import RuntimeConflict, get_runtime_store
 from app.schemas.speaking_runtime import RealtimeStart, RealtimeTicket, SpeakingWorkspace
 from app.services.speaking_service import get_speaking_session
-from app.services.speaking_opportunities import opportunity_view
+from app.services.speaking_opportunities import apply_presentation_receipt, opportunity_view
 from app.services.speaking_support_runtime import support_workspace
+from app.services.speaking_conversation_state import close_question, conversation_workspace
 from app.services.speaking_timing import measure_phase
 
 
@@ -99,10 +102,13 @@ def public_workspace(owner: str, session_id: str, state: dict | None = None) -> 
         **support_workspace(session, document),
         **{key: document[key] for key in ("messages", "evidence", "learning", "policy", "analysis_status", "hint", "help")
            if key in document},
+        **conversation_workspace(document, session),
     })
 
 
 def expire_policy(document: dict) -> None:
+    close_question(document)
+    close_recasts(document)
     policy = document.get("policy")
     if policy and policy.get("status") == "pending":
         policy["status"] = "expired"
@@ -122,6 +128,8 @@ def interrupt_unheard(document: dict) -> None:
 def create_ticket(owner: str, session_id: str, payload: RealtimeStart) -> RealtimeTicket:
     require_session(owner, session_id)
     settings = get_settings()
+    if payload.conversation_contract_version is not None and (payload.conversation_contract_version != 1 or settings.speaking_realtime_provider != "openai"):
+        raise HTTPException(422, "This conversation protocol is not supported by this server.")
     if not (settings.gemini_api_key if settings.speaking_realtime_provider == "gemini" else settings.openai_api_key):
         raise HTTPException(503, "Real-time conversation is not configured. Your mission is saved.")
     runtime_id = str(uuid4())
@@ -146,6 +154,8 @@ def create_ticket(owner: str, session_id: str, payload: RealtimeStart) -> Realti
             "ticket_hash": hashlib.sha256(ticket.encode()).hexdigest(), "ticket_expires_at": expires,
             "ticket_used": False, "client_connection_id": str(payload.client_connection_id),
         }
+        if payload.conversation_contract_version is not None:
+            document["runtime"]["conversation_contract_version"] = payload.conversation_contract_version
         expire_policy(document)
         if document.get("analysis_status") == "pending":
             document["analysis_status"] = "unavailable"
@@ -206,10 +216,17 @@ def end_session(owner: str, session_id: str, receipts: dict | None = None) -> Sp
             from app.services.speaking_teaching import record_hint_exposure
             for exposure in receipts.get("exposures", {}).values():
                 document["controller"] = record_hint_exposure(session, document, exposure)
+                record_conversation_receipt(document, exposure)
+            for receipt in receipts.get("recast_receipts", {}).values():
+                apply_recast_receipt(document, receipt)
+            for receipt in receipts.get("stage_receipts", {}).values():
+                apply_stage_receipt(document, receipt)
             for attempt in document.get("teaching_attempts", []):
-                shown_at = receipts.get("presentations", {}).get(attempt.get("response_id"))
-                if shown_at:
-                    attempt.update(presented=True, presented_at=attempt.get("presented_at") or shown_at)
+                presentation = receipts.get("presentations", {}).get(attempt.get("response_id"))
+                if isinstance(presentation, dict):
+                    apply_presentation_receipt(attempt, presentation)
+                elif presentation:  # In-flight receipts from the legacy runtime.
+                    attempt.update(presented=True, presented_at=attempt.get("presented_at") or presentation)
         interrupt_unheard(document)
         if runtime:
             runtime.update(state="disconnected", expires_at=iso_now())

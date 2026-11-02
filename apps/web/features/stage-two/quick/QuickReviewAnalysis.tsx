@@ -10,6 +10,7 @@ import { PracticeLayerState } from '../components/PracticeLayerState';
 import { LayerComparison, type ComparisonPlayback } from '../components/LayerComparison';
 import { ProgressiveComparison } from '../components/ProgressiveComparison';
 import { PracticeAnalysisPanel } from '../components/PracticeAnalysisPanel';
+import { Button } from '@/components/ui/button';
 import type { QuickTake } from './use-quick-takes';
 
 export function QuickReviewAnalysis({content, sentence, take, api, reload, playback}: {
@@ -25,11 +26,11 @@ export function QuickReviewAnalysis({content, sentence, take, api, reload, playb
     <LayerComparison layer={name} view={view} playback={playback}/>
     {name === 'rhythm' && data?.result?.learner.rhythm_signal ? <ProgressiveComparison layer="rhythm" fine pair={{learner: data.result.learner.rhythm_signal, reference: data.result.reference?.rhythm_signal ?? null}}/> : null}
   </PracticeLayerState>;
-  return <>
+  return <div className="shadow-analysis-workspace">
+    <PracticeAnalysisPanel api={api} attemptId={take.id} data={data} error={take.error ?? null} loading={Boolean(take.id && !take.loaded)} reload={reload}/>
+    {guide.error && presentation.visible ? <p role="alert">Sound guide unavailable. <Button size="sm" onClick={guide.retry}>Retry guide</Button></p> : null}
     {presentation.visible ? <PracticeLayers active={active} onChange={setLayer} locked={presentation.locked} badges={presentation.badges}
       gate={<><strong>Word matching comes first</strong><p>Sound opens at 60%. Rhythm and Melody open at 85%.</p></>}
       sound={panel('sound')} rhythm={panel('rhythm')} melody={panel('melody')}/> : null}
-    {guide.error && presentation.visible ? <p role="alert">Sound guide unavailable. <button onClick={guide.retry}>Retry guide</button></p> : null}
-    <PracticeAnalysisPanel api={api} attemptId={take.id} data={data} error={take.error ?? null} loading={Boolean(take.id && !take.loaded)} reload={reload}/>
-  </>;
+  </div>;
 }

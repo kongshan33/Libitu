@@ -50,12 +50,16 @@ def test_options_are_public_and_match_the_selection_rules():
     response = client.get("/api/speaking/options")
     assert response.status_code == 200
     options = response.json()
-    assert (options["min_items"], options["max_structures"], options["max_expressions"]) == (1, 3, 5)
+    assert (options["min_items"], options["max_structures"], options["max_expressions"], options["max_targets"]) == (0, 5, 5, 5)
     assert [template["id"] for template in options["logic_templates"]] == [
         "persuasive_pitch", "technical_troubleshoot", "stakeholder_alignment",
         "status_update", "disagreement", "onboarding",
+        "telling_story", "making_plans", "catching_up",
     ]
     assert options["logic_templates"][0]["steps"] == ["Context", "Tension", "Proposal", "Defend"]
+    assert options["logic_metadata"]["making_plans"]["family"] == "daily"
+    assert all(len(options["logic_metadata"][item["id"]]["stage_functions"]) == len(item["steps"])
+               for item in options["logic_templates"])
     assert client.post("/api/speaking/sessions", json=request_body()).status_code == 401
     assert client.get(f"/api/speaking/sessions/{uuid4()}").status_code == 401
 
@@ -93,6 +97,21 @@ def test_one_item_and_no_logic_are_valid_with_defaults():
     assert response.json()["support_level"] is None
 
 
+@pytest.mark.parametrize("support", [None, "model_frame"])
+def test_free_conversation_has_no_targets_or_logic_and_replays_exactly(support):
+    body = request_body([], goal="Have a relaxed everyday conversation", support_level=support)
+    response = client.post("/api/speaking/sessions", json=body)
+    assert response.status_code == 201
+    session = response.json()
+    assert session["items"] == []
+    assert session["logic_template"] is None and session["mission_plan"] is None
+    assert client.post("/api/speaking/sessions", json=body).json() == session
+    assert client.get(f"/api/speaking/sessions/{session['id']}").json() == session
+    assert client.post("/api/speaking/sessions", json={**body, "corpus_item_ids": [saved().id]}).status_code == 409
+    app.dependency_overrides[require_user] = lambda: AuthenticatedUser(id="another-owner")
+    assert client.get(f"/api/speaking/sessions/{session['id']}").status_code == 404
+
+
 @pytest.mark.parametrize("level", ["model_frame", "model_label", "label_only", "no_hint"])
 def test_support_level_round_trip_is_independent_of_difficulty(level):
     body = request_body(difficulty="guided", support_level=level)
@@ -123,7 +142,9 @@ def test_absent_and_null_support_preserve_legacy_retry_payload():
     {"scenario_type": "daily_life"}, {"difficulty": "easy"}, {"feedback_level": "every_turn"},
     {"logic_template_id": "made_up"}, {"user_id": "someone-else"},
     {"support_level": "automatic"}, {"support_level": False},
-    {"corpus_item_ids": []}, {"corpus_item_ids": ["blueprint-candidate"]},
+    {"corpus_item_ids": [], "logic_template_id": "disagreement"},
+    {"corpus_item_ids": [], "plan_id": str(uuid4()), "candidate_id": str(uuid4())},
+    {"corpus_item_ids": ["blueprint-candidate"]},
 ])
 def test_invalid_setup_returns_a_safe_string_without_creation(updates):
     response = client.post("/api/speaking/sessions", json=request_body(**updates))
@@ -143,7 +164,8 @@ def test_duplicate_ids_and_missing_submission_id_are_rejected():
 
 @pytest.mark.parametrize("kinds,expected", [
     (["structure"] * 3 + ["chunk"] * 3 + ["idiom"] * 2, 201),
-    (["structure"] * 4, 422), (["chunk"] * 4 + ["idiom"] * 2, 422),
+    (["structure"] * 4, 201), (["structure"] * 5, 201),
+    (["structure"] * 6, 422), (["chunk"] * 4 + ["idiom"] * 2, 422),
     (["structure"] * 3 + ["chunk"] * 6, 422),
 ])
 def test_limits_count_chunks_and_idioms_together(kinds, expected):

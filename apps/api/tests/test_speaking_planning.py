@@ -88,7 +88,7 @@ def model_output(result, context):
 
 
 async def generated(settings, prompt, context, **kwargs):
-    assert kwargs["prompt_version"] == "speaking-plan-v5"
+    assert kwargs["prompt_version"] == "speaking-plan-v8"
     assert 0 < kwargs["timeout_seconds"] <= 90
     return json.dumps(proposals(context)), {}
 
@@ -121,7 +121,7 @@ def test_plans_require_identity_and_read_is_owner_scoped():
     assert client.post("/api/speaking/sessions", json=session_request(plan)).status_code == 404
 
 
-@pytest.mark.parametrize("case", ["empty", "duplicate", "no_primary", "four_primary", "three_opportunity",
+@pytest.mark.parametrize("case", ["empty", "duplicate", "no_primary", "three_opportunity",
                                  "invalid_role", "extra_field", "six_targets"])
 def test_request_target_limits_are_enforced(case):
     body = request_body()
@@ -132,9 +132,6 @@ def test_request_target_limits_are_enforced(case):
         body["targets"] *= 2
     elif case == "no_primary":
         target["role"] = "opportunity"
-    elif case == "four_primary":
-        body = request_body([saved() for _ in range(4)])
-        body["targets"][-1]["role"] = "primary"
     elif case == "three_opportunity":
         body = request_body([saved() for _ in range(4)])
         for entry in body["targets"][1:]:
@@ -149,6 +146,25 @@ def test_request_target_limits_are_enforced(case):
     assert response.status_code == 422
     assert isinstance(response.json()["detail"], str)
     assert not store.speaking_plans
+
+
+@pytest.mark.parametrize("kind", ["chunk", "structure"])
+def test_five_equal_priority_targets_plan_and_create_without_kind_sublimits(kind):
+    items = [saved(kind=kind) for _ in range(5)]
+    body = request_body(items)
+    for target in body["targets"]:
+        target["role"] = "primary"
+    body["candidate_count"] = 1
+    response = client.post("/api/speaking/plans", json=body)
+    assert response.status_code == 201
+    plan = response.json()
+    assert [target["role"] for target in plan["candidates"][0]["targets"]] == ["primary"] * 5
+    request = session_request(plan)
+    created = client.post("/api/speaking/sessions", json=request)
+    assert created.status_code == 201
+    assert len(created.json()["items"]) == 5
+    assert all(item["kind"] == kind for item in created.json()["items"])
+    assert client.post("/api/speaking/sessions", json=request).json() == created.json()
 
 
 def test_unowned_or_missing_corpus_is_rejected_before_model(monkeypatch):

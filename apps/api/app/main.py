@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from app.config import get_settings
 
-from app.routers import blueprints, content, corpus, health, jobs, practice, practice_analysis, practice_submission, profile, references, speaking
+from app.routers import blueprints, content, corpus, health, jobs, loadout_scene, practice, practice_analysis, practice_submission, profile, references, speaking
 
 
 @asynccontextmanager
@@ -47,3 +47,4 @@ app.include_router(jobs.router, prefix="/api/jobs", tags=["jobs"])
 app.include_router(blueprints.router, prefix="/api/blueprints", tags=["blueprints"])
 app.include_router(corpus.router, prefix="/api/corpus", tags=["corpus"])
 app.include_router(speaking.router, prefix="/api/speaking", tags=["speaking"])
+app.include_router(loadout_scene.router)

@@ -1,13 +1,215 @@
 # Track Libitu decisions
 
+## Stage 4 targets visible from entry — 2026-11-01
+
+User decision supersedes the earlier default concealment: show all target
+expressions and their meanings from the start, including Guided, so learners
+know which expressions to transfer into conversation. Keep manual Hide/Show
+controls; confirmed models and observed uses still reveal their targets when
+manual concealment is selected. Speaking does not hide target wording; only the
+current question hint fades. Actual visible wording records exposure, never
+learner use. Existing explicit legacy support choices remain unchanged.
+
+
 ```yaml
 meta:
   contentType: Reference
   status: active
-  updated: 2026-10-25
+  updated: 2026-11-01
 ```
 
 This log records decisions that constrain product behavior or architecture. Add a dated entry when a change affects multiple apps, data ownership, privacy, API contracts, or delivery order.
+
+## Stage 4 hint bundle cache and retained display — 2026-11-01
+
+The first requested or eligible automatic hint may prepare all three levels in
+one model call. Cache the validated bundle only in the owning live connection,
+one context at a time. Public cards remain single-level and persisted help has
+its existing shape. Context/version/target/support/activity checks apply equally
+to cache hits and new generation. Failure is retryable; reconnect starts cold.
+User decision: do not implement background pre-generation for now. Learners may
+never request a hint, so speculative generation can waste model calls and cost.
+Keep generation on demand (manual help or the existing eligible automatic
+direction); do not add hint preparation to session-entry prerequisites. This is
+not a queued next step; revisit only after an explicit decision.
+
+During an upgrade the client may retain a prior ready card for the same context,
+with delayed loading feedback after 250ms. This supersedes immediate blanking of
+the old hint. Receipts must identify the painted old/new card explicitly, so
+preparation and loading never count as exposure to the hidden levels. Speech,
+drafts and changed contexts remove retained content and fence late results.
+
+## Stage 4 alignment and historical stage ownership — 2026-11-01
+
+Plan version does not define target visibility: absent explicit v1 support means
+concealment, including before connection. Explicit legacy support remains a user
+choice. New default auto-reveals require actual model assessment and presentation
+on the current transcript revision; visibility receipts never create learner use.
+
+Bind stage identity when requesting a response, then record a bounded private
+marker only after its grounded question is actually presented. Public optional
+`conversation.stage_markers` contains only exact source refs, stage indexes and
+labels from the frozen Mission guide. Reconnect/end retain receipts; transcript
+revisions invalidate stale markers. Missing historical markers stay missing.
+This adds runtime JSON state, not a SQL schema migration or a learning metric.
+
+Evidence details belong in the target panel. A current-stage cue belongs in the
+top guide; transcript dividers contain only the stage name. Real provider/audio
+acceptance is distinct from synthetic browser and contract regression results.
+
+## Stage 4 Conversation redesign contract — 2026-10-31
+
+Step 4 follow-up: the user authorized lightweight correction. Analyze a finalized
+learner turn asynchronously; reserve a ready candidate before an unstarted normal
+reply, without waiting for the analyzer or creating a correction-only response.
+Also validate natural recasts already present in the actual partner reply.
+A matching presentation receipt is required before live display; late candidates
+are report-only. Store categories privately and freeze them through an additive
+report-source whitelist. Preserve learner text, evidence counts and old jobs.
+
+Step 3 history: the user explicitly authorized new protocol/runtime integration,
+while leaving corrections to step 4. Protocol 1 is negotiated independently of
+Mission version and initially advertised by OpenAI; Gemini stays legacy. A real
+invitation gets a server UUID and UTF-16 quote refs. Reserve each automatic budget
+before provider I/O; completion requires actual presentation. Speech/drafts close
+automatic help, and only a visible matching result records hint exposure.
+
+Step 2 history: the user authorized the UI and simulated-state verification,
+explicitly excluding real-time runtime changes. Share display components between
+the actual route and an opt-in preview, keep fixture controls/data outside the
+live workspace, and retain truthful legacy help until the new protocol exists.
+The preview must default to 404 without its server flag and make no speaking API
+or microphone calls. Current controls retain their existing controller methods.
+
+- **Status**: accepted design; state/data contract documented and step 2 UI with
+  synthetic fixtures, step 3 runtime/schemas and step 4 recast/report integration
+  implemented. The user requested these steps in order.
+- **Presentation**: one replaceable help position; direction, opening words,
+  then a complete example. No stacked meaning/pattern lesson or teaching-state
+  labels in the conversation. Guidance wording invites rather than instructs.
+- **Target-panel correction**: retain automatic reveal after a clearly confirmed
+  partner model, and reveal actual learner-used targets. Otherwise hide until
+  Show targets, including Guided. Mere generation/partial exposure is not a
+  clear model; recorded independent/assisted-use semantics remain intact.
+- **Timing interpretation**: one spoken simplification at about 8 eligible
+  seconds plus one automatic direction at about 20 eligible seconds per
+  question. The “one automatic level” limit applies to UI help. Opening words
+  and examples are manual. Same-question rephrasing never resets budgets;
+  speech/drafts retire help, and reconnect never replenishes automatic actions.
+- **Data**: version the conversation protocol separately from frozen Mission
+  Plans. Bind help to a question UUID/context revision; add optional
+  simpler_question without rewriting old snapshots. Recasts reference actual
+  learner text and validated partner delivery; only changed words are bold.
+  Grammar/word-choice categories remain report-only, and transcripts stay intact.
+- **Compatibility/scope**: preserve old data, exact retries, evidence and explicit
+  legacy support behavior. Do not relabel legacy frames as short openings.
+  This supersedes the earlier Stage 4 pause/provider-only restriction for this
+  redesign, but does not implement Summary-only feedback or change providers.
+
+See [the state/data specification](design/docs/STAGE_FOUR_CONVERSATION_CONTRACT.md)
+for field shapes, transitions, protocol negotiation and acceptance cases. The
+contract governs the implemented steps 1–4; step 5 real-audio/provider acceptance
+remains separate from synthetic regression.
+
+## Switch Mission realtime voice to OpenAI — 2026-10-30
+
+- **Status**: accepted and implemented locally at the user's request.
+- **Decision**: use OpenAI Realtime `gpt-realtime-2.1` with `marin`, reusing the
+  existing server-side key. Keep Gemini selectable explicitly for legacy use;
+  do not fall back to another provider silently. Doubao text workloads stay intact.
+- **Consequence**: retain the server-owned socket, PCM24k browser contract,
+  manual response creation, semantic VAD, playback-aware cancellation/truncation
+  and final-text recovery. OpenAI Chat uses text-only responses. No data migration.
+- **Scope**: supersedes the earlier Gemini default and the Stage 4 pause only for
+  this provider migration and its verification. Other deferred teaching work stays
+  deferred; historic Gemini results do not establish OpenAI learning outcomes.
+
+## Finish Stage 3 before expanding Stage 4 — 2026-10-26
+
+The user narrowed the next increment to Stage 3 and confirmed a fixed seven-day
+Due-for-review interval with a visible explanation. Preserve existing Stage 4
+work, but defer further demonstration, correction, Summary-only and live runtime
+acceptance. Do not relabel Balanced or Light as Summary-only.
+
+Stage 3 distinguishes an automatic proposal, manually pinned targets, explicit
+logic choice and a custom scene. One resolved setup drives the preview and the
+Start request. Shuffle preserves manual targets; starting the Hero explicitly
+adopts its proposal. Free conversation first presents a zero-target/zero-logic
+preview. Ordinary scene generation stays behind Start; custom-scene matching is
+a bounded exception that can suggest logic without replacing targets.
+
+Use nine catalog templates with family and stage-function metadata outside the
+frozen LogicTemplate schema. Travel belongs to the daily recommendation family,
+but remains its own saved scenario value. Existing saved templates and immutable
+pending requests keep their original content and identities.
+
+Recorded use includes validated learner evidence for independent and assisted
+uses; zero qualifying independent Missions is not Never used. Due means seven
+days since the latest recorded use only when the relevant evidence history is
+complete. Pending assessments, incompatible/invalid evidence and truncation
+produce unknown. Keep reliable-practice counts separate and read-only. Recent
+video recommendations require actual video provenance and an explicit recency
+window, never merely a saved timestamp from an arbitrary source.
+
+The neutral design specification governs colors and typography over the older
+prototype: black main actions, white Hero Start, purple selection borders,
+neutral disabled states and no shadows. Prototype layout and interaction still
+apply: inline Adjust, four independent Advanced rows and a shared corpus drawer.
+
+
+## Freeze logic and separate demonstration from learner use — 2026-10-26
+
+The user authorized the first Loadout follow-up milestone. New targeted plans
+with a selected logic use version 2; omitted logic preserves the v1 path. Freeze
+the full server-owned logic template, each target's nullable stage index and a
+validated natural counterpart model line. All new targets use primary internally.
+A logic or step change invalidates a v2 cache. Source ownership, exact retries,
+creation acknowledgement and old snapshots retain their existing boundaries.
+
+V2 defaults to one natural demonstration for each unused target, independent of
+difficulty and the old support selector. Demonstration counts only after actual
+presentation and validated reflection; a sent/bound instruction is not success.
+Earlier independent use suppresses modeling. Performing the same communicative
+task using other wording does not skip a v2 demonstration; topic changes and
+closing still do. Frozen model lines guide the scene and may be adapted to the
+current turn. Any earlier assistant target exposure prevents
+redundant modeling, including partial/uncertain exposure, without inventing a
+confirmed demonstration. Multiple targets in one stage and Any stage stay in
+the same bounded scheduler. Stage progress reflects answered opportunities or
+real use; neither skipped stages nor responses alone count as target usage.
+
+Conceal v2 target wording until explicit reveal or actual modeling so the UI does
+not silently invalidate independent-use evidence. Reveal records visual usage
+support. Imitation means target use after an actual example, while visual help,
+other prompted use and uncertainty remain separate. Session-scoped exposure does
+not expire after one unrelated turn. No independent-mastery claim follows from
+these counts. Legacy support policy remains unchanged for v1.
+
+## Rebuild Loadout around local Quick start and five equal targets — 2026-10-25
+
+- **Status**: accepted and implemented locally; final verification and hosted
+  migration are tracked separately in `TASK.MD`.
+- **Decision**: make Quick start the default entry, with up to three suggestions
+  drawn from actual saved corpus. Use current functional tags, six server-provided
+  logic templates and scenario-specific local scene seeds. Manual selection and
+  the full-corpus drawer share one pool of at most five targets across kinds;
+  Shuffle preserves those selections. New targets have equal user-facing
+  priority and retain `primary` internally for existing planning/evidence APIs.
+- **Persistence**: Free conversation has zero targets, null logic and no target
+  plan. Both starts retain owner-bound drafts, account corpus checks, storage
+  locks/CAS, immutable request retries and confirmed-create acknowledgement.
+  Preserve old eight-item snapshots/requests and linked-round roles; do not
+  reinterpret historical evidence or silently truncate saved drafts.
+- **Scope**: the supplied development notes guide the Loadout redesign, without
+  authorizing every proposed data/API/runtime change. Keep existing scenario,
+  difficulty, feedback and support enums. Unknown usage is not Never used or Due;
+  absent eligibility metadata does not exclude corpus. New taxonomy, Travel,
+  Summary-only feedback, daily-life logic IDs and the proposed Stage 4
+  once-per-target demonstration/once-per-error correction policy remain separate.
+- **Supersedes**: the one-to-three primary plus zero-to-two opportunity selection
+  budget for newly selected Loadout targets, and the original separate structure
+  and expression budgets. Existing scene validation and Stage 4 support/evidence
+  behavior remain governed by their current contracts.
 
 ## Scope the neutral redesign to practice workspaces — 2026-10-25
 
@@ -32,6 +234,20 @@ and 12 px phone page insets instead of the reference's 32 px desktop insets.
 Remove the outer 1280 px page cap and automatic margins: they created 80 px
 side margins in a 1440 px viewport. Keep the 680 px Quick content width. Place the picker's Back
 control on the right and remove only the Recommended badge's star icon.
+
+2026-10-30 follow-up: unify Detailed and Review through one presentational
+sentence directory and shared layout styles. Use the established 260 px expanded
+directory and 56 px collapsed rail, with 32 px desktop / 44 px phone targets,
+and a 680 px main content limit. Each mode retains its own fold state, selection,
+filters, recording lifecycle and evidence; style sharing does not merge them.
+
+Extend the same visual contract to central results and analysis: common action
+sizes, 16 px internal / 24 px desktop section spacing, neutral status surfaces,
+and neutral three-layer tabs with a purple selection underline. Keep the
+Sound/Rhythm/Melody graph and word-evidence semantics, tab locks, keyboard
+navigation, text disclosure and playback handlers. Put saved-analysis status
+before the layers in both modes; collapse guidance according to available
+analysis width rather than the full browser width.
 
 ## Acknowledge successful Mission creation before navigation — 2026-10-24
 

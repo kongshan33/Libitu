@@ -25,6 +25,6 @@ export function missionProblem(error: unknown, phase: MissionProblem["phase"]): 
 export function missionFitProblem(): MissionProblem {
   return {
     kind: "fit", phase: "preparing", title: "Review this scene's target fit",
-    message: "No prepared scene fits every primary target yet. Review one scene's reasons before deciding what to change."
+    message: "No prepared scene fits every required target yet. Review one scene's reasons before deciding what to change."
   };
 }
