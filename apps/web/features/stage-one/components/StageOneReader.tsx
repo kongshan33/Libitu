@@ -749,11 +749,11 @@ export function StageOneReader() {
           <section className="corpus-section">
             <div className="section-label">{activeTab === "saved" ? "Saved to corpus" : "Extracted this video"}</div>
             {corpus.error ? (
-              <div className="corpus-sync-status" role="alert">
+              <div className="ui-retry-notice" role="alert">
                 <p>{corpus.error}</p>
                 <Button variant="secondary" size="md" type="button" className="inline-command" onClick={corpus.retry} disabled={corpus.busy} loading={corpus.busy} loadingLabel="Syncing…">Retry sync</Button>
               </div>
-            ) : corpus.busy ? <ContentSkeleton label="Loading saved corpus…" rows={1} /> : null}
+            ) : !corpus.ready && corpus.busy ? <ContentSkeleton label="Loading saved corpus…" rows={1} /> : null}
             <div className="corpus-list">
               {status === "loading" && visibleCorpus.length === 0 && activeTab !== "saved" ? <ReaderSkeleton /> : null}
               {visibleCorpus.length === 0 && activeTab === "saved" && corpus.ready ? (
@@ -1218,7 +1218,7 @@ function CorpusDetailDialog({ state, busy, onClose, onRetry, onSeek, onAnalysis,
       <div className={detailStyles.scroll}>
         <CorpusSourceContext context={state.context} kind={state.item.kind} title={state.record?.sourceTitle} onSeek={onSeek} />
         {state.status === "loading" ? <div className={detailStyles.panel}><ContentSkeleton label="Preparing explanation…" rows={3} /></div>
-          : state.status === "error" || !analysis ? <p className={detailStyles.notice} role="alert">{state.error ?? "Analysis could not be loaded."} <Button variant="secondary" size="sm" onClick={onRetry}>Retry</Button></p>
+          : state.status === "error" || !analysis ? <p className="ui-retry-notice" role="alert">{state.error ?? "Analysis could not be loaded."} <Button variant="secondary" size="sm" onClick={onRetry}>Retry</Button></p>
           : <>{analysis.providerNotice ? <p className={detailStyles.notice} role="status">{analysis.providerNotice}</p> : null}
             <CorpusDetailViews analysis={analysis} context={state.context} onAnalysis={onAnalysis} onSaveNote={onSaveNote} disabled={busy} />
           </>}
@@ -1398,7 +1398,7 @@ function StageOneStatusPanel({ status, message, onRetry, preview }: StageOneStat
       : "Blueprint generation failed";
 
   return (
-    <div className="stage-status" role={isLoading ? "status" : "alert"}>
+    <div className={isLoading ? "stage-status" : "ui-retry-notice"} role={isLoading ? "status" : "alert"}>
       <div className="status-heading">
         <span className={`status-indicator ${isLoading ? "loading" : "failed"}`} aria-hidden="true">
           {isLoading ? null : "!"}

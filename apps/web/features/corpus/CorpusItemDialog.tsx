@@ -64,7 +64,7 @@ export function CorpusItemDialog({ record, busy, error, initialEdit, onClose, on
     <header className={detailStyles.header}><div><span className={styles.eyebrow}>{record.item.kind} · {editing ? "Edit saved item" : "Corpus detail"}</span><h2 id="library-detail-title">{expressionText(record)}</h2><p className={detailStyles.meta}>{[record.item.level ?? detail?.analysis.fields.level, record.item.register ?? detail?.analysis.fields.register, ...(record.item.tags.length ? record.item.tags : detail?.analysis.fields.tags ?? [])].filter(Boolean).join(" · ")}</p></div><Button variant="ghost" size="inherit" type="button" className={styles.iconButton} disabled={busy} aria-label="Close corpus detail" onClick={onClose}><X size={20} aria-hidden="true" /></Button></header>
     <div className={detailStyles.scroll}>
     <div className={editing || error || notice ? styles.dialogBody : undefined}>
-      {error ? <p role="alert" className={styles.error}>{error}</p> : null}
+      {error ? <p role="alert" className="ui-retry-notice">{error}</p> : null}
       {notice ? <p role="status" className={styles.notice}>{notice}</p> : null}
       {editing ? <form onSubmit={(event) => { event.preventDefault(); void save(); }} className={styles.form}>
         <label>Expression or structure<Textarea aria-label="Expression or structure" required maxLength={2000} value={draft.text} onChange={(event) => setDraft({ ...draft, text: event.target.value })} /></label>

@@ -1,4 +1,5 @@
 "use client";
+import { useContentMotion } from "@/components/ui/use-content-motion";
 import { Button } from "@/components/ui/button";
 
 import { Zap } from "lucide-react";
@@ -26,6 +27,7 @@ export function QuickStartCard({ picks, logic, scene, scenarioLabel, difficultyL
   onAdjust(): void;
 }) {
   const unavailable = disabled || busy;
+  const planRef = useContentMotion(JSON.stringify([picks.map(pick => pick.record.key), scene, logic?.id]));
 
   return <section className={styles.hero} aria-label="Quick start" aria-busy={busy}>
     <div className={styles.heroHeading}>
@@ -33,7 +35,7 @@ export function QuickStartCard({ picks, logic, scene, scenarioLabel, difficultyL
       <span>{manualSelectionActive ? "Start here to use these suggested picks" : picks.length ? "Picked from your saved corpus" : "Your next conversation starts here"}</span>
     </div>
 
-    <div className={styles.heroPlan}>
+    <div ref={planRef} className={styles.heroPlan}>
       {picks.length ? <ul className={styles.picks}>
         {picks.map(({ record, stage, reason }) => <li className={styles.pick} key={record.key}>
           <span className={styles.stage}>{stage}</span>
@@ -56,7 +58,7 @@ export function QuickStartCard({ picks, logic, scene, scenarioLabel, difficultyL
 
     <div className={`${styles.heroActions} ui-button-group`}>
       <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroStart}`} disabled={unavailable || startDisabled || !picks.length} loading={busy} loadingLabel="Preparing mission…" onClick={onStart}>
-        {busy ? "Preparing mission…" : "Quick start"}
+        Quick start
       </Button>
       <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable || !picks.length} onClick={onShuffle}>
         Shuffle picks

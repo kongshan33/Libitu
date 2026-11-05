@@ -131,3 +131,5 @@
 .hero .heroStart:global(.ui-button)[data-variant][data-size][data-shape] { --button-bg:var(--bg);--button-fg:var(--ink);--button-edge:transparent;--button-hover:var(--line); }
 .hero .heroSecondary:global(.ui-button)[data-variant][data-size][data-shape] { --button-bg:transparent;--button-fg:var(--line);--button-edge:var(--muted);--button-hover:var(--ink-2); }
 .heroActions { gap:var(--button-group-gap); }
+
+@media (pointer:coarse) { .filterChip,.preferenceChip,.closeButton { min-height:44px; }.closeButton { min-width:44px; } }

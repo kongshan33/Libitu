@@ -2,6 +2,7 @@
 
 import { currentAuthReturnUrl } from "@/features/navigation/return-location";
 
+import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import styles from "./Profile.module.css";
 export function ProfileError({ error, retry }: { error: Error; retry: () => void }) {
   const clerk = useClerk();
   const auth = error instanceof ProfileApiError && error.status === 401;
-  return <div className={styles.error} role="alert"><p>{error.message}</p><Button variant="secondary" size="md" type="button" onClick={() => {
+  return <div className="ui-retry-notice" role="alert"><p>{error.message}</p><Button variant="secondary" size="md" type="button" onClick={() => {
     if (auth) { const url = currentAuthReturnUrl(); clerk.openSignIn({ forceRedirectUrl: url, signUpForceRedirectUrl: url }); }
     else retry();
   }}>{auth ? "Sign in again" : "Retry"}</Button></div>;
@@ -40,34 +41,39 @@ export function HistoryList({ items, timezone, detailed = false }: { items: Hist
 }
 
 export function HistoryFeed({ owner, timezone, initialKind = "all" }: { owner: string; timezone: string; initialKind?: HistoryKind }) {
-  const [kind, setKind] = useState<HistoryKind>(initialKind);
+  const [query, setQuery] = useState<{ kind: HistoryKind; offset: number }>({ kind: initialKind, offset: 0 });
+  const { kind, offset } = query;
   return <section className={styles.historyFeed} aria-label="Saved practice history">
       <div className={styles.historyFilters} role="group" aria-label="Practice type">
         {([ ["all", "All practice"], ["video", "Videos"], ["shadowing", "Shadowing"], ["speaking", "Missions"] ] as const).map(([value, label]) =>
-          <button key={value} type="button" aria-pressed={kind === value} onClick={() => setKind(value)}>{label}</button>)}
+          <button key={value} type="button" aria-pressed={kind === value} onClick={() => setQuery({ kind: value, offset: 0 })}>{label}</button>)}
       </div>
-    <FilteredHistory key={`${owner}:${kind}`} owner={owner} timezone={timezone} kind={kind} />
+    <FilteredHistory key={owner} owner={owner} timezone={timezone} kind={kind} offset={offset} onMore={next => setQuery({ kind, offset: next })} />
   </section>;
 }
 
-function FilteredHistory({ owner, timezone, kind }: { owner: string; timezone: string; kind: HistoryKind }) {
+function FilteredHistory({ owner, timezone, kind, offset, onMore }: { owner: string; timezone: string; kind: HistoryKind; offset: number; onMore(offset: number): void }) {
   const { getToken } = useAuth();
-  const [items, setItems] = useState<HistoryItem[]>([]);
-  const [offset, setOffset] = useState(0);
-  const [next, setNext] = useState<number | null>(null);
+  const [result, setResult] = useState<{ kind: HistoryKind; items: HistoryItem[]; next: number | null } | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const switching = result !== null && result.kind !== kind;
+  const pending = busy || switching && !error;
+  const showPending = useDelayedPending(pending);
+  const items = error && switching ? [] : result?.items ?? [];
+  const next = result?.next ?? null;
   useEffect(() => {
     const controller = new AbortController();
     setBusy(true); setError(null);
     void readProfileResource<HistoryPage>(`/history?offset=${offset}&limit=20&kind=${kind}`, owner, getToken, controller.signal).then((page) => {
-      setItems((previous) => {
-        const rows = offset === 0 ? [] : previous;
+      if (controller.signal.aborted) return;
+      setResult((previous) => {
+        const rows = offset === 0 || previous?.kind !== kind ? [] : previous.items;
         const keys = new Set(rows.map((row) => `${row.kind}:${row.id}`));
-        return [...rows, ...page.items.filter((row) => !keys.has(`${row.kind}:${row.id}`))];
+        return { kind, items: [...rows, ...page.items.filter((row) => !keys.has(`${row.kind}:${row.id}`))], next: page.next_offset };
       });
-      setNext(page.next_offset); setBusy(false);
+      setBusy(false);
     }).catch((reason: unknown) => { if (!controller.signal.aborted) { setError(reason instanceof Error ? reason : new Error("History could not be loaded.")); setBusy(false); } });
     return () => controller.abort();
   }, [owner, getToken, offset, attempt, kind]);
@@ -75,21 +81,21 @@ function FilteredHistory({ owner, timezone, kind }: { owner: string; timezone: s
   return <>
       <div className={styles.historySummary}>
         <span className={styles.historyCount} role="status">{!items.length && busy ? null : !items.length && error ? "Entries unavailable" : `${items.length} ${items.length === 1 ? "entry" : "entries"}${next !== null ? " loaded" : ""}`}</span>
-        <span className={styles.historyOrder}>Most recent first</span>
+        <span className={styles.historyOrder} role="status">{showPending ? "Updating history…" : "Most recent first"}</span>
       </div>
-    <div className={styles.historyResults} aria-busy={busy}>
+    <div className={styles.historyResults} aria-busy={pending}>
     {groupHistory(items, timezone).map((group) => <section className={styles.historyGroup} key={group.label} aria-label={group.label}>
       <h2>{group.label}</h2><HistoryList items={group.items} timezone={timezone} detailed />
     </section>)}
-    {!items.length && !busy && !error ? kind === "all" ? <HistoryList items={items} timezone={timezone} /> :
+    {!items.length && !pending && !error ? kind === "all" ? <HistoryList items={items} timezone={timezone} /> :
       <div className={styles.empty}>{kind === "video" ? <Video size={24} aria-hidden="true" /> : kind === "shadowing" ? <Mic size={24} aria-hidden="true" /> : <MessageCircle size={24} aria-hidden="true" />}
         <h3>{kind === "video" ? "No videos yet" : kind === "shadowing" ? "No saved shadowing takes yet" : "No Missions practiced yet"}</h3>
         <p>{kind === "video" ? "Open a video while signed in to find it here." : kind === "shadowing" ? "Practice a sentence and save your take to find it here." : "Contribute a speaking turn to a Mission to find it here."}</p>
         <ButtonLink variant="secondary" size="md" href={kind !== "speaking" ? "/" : "/loadout"} className={styles.secondary}>{kind !== "speaking" ? "Explore practice" : "Start a Mission"}<ArrowUpRight size={15} aria-hidden="true" /></ButtonLink>
       </div> : null}
     {error ? <ProfileError error={error} retry={() => setAttempt((value) => value + 1)} /> : null}
-    {busy ? <ContentSkeleton label="Loading practice history…" /> : null}
-    {next !== null && !error ? <div className={styles.feedFooter}><Button variant="secondary" size="md" type="button" loading={busy} loadingLabel="Loading practice…" onClick={() => setOffset(next)}>Load more practice</Button></div> : null}
+    {pending && !items.length ? <ContentSkeleton label="Loading practice history…" /> : null}
+    {next !== null && !error ? <div className={styles.feedFooter}><Button variant="secondary" size="md" type="button" loading={pending} loadingLabel="Loading practice…" onClick={() => onMore(next)}>Load more practice</Button></div> : null}
     </div>
   </>;
 }

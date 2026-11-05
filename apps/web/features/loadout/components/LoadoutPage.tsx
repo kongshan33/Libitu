@@ -1,6 +1,8 @@
 "use client";
 
 import { currentAuthReturnUrl, missionHref } from "@/features/navigation/return-location";
+import { PendingStatus } from "@/components/ui/PendingStatus";
+import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 import { DirectionLink } from "@/components/ui/direction-button";
 import { SelectField } from "@/components/ui/select";
@@ -37,6 +39,7 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
   const owner = userId ?? null;
   const corpus = useSavedCorpus();
   const local = useLoadoutDraft(owner, isLoaded);
+  const draftSavingVisible = useDelayedPending(local.pending);
   const [options, setOptions] = useState<SpeakingOptions | null>(null);
   const [optionsError, setOptionsError] = useState<string | null>(null);
   const [optionsAttempt, setOptionsAttempt] = useState(0);
@@ -75,6 +78,7 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
   const customScene = draft.customScene ?? (draftSceneMode(draft) === "custom" ? draft.goal : "");
   const sceneTargetIds = previewDraft.selectedKeys.flatMap(key => { const record = corpus.records.find(record => record.key === key); return record?.serverId ? [record.serverId] : []; }).slice(0, 5);
   const customSignature = sceneLogicSignature(owner, draft, corpus.records, previewDraft.selectedKeys);
+  const sceneFinding = useDelayedPending(sceneLogicState.key === customSignature && Boolean(sceneLogicState.busy));
   const setupLatest = useRef({ owner, customSignature, draft });
   setupLatest.current = { owner, customSignature, draft };
   const latest = useRef({ owner, inputSignature });
@@ -312,8 +316,8 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
       <div className={styles.pageHeading}><div className={styles.eyebrow}>Stage 3 · Prepare to use your English</div><h1>Mission loadout</h1><p>Start in one click, or tune the details yourself.</p></div>
       {reportOrigin ? <p className={styles.notice} role="status">{reportOrigin === "saved" ? "Your previous mission is saved as an additional draft." : "Your previous mission is ready to adjust."} Choose your targets, then start to prepare a matching scene.{replaceMissing ? " Remove unavailable selections and choose replacements." : ""}</p> : null}
       {!local.ready && !local.error ? <span className={styles.srOnly} role="status">Loading your saved loadout…</span> : null}
-      <p className={`${styles.fieldHelp} ${styles.draftStatus}`} data-pending={local.pending} role="status" aria-hidden={!local.pending}>Saving your draft on this device… Keep this page open until saving finishes.</p>
-      {local.error ? <div className={styles.error} role="alert"><p>{local.error}</p><p>This is a device storage issue, not evidence that you chose the wrong targets.{local.ready ? " Your current selection is still on this page." : ""}</p><Button variant="secondary" size="md" type="button" onClick={local.retry}>Retry saving draft</Button></div> : null}
+      <p className={`${styles.fieldHelp} ${styles.draftStatus}`} data-pending={local.pending} data-visible={local.pending && draftSavingVisible} role="status">{local.pending && draftSavingVisible ? "Saving draft…" : null}</p>
+      {local.error ? <div className="ui-retry-notice" role="alert"><p>{local.error}</p><p>This is a device storage issue, not evidence that you chose the wrong targets.{local.ready ? " Your current selection is still on this page." : ""}</p><Button variant="secondary" size="md" type="button" onClick={local.retry}>Retry saving draft</Button></div> : null}
       {local.deviceDrafts.map((deviceDraft, index) => <div className={styles.notice} key={index}><strong>You also have a saved draft.</strong><p>{deviceDraft.goal || "An untitled mission"} · {deviceDraft.selectedKeys.length} selected items. {deviceDraft.plan?.value.practice_source ? "Your current setup will be kept as another draft." : "Using it replaces the setup below."}</p><Button variant="secondary" size="md" type="button" disabled={busy || canRetrySnapshot} onClick={() => local.adopt(index)}>Use device draft{local.deviceDrafts.length > 1 ? ` ${index + 1}` : ""}</Button></div>)}
       {canRetrySnapshot ? <p className={styles.notice} role="status">A mission start is awaiting confirmation. Retry start mission to recover the original request before changing this setup.</p> : null}
       {linked ? <section className={styles.notice} aria-label="Linked second round"><strong>Linked second round · {draft.plan!.value.practice_source!.variation === "role_swap" ? "Swapped roles" : "Changed details"}</strong><p>Your language, target roles and scene setup stay linked to the original mission. You can change support. Unlink to edit the targets or prepare different scenes.</p><Button variant="secondary" size="md" type="button" disabled={busy || canRetrySnapshot} onClick={() => { void local.update({ ...draft, plan: undefined, selectedCandidateId: undefined, submission: undefined }, draft); }}>Unlink second round</Button></section> : null}
@@ -322,7 +326,7 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
         picks={quick.picks} logic={quick.logic} scene={quick.scene} scenarioLabel={scenarioLabel}
         difficultyLabel={difficultyLabel} feedbackLabel={feedbackLabel} disabled={controlsLocked || !options || !!local.error || !!corpus.error || corpus.busy} startDisabled={!!quickTargetError}
         busy={busy} manualSelectionActive={draftOrigin(draft) === "manual" || draftSceneMode(draft) === "custom"} onStart={() => void requestStart("quick")} onShuffle={() => change({ shuffleSeed: (draft.shuffleSeed ?? 0) + 1 })} adjustOpen={adjustOpen} onAdjust={() => setAdjustOpen(value => !value)}>{preferences}</QuickStartCard>}
-      {corpus.error ? <div className={styles.error} role="alert"><p>{corpus.error}</p><Button variant="secondary" size="md" type="button" onClick={corpus.retry}>Retry corpus sync</Button></div> : null}
+      {corpus.error ? <div className="ui-retry-notice" role="alert"><p>{corpus.error}</p><Button variant="secondary" size="md" type="button" onClick={corpus.retry}>Retry corpus sync</Button></div> : null}
       <section id="corpus" className={styles.section} aria-label="Your saved corpus">
         <div className={styles.sectionHeading}><div><h2>Or choose your own targets</h2></div><span className={styles.selectionCount} aria-live="polite">{manualKeys.length} / 5 selected</span></div>
         <div className={styles.filterChips} role="group" aria-label="Filter saved targets">
@@ -331,8 +335,8 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
         {manualKeys.length === 5 ? <p className={styles.fieldHelp} role="status">You have selected 5 targets. Remove one to choose another.</p> : null}
         {draft.selectedKeys.length > 5 ? <p className={styles.notice}>Your previous {draft.selectedKeys.length} selections are preserved. Choose up to 5 for this mission using the preview.</p> : null}
         {corpus.ready && !corpus.records.length ? <div className={styles.emptyLibrary}><h3>Your corpus starts here</h3><p>Save language while learning to get personal picks, or start a free conversation.</p><Link href={returnTo}>Find language to save <StartIcon /></Link></div> : null}
-        {[...groups].sort(([a], [b]) => (logic?.steps.indexOf(a) === -1 ? 999 : logic?.steps.indexOf(a) ?? 999) - (logic?.steps.indexOf(b) === -1 ? 999 : logic?.steps.indexOf(b) ?? 999)).map(([title, records]) => <CorpusPicker key={title} title={title} functionLabel={logic && options?.logic_metadata?.[logic.id]?.stage_functions[logic.steps.indexOf(title)] ? FUNCTION_LABELS[options.logic_metadata[logic.id]!.stage_functions[logic.steps.indexOf(title)]] : undefined} reasons={reasons} records={records} selectedKeys={manualKeys} count={manualKeys.length} limit={5} disabled={controlsLocked} onToggle={toggleTarget} />)}
-        {corpus.records.length && !groups.size ? <p className={styles.empty}>No saved expressions match this filter.</p> : null}
+        {[...groups].filter(([, records]) => records.length > 0).sort(([a], [b]) => (logic?.steps.indexOf(a) === -1 ? 999 : logic?.steps.indexOf(a) ?? 999) - (logic?.steps.indexOf(b) === -1 ? 999 : logic?.steps.indexOf(b) ?? 999)).map(([title, records]) => <CorpusPicker key={title} title={title} functionLabel={logic && options?.logic_metadata?.[logic.id]?.stage_functions[logic.steps.indexOf(title)] ? FUNCTION_LABELS[options.logic_metadata[logic.id]!.stage_functions[logic.steps.indexOf(title)]] : undefined} reasons={reasons} records={records} selectedKeys={manualKeys} count={manualKeys.length} limit={5} disabled={controlsLocked} onToggle={toggleTarget} />)}
+        {corpus.ready && corpus.records.length > 0 && visible.length === 0 ? <div className={styles.empty} role="status"><p>No saved expressions match this filter.</p><Button variant="secondary" size="md" onClick={() => setFilter("recommended")}>Show recommended targets</Button></div> : null}
         {betterLogic && !setupLocked ? <div className={styles.notice}><p>{betterLogic.logic.title} gives {betterLogic.coverage} of your chosen targets a matching stage (currently {betterLogic.currentCoverage}). Your targets stay selected.</p><Button variant="secondary" size="md" disabled={controlsLocked} onClick={() => chooseLogic(betterLogic.logic.id)}>Use {betterLogic.logic.title}</Button></div> : null}
         <button type="button" className={styles.browseButton} onClick={() => setDrawerOpen(true)}>Browse the full corpus by function</button>
         {usageState.key === usageKey && usageState.error ? <p className={styles.fieldHelp} role="status">{usageState.error} Unknown history is not labelled Never used or Due.</p> : null}
@@ -340,7 +344,7 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
       </section>
       {problem ? <div ref={recoveryRef} tabIndex={-1}><MissionRecovery problem={problem} advice={fitAdvice} draft={draft} disabled={busy}
         onRetry={() => void start()} onPreferences={showPreferences} onScene={showScenes} onAdjust={adjustTarget} /></div> : null}
-      {optionsError ? <div className={styles.error} role="alert"><p>{optionsError}</p><Button variant="secondary" size="md" type="button" onClick={() => setOptionsAttempt(value => value + 1)}>Retry mission options</Button></div> : !options ? <span className={styles.srOnly} role="status">Loading mission settings…</span> : null}
+      {optionsError ? <div className="ui-retry-notice" role="alert"><p>{optionsError}</p><Button variant="secondary" size="md" type="button" onClick={() => setOptionsAttempt(value => value + 1)}>Retry mission options</Button></div> : !options ? <span className={styles.srOnly} role="status">Loading mission settings…</span> : null}
       <section className={styles.advanced} aria-label="Advanced settings">
         <div className={styles.advancedHeading}>Advanced</div>
         <button type="button" className={styles.advancedRowButton} aria-expanded={adjustOpen} onClick={() => setAdjustOpen(value => !value)}>Mission preferences <span>{scenarioLabel} · {difficultyLabel} · {feedbackLabel}<ChevronDown size={16} aria-hidden="true" /></span></button>
@@ -349,7 +353,7 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
           <div className={styles.advancedPanel}>
             <div className={styles.filterChips} role="group" aria-label="Scene mode"><button type="button" disabled={controlsLocked} aria-pressed={draftSceneMode(draft) === "ai"} onClick={() => change({ sceneMode: "ai", logicSource: draft.logicSource === "scene" ? "auto" : draft.logicSource, suggestedScene: true })}>Let AI choose</button><button type="button" disabled={controlsLocked} aria-pressed={draftSceneMode(draft) === "custom"} onClick={() => change({ sceneMode: "custom", customScene })}>I will choose</button></div>
             {draftSceneMode(draft) === "custom" ? <label>Describe your scene<Textarea disabled={controlsLocked} ref={preferencesRef} aria-label="Custom scene" value={customScene} maxLength={500} rows={3} placeholder="For example: discussing a launch with a colleague" onChange={event => change({ customScene: event.target.value, sceneMode: "custom", logicSource: draft.logicSource === "scene" ? "auto" : draft.logicSource })} /><span className={styles.characterCount}>{customScene.length} / 500</span></label> : <p className={styles.fieldHelp}>AI plans a scene around your targets and your scenario. Switch to I will choose to describe your own.</p>}
-            {sceneLogicState.key === customSignature ? <p className={styles.fieldHelp} role="status">{sceneLogicState.busy ? "Finding a structure for your scene…" : sceneLogicState.error ?? sceneLogicState.value?.reason}</p> : null}
+            <p className={`${styles.fieldHelp} ${styles.sceneStatus}`} role={sceneLogicState.key === customSignature && sceneLogicState.error ? "alert" : "status"}>{sceneLogicState.key === customSignature ? sceneLogicState.busy ? sceneFinding ? "Finding a structure for your scene…" : null : sceneLogicState.error ?? sceneLogicState.value?.reason : null}</p>
             {explicitLogicId(draft) && draftSceneMode(draft) === "custom" ? <p className={styles.fieldHelp}>Your selected logic stays in place. Return to AI pick to infer a structure from this scene.</p> : null}
 
           </div>
@@ -378,7 +382,7 @@ export function LoadoutPage({ returnTo = "/", reportImport: reportOrigin = null,
       }}>
       {problem ? <Button variant="ghost" size="md" type="button" className={styles.recoveryLink} onClick={() => { recoveryRef.current?.focus(); recoveryRef.current?.scrollIntoView({ block: "center" }); }}>Review mission guidance</Button> : null}
       {targetError && !canRetrySnapshot && corpus.records.length ? <p className={styles.validation} id="loadout-validation">{targetError}</p> : null}
-      {busy && submission.phase === "preparing" && !draft.freeConversation ? <p className={styles.fieldHelp} role="status">Preparing a matching scene… This may take up to 2 minutes. Your selection is kept.</p> : null}
+      <PendingStatus pending={busy && submission.phase === "preparing" && !draft.freeConversation}>Preparing a matching scene… Your selection is kept.</PendingStatus>
       <Button variant="primary" size="md" type="button" className={styles.startButton} disabled={blocked || !!queuedStart} loading={busy || !!queuedStart} loadingLabel={submission.phase === "preparing" && !draft.freeConversation ? "Preparing scene…" : "Saving mission…"} onClick={() => void requestStart()} aria-describedby={targetError && !canRetrySnapshot && corpus.records.length ? "loadout-validation" : undefined}>{!owner || authError ? `Sign in · ${startLabel.toLowerCase()}` : startLabel}<StartIcon /></Button>
       <Button variant="secondary" size="md" type="button" className={styles.freeButton} disabled={controlsLocked || !isLoaded || !options || !!local.error} onClick={() => change({ freeConversation: true, origin: "manual", pinnedKeys: [], selectedKeys: [], logicTemplateId: null, logicSource: "auto", targetStages: undefined, targetRoles: {} })}>Free conversation, no targets</Button>
       {!owner ? <p className={styles.fieldHelp}>Sign in to save and start your mission.</p> : null}

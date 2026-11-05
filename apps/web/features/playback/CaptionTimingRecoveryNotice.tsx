@@ -14,7 +14,7 @@ export function CaptionTimingRecoveryNotice({ state, inPractice = false, onRetry
       ? "Word timing is ready. Return to Stage 1 to apply it when you are ready to leave practice. Leaving practice clears local recordings."
       : "Word timing is ready. Pause the video to apply it."
     : state.message;
-  return <div className="caption-timing-recovery" data-caption-recovery-phase={state.phase} role="status" aria-live="polite">
+  return <div className={state.phase === "failed" ? "ui-retry-notice" : "caption-timing-recovery"} data-caption-recovery-phase={state.phase} role="status" aria-live="polite">
     <span>{message}</span>
     {state.phase === "failed" ? <Button variant="secondary" size="md" type="button" onClick={onRetry}>Retry word timing</Button> : null}
   </div>;

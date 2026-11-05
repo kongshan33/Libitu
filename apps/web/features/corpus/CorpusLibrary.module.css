@@ -16,7 +16,7 @@
 .tabs { display: flex; gap: 28px; margin: 28px 0 0; border-bottom: 1px solid var(--line-soft); }
 .tabs button { border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); padding: 10px 0; font-size: 14px; line-height: 1.5; }
 .tabs button[aria-selected=true], .tabs button[aria-pressed=true] { color: var(--ink); font-weight: 500; border-bottom-color: var(--brand); }
-.toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-top: 20px; }
 .search { display: flex; align-items: center; flex: 1 1 220px; gap: 10px; min-width: 0; max-width: 320px; height: 40px; padding: 0 16px; border-radius: 999px; background: var(--surface); color: var(--muted); }
 .search:focus-within { outline: 2px solid var(--brand); outline-offset: 2px; }
 .search input { flex: 1; min-width: 0; width: 100%; border: 0; outline: none; background: transparent; color: var(--ink); padding: 0; font: inherit; }
@@ -57,7 +57,7 @@
 .resultMeta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .resultMeta > span:last-child { text-align: right; }
 .items { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; }
-.card { min-width: 0; min-height: 196px; display: flex; flex-direction: column; gap: 10px; padding: 18px; border: 0; border-radius: 14px; background: var(--surface); transition: background 160ms ease-out; }
+.card { min-width: 0; min-height: 196px; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); border: 0; border-radius: 14px; background: var(--surface); transition: background 160ms ease-out; }
 .card:hover { background: var(--line-soft); }
 .card.selected { background: var(--bg); outline: 1.5px solid var(--brand); outline-offset: -1.5px; }
 .cardTop { display: flex; align-items: center; gap: 12px; }
@@ -158,7 +158,7 @@
   .tray > button { flex: 1; }
   .page .iconButton:global(.ui-button)[data-variant][data-size][data-shape],
   .dialog .iconButton:global(.ui-button)[data-variant][data-size][data-shape] { width: 44px; height: 44px; }
-  .dialogHeader, .dialogBody { padding: 18px; }
+  .dialogHeader, .dialogBody { padding: var(--space-4); }
   .dialog { max-height: calc(100dvh - 24px); }
   .tagEditor label { min-height: 44px; }
 }
@@ -177,3 +177,16 @@
 
 /* Corpus cards preview the same speaking frame as the shared detail. */
 .patternPreview { margin: 0; font: 12px/1.7 var(--font-mono); color: var(--ink-3); overflow-wrap: anywhere; }
+
+@media (pointer:coarse) { .filterPill,.filterOptions button,.sourceOptions button,.textButton { min-height:44px; }.viewToggle button { min-width:44px;min-height:44px; }.cardTop label { min-width:44px;min-height:44px; } }
+
+.selectionControl { display:grid;place-items:center;min-width:32px;min-height:32px;flex:none;cursor:pointer; }
+@media(pointer:coarse) { .selectionControl { min-width:44px;min-height:44px; } }
+@media (pointer:coarse) {
+  .page .iconButton:global(.ui-button)[data-variant][data-size][data-shape],
+  .dialog .iconButton:global(.ui-button)[data-variant][data-size][data-shape] { width:44px;height:44px;min-height:44px; }
+}
+/* A narrow list metadata column must not spill its checkbox into the text. */
+.list .cardTop { min-width:0;flex-wrap:wrap;row-gap:8px; }
+.list .level { order:3;flex-basis:100%;overflow-wrap:anywhere; }
+.list .selectionControl { margin-left:auto; }

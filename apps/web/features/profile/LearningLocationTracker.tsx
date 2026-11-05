@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { rememberProfileVideo } from "./api";
-import styles from "./Profile.module.css";
 import { STAGE_TWO_LOCATION_CHANGED } from "../stage-two/location";
 import {
   advanceLearningVisit, canRememberLearningVisit, canonicalLearningSource, rememberLearningLocation,
@@ -58,7 +57,7 @@ export function LearningLocationTracker({ authLoaded, owner, ready, contentId, s
     return () => controller.abort();
   }, [authLoaded, ready, owner, contentId, sourceUrl, getToken, attempt]);
 
-  return failure === `${owner}:${contentId}` ? <div className={styles.visitError} role="status">
+  return failure === `${owner}:${contentId}` ? <div className="ui-retry-notice" role="status">
     <span>Video history could not be saved.</span><Button variant="secondary" size="sm" onClick={() => setAttempt(value => value + 1)}>Retry</Button>
   </div> : null;
 }

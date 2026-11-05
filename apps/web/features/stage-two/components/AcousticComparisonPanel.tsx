@@ -100,7 +100,7 @@ function AnalysisStatus({ layer, label, result, empty }: {
     insufficient_pitch: "Too little reliable pitch was detected to compare melody."
   };
   const relevantIssues = result.features?.quality.issues.filter((issue) => layer === "melody" || issue !== "insufficient_pitch") ?? [];
-  return <div>
+  return <div className={result.error ? "ui-retry-notice" : undefined}>
     <strong>{label}: </strong>
     {result.pending ? "Analyzing locally… The first run loads the speech model." : result.error
       ? <><span role="alert">{result.error}</span> {result.canRetry !== false

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import type { SpeakingHelpCard, SpeakingHelpLevel } from "@libitu/types/speaking";
 import { Button } from "@/components/ui/button";
+import { PendingStatus } from "@/components/ui/PendingStatus";
 import { observeVisible } from "./visibility";
 import styles from "./Speaking.module.css";
 
@@ -37,11 +38,11 @@ export function HintCard({ card, connected, userSpeaking, onHint, onShown }: {
       <p className={styles.helpLabel}>One example</p><blockquote>{card.example}</blockquote>
       {card.substitution ? <p>{card.substitution}</p> : null}
     </ShownSection> : null}
-    {card.status === "loading" ? <p role="status">{card.level === "example" ? "Writing an example for this conversation…" : "Finding a helpful way to say it…"}</p> : null}
+    <PendingStatus pending={card.status === "loading"}>{card.level === "example" ? "Writing an example for this conversation…" : "Finding a helpful way to say it…"}</PendingStatus>
     {card.status === "unavailable" ? <p role="status">{card.error || "More help is unavailable right now. You can try again."}</p> : null}
     <div className={styles.helpActions}>
       {card.level === "direction" ? <Button variant="secondary" size="md" type="button" disabled={!connected} onClick={() => onHint("usage", target)}>How can I use it?</Button> : null}
-      {card.level !== "direction" && !hasExample && card.status !== "loading" ? <Button variant="secondary" size="md" type="button" disabled={!connected} onClick={() => onHint("example", target)}>{card.status === "unavailable" && card.level === "example" ? "Try example again" : "Show an example"}</Button> : null}
+      {card.level !== "direction" && !hasExample ? <Button variant="secondary" size="md" type="button" disabled={!connected} loading={card.status === "loading"} loadingLabel="Finding help…" onClick={() => onHint("example", target)}>{card.status === "unavailable" && card.level === "example" ? "Try example again" : "Show an example"}</Button> : null}
       {card.status === "unavailable" && card.level === "usage" ? <Button variant="secondary" size="md" type="button" disabled={!connected} onClick={() => onHint("usage", target)}>Try hint again</Button> : null}
     </div>
   </section>;

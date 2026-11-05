@@ -29,6 +29,15 @@ class CorpusSelectionFields(BaseModel):
     usage_register: str = Field(alias="register", pattern="^(casual|neutral|professional|formal)$")
 
 
+class CorpusSpeechRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=800)
+
+    @field_validator("text", mode="before")
+    @classmethod
+    def strip_text(cls, value):
+        return value.strip() if isinstance(value, str) else value
+
+
 class CorpusSelectionPronunciation(BaseModel):
     ipa: str
     connected_speech: str

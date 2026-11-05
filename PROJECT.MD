@@ -1,5 +1,33 @@
 # Understand the Libitu project
 
+## Neutral retry notices — 2026-11-05
+
+Recoverable-error panels share a neutral surface, gray border and dark gray copy across Loadout, Corpus, learning history, reports and practice. Use 16px padding and vertical margins, 12px action gaps and shared button geometry. Error/alert semantics and retry handlers are preserved; destructive confirmations keep their existing treatment. Audio-save failures use the same neutral palette.
+
+
+## Stable asynchronous feedback — 2026-11-05
+
+Routine UI feedback shares a 600ms reveal threshold. Shared buttons disable and report busy immediately while retaining their idle label/geometry; only sustained operations show the loading overlay. Inline save/update notices reserve a small stable slot; floating practice-save/upload notices delay normal progress but surface errors immediately. Loadout draft saving uses the same helper. Request cancellation, persistence, unload protection, microphone permissions and recording countdowns remain immediate.
+
+History pagination retains existing rows without appending temporary skeletons. Filter changes retain the previous list while awaiting replacement, reset pagination and reject aborted responses. Activity range changes retain the existing chart and its actual date caption until replacement arrives. Initial loads still use structural skeletons. Shadow takes avoid flashing an empty result before the selected sentence's history resolves. Extension caption-opening progress follows the same 600ms rule without delaying its request.
+
+Mission hints use the same reveal threshold while retaining current help until the replacement arrives. Target buttons own their progress, without a duplicate footer notice; legacy hint actions stay in place while pending. Hint visibility receipts, stale-result fencing and recording states are preserved.
+
+
+## Quiet Loadout draft saves — 2026-11-05
+
+Shuffle and other local draft edits no longer flash a save message. A compact status appears only after 600ms of pending persistence and stays outside document flow on mobile and desktop. Draft storage, unload protection and actionable save errors are unchanged.
+
+## Corpus detail spacing and pronunciation — 2026-11-05
+
+Shared detail sections now use 16px vertical padding (previously 24px), 8px heading gaps and tighter slot/comparison rows. Pronunciation Play sits beside its heading, independently of IPA/stress wrapping, across Reader detail, Add to corpus and Corpus library. Pronunciation now calls the server-only OpenAI Realtime read-aloud adapter with `gpt-realtime-2.1-mini` / `marin` and the existing `OPENAI_API_KEY`. The request is limited to 800 characters, 45 seconds and 60 seconds of 24kHz mono audio; the provider-reported transcript must match the requested words before a WAV is returned. No microphone or role-play session is involved. The UI marks AI voice, supports retry/stop, caches one audio clip for the open card, and stops playback/aborts browser requests when Explain hides or the card closes. No cross-user or persistent audio cache is added.
+
+## Typography, spacing and interaction polish — 2026-11-05
+
+Shared text/space tokens and semantic color aliases now unify current surfaces. Report H1 uses 30px/500, primary explanations 15px, helper text 13px, mono metadata 12px and transcript text 18px; report content gutters follow the 4px scale. Corpus cards use 20px padding/12px gaps. Empty Loadout logic groups are omitted; a filtered-empty result appears once with a recovery action. Coarse-pointer controls have 44px targets independently of layout breakpoints, including labelled Corpus checkboxes and timeline controls.
+
+Content changes use an interruptible 160ms opacity animation without rekeying media/containers: Corpus results (120ms settling window), Quick start recommendations, preview targets, Explain/Syntax and Sound/Rhythm/Melody. Assessment underlines and score bars use transform feedback; reduced-motion preferences skip animations and cancel in-flight content feedback. No score values, acoustic data, recording/playback or provider configuration changes.
+
 ## Add to corpus shares the detail surface — 2026-11-05
 
 Transcript selections now use the same dimensions, neutral backdrop, typography, 14px corners, source context, underline tabs and independent content scrolling as Corpus detail. Editable fields, the note draft and Save sit below the analysis. Pin and outside dismissal remain available; the card has an explicit close button and Escape support. It is positioned in the viewport through a portal so Reader columns cannot clip it.
@@ -247,7 +275,7 @@ level. Context revisions, target/support changes, input and disconnect fence old
 work. First-request generation remains on demand; background pre-generation is
 explicitly deferred by user decision because learners may not request help and
 unused generation would waste model calls. It is not an active follow-up or a
-session-entry prerequisite. The frontend delays loading feedback by 250ms and
+session-entry prerequisite. The frontend delays loading feedback by 600ms and
 retains the previous ready hint during upgrades. Exposure follows the actual
 painted card, including when switching Voice/Chat. Cache hit/generation diagnostics
 support later latency measurements. `TASK.MD` records verification and limits.

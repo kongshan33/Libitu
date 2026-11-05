@@ -470,7 +470,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
           onToggle={() => setDirectoryCollapsed(value => !value)}
           controls={<label className="shadow-skip-short"><input type="checkbox" checked={skipShort} onChange={event=>setSkipShort(event.target.checked)}/>Skip sentences under 4 words</label>}>
           {progressState.loading ? <span className={styles.srOnly} role="status">Restoring practice progress…</span> : null}
-          {progressState.error ? <p role="alert">Practice progress could not load. <Button size="sm" variant="secondary" onClick={progressState.reload}>Retry progress</Button></p> : null}
+          {progressState.error ? <p className="ui-retry-notice" role="alert">Practice progress could not load. <Button size="sm" variant="secondary" onClick={progressState.reload}>Retry progress</Button></p> : null}
           {sentences.length ? (
             <ol ref={listRef} id={directoryId}>
               {sentences.map((sentence, index) => {
@@ -543,9 +543,9 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
                       || (["error", "unreliable"].includes(referenceAnalysis.alignment.phase) && !referenceAnalysis.alignment.canRetry))
                     ? <Button variant="secondary" size="sm" type="button" onClick={prepareBufferedSentence}>Prepare this sentence at 1×</Button> : null}
                   {bufferPreparing ? <Button variant="secondary" size="md" type="button" onClick={pauseReference}>Cancel preparation</Button> : null}
-                  {!captured.entry?.error && (analysisError || bufferedAnalysis.error) ? <p role="alert">{analysisError ?? bufferedAnalysis.error}
+                  {!captured.entry?.error && (analysisError || bufferedAnalysis.error) ? <p className="ui-retry-notice" role="alert">{analysisError ?? bufferedAnalysis.error}
                     <Button variant="secondary" size="md" type="button" onClick={() => { bufferedAnalysis.retry(); retry(); }}>Retry reference analysis</Button></p> : null}
-                {!cloud.available ? <div className="capture-analysis-status" aria-label="Browser reference analysis">
+                {!cloud.available ? <div className={captured.entry?.error || captured.row && ['failed', 'cancelled', 'partially_completed'].includes(captured.row.state) ? "ui-retry-notice" : "capture-analysis-status"} aria-label="Browser reference analysis">
                   {captured.entry?.error?<p role="alert">{captured.entry.error}</p>:null}
                   {persistence?.analyze&&(captured.entry?.error||captured.row&&['failed','cancelled','partially_completed','awaiting_upload'].includes(captured.row.state))?<Button variant="secondary" size="md" onClick={captured.retry}>{captured.row?.state==='awaiting_upload'||captured.entry?.error?"Retry reference upload":serverReferenceStatus?.action ?? "Retry reference analysis"}</Button>:null}
                   {captured.row?.state==='deleted'?<Button variant="secondary" size="md" onClick={captured.retry}>Prepare a new reference</Button>:null}
@@ -565,7 +565,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
               pendingSave={Boolean(analysisSelection?.take&&!analysisAttempt&&!persistence?.state.errors.some(error=>error.sentenceId===selected.id))} requested={savedClip?.analyze??Boolean(persistence?.analyze)} text={selected.text}
               api={persistence?.api} takeId={analysisAttempt} onMarked={savedAnalysis.reload}/>:
               <PracticePrompt sentence={selected} mode={supportMode} revealed={revealed} onReveal={revealWord} clock={wordClock} disabled={recording.state.phase==='stopping'}/>:<p>Select a sentence to practice.</p>}
-            {persistence?.state.errors.some(error=>error.sentenceId===selected?.id)?<p role="alert">Take save failed. You can replay locally. <Button size="sm" onClick={()=>outbox?.retry()}>Retry save</Button></p>:null}
+            {persistence?.state.errors.some(error=>error.sentenceId===selected?.id)?<p className="ui-retry-notice" role="alert">Take save failed. You can replay locally. <Button size="sm" onClick={()=>outbox?.retry()}>Retry save</Button></p>:null}
             <div className="shadow-practice-actions ui-button-group">
               <Button variant="secondary" size="lg" aria-label={referencePlaying?'Pause':'Listen'} disabled={practiceBusy||(cloud.available?!cloud.audioUrl:!playable)||(referenceBusy&&!referencePlaying)} onClick={togglePlayback}>
                 {referencePlaying?<Pause aria-hidden="true"/>:<Play aria-hidden="true"/>}{referencePlaying?'Pause':'Listen'}
@@ -591,7 +591,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
           </section>
           {reviewing&&!practiceBusy?<div className="shadow-analysis-workspace" ref={layerWorkspaceRef}>
             <PracticeAnalysisPanel key={analysisAttempt??'none'} api={persistence?.api} attemptId={analysisAttempt} {...savedAnalysis}/>
-            {analysisPresentation.visible&&soundGuide.error?<p role="alert">{soundGuide.error} <Button size="sm" onClick={soundGuide.retry}>Retry sound guide</Button></p>:null}
+            {analysisPresentation.visible&&soundGuide.error?<p className="ui-retry-notice" role="alert">{soundGuide.error} <Button size="sm" onClick={soundGuide.retry}>Retry sound guide</Button></p>:null}
             {analysisPresentation.visible?<PracticeLayers active={activeLayer} onChange={setLayer} locked={locks} badges={analysisPresentation.badges}
               gate={<><strong>Word matching comes first</strong><p>Sound opens at 60%. Rhythm and Melody open at 85%. Recognition feedback does not change these thresholds.</p></>}
               sound={<PracticeLayerState label="Sound" status={analysisPresentation.statuses.sound} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:sound`} layer="sound" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} concealed={soundConcealed} onConcealedChange={hidden=>setSoundVisibility({key:reviewKey,hidden})}/></PracticeLayerState>}

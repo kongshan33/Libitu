@@ -1,4 +1,5 @@
 "use client";
+import { useContentMotion } from "@/components/ui/use-content-motion";
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { CorpusItem, CorpusSelectionAnalysis, CorpusSelectionContext } from "@libitu/types/stage-one";
@@ -19,6 +20,7 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
 }) {
   const id = useId();
   const [tab, setTab] = useState<"explain" | "syntax">("explain");
+  const panelRef = useContentMotion(tab);
   const [syntax, setSyntax] = useState<CorpusSelectionAnalysis | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -74,17 +76,17 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
     }}>
       {(["explain", "syntax"] as const).map(value => <button key={value} id={`${id}-${value}`} type="button" role="tab" aria-selected={tab === value} tabIndex={tab === value ? 0 : -1} aria-controls={`${id}-panel`} onClick={() => value === "syntax" ? void loadSyntax() : setTab(value)}>{value === "explain" ? "Explain" : "Syntax"}</button>)}
     </div>
-    <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${tab}`} className={styles.panel}>
+    <div ref={panelRef} id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${tab}`} className={styles.panel}>
       <div hidden={tab !== "explain"}>
         {(current.schemaVersion ?? 1) < 2 || current.analysisSource === "fallback" ? <Button variant="secondary" size="sm" disabled={disabled || pending} loading={refreshing} loadingLabel="Refreshing…" onClick={() => void refreshExplain()}>Refresh explanation</Button> : null}
         {refreshError ? <p role="alert">{refreshError}</p> : null}
-        <ExplainPanel analysis={current} isLoading={false} onSavePattern={onSavePattern} saveDisabled={disabled} />
+        <ExplainPanel analysis={current} isLoading={false} onSavePattern={onSavePattern} saveDisabled={disabled} active={tab === "explain"} />
         <CorpusFollowup context={context} comparison={current.explanation.similarExpressions[0]?.split(/\s*[—–]\s*/)[0]} onSaveNote={onSaveNote} disabled={disabled} noteIsDraft={noteIsDraft} />
       </div>
-      {tab === "syntax" ? pending ? <ContentSkeleton label="Loading syntax…" rows={3} /> : error ? <p role="alert">{error} <Button variant="secondary" size="sm" onClick={() => void loadSyntax()}>Retry syntax</Button></p> : <>
+      {tab === "syntax" ? pending ? <ContentSkeleton label="Loading syntax…" rows={3} /> : error ? <p className="ui-retry-notice" role="alert">{error} <Button variant="secondary" size="sm" onClick={() => void loadSyntax()}>Retry syntax</Button></p> : <>
         <SyntaxPanel analysis={current} isLoading={false} saveDisabled />
       </> : null}
-        {unsaved ? <p role="status">Analysis is available for this visit, but could not be saved. <Button variant="secondary" size="sm" disabled={disabled} onClick={async () => { setUnsaved(await onAnalysis?.(current) === false); }}>Retry saving analysis</Button></p> : null}
+        {unsaved ? <p className="ui-retry-notice" role="status">Analysis is available for this visit, but could not be saved. <Button variant="secondary" size="sm" disabled={disabled} onClick={async () => { setUnsaved(await onAnalysis?.(current) === false); }}>Retry saving analysis</Button></p> : null}
     </div>
   </div>;
 }

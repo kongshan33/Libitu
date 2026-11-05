@@ -1,4 +1,4 @@
-import { buttonAppearance } from "@/components/ui/button";
+import { buttonAppearance } from "@/components/ui/button-appearance";
 import Link from "@/components/ui/PrefetchLink";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ArrowDown, ArrowRight, Bookmark, Puzzle, MessageCircle, Quote, Waves } from "lucide-react";

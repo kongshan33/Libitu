@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PendingStatus } from "@/components/ui/PendingStatus";
 import { SelectField } from "@/components/ui/select";
 import type { SpeakingSupportLevel, SpeakingWorkspace } from "@libitu/types/speaking";
 import { currentSupport, isSupportLevel, reducedSupport, SUPPORT_OPTIONS } from "./support";
@@ -21,7 +22,7 @@ export function SupportControls({ workspace, disabled, pending, error, onChange 
     </div>
     <p>{SUPPORT_OPTIONS.find(option => option.value === support?.level)?.description ?? "This mission keeps its existing support. Choose a level when connected to change how much help you receive."}</p>
     <p>Help already shown in this mission remains recorded. Changing support does not mark a target as mastered.</p>
-    {pending ? <p role="status">Waiting for the support change to be confirmed…</p> : null}
+    <PendingStatus pending={pending}>Updating support…</PendingStatus>
     {error ? <p role="alert">{error}</p> : null}
   </section>;
 }

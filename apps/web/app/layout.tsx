@@ -6,6 +6,7 @@ import "@libitu/ui/tokens.css";
 import "./globals.css";
 import "@/components/ui/button.css";
 import "@/components/ui/field.css";
+import "@/components/ui/retry-notice.css";
 import "@/components/ui/motion.css";
 import "@/features/learning-workspace/practice-theme.css";
 import { PracticePersistence } from "@/features/stage-two/persistence/PracticePersistence";

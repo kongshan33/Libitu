@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "@/components/ui/PrefetchLink";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { FlowNavigation } from "@/components/FlowNavigation";
 import { ReaderLoadingShell } from "../stage-one/components/ReaderSkeleton";
 import styles from "./ContentImport.module.css";
@@ -35,12 +35,12 @@ export function ContentImport({ location }: { location: LearningLocation }) {
   if (!message) return <ReaderLoadingShell />;
   return <main className="stage-page">
     <FlowNavigation title="Opening your workspace…" current={0} steps={[{ label: "Ingest" }, { label: "Shadow" }]} />
-    <section className={styles.error} aria-labelledby="import-error-title">
+    <section className={`${styles.error} ui-retry-notice`} aria-labelledby="import-error-title">
       <h1 id="import-error-title">Unable to open this video</h1>
       <p role="alert">{message}</p>
-      <div className={`${styles.actions} ui-button-group`}>
-        {error && <button onClick={() => { setError(null); retry(value => value + 1); }}>Retry</button>}
-        <Link href="/">Choose a video</Link>
+      <div className="ui-retry-actions">
+        {error && <Button variant="secondary" size="md" onClick={() => { setError(null); retry(value => value + 1); }}>Retry</Button>}
+        <ButtonLink variant="secondary" size="md" href="/">Choose a video</ButtonLink>
       </div>
     </section>
   </main>;

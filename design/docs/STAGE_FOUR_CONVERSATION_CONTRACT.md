@@ -225,7 +225,7 @@ still contains no loading wording: retained display is a separate client-only
 reference to an already received card. Replace it when the next result is ready;
 a failure offers Retry at that same level, never silently advances. Disable
 repeated advancement immediately while loading. Show loading feedback only after
-250ms; fast cache responses never deliberately wait. A slow first request uses
+600ms; fast cache responses never deliberately wait. A slow first request uses
 “Finding a little help…”, while a slow upgrade keeps prior text and adds a small
 spinner to the action. Mode switches retain the same pending display. Speech,
 drafts, question/version/target/support changes and disconnect discard retention.

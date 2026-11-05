@@ -2,6 +2,7 @@ import type { ConversationHelp, SpeakingClientEvent, SpeakingHelpLevel, Speaking
 import { ConversationApiError, runtimeSocketUrl, type ConversationApi } from "./api.ts";
 import { ConversationAudio } from "./audio.ts";
 import { currentSupport, isSupportLevel } from "./support.ts";
+import { PENDING_FEEDBACK_DELAY_MS } from "../../components/ui/feedback-timing.ts";
 
 export type ConnectionState = "loading" | "idle" | "connecting" | "connected" | "disconnected" | "paused" | "ended" | "error";
 export type ConversationState = {
@@ -422,7 +423,7 @@ export class ConversationController {
     if (id) this.conversationLoadingTimer = setTimeout(() => {
       this.conversationLoadingTimer = null;
       if (this.state.workspace?.conversation?.help?.id === id && this.state.workspace.conversation.help.status === "loading") this.patch({ helpLoadingVisible: true });
-    }, 250);
+    }, PENDING_FEEDBACK_DELAY_MS);
     return false;
   }
   private retireConversationHelp(): void {

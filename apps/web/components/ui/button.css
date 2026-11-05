@@ -125,7 +125,7 @@
 .ui-button[data-variant][data-size="lg"][data-shape] { min-height: var(--button-height-lg); padding: 11px 18px; font-size: 14px; --button-icon-size: 18px; }
 .ui-button[data-variant][data-size]:not([data-size="inherit"]) svg { width: var(--button-icon-size); height: var(--button-icon-size); flex-shrink: 0; }
 .ui-button-label { display: contents; }
-.ui-button[data-loading="true"] > .ui-button-label { visibility: hidden; }
+.ui-button[data-progress="true"] > .ui-button-label { visibility: hidden; }
 .ui-button-progress {
   position: absolute;
   inset: 0;
@@ -148,4 +148,9 @@
 .ui-button-group { column-gap:var(--button-group-gap);row-gap:var(--button-group-gap); }
 .ui-button-group .ui-button[data-variant][data-size][data-shape]:not([data-size="inherit"]):not([data-shape="circle"]) {
   min-height:var(--button-height-lg);padding:11px 18px;font-size:14px;line-height:20px;font-weight:500;gap:var(--button-gap);--button-icon-size:18px;
+}
+
+@media (pointer: coarse) {
+  .ui-button[data-variant][data-size][data-shape]:not([data-size="inherit"]) { min-height:44px; }
+  .ui-button[data-variant][data-size][data-shape="circle"] { min-width:44px;min-height:44px; }
 }

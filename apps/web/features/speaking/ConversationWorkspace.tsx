@@ -1,5 +1,8 @@
 "use client";
 
+import { PendingStatus } from "@/components/ui/PendingStatus";
+import { useDelayedPending } from "@/components/ui/use-delayed-pending";
+
 import { currentAuthReturnUrl } from "@/features/navigation/return-location";
 
 import { DirectionLink } from "@/components/ui/direction-button";
@@ -118,7 +121,7 @@ function OpportunityStatus({ value, version, canChange, hideReason, onSkip, onRe
     {!compact ? <span className={styles.opportunityStatus} data-status={value.status} role="status">{label}</span> : null}
     {!compact && value.status === "skipped" ? <p>{hideReason ? null : value.skipped_reason} Skipping this target does not count as a failed attempt.</p>
       : !compact && value.role === "opportunity" ? <p>Optional: use this only when it fits.</p> : !compact && value.status === "planned" ? <p>Your partner has a planned opportunity. It has not yet been confirmed in the conversation.</p> : null}
-    <button type="button" className={styles.itemHelp} disabled={!canChange || waiting} onClick={change}>{waiting ? "Saving change…" : value.status === "skipped" ? "Undo skip" : "Doesn't fit this scene"}</button>
+    <Button variant="ghost" size="sm" className={styles.itemHelp} disabled={!canChange} loading={waiting} loadingLabel="Saving change…" onClick={change}>{value.status === "skipped" ? "Undo skip" : "Doesn't fit this scene"}</Button>
     {unconfirmed ? <p role="status">The change was not confirmed. Check your connection and retry.</p> : null}
   </div>;
 }
@@ -141,7 +144,7 @@ function VisibleFrame({ id, text, active, onShown }: { id: string; text: string;
 function targetHintLabel(workspace: SpeakingWorkspace, itemId: string): string {
   const help = workspace.conversation?.help;
   if (!help || help.target_item_id !== itemId) return "Hint";
-  if (help.status === "loading") return "Finding help…";
+  if (help.status === "loading") return "Hint";
   if (help.status === "unavailable") return "Try hint again";
   if (help.status !== "ready") return "Hint";
   return help.level === "direction" ? "Opening words" : help.level === "usage" ? "See an example" : "Hide hint";
@@ -152,6 +155,7 @@ function TrainingSidebar({ workspace, onSelect, onHint, onSkip, onRestore, onTar
   onSkip: (id: string) => boolean | undefined; onRestore: (id: string) => boolean | undefined; canHint: boolean;
   onTargetShown: (id: string) => void; hintDisabledReason?: string;
 }) {
+  const checking = useDelayedPending(workspace.analysis_status === "pending");
   if (concealedTargets(workspace)) return <ConcealedTrainingSidebar workspace={workspace} onSelect={onSelect} onHint={onHint} onSkip={onSkip} onRestore={onRestore} onTargetShown={onTargetShown} canHint={canHint} hintDisabledReason={hintDisabledReason} />;
   const items = [...workspace.session.items].sort((a, b) => a.ordinal - b.ordinal);
   const valid = workspace.messages.flatMap(message => validEvidence(message, workspace.evidence));
@@ -188,7 +192,7 @@ function TrainingSidebar({ workspace, onSelect, onHint, onSkip, onRestore, onTar
       })}
     </section>)}
     <section className={styles.observations}><h2>Practice so far</h2><div><span>User turns</span><strong>{workspace.session.turn_count}</strong></div>{planned ? <><div><span>Primary used</span><strong>{workspace.opportunities?.filter(value => value.role === "primary" && value.status === "used").length ?? 0}</strong></div><div><span>Opportunity used</span><strong>{workspace.opportunities?.filter(value => value.role === "opportunity" && value.status === "used").length ?? 0}</strong></div><div><span>Skipped</span><strong>{skipped.size}</strong></div></> : items.length ? <div><span>Language observed</span><strong>{observed.size}/{items.length}</strong></div> : <p>No target expressions in this conversation.</p>}<p>Observations in this conversation, not a mastery score.</p>
-      <p role="status">{workspace.analysis_status === "pending" ? "Checking your latest turn…" : workspace.analysis_status === "unavailable" ? "Language analysis is unavailable for the latest turn." : workspace.analysis_status === "ready" ? "Evidence is up to date." : "Evidence appears after a finalized turn."}</p>
+      <p role="status">{workspace.analysis_status === "pending" ? checking ? "Checking your latest turn…" : "\u00a0" : workspace.analysis_status === "unavailable" ? "Language analysis is unavailable for the latest turn." : workspace.analysis_status === "ready" ? "Evidence is up to date." : "Evidence appears after a finalized turn."}</p>
     </section>
   </>;
 }
@@ -200,6 +204,8 @@ function ConcealedTrainingSidebar({ workspace, onSelect, onHint, onSkip, onResto
   onTargetShown: (id: string) => void; hintDisabledReason?: string; canHint: boolean;
 }) {
   const [revealed, setRevealed] = useState(true);
+  // The target button owns progress; avoid a second, shifting footer notice.
+  const visibleHintReason = hintDisabledReason === "Preparing a hint in the conversation…" ? null : hintDisabledReason;
   const plan = workspace.session.mission_plan;
   const progress = workspace.stage_progress;
   const active = !["completed", "abandoned"].includes(workspace.session.status);
@@ -221,12 +227,12 @@ function ConcealedTrainingSidebar({ workspace, onSelect, onHint, onSkip, onResto
       text: item.text, meaning: item.meaning, used, modeled, current, status,
       actions: <>{used ? <button type="button" className={styles.evidenceLink} onClick={() => onSelect(evidence[evidence.length - 1])}><Check size={12} aria-hidden="true" />View use<ChevronRight size={12} aria-hidden="true" /></button> : null}
         {active && (plan?.version !== 2 || current || opportunity?.status === "skipped") ? <div className={styles.targetActions}>
-          <button type="button" className={styles.itemHelp} disabled={!canHint || !!hintDisabledReason || opportunity?.status === "skipped"} title={hintDisabledReason} aria-busy={workspace.conversation?.help?.target_item_id === item.id && workspace.conversation.help.status === "loading"} onClick={() => onHint("usage", item.id)}>{targetHintLabel(workspace, item.id)}</button>
+          <Button variant="ghost" size="sm" className={styles.itemHelp} disabled={!canHint || !!hintDisabledReason || opportunity?.status === "skipped"} title={hintDisabledReason} loading={workspace.conversation?.help?.target_item_id === item.id && workspace.conversation.help.status === "loading"} loadingLabel="Finding help…" onClick={() => onHint("usage", item.id)}>{targetHintLabel(workspace, item.id)}</Button>
           {opportunity ? <OpportunityStatus compact value={opportunity} version={workspace.version} canChange={canHint} hideReason={!revealed && !modeled && !used} onSkip={onSkip} onRestore={onRestore} /> : null}
         </div> : null}</> };
   });
   return <TargetPanel targets={targets} reveal={revealed} onReveal={() => setRevealed(value => !value)} active={active} onShown={onTargetShown}
-    footer={<>{hintDisabledReason ? <p className={styles.meta} role="status">{hintDisabledReason}</p> : null}{workspace.analysis_status === "unavailable" ? <p className={styles.meta} role="status">Language analysis is unavailable for the latest turn.</p> : null}</>} />;
+    footer={<><p className={styles.meta} role="status">{visibleHintReason || "\u00a0"}</p>{workspace.analysis_status === "unavailable" ? <p className={styles.meta} role="status">Language analysis is unavailable for the latest turn.</p> : null}</>} />;
 }
 
 function OwnedConversation({ owner, sessionId, returnTo, getToken }: { owner: string; sessionId: string; returnTo: string; getToken: () => Promise<string | null> }) {
@@ -306,13 +312,13 @@ function OwnedConversation({ owner, sessionId, returnTo, getToken }: { owner: st
     : newHelp && helpCard?.status === "loading" ? "Preparing a hint in the conversation…" : undefined;
   const hint = !ended && newHelp ? <QuestionHelp frozen={state.replyReference?.help} retained={state.retainedConversationHelp} loadingVisible={state.helpLoadingVisible} conversation={workspace?.conversation} hidden={!connected || !!confirmAction || (state.replyReference ? !state.replyReference.help : state.userSpeaking || !!text.trim() || !!state.pending)} onShown={conversationHelpShown} /> : !ended ? <HintCard card={state.replyReference ? state.replyReference.legacyHelp ?? null : support && workspace?.help?.source === "automatic" ? null : workspace?.help ?? null} connected={connected && !state.replyReference} userSpeaking={false} onHint={requestHint} onShown={hintShown} /> : null;
   return <><MissionNavigation returnTo={returnTo} title={workspace?.session.goal} reportHref={ended ? missionHref("analytics", returnTo, sessionId) : undefined} exit={<button type="button" disabled={state.busy} onClick={() => setConfirmAction("end")}>End mission</button>} /><main className={styles.page}><section className={`${styles.shell} ${focused ? styles.focused : ""}`} aria-label="Speaking mission">
-    {!workspace ? <div className={styles.empty}><h1>Mission unavailable</h1><p role="alert">{state.error}</p><Button variant="primary" className={styles.primary} onClick={() => void controller?.load()}>Retry loading mission</Button></div> : <>
+    {!workspace ? <div className="ui-retry-notice"><h1>Mission unavailable</h1><p role="alert">{state.error}</p><Button variant="secondary" size="md" onClick={() => void controller?.load()}>Retry loading mission</Button></div> : <>
       <MissionIntro goal={workspace.session.goal} metadata={ended ? "Saved conversation · read-only review" : `${workspace.session.scenario_type === "workplace" ? "Workplace" : workspace.session.scenario_type === "travel" ? "Travel" : "Everyday life"} · ${workspace.session.difficulty} · ${workspace.session.feedback_level} feedback`}
         setting={workspace.session.mission_plan ? `${workspace.session.mission_plan.setting} You are ${workspace.session.mission_plan.user_role}. Your partner is ${workspace.session.mission_plan.ai_role}.` : undefined}
         actions={<><DirectionLink href={missionHref("loadout", returnTo)}>Back to loadout</DirectionLink>{!ended && !connected ? <Button {...reportIntent} variant="secondary" size="md" className={styles.endButton} onClick={() => setConfirmAction("end")} disabled={state.busy}>End mission</Button> : null}</>} />
       {workspace.session.logic_template ? <StageGuide title={workspace.session.logic_template.title} steps={workspace.session.logic_template.steps} currentIndex={workspace.stage_progress?.current_stage_index} statuses={workspace.session.logic_template.steps.map((_, index) => workspace.stage_progress?.stages.find(stage => stage.index === index)?.status ?? "pending")} /> : null}
       {!ended && workspace.session.mission_plan?.version !== 2 ? <SupportControls workspace={workspace} disabled={!connected || state.busy || state.phase !== "listening" || state.userSpeaking} pending={!!state.supportPending} error={state.supportError} onChange={changeSupport} /> : null}
-      {state.error ? <div className={styles.notice} role="alert"><span>{state.error}</span>{state.conflict ? <Button variant="secondary" size="md" onClick={() => void controller?.start(view === "voice", true)} disabled={connecting}>Take over here</Button> : null}</div> : null}
+      {state.error ? <div className="ui-retry-notice" role="alert"><span>{state.error}</span>{state.conflict ? <Button variant="secondary" size="md" onClick={() => void controller?.start(view === "voice", true)} disabled={connecting}>Take over here</Button> : null}</div> : null}
       {confirmAction ? <section className={styles.confirm} aria-label={confirmAction === "delete" ? "Delete conversation confirmation" : "End mission confirmation"}><h2>{confirmAction === "delete" ? "Delete this mission?" : "End this mission?"}</h2><p>{confirmAction === "delete" ? "Your saved transcript, language evidence and mission will be permanently deleted." : state.pending ? "One message is still unconfirmed. Ending closes the connection and saves the finalized conversation for review." : "This stops the microphone and closes the conversation. Your finalized transcript and evidence stay available."}</p><div><Button variant={confirmAction === "delete" ? "danger-solid" : "primary"} size="md" className={styles.primary} disabled={state.busy} loading={state.busy} loadingLabel="Saving…" onClick={() => void confirm()}>{confirmAction === "delete" ? "Delete permanently" : "End and review"}</Button><Button variant="secondary" size="md" disabled={state.busy} onClick={() => setConfirmAction(null)}>Cancel</Button></div></section> : null}
       <div className={styles.workspace}>
         <section className={styles.conversation} aria-label="Conversation">
@@ -332,7 +338,7 @@ function OwnedConversation({ owner, sessionId, returnTo, getToken }: { owner: st
                 {message.role === "user" ? recasts.filter(row => row.source.message_id === message.id).map(row => <ConfirmedRecast key={row.id} recast={row} active={connected && !confirmAction} onShown={recastShown} />) : null}
               </ConversationMessage></Fragment>)}
               {visiblePartials.map(([id, partial]) => <ConversationMessage key={id} speaker={partial.role === "user" ? "You" : "Partner"} user={partial.role === "user"} note={<span className={styles.messageStatus}>Live · not finalized</span>}><div className={styles.bubble}>{partial.text}</div></ConversationMessage>)}
-              {state.pending ? <ConversationMessage speaker="You" user note={<><span className={styles.messageStatus}>{state.pending.status === "sending" ? "Awaiting confirmation…" : "Not yet confirmed"}</span>{state.pending.status === "unconfirmed" ? <Button variant="secondary" size="md" onClick={() => void controller?.retryText()} disabled={connecting || state.conflict}>Retry same message</Button> : null}</>}><div className={styles.bubble}>{state.pending.text}</div></ConversationMessage> : null}<div ref={bottom} />
+              {state.pending ? <ConversationMessage speaker="You" user note={<>{state.pending.status === "sending" ? <PendingStatus pending>Awaiting confirmation…</PendingStatus> : <span className={styles.messageStatus}>Not yet confirmed</span>}{state.pending.status === "unconfirmed" ? <Button variant="secondary" size="md" onClick={() => void controller?.retryText()} disabled={connecting || state.conflict}>Retry same message</Button> : null}</>}><div className={styles.bubble}>{state.pending.text}</div></ConversationMessage> : null}<div ref={bottom} />
             </div>}
 
           {view === "chat" ? hint : null}
