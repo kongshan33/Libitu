@@ -1,0 +1,47 @@
+{
+  "case": "phrase",
+  "task": "syntax",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "selection_type": "phrase",
+    "kind": "chunk"
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "status": 200,
+  "output": {
+    "sentence_type": "名词性短语（量词+抽象名词结构）",
+    "main_clause": "作主句谓语 has 的宾语，承接主语 The team，说明团队在设计领域存在局部突出的优势。",
+    "structure_breakdown": [
+      "pockets 为复数可数名词，作量词核心，表“零散分布的小块区域”",
+      "of greatness 为介词短语作后置定语，修饰 pockets，表“属于卓越表现的”",
+      "整体为“量词+抽象名词”的偏正名词短语，无主谓结构"
+    ],
+    "logic_relations": [
+      "与后文 but 引导的转折分句形成语义对照：先肯定团队存在局部突出优势，再转折指出其整体交付表现不稳定",
+      "呼应前文“客观评估团队表现”的语境，是对团队优势的具体描述"
+    ],
+    "information_hierarchy": [],
+    "style_features": [],
+    "usage_scenarios": [],
+    "grammar_points": [
+      "pockets 此处为比喻用法，不指实体口袋，而指零散分布的局部优势区域",
+      "of 表所属关系，将抽象名词 greatness 与量词 pockets 连接，构成量化表达",
+      "整体在句中作及物动词 has 的宾语，后接 in design 介词短语限定优势的领域"
+    ],
+    "wording_notes": [],
+    "reusable_patterns": [],
+    "translations": [],
+    "translation_notes": [],
+    "background_context": null,
+    "evidence": [
+      "We need to take an honest look at how the team is performing.",
+      "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "Our next step is to make those strengths part of our everyday process."
+    ]
+  },
+  "total_seconds": 9.281
+}

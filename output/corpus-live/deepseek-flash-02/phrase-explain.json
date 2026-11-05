@@ -1,0 +1,101 @@
+{
+  "case": "phrase",
+  "task": "explain",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness"
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "started_at": "2026-11-05T10:18:01.205784+00:00",
+  "prompt_sha256": "f24bf650157c340807b2d1d9204dafab7b618af63be08344002ff0bb94c6cc4f",
+  "status": 200,
+  "output": {
+    "analysis_source": "ai",
+    "provider_notice": null,
+    "selection_type": "phrase",
+    "completeness": "complete",
+    "selected_text": "pockets of greatness",
+    "recommended_text": "pockets of greatness",
+    "recommendation_reason": "所选内容边界完整，无需补全。",
+    "fields": {
+      "kind": "chunk",
+      "tags": [
+        "contrast",
+        "framing"
+      ],
+      "level": "B2",
+      "register": "neutral"
+    },
+    "note_placeholder": "可选：写下你的理解、联想或使用场景",
+    "explanation": {
+      "pronunciation": {
+        "ipa": "/ˈpɑkɪts əv ˈɡreɪtnəs/",
+        "connected_speech": "of 通常弱读为 /əv/，重音落在 POCK- 和 GREAT- 上",
+        "audio_text": "pockets of greatness",
+        "stress_text": "POCK-ets of GREAT-ness"
+      },
+      "meaning": "指团队在某些局部领域表现突出，但整体水平不均衡、尚不稳定。",
+      "pragmatic_function": "",
+      "similar_expressions": [
+        "islands of excellence — 强调像孤岛一样分散的卓越部分，意象更偏隔离",
+        "bright spots — 强调个别亮点，语气更轻，不突出“成片但零散”的感觉"
+      ],
+      "examples": [
+        {
+          "english": "The product has pockets of greatness, but the overall experience feels uneven.",
+          "chinese": "这款产品有局部亮点，但整体体验参差不齐。",
+          "typical": true
+        }
+      ],
+      "usage_chips": [
+        "绩效评估",
+        "团队反馈",
+        "产品复盘"
+      ]
+    },
+    "syntax_analysis": {
+      "sentence_type": "",
+      "main_clause": "",
+      "structure_breakdown": [],
+      "logic_relations": [],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    },
+    "schema_version": 2,
+    "syntax_state": "pending",
+    "teacher_note": "这里用“局部亮点”承认团队有长处，同时暗示整体表现还不稳定。记忆时可想象大片普通区域里散落着几处亮点，把 pockets 和“零散、不连续”联系起来。",
+    "reusable_patterns": [
+      {
+        "template": "[team] has pockets of greatness in [area]",
+        "slots": {
+          "team": "换成具体团队或组织",
+          "area": "换成具体领域"
+        },
+        "rationale": "把 team 和 area 换成具体对象，保留 pockets of greatness 这一核心表达。"
+      }
+    ],
+    "collocations": [
+      "pockets of greatness in [area]",
+      "have pockets of greatness",
+      "pockets of real greatness"
+    ],
+    "pitfalls": []
+  },
+  "total_seconds": 3.134
+}

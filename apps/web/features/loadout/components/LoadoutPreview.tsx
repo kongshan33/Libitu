@@ -1,4 +1,5 @@
 "use client";
+import { useContentMotion } from "@/components/ui/use-content-motion";
 
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, X } from "lucide-react";
@@ -13,12 +14,13 @@ export function LoadoutPreview({ draft, records, logic, suggested, onRemove, sub
   onRemove(key: string): void; submitting: boolean; children: React.ReactNode;
 }) {
   const selection = resolveSelection(draft, records);
+  const slotsRef = useContentMotion<HTMLElement>(selection.selected.map(slot => slot.key).join("|"));
   const candidate = currentCandidate(draft, records, logic);
   return <aside className={styles.preview} aria-label="Loadout preview">
     <div className={styles.eyebrow}>Loadout preview</div>
     <h2>{draft.freeConversation ? "Free conversation" : "Your mission"}</h2>
     <div className={styles.setupBadges}><span>{draft.scenarioType === "workplace" ? "Workplace" : draft.scenarioType === "travel" ? "Travel" : "Daily life"}</span><span>{{ guided: "Guided", standard: "Natural", challenging: "Stretch" }[draft.difficulty]}</span><span>{draft.feedbackLevel} feedback</span></div>
-    <section className={styles.slots} aria-label="Selected targets">
+    <section ref={slotsRef} className={styles.slots} aria-label="Selected targets">
       {selection.selected.flatMap(slot => {
         if (!slot.record) return [];
         const text = expressionText(slot.record);

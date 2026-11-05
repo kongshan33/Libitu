@@ -1,0 +1,22 @@
+{
+  "case": "phrase",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "status": 200,
+  "output": "两者都表示“局部突出、整体不均衡”，但语气不同：\n\n- **pockets of greatness**：更口语、更有画面感，像“散落在各处的闪光点”；语气偏温和，适合日常复盘或非正式反馈。\n- **islands of excellence**：更正式、更书面，像“孤立的优秀孤岛”；语气更强调“优秀部分与整体脱节”，常用于报告、评审或正式评估。\n\n职场对话：\n\nA: The team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: Right. We need to make those strengths part of our everyday process.",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.566,
+  "total_seconds": 6.155
+}

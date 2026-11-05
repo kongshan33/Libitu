@@ -1,4 +1,5 @@
 "use client";
+import { useContentMotion } from "@/components/ui/use-content-motion";
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -49,6 +50,7 @@ function LibraryContent({ owner }: { owner: string | null }) {
   const query = useDeferredValue(filters.query);
   const matching = useMemo(() => libraryItems(corpus.records, { ...filters, query }, sort), [corpus.records, filters, query, sort]);
   const shown = matching.slice(0, limit);
+  const resultsRef = useContentMotion(JSON.stringify([view, sort, shown.map(record => record.key)]), undefined, 120);
   const selectedKeys = selected.filter(key => corpus.records.some(record => record.key === key));
   const hidden = selectedKeys.filter(key => !matching.some(record => record.key === key)).length;
   const activeRecord = corpus.records.find(record => record.key === active?.key);
@@ -130,7 +132,7 @@ function LibraryContent({ owner }: { owner: string | null }) {
       </div>
       <div id="corpus-results" role="tabpanel" aria-labelledby={`corpus-view-${filters.highValue ? 1 : 0}`} tabIndex={0} className={styles.results}>
         {filters.highValue ? <p className={styles.help}>Learning value of 4 or 5 out of 5. Items without a score are not included.</p> : null}
-        {corpus.error ? <div role="alert" className={styles.error}><p>{corpus.error}</p><Button variant="secondary" size="md" disabled={corpus.busy} loading={corpus.busy} loadingLabel="Syncing…" onClick={corpus.retry}>Retry corpus sync</Button></div> : null}
+        {corpus.error ? <div role="alert" className="ui-retry-notice"><p>{corpus.error}</p><Button variant="secondary" size="md" disabled={corpus.busy} loading={corpus.busy} loadingLabel="Syncing…" onClick={corpus.retry}>Retry corpus sync</Button></div> : null}
         {!corpus.ready && !corpus.error ? <ContentSkeleton label="Loading and syncing your corpus…" variant={view === "grid" ? "corpus" : "rows"} rows={view === "grid" ? 6 : 3} /> : null}
         <div className={styles.resultMeta}>
           <span role="status">{corpus.ready ? itemCount(matching.length) : corpus.error ? "Collection unavailable" : null}</span>
@@ -145,11 +147,11 @@ function LibraryContent({ owner }: { owner: string | null }) {
           <p>{filters.highValue && !hasFilters ? "Saved items with a learning value of 4 or 5 will appear here." : "Try a different search or clear your filters."}</p>
           <Button variant="secondary" size="md" onClick={hasFilters ? clearFilters : () => changeFilters({ highValue: false })}>{hasFilters ? "Clear filters" : "View all items"}</Button>
         </div> : null}
-        <div className={`${styles.items} ${view === "list" ? styles.list : ""}`}>
+        <div ref={resultsRef} className={`${styles.items} ${view === "list" ? styles.list : ""}`}>
           {shown.map(record => <article key={record.key} className={`${styles.card} ${selectedKeys.includes(record.key) ? styles.selected : ""}`}>
             <div className={styles.cardTop}>
               <span className={styles.kind}>{record.item.kind}</span><span className={styles.level}>{[record.item.level ?? "Unassessed", record.item.register].filter(Boolean).join(" · ")}</span>
-              <input type="checkbox" aria-label={`Select ${expressionText(record)}`} checked={selectedKeys.includes(record.key)} disabled={adding} onChange={() => toggleSelected(record.key)} />
+              <label className={styles.selectionControl}><input type="checkbox" aria-label={`Select ${expressionText(record)}`} checked={selectedKeys.includes(record.key)} disabled={adding} onChange={() => toggleSelected(record.key)} /></label>
             </div>
             <button type="button" className={styles.cardBody} aria-label={`View ${expressionText(record)}`} onClick={() => setActive({ key: record.key, edit: false })}>
               <strong className={record.item.kind === "structure" ? styles.structure : ""}>{expressionText(record)}</strong><span>{record.item.meaning || "No meaning saved"}</span>

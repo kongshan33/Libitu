@@ -1,0 +1,25 @@
+{
+  "case": "phrase",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+    "history": []
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "started_at": "2026-11-05T10:18:06.213192+00:00",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "status": 200,
+  "output": "`pockets of greatness` 和 `islands of excellence` 都指整体中零散存在的优秀部分。差别在意象：`pockets` 像小而局部的“口袋”，更突出分散、成块但不连片；`islands` 像被隔开的“岛屿”，更突出与周围的分离感和孤立感。本句中前者更贴近“设计上有亮点，但尚未连成整体”的感受；具体语气仍取决于上下文。\n\nA: The team has pockets of greatness in design, but delivery is still uneven.\nB: Then let's turn those islands of excellence into how we work every day.",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 0.915,
+  "total_seconds": 1.976
+}

@@ -198,13 +198,20 @@ function refreshEntry() {
       entryButton.dataset.state = "capturing";
       entryButton.title = "Preparing captions before opening Libitu…";
       entryStatus.dataset.mode = "progress";
-      entryStatus.textContent = "Waiting for YouTube captions before opening Libitu…";
+      entryStatus.textContent = "";
+      const pendingStatus = entryStatus;
+      const progressTimer = setTimeout(() => {
+        if (entryStatus === pendingStatus && entryButton.dataset.state === "capturing") {
+          pendingStatus.textContent = "Waiting for YouTube captions before opening Libitu…";
+        }
+      }, 600);
       try {
         const result = await chrome.runtime.sendMessage({ type: "LIBITU_OPEN_STAGE_ONE" });
         if (!result?.opened) throw new Error(result?.error || "Could not open Libitu. Reload YouTube and try again.");
       } catch (error) {
         showError(error.message);
       } finally {
+        clearTimeout(progressTimer);
         applyLanguageSupport();
       }
     });

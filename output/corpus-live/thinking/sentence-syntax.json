@@ -1,0 +1,30 @@
+{
+  "case": "sentence",
+  "task": "syntax",
+  "model": "doubao-seed-2-1-lite-260915",
+  "thinking": "minimal",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "selection_type": "sentence",
+    "kind": "chunk"
+  },
+  "output": "{\"sentence_type\": \"并列复合句（compound-complex sentence，含两个并列独立分句）\", \"main_clause\": \"The team has pockets of greatness in design, but it still struggles to deliver consistently.\", \"structure_breakdown\": [\"由并列连词 but 连接两个句法独立的并列分句，前后语义形成鲜明转折对比。\", \"前一分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 地点状语 in design。\", \"后一分句：主语 it + 状语 still + 谓语 struggles + 不定式补足语 to deliver consistently。\"], \"grammar_points\": [\"pockets of greatness 中 pocket 为名词复数形式，比喻指零散存在的局部优秀表现，后接介词短语修饰范围。\", \"struggle to do sth. 为固定搭配，不定式短语作 struggle 的补足语，说明挣扎的具体行为。\", \"deliver consistently 为固定职场搭配，意为稳定交付成果，副词 consistently 修饰动词 deliver。\"], \"logic_relations\": [\"与前句“客观评估团队表现”顺承，给出评估的具体结论。\", \"与后句“下一步将优势纳入日常流程”构成因果：因当前优势零散，故需要推动固化。\"], \"information_hierarchy\": [\"先肯定设计领域的局部亮点，再通过 but 转折指出整体交付不稳定的核心短板。\", \"转折后为语义重心，突出问题导向，承接前文的客观评估需求。\"], \"wording_notes\": [\"pockets of greatness 是职场商务中常用的比喻表达，替代直白的“some good parts”，更形象。\", \"deliver consistently 是绩效评估高频短语，精准表达“稳定产出成果”的含义。\"], \"style_features\": [\"采用先扬后抑的转折结构，既避免全盘否定，又明确指出待改进的核心问题。\", \"用词正式克制，符合绩效复盘类职场沟通的中性客观风格。\"], \"usage_scenarios\": [], \"reusable_patterns\": [], \"translations\": [{\"label\": \"直译\", \"text\": \"这个团队在设计领域拥有零散的闪光点，但它仍然难以稳定地交付成果。\", \"recommended\": false}, {\"label\": \"意译\", \"text\": \"团队在设计上有不少亮眼的局部表现，但整体交付的稳定性还不足。\", \"recommended\": true}], \"translation_notes\": [\"pockets of greatness 未直译为“ greatness 的口袋”，意译为“零散闪光点/局部亮眼表现”以符合中文表达习惯。\"], \"background_context\": null, \"evidence\": [\"The team has pockets of greatness in design, but it still struggles to deliver consistently.\"]}",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 564,
+    "prompt_tokens": 1000,
+    "total_tokens": 1564,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "status": 200,
+  "total_seconds": 14.174
+}

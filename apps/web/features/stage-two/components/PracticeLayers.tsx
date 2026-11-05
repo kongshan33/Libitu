@@ -1,4 +1,5 @@
 "use client";
+import { useContentMotion } from "@/components/ui/use-content-motion";
 
 import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
 import { AudioLines, ChartNoAxesCombined, Music2, LockKeyhole } from "lucide-react";
@@ -30,6 +31,7 @@ export function PracticeLayers({ active, onChange, sound, rhythm, melody, badges
   locked?: Partial<Record<PracticeLayer, boolean>>; gate?: ReactNode;
 }) {
   const id = useId();
+  const layersRef = useContentMotion(active, '[role="tabpanel"]:not([hidden])');
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const content = { sound, rhythm, melody };
   function navigate(event: KeyboardEvent<HTMLButtonElement>, index: number) {
@@ -46,7 +48,7 @@ export function PracticeLayers({ active, onChange, sound, rhythm, melody, badges
     onChange(candidate.entry.id);
     tabs.current[candidate.i]?.focus();
   }
-  return <div className="stage-two-layers">
+  return <div ref={layersRef} className="stage-two-layers">
     <div className="stage-two-layer-tabs" role="tablist" aria-label="Practice layers">
       {practiceLayers.map(({ id: layer, label }, index) => <button key={layer}
         ref={(element) => { tabs.current[index] = element; }} type="button" role="tab" data-layer={layer}

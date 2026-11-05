@@ -1,0 +1,24 @@
+{
+  "case": "phrase",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T09:53:50.824086+00:00",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "status": 200,
+  "output": "两者都指团队中局部突出、但尚未覆盖整体的优势区域。`pockets of greatness` 用“小区域”的意象，强调优势零散分布、规模有限；`islands of excellence` 用“孤岛”的意象，更突出这些优势与周围普通水平之间的隔离感。语气还取决于说话人是在做绩效诊断，还是在强调改进方向。\n\nA: The team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: Our next step is to make those strengths part of our everyday process.",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.584,
+  "total_seconds": 6.666
+}

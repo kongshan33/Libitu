@@ -1,5 +1,44 @@
 # Complete the next Libitu milestone
 
+## Neutral retry notices — 2026-11-05
+
+Recoverable-error panels share a neutral surface, gray border and dark gray copy across Loadout, Corpus, learning history, reports and practice. Use 16px padding and vertical margins, 12px action gaps and shared button geometry. Error/alert semantics and retry handlers are preserved; destructive confirmations keep their existing treatment. Audio-save failures use the same neutral palette.
+
+Validation: root lint/build/test pass (1,889 API, 513 Web, 114 Extension tests). Isolated production browser checks at 1400px/390px verify shared computed colors, 16px padding/margins, 12px gaps, 14px corners, action dimensions and no horizontal overflow for Loadout draft/options/mission recovery, Corpus, Profile and reports. Draft and options retries recover with synthetic data. Evidence: `output/playwright/retry-notices/`.
+
+
+## Stable asynchronous feedback — 2026-11-05
+
+Routine UI feedback shares a 600ms reveal threshold. Shared buttons disable and report busy immediately while retaining their idle label/geometry; only sustained operations show the loading overlay. Inline save/update notices reserve a small stable slot; floating practice-save/upload notices delay normal progress but surface errors immediately. Loadout draft saving uses the same helper. Request cancellation, persistence, unload protection, microphone permissions and recording countdowns remain immediate.
+
+History pagination retains existing rows without appending temporary skeletons. Filter changes retain the previous list while awaiting replacement, reset pagination and reject aborted responses. Activity range changes retain the existing chart and its actual date caption until replacement arrives. Initial loads still use structural skeletons. Shadow takes avoid flashing an empty result before the selected sentence's history resolves. Extension caption-opening progress follows the same 600ms rule without delaying its request.
+
+Mission hints also use the shared threshold; target buttons own progress without duplicating a footer notice, and legacy hint actions remain in place while pending. Retained-help behavior and visibility receipts remain covered by runtime tests.
+
+Validation: root lint/build/test pass (1,889 API, 513 Web, 114 Extension tests). Synthetic production checks pass at 1400px/390px with normal/reduced motion for short/slow/cancelled feedback, stable button geometry, immediate errors, retained history/chart and pagination reset. Shadow initial/sentence-switch empty-state checks pass at 1400px/390px; full profile-history regression passes at 1440px/390px/320px. Target hints pass at 1192px/390px; negotiated hint-bundle tests pass at 1440px/390px, including retained text, visibility receipts, fast responses, stale-result fencing and retry. Evidence: `output/playwright/pending-feedback/`, `output/playwright/target-hint/`. No live model or microphone was used.
+
+Legacy browser-suite limits: `stage-two-history-navigation.browser.mjs` still expects the old exact “Practiced” sidebar label; `speaking-help.browser.mjs` passes its loading/visibility-receipt steps but stops at its old immediate-hide-on-speech expectation, while current accepted reply-reference behavior retains help until the partner's next reply. Those unrelated behaviors were not changed to fit obsolete assertions; the focused suites above cover this change.
+
+
+## Quiet Loadout draft saves — 2026-11-05
+
+- [x] Delay the save indicator by 600ms, cancel it when persistence finishes, and prevent mobile layout shifts. Preserve actual pending-write state, unload protection and save errors.
+- [x] Verify at 1400px/390px with synthetic data and held draft locks: short writes stay quiet, slow writes show a compact status without moving content or overlapping navigation, and both shuffle changes persist. Root lint/build pass; Web 513 and Extension 114 tests pass. Full API run has 1 unrelated 300ms child-start timing failure (1,888 passed); its full 5-test file passes on isolated rerun.
+
+## Corpus detail spacing and pronunciation — 2026-11-05
+
+Validation: root lint/build/test pass (1,889 API, 513 Web, 114 Extension tests). The first build collided with another build writing `.next-build`; the subsequent root build passed using the matching completed cache. Browser regression passes at 1440px/390px for shared detail/selection cards, long IPA wrapping, real HTML audio playback with a synthetic WAV, retry, replay caching and stopping on Syntax. Live OpenAI requests returned valid audio for `drifted away from` in 7.71s (1.45s audio) and a full sentence in 9.56s (5.5s audio); provider-reported words matched. Samples are under `output/corpus-tts/`; naturalness has not been independently rated by a listener.
+
+Shared detail sections now use 16px vertical padding (previously 24px), 8px heading gaps and tighter slot/comparison rows. Pronunciation Play sits beside its heading, independently of IPA/stress wrapping, across Reader detail, Add to corpus and Corpus library. Pronunciation now calls the server-only OpenAI Realtime read-aloud adapter with `gpt-realtime-2.1-mini` / `marin` and the existing `OPENAI_API_KEY`. The request is limited to 800 characters, 45 seconds and 60 seconds of 24kHz mono audio; the provider-reported transcript must match the requested words before a WAV is returned. No microphone or role-play session is involved. The UI marks AI voice, supports retry/stop, caches one audio clip for the open card, and stops playback/aborts browser requests when Explain hides or the card closes. No cross-user or persistent audio cache is added.
+
+## Typography, spacing and interaction polish — 2026-11-05
+
+Validation: root lint/build/test pass. Production Corpus acceptance/pagination passes at 1440/768/390/320px, including a narrow-list metadata/checkbox collision fixed during regression. Production interaction tests pass at 1400/800/390px with normal and reduced motion: type scale, keyboard tabs, stable DOM, shuffle, one filtered-empty result/recovery, coarse targets, no eager mission creation and no horizontal overflow. Screenshots inspected under output/playwright/style-polish. Initial development-browser navigation timeouts were resolved by production-mode verification; no live model or physical microphone was used.
+
+Shared text/space tokens and semantic color aliases now unify current surfaces. Report H1 uses 30px/500, primary explanations 15px, helper text 13px, mono metadata 12px and transcript text 18px; report content gutters follow the 4px scale. Corpus cards use 20px padding/12px gaps. Empty Loadout logic groups are omitted; a filtered-empty result appears once with a recovery action. Coarse-pointer controls have 44px targets independently of layout breakpoints, including labelled Corpus checkboxes and timeline controls.
+
+Content changes use an interruptible 160ms opacity animation without rekeying media/containers: Corpus results (120ms settling window), Quick start recommendations, preview targets, Explain/Syntax and Sound/Rhythm/Melody. Assessment underlines and score bars use transform feedback; reduced-motion preferences skip animations and cancel in-flight content feedback. No score values, acoustic data, recording/playback or provider configuration changes.
+
 ## Corpus detail v2 — 2026-11-05
 
 - [x] Preserve the existing workspace as baseline commit `b3a0fd0` before changes.

@@ -1,0 +1,53 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {installLoadoutFixture,loadoutOwner} from '../../../apps/web/tests/helpers/loadout-fixture.mjs';
+import {installProfileFixture} from '../../../apps/web/tests/helpers/profile-fixture.mjs';
+import {installAnalyticsFixture} from '../../../apps/web/tests/helpers/analytics-fixture.mjs';
+import {speakingSessionId} from '../../../apps/web/tests/helpers/speaking-fixture.mjs';
+const {chromium}=createRequire(import.meta.url)('/Users/river/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const origin=process.env.LIBITU_TEST_URL??'http://localhost:3000';
+const browser=await chromium.launch({channel:'chrome',headless:true});
+const headers={'access-control-allow-origin':'*','access-control-allow-headers':'authorization,content-type','access-control-allow-methods':'GET,POST,OPTIONS'};
+async function verify(page,notice,name,width){
+ await notice.waitFor();await notice.evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+ const computed=await notice.evaluate(el=>{const s=getComputedStyle(el);const probe=document.createElement('span');probe.style.cssText='background:var(--surface);color:var(--ink-3);border:1px solid var(--line)';el.append(probe);const p=getComputedStyle(probe);const expected=[p.backgroundColor,p.color,p.borderTopColor];probe.remove();return {palette:[s.backgroundColor,s.color,s.borderTopColor],expected,padding:s.padding,gap:s.gap,mt:s.marginTop,mb:s.marginBottom,radius:s.borderRadius};});
+ assert.deepEqual(computed.palette,computed.expected,`${name} neutral palette`);
+ assert.equal(computed.padding,'16px',name);assert.equal(computed.gap,'12px',name);
+ assert.equal(computed.mt,'16px',name);assert.equal(computed.mb,'16px',name);assert.equal(computed.radius,'14px',name);
+ for(const b of await notice.locator('.ui-button').all())assert.ok(await b.evaluate(el=>el.getBoundingClientRect().height)>=40,`${name} button target`);
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await notice.screenshot({path:`output/playwright/retry-notices/${name}-${width}.png`,animations:'disabled'});
+ console.log('PASS',width,name,JSON.stringify(computed));
+}
+try{for(const width of [1400,390]){
+ const context=await browser.newContext({viewport:{width,height:1100},hasTouch:width===390});
+ const draft=await context.newPage();await installLoadoutFixture(draft,{origin,initialOwner:loadoutOwner});
+ await draft.addInitScript(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='libitu:loadout:v1')throw new DOMException('Synthetic storage failure','QuotaExceededError');return original.call(this,key,value);};window.restoreDraftStorage=()=>{Storage.prototype.setItem=original;};});
+ await draft.goto(`${origin}/loadout`,{waitUntil:'domcontentloaded',timeout:60000});
+ await verify(draft,draft.locator('.ui-retry-notice').filter({has:draft.getByRole('button',{name:'Retry saving draft'})}),'loadout-draft',width);
+ await draft.evaluate(()=>window.restoreDraftStorage());await draft.getByRole('button',{name:'Retry saving draft'}).click();
+ await draft.getByRole('button',{name:'Retry saving draft'}).waitFor({state:'hidden'});await draft.close();
+ const loadout=await context.newPage();const state=await installLoadoutFixture(loadout,{origin,initialOwner:loadoutOwner});
+ let fail=true;
+ await loadout.route('**/api/speaking/options',r=>fail?r.fulfill({status:503,headers,json:{detail:'Mission options could not be loaded.'}}):r.fallback());
+ await loadout.goto(`${origin}/loadout`,{waitUntil:'domcontentloaded',timeout:60000});
+ await verify(loadout,loadout.locator('.ui-retry-notice').filter({has:loadout.getByRole('button',{name:'Retry mission options'})}),'loadout-options',width);
+ fail=false;await loadout.getByRole('button',{name:'Retry mission options'}).click();
+ await loadout.getByRole('button',{name:'Retry mission options'}).waitFor({state:'hidden'});
+ state.failNextCreate=true;
+ await loadout.getByRole('region',{name:'Quick start',exact:true}).getByRole('button',{name:'Quick start',exact:true}).click();
+ await verify(loadout,loadout.getByRole('region',{name:'Mission recovery'}),'loadout-recovery',width);
+ await loadout.close();
+ const corpus=await context.newPage();await installLoadoutFixture(corpus,{origin,initialOwner:loadoutOwner,seedCorpus:false});
+ await corpus.route('**/api/corpus**',r=>r.request().method()==='GET'?r.fulfill({status:503,headers,json:{detail:'Corpus sync is temporarily unavailable.'}}):r.fallback());
+ await corpus.goto(`${origin}/corpus`,{waitUntil:'domcontentloaded',timeout:60000});
+ await verify(corpus,corpus.locator('.ui-retry-notice').filter({has:corpus.getByRole('button',{name:'Retry corpus sync'})}),'corpus',width);await corpus.close();
+ const profile=await context.newPage();const profileState=await installProfileFixture(profile,{origin});profileState.failProfile=true;
+ await profile.route('**/api/profile?**',r=>r.fulfill({status:503,headers,json:{detail:'Learning records are temporarily unavailable.'}}));
+ await profile.goto(`${origin}/profile`,{waitUntil:'domcontentloaded',timeout:60000});
+ await verify(profile,profile.locator('.ui-retry-notice').first(),'profile',width);await profile.close();
+ const report=await context.newPage();await installAnalyticsFixture(report,{origin,status:'failed'});
+ await report.goto(`${origin}/speaking/${speakingSessionId}/analytics`,{waitUntil:'domcontentloaded',timeout:60000});
+ await verify(report,report.locator('.ui-retry-notice').filter({has:report.getByRole('button',{name:'Retry assessment'})}),'report',width);
+ await context.close();
+}}finally{await browser.close();}

@@ -5,6 +5,8 @@ from fastapi import APIRouter, HTTPException, Path, Response, status
 from fastapi.responses import StreamingResponse
 from app.integrations.ark_analysis import AnalysisProviderError
 from app.integrations.ark_corpus_detail import generate_corpus_syntax, stream_corpus_followup
+from app.integrations.corpus_speech import CorpusSpeechError, synthesize_corpus_speech
+from app.schemas.corpus import CorpusSpeechRequest
 from app.schemas.corpus import CorpusSyntaxRequest, CorpusFollowupRequest, CorpusSelectionSyntaxAnalysis
 
 from app.auth import CurrentUserDep
@@ -49,6 +51,15 @@ def ask_about_selection(payload: CorpusFollowupRequest) -> StreamingResponse:
 @router.get("")
 def list_items(current_user: CurrentUserDep) -> list[CorpusItem]:
     return list_corpus_items(current_user.id)
+
+
+@router.post("/speech")
+async def corpus_speech(payload: CorpusSpeechRequest) -> Response:
+    try:
+        audio = await synthesize_corpus_speech(payload.text)
+    except CorpusSpeechError as error:
+        raise HTTPException(status_code=503, detail="Voice is unavailable. Please retry.") from error
+    return Response(content=audio, media_type="audio/wav", headers={"Cache-Control": "no-store"})
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)

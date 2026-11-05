@@ -28,6 +28,9 @@ export function PracticeHistory({ contentId, sentenceId, onPlay, blocked, onAnal
   const [items, setItems] = useState<PracticeAttempt[]>([]);
   const [offset, setOffset] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadedFor, setLoadedFor] = useState<{ api: typeof api; contentId: string; sentenceId: string | null } | null>(null);
+  const historyCurrent = loadedFor?.api === api && loadedFor?.contentId === contentId && loadedFor?.sentenceId === sentenceId;
+  const showLoading = loading || Boolean(api && sentenceId && !historyCurrent);
   const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
   const [audio, setAudio] = useState<{ id: string; url: string } | null>(null);
@@ -62,7 +65,7 @@ export function PracticeHistory({ contentId, sentenceId, onPlay, blocked, onAnal
           setAudio(previous => previous && !page.items.some(item => item.id === previous.id && item.recording_state === "ready") ? null : previous);
         }
       }).catch(reason => { if (!signal.aborted) setError(reason.message); })
-        .finally(() => { if (!signal.aborted) setLoading(false); });
+        .finally(() => { if (!signal.aborted) { setLoadedFor({ api, contentId, sentenceId }); setLoading(false); } });
     } else setLoading(false);
     return () => abort.abort();
   }, [api, contentId, sentenceId, version, refresh, selectedAnalysis?.state]);
@@ -104,9 +107,9 @@ export function PracticeHistory({ contentId, sentenceId, onPlay, blocked, onAnal
 
   return <section className="practice-history" aria-label="Saved practice">
     <h2>Takes</h2>
-    {loading ? <ContentSkeleton label="Loading saved practice…" /> : !items.length ? <p>No saved takes yet.</p> : null}
+    {showLoading ? <ContentSkeleton label="Loading saved practice…" /> : historyCurrent && !items.length && !error ? <p>No saved takes yet.</p> : null}
     {error ? <p role="alert">{error} <Button variant="secondary" size="sm" onClick={() => setRefresh((n) => n + 1)}>Reload history</Button></p> : null}
-    <ul>{items.map((item) => <li key={item.id} data-selected={selectedAnalysisId === item.id}>
+    <ul>{(historyCurrent ? items : []).map((item) => <li key={item.id} data-selected={selectedAnalysisId === item.id}>
       <div className="practice-history-meta"><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time><span> {(item.duration_ms / 1000).toFixed(1)} sec · {item.playback_rate}× · {item.text_support?`${item.text_support.mode==='keywords'?'Key words':item.text_support.mode==='full'?'Full text':'Text hidden'}${item.text_support.revealed_source_indices.length?` · peeked ${item.text_support.revealed_source_indices.length}`:''}`:item.text_visible ? "Text visible" : "Text hidden"}</span></div>
       <div className="practice-history-actions ui-button-group">
       <small>{takeAnalysisStatus(item, selectedAnalysisId === item.id ? selectedAnalysis : null)}</small>

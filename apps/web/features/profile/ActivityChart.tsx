@@ -1,5 +1,6 @@
 "use client";
 
+import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 import { useState } from "react";
@@ -16,6 +17,7 @@ const metrics = [
 export function ActivityChart({ data, range, onRange, loading }: {
   data: ProfileData | null; range: ProfileRange; onRange: (range: ProfileRange) => void; loading: boolean;
 }) {
+  const showPending = useDelayedPending(loading);
   const [metric, setMetric] = useState<keyof Omit<ActivityPoint, "date">>("shadowing_attempts");
   const selected = metrics.find((item) => item.key === metric)!;
   const items = data?.activity.items ?? [];
@@ -30,7 +32,7 @@ export function ActivityChart({ data, range, onRange, loading }: {
   const month = data?.activity.bucket === "month";
 
   return <section className={styles.card} aria-labelledby="activity-title">
-    <div className={styles.cardHeader}><h2 id="activity-title">Learning activity</h2><span className={styles.smallMuted}>Saved activity</span></div>
+    <div className={styles.cardHeader}><h2 id="activity-title">Learning activity</h2><span className={styles.smallMuted} role="status">{showPending ? "Updating activity…" : "Saved activity"}</span></div>
     <div className={styles.chartBody}>
       <div className={styles.rangeGroup} role="group" aria-label="Activity date range">
         {([["4w", "Last 4 weeks"], ["3m", "Last 3 months"], ["all", "All time"]] as const).map(([value, label]) =>
@@ -46,7 +48,7 @@ export function ActivityChart({ data, range, onRange, loading }: {
         </button>)}
       </div>
       <div className={styles.chart} id="activity-panel" role="tabpanel" tabIndex={0} aria-labelledby={`activity-${metric}`} aria-busy={loading}>
-        {loading ? <ContentSkeleton label="Loading activity…" /> : !data ? <div className={styles.chartMessage}>Activity is unavailable.</div>
+        {loading && !data ? <ContentSkeleton label="Loading activity…" /> : !data ? <div className={styles.chartMessage}>Activity is unavailable.</div>
           : !known ? <div className={styles.chartMessage}>Dates aren’t available for this activity yet.</div>
             : total === 0 ? <div className={styles.chartMessage}><strong>No {selected.label.toLowerCase()} in this period</strong><span>Your saved activity will appear here.</span></div>
               : <>
@@ -59,7 +61,7 @@ export function ActivityChart({ data, range, onRange, loading }: {
               </>}
       </div>
       {data ? <p className={styles.chartCaption}>{activityDate(data.activity.start_date)} – {activityDate(data.activity.end_date)} · {data.timezone.replaceAll("_", " ")}<br />{month ? "Monthly" : "Daily"} counts · {metric === "corpus_added" ? "Items still in your corpus, grouped by save date." : "Speaking turns are your finalized contributions."}</p> : null}
-      {known && !loading ? <details className={styles.tableDetails}><summary>View activity data</summary><div className={styles.tableScroll}>
+      {known ? <details className={styles.tableDetails}><summary>View activity data</summary><div className={styles.tableScroll}>
         <table><caption>{selected.label}</caption><thead><tr><th scope="col">{month ? "Month" : "Date"}</th><th scope="col">Count</th></tr></thead>
           <tbody>{items.map((item) => <tr key={item.date}><th scope="row">{activityDate(item.date, month)}</th><td>{item[metric]}</td></tr>)}</tbody>
         </table></div></details> : null}

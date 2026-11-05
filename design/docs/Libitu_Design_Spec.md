@@ -1,5 +1,9 @@
 # Build the Libitu MVP experience
 
+## Corpus pronunciation — 2026-11-05
+
+Corpus detail, Add to corpus and Corpus library share 16px section padding and a Play action beside the Pronunciation heading. Play generates an OpenAI AI voice reading only after a click, with visible loading/retry/stop states. Replay within the open card reuses its audio; switching to Syntax or closing stops playback. Text wraps below the heading without displacing Play.
+
 ## Add to corpus presentation — 2026-11-05
 
 Transcript-selection Add to corpus uses the same visual surface and analysis components as Corpus detail: neutral backdrop, fixed title, independently scrolling source/analysis content, sticky underline tabs, shared typography and responsive dimensions. Field editing, note draft and Save follow the analysis. Preserve pin, outside dismissal and replacement by a new selection; provide close and Escape. Selection stays nonmodal, its backdrop does not intercept input, and its dimensions are clamped to the viewport rather than clipped by Reader columns.

@@ -587,7 +587,7 @@ test("help upgrades retain the actual prior card, delay loading and never acknow
     return card;
   };
   fixture.controller.requestHelp();
-  t.mock.timers.tick(249); assert.equal(fixture.controller.state.helpLoadingVisible, false);
+  t.mock.timers.tick(599); assert.equal(fixture.controller.state.helpLoadingVisible, false);
   t.mock.timers.tick(1); assert.equal(fixture.controller.state.helpLoadingVisible, true);
   const first = ready(); assert.equal(fixture.controller.state.helpLoadingVisible, false);
   fixture.controller.requestHelp(); const next = fixture.controller.state.workspace.conversation.help;
@@ -597,7 +597,7 @@ test("help upgrades retain the actual prior card, delay loading and never acknow
   fixture.controller.conversationHelpShown(first.id, first.version);
   fixture.controller.conversationHelpShown(first.id, first.version);
   assert.deepEqual(socket.sent.filter(e => e.type === "help.shown").map(e => e.level), ["direction"]);
-  t.mock.timers.tick(250); assert.equal(fixture.controller.state.helpLoadingVisible, true);
+  t.mock.timers.tick(600); assert.equal(fixture.controller.state.helpLoadingVisible, true);
   const second = ready(); assert.equal(fixture.controller.state.retainedConversationHelp, null);
   fixture.controller.conversationHelpShown(second.id, second.version);
   assert.deepEqual(socket.sent.filter(e => e.type === "help.shown").map(e => e.level), ["direction", "usage"]);

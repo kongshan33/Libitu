@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {mkdir} from 'node:fs/promises';
+import {installAnalyticsFixture} from './helpers/analytics-fixture.mjs';
+import {installLoadoutFixture,loadoutOwner,fixtureRecords} from './helpers/loadout-fixture.mjs';
+import {speakingSessionId} from './helpers/speaking-fixture.mjs';
+const {chromium}=createRequire(import.meta.url)(process.env.LIBITU_PLAYWRIGHT_MODULE??'playwright');
+const origin=process.env.LIBITU_TEST_URL??'http://localhost:3000';
+await mkdir('output/playwright/style-polish',{recursive:true});
+const browser=await chromium.launch({channel:'chrome',headless:true});
+try{for(const width of [1400,800,390])for(const reduce of [false,true]){
+ const context=await browser.newContext({viewport:{width,height:1100},hasTouch:width<1000,reducedMotion:reduce?'reduce':'no-preference'});
+ const report=await context.newPage();await installAnalyticsFixture(report,{origin});
+ await report.goto(`${origin}/speaking/${speakingSessionId}/analytics`);await report.getByRole('heading',{name:'Your mission report',exact:true}).waitFor();
+ assert.deepEqual(await report.locator('h1').evaluate(el=>({font:getComputedStyle(el).fontSize,weight:getComputedStyle(el).fontWeight})),{font:'30px',weight:'500'});
+ const panel=await report.locator('#dimension-detail').elementHandle();
+ await report.getByRole('tab',{name:/^Task fit/}).press('ArrowRight');await report.getByRole('heading',{name:'Expressions',exact:true}).waitFor();
+ assert.ok(await panel.evaluate(el=>el.isConnected),'tab content updates preserve its container');
+ assert.equal(await report.getByRole('tab',{name:/^Language transfer/}).getAttribute('aria-selected'),'true');
+ if(reduce)assert.equal(await report.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length),0);
+ await report.screenshot({path:`output/playwright/style-polish/report-${width}-${reduce}.png`,fullPage:false,animations:'disabled'});
+ const page=await context.newPage();const state=await installLoadoutFixture(page,{origin,initialOwner:loadoutOwner,records:fixtureRecords.map(r=>({...r,createdAt:'2020-01-01T00:00:00Z'}))});
+ await page.addInitScript(()=>{window.__polishAnimations=0;const animate=Element.prototype.animate;Element.prototype.animate=function(...args){window.__polishAnimations++;return animate.apply(this,args);};});
+ await page.goto(`${origin}/loadout`);const shuffle=page.getByRole('button',{name:'Shuffle picks',exact:true});await shuffle.waitFor();
+ assert.equal(await page.getByText('No expressions match these filters.',{exact:true}).count(),0,'empty logical groups are omitted');
+ const plan=await shuffle.locator('..').locator('..').elementHandle();const before=await page.evaluate(()=>window.__polishAnimations);
+ await shuffle.click();
+ assert.ok(await plan.evaluate(el=>el.isConnected),'shuffle retains existing card DOM');
+ if(!reduce)await page.waitForFunction(n=>window.__polishAnimations>n,before);
+ else assert.equal(await page.evaluate(()=>window.__polishAnimations),before);
+ await page.getByRole('button',{name:'From recent videos',exact:true}).click();
+ await page.getByText('No saved expressions match this filter.',{exact:true}).waitFor();
+ assert.equal(await page.getByText('No saved expressions match this filter.',{exact:true}).count(),1);
+ assert.equal(await page.getByText('No expressions match these filters.',{exact:true}).count(),0);
+ await page.getByRole('button',{name:'Show recommended targets',exact:true}).click();
+ await page.getByRole('button',{name:/^Select /}).first().waitFor();
+ assert.equal(state.creates.length,0,'visual interactions do not create missions');
+ await page.screenshot({path:`output/playwright/style-polish/loadout-${width}-${reduce}.png`,fullPage:false,animations:'disabled'});
+ if(width<1000){assert.ok(await shuffle.evaluate(el=>el.getBoundingClientRect().height)>=44);assert.ok(await page.evaluate(()=>matchMedia('(pointer:coarse)').matches));}
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ assert.ok(await report.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ console.log(`PASS ${width} reduce=${reduce}: report type, keyboard tabs, retained DOM, motion preference, shuffle, one empty state and recovery, no eager mission, touch and overflow`);
+ await context.close();
+}}finally{await browser.close();}

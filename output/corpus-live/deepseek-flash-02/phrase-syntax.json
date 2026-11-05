@@ -1,0 +1,45 @@
+{
+  "case": "phrase",
+  "task": "syntax",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "selection_type": "phrase",
+    "kind": "chunk"
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "started_at": "2026-11-05T10:18:04.339859+00:00",
+  "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+  "status": 200,
+  "output": {
+    "sentence_type": "名词短语",
+    "main_clause": "作 has 的宾语，表示团队具备的局部亮点。",
+    "structure_breakdown": [
+      "中心词 pockets 为复数名词，of greatness 作后置修饰。",
+      "of greatness 是介词短语，作 pockets 的补足成分。"
+    ],
+    "logic_relations": [
+      "与后半句 but it still struggles 构成转折对照。",
+      "与后文 make those strengths 呼应，指局部优势。"
+    ],
+    "information_hierarchy": [],
+    "style_features": [],
+    "usage_scenarios": [],
+    "grammar_points": [],
+    "wording_notes": [],
+    "reusable_patterns": [],
+    "translations": [],
+    "translation_notes": [],
+    "background_context": null,
+    "evidence": [
+      "We need to take an honest look at how the team is performing.",
+      "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "Our next step is to make those strengths part of our everyday process."
+    ]
+  },
+  "total_seconds": 1.873
+}

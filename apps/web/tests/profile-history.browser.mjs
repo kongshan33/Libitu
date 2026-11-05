@@ -44,6 +44,7 @@ try {
     await page.screenshot({ path: join(artifacts, `history-${width}.png`), fullPage: true });
     await feed.getByRole("button", { name: "Shadowing", exact: true }).focus();
     await page.keyboard.press("Enter");
+    await page.waitForFunction(() => document.querySelector('[class*="historyResults"]')?.getAttribute('aria-busy') === 'false');
     await feed.getByText(profileHistory[22].title, { exact: true }).waitFor();
     assert.equal(await feed.locator("li").count(), 12);
     await feed.getByRole("status").filter({ hasText: /^12 entries$/ }).waitFor();
@@ -58,6 +59,7 @@ try {
     await requestStarted;
     state.historyGate = null;
     await feed.getByRole("button", { name: "All practice", exact: true }).click();
+    await page.waitForFunction(() => document.querySelector('[class*="historyResults"]')?.getAttribute('aria-busy') === 'false');
     await feed.getByText(profileHistory[0].title, { exact: true }).waitFor();
     release();
     await page.waitForTimeout(150);

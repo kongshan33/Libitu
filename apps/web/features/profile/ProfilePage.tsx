@@ -65,6 +65,7 @@ function Dashboard({ owner, timezone }: { owner: string; timezone: string | null
     const controller = new AbortController();
     setBusy(true); setError(null);
     void readProfileResource<ProfileData>(`?${new URLSearchParams({ timezone, range })}`, owner, getToken, controller.signal).then((data) => {
+      if (controller.signal.aborted) return;
       setResult({ range, data }); setBusy(false);
     }).catch((reason: unknown) => { if (!controller.signal.aborted) { setError(reason instanceof Error ? reason : new Error("Your learning could not be loaded.")); setBusy(false); } });
     return () => controller.abort();
@@ -72,7 +73,7 @@ function Dashboard({ owner, timezone }: { owner: string; timezone: string | null
 
   const data = result?.data ?? null;
   const overview = data?.overview;
-  const chartData = result?.range === range && !error ? data : null;
+  const chartData = data;
   const currentUser = user?.id === owner ? user : null;
   const name = currentUser?.fullName || currentUser?.firstName || currentUser?.username || "Your learning space";
   const source = data?.last_practiced_source;
@@ -108,7 +109,7 @@ function Dashboard({ owner, timezone }: { owner: string; timezone: string | null
     </section>
     <MissionFeedback data={data} loading={busy && !data} />
     <div className={styles.grid}>
-      <ActivityChart data={chartData} range={range} onRange={setRange} loading={busy} />
+      <ActivityChart data={chartData} range={range} onRange={setRange} loading={busy || Boolean(result && result.range !== range && !error)} />
       <LearningDimensions />
     </div>
     <section className={styles.records} aria-labelledby="videos-title"><div className={styles.cardHeader}><h2 id="videos-title">Original videos</h2><Link href="/profile/history?kind=video" className={styles.textLink}>View all videos <ArrowRight size={14} aria-hidden="true" /></Link></div>

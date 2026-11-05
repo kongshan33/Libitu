@@ -1,0 +1,24 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "output": "改写版本：Our team has some genuinely standout design work, but we still struggle to deliver consistent results.\n\n改动说明：\n1.  **替换书面比喻**：原句的 `pockets of greatness` 是偏正式的职场比喻，指零散分布的优秀片段，日常口语换成 `some genuinely standout design work`，保留“有亮眼设计、但并非整体全优”的核心意思，去掉原比喻的生硬感。\n2.  **调整指代视角**：原句用第三人称 `it` 指代团队，是旁观式的报告语气，日常内部交流换成第一人称 `we`，贴合说话人是团队成员的身份，更自然不疏离。\n3.  **简化书面表达**：原句的 `deliver consistently` 是偏正式的职场短语，调整为 `deliver consistent results`，把抽象的动作描述落地为日常常用的“交付稳定成果”的说法，没有改变“持续输出有困难”的程度，也完整保留了先肯定亮点、再点出问题的转折语气。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 31.68,
+  "total_seconds": 32.935,
+  "thinking": "low",
+  "transport": "application adapter directly"
+}

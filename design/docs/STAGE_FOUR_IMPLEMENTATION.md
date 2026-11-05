@@ -43,7 +43,7 @@ Question/quote/target/support/transcript versions and input epochs fence reuse.
 Failure remains retryable, and disconnect clears the cache. No pre-generation
 before a request or new SQL/public event contract is introduced.
 
-The controller delays loading feedback by 250ms and retains the previous ready
+The controller delays loading feedback by 600ms and retains the previous ready
 card during a same-context upgrade. `QuestionHelp` reports the actually painted
 card ID/version, including across Voice/Chat switches; it never acknowledges the
 pending level. Cache-hit/request-ready and generation timings are recorded in

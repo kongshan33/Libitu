@@ -41,7 +41,7 @@ export function SupportHistory({ owner, getToken, draft, records, disabled, onAp
     && !disabled && !draft.submission;
   return <section className={styles.historyPanel} aria-label="Practice history">
     <p className={styles.fieldHelp}>Reliable independent use means 3 Missions, on 2 UTC practice dates, across 2 different practice scenarios. Repeated or linked rounds of the same scene count together. This is a practice rule, not a mastery score.</p>
-    <Button variant="secondary" size="md" type="button" disabled={disabled || !owner || !!draft.submission || !!value?.busy} onClick={() => void check()}>{value?.busy ? "Checking practice history…" : "Check practice history"}</Button>
+    <Button variant="secondary" size="md" type="button" disabled={disabled || !owner || !!draft.submission || !!value?.busy} loading={!!value?.busy} loadingLabel="Checking practice history…" onClick={() => void check()}>Check practice history</Button>
     {value?.error ? <p className={styles.fieldHelp} role="status">{value.error} Your selected support remains available and you can still start.</p> : null}
     {result ? <><p className={styles.fieldHelp} role="status">{allowSupportAdjustment ? result.reason : result.targets.every(target => target.eligible) ? "Each target meets the independent-use practice rule." : "Some targets do not yet meet the independent-use practice rule."}</p>
       <div className={styles.historyTargets}>{result.targets.map(target => {

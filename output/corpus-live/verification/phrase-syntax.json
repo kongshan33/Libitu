@@ -1,0 +1,43 @@
+{
+  "case": "phrase",
+  "task": "syntax",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "selection_type": "phrase",
+    "kind": "chunk"
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T09:53:43.766490+00:00",
+  "prompt_sha256": "46bb682b27591ee170f637dbf194d4121cea69086066bb1d96075179b395957c",
+  "status": 200,
+  "output": {
+    "sentence_type": "名词短语",
+    "main_clause": "在句中作 has 的宾语，说明团队拥有的能力状态。",
+    "structure_breakdown": [
+      "中心名词 pockets 为复数形式，后接 of greatness 介词短语作后置修饰。",
+      "greatness 为抽象名词，指卓越的能力或表现。"
+    ],
+    "logic_relations": [
+      "与后文 but 引导的分句形成转折，突出局部优势与整体不稳定的反差。"
+    ],
+    "information_hierarchy": [],
+    "style_features": [],
+    "usage_scenarios": [],
+    "grammar_points": [],
+    "wording_notes": [],
+    "reusable_patterns": [],
+    "translations": [],
+    "translation_notes": [],
+    "background_context": null,
+    "evidence": [
+      "We need to take an honest look at how the team is performing.",
+      "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "Our next step is to make those strengths part of our everyday process."
+    ]
+  },
+  "total_seconds": 7.057
+}

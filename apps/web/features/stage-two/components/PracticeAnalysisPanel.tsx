@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AlertCircle, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDelayedPending } from '@/components/ui/use-delayed-pending';
 import type { PracticeAnalysis, PracticeApi } from '../persistence/practice-api';
 import styles from './PracticeAnalysisPanel.module.css';
 
@@ -30,16 +31,17 @@ export function PracticeAnalysisPanel({ api, attemptId, data, error, loading, re
     catch (cause) { if (!signal.aborted) setFailure(cause instanceof Error ? cause.message : 'Please retry.'); }
     finally { if (!signal.aborted) setBusyAction(null); }
   }
-  if (!attemptId) return null;
   const pending = Boolean(data && ['queued', 'processing', 'awaiting_upload'].includes(data.state));
+  const showPending = useDelayedPending(Boolean(attemptId && pending));
+  if (!attemptId) return null;
   const failed = data?.state === 'failed' || data?.state === 'cancelled' && data.retryable;
   const issue = error ?? failure ?? (failed ? failureMessage(data?.error_code ?? null) : null);
-  if (!issue && !pending) return null;
+  if (!issue && !showPending) return null;
   const message = issue ?? (data?.state === 'awaiting_upload' ? 'Uploading recording…'
     : data?.phase === 'waiting_reference' || data?.error_code === 'reference_pending' ? 'Waiting for reference…'
     : data?.phase === 'checking_words' ? 'Checking words…'
     : data?.state === 'queued' ? 'Analysis queued…' : 'Analyzing recording…');
-  return <section className={styles.notice} aria-label="Analysis status">
+  return <section className={issue ? "ui-retry-notice" : styles.notice} aria-label="Analysis status">
     <span className={styles.message} role={issue ? 'alert' : 'status'}>{issue ? <AlertCircle size={15} aria-hidden="true"/> : <LoaderCircle className={styles.spinner} size={15} aria-hidden="true"/>}{message}</span>
     {error || failure ? <Button variant="ghost" size="sm" loading={loading} loadingLabel="Loading…" onClick={reload}>Reload</Button> : null}
     {data?.retryable ? <Button variant="secondary" size="sm" disabled={Boolean(busyAction)} loading={busyAction === 'retry'} loadingLabel="Requesting…" onClick={() => void act('retry')}>Retry analysis</Button> : null}

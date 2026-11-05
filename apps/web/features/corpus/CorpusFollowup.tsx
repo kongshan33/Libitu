@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { CorpusSelectionContext } from "@libitu/types/stage-one";
 import { ArrowUp } from "lucide-react";
+import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { Button } from "@/components/ui/button";
 import { corpusContextPayload } from "../stage-one/api/stage-one-api";
 import styles from "./CorpusDetail.module.css";
@@ -15,6 +16,7 @@ export function CorpusFollowup({ context, comparison, onSaveNote, disabled, note
   const [turn, setTurn] = useState<Turn | null>(null);
   const [history, setHistory] = useState<Turn[]>([]);
   const [status, setStatus] = useState<"idle" | "streaming" | "complete" | "error">("idle");
+  const answering = useDelayedPending(status === "streaming");
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -70,7 +72,7 @@ export function CorpusFollowup({ context, comparison, onSaveNote, disabled, note
       <Button variant="primary" size="sm" shape="circle" aria-label="Send question" disabled={!question.trim() || status === "streaming" || saving} type="submit"><ArrowUp size={16} /></Button>
     </form>
     {turn ? <div className={styles.answer}><p className={styles.summary}>{turn.question}</p><RestrictedMarkdown text={turn.answer} />
-      <p className={styles.meta} role="status">{status === "streaming" ? "Answering…" : saved ? noteIsDraft ? "Added to note draft · Save the item to keep it" : "Saved to note" : ""}</p>
+      <p className={`${styles.meta} ${styles.answerStatus}`} role="status">{status === "streaming" ? answering ? "Answering…" : null : saved ? noteIsDraft ? "Added to note draft · Save the item to keep it" : "Saved to note" : ""}</p>
       {status === "complete" ? <Button variant="secondary" size="sm" disabled={disabled || saved || saving} loading={saving} loadingLabel="Saving…" onClick={async () => {
         setSaving(true); setError("");
         try { const ok = await onSaveNote(`${turn.question}\n${turn.answer}`); setSaved(ok); if (!ok) setError("Note could not be saved. Please retry."); }
@@ -78,8 +80,9 @@ export function CorpusFollowup({ context, comparison, onSaveNote, disabled, note
         finally { setSaving(false); }
       }}>Save as note</Button> : null}
     </div> : null}
-    {error ? <p role="alert">{error}</p> : null}
-    {status === "error" ? <Button variant="secondary" size="sm" onClick={() => void ask(turn?.question ?? question)}>Retry answer</Button> : null}
+    {error ? <div className="ui-retry-notice" role="alert"><p>{error}</p>
+      {status === "error" ? <Button variant="secondary" size="md" onClick={() => void ask(turn?.question ?? question)}>Retry answer</Button> : null}
+    </div> : null}
   </section>;
 }
 

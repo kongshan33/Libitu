@@ -34,7 +34,7 @@ export function QuickReviewAnalysis({content,sentence,take,api,reload,takeContro
           title={presentation.badges[id].title} onClick={() => setShown(current => current.includes(id) ? current.filter(item => item !== id) : [...current,id])}>{label}{presentation.locked[id] ? ' · Locked' : ''}</button>)}</div>
       </div>
       <div className={styles.takeSelection}><span>Take</span>{takeControls}</div>
-      {guide.error ? <p role="alert">{guide.error} <Button size="sm" onClick={guide.retry}>Retry sound guide</Button></p> : null}
+      {guide.error ? <p className="ui-retry-notice" role="alert">{guide.error} <Button size="sm" onClick={guide.retry}>Retry sound guide</Button></p> : null}
       <AnalysisTimeline view={view} data={data} layers={shown.filter(available)} sentenceId={sentence.id} voiceControls playback={playback}/>
     </section> : !pending && !take.error && data?.state !== 'failed' ? <div className={styles.lockedOverview} role="status">
       {locked ? <LockKeyhole size={15} aria-hidden="true"/> : null}{locked ? 'Analysis locked' : 'Analysis unavailable'}

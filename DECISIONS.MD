@@ -1,5 +1,33 @@
 # Track Libitu decisions
 
+## Neutral retry notices — 2026-11-05
+
+Recoverable-error panels share a neutral surface, gray border and dark gray copy across Loadout, Corpus, learning history, reports and practice. Use 16px padding and vertical margins, 12px action gaps and shared button geometry. Error/alert semantics and retry handlers are preserved; destructive confirmations keep their existing treatment. Audio-save failures use the same neutral palette.
+
+
+## Stable asynchronous feedback — 2026-11-05
+
+Routine UI feedback shares a 600ms reveal threshold. Shared buttons disable and report busy immediately while retaining their idle label/geometry; only sustained operations show the loading overlay. Inline save/update notices reserve a small stable slot; floating practice-save/upload notices delay normal progress but surface errors immediately. Loadout draft saving uses the same helper. Request cancellation, persistence, unload protection, microphone permissions and recording countdowns remain immediate.
+
+History pagination retains existing rows without appending temporary skeletons. Filter changes retain the previous list while awaiting replacement, reset pagination and reject aborted responses. Activity range changes retain the existing chart and its actual date caption until replacement arrives. Initial loads still use structural skeletons. Shadow takes avoid flashing an empty result before the selected sentence's history resolves. Extension caption-opening progress follows the same 600ms rule without delaying its request.
+
+Mission hints share the 600ms threshold with routine progress. Keep retained help and visibility receipts intact, and let the target button own progress instead of inserting a duplicate footer sentence.
+
+
+## Quiet Loadout draft saves — 2026-11-05
+
+Routine local draft writes should complete without flashing a page-level sentence. Show a compact non-shifting status only after 600ms; keep storage failures actionable and retain pending-write unload protection.
+
+## Corpus detail spacing and pronunciation — 2026-11-05
+
+Shared detail sections now use 16px vertical padding (previously 24px), 8px heading gaps and tighter slot/comparison rows. Pronunciation Play sits beside its heading, independently of IPA/stress wrapping, across Reader detail, Add to corpus and Corpus library. Pronunciation now calls the server-only OpenAI Realtime read-aloud adapter with `gpt-realtime-2.1-mini` / `marin` and the existing `OPENAI_API_KEY`. The request is limited to 800 characters, 45 seconds and 60 seconds of 24kHz mono audio; the provider-reported transcript must match the requested words before a WAV is returned. No microphone or role-play session is involved. The UI marks AI voice, supports retry/stop, caches one audio clip for the open card, and stops playback/aborts browser requests when Explain hides or the card closes. No cross-user or persistent audio cache is added.
+
+## Typography, spacing and interaction polish — 2026-11-05
+
+Shared text/space tokens and semantic color aliases now unify current surfaces. Report H1 uses 30px/500, primary explanations 15px, helper text 13px, mono metadata 12px and transcript text 18px; report content gutters follow the 4px scale. Corpus cards use 20px padding/12px gaps. Empty Loadout logic groups are omitted; a filtered-empty result appears once with a recovery action. Coarse-pointer controls have 44px targets independently of layout breakpoints, including labelled Corpus checkboxes and timeline controls.
+
+Content changes use an interruptible 160ms opacity animation without rekeying media/containers: Corpus results (120ms settling window), Quick start recommendations, preview targets, Explain/Syntax and Sound/Rhythm/Melody. Assessment underlines and score bars use transform feedback; reduced-motion preferences skip animations and cancel in-flight content feedback. No score values, acoustic data, recording/playback or provider configuration changes.
+
 ## One detail style for saved and unsaved corpus — 2026-11-05
 
 Add to corpus reuses the Corpus detail CSS and content components, including its neutral backdrop, header, source context and scroll geometry. Remove the separate blue quotation, shadow and narrow selection-card styling. Keep selection-specific field editing, note draft and Save in the bottom management area. The selection card remains nonmodal, with a pointer-transparent backdrop, to preserve pin, outside dismissal and replacement by a new transcript selection; it also supports close and Escape. Shared responsive dimensions are clamped to the viewport.
@@ -225,7 +253,7 @@ direction); do not add hint preparation to session-entry prerequisites. This is
 not a queued next step; revisit only after an explicit decision.
 
 During an upgrade the client may retain a prior ready card for the same context,
-with delayed loading feedback after 250ms. This supersedes immediate blanking of
+with delayed loading feedback after 600ms. This supersedes immediate blanking of
 the old hint. Receipts must identify the painted old/new card explicitly, so
 preparation and loading never count as exposure to the hidden levels. Speech,
 drafts and changed contexts remove retained content and fence late results.

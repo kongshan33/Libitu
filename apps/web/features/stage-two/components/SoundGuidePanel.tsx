@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PendingStatus } from "@/components/ui/PendingStatus";
 
 import { memo, useState } from "react";
 import { AudioLines, Eye, EyeOff } from "lucide-react";
@@ -38,8 +39,8 @@ export const SoundGuidePanel = memo(function SoundGuidePanel({ guide, sentenceId
       <SoundRecordingSummary label="Your recording" analysis={yours} />
     </div> : null}
     {!sentenceId ? <p className="stage-two-recording-note">Select a sentence to see its sound guide.</p> : null}
-    {guide.pending ? <p role="status">Preparing this sentence’s sound guide…</p> : null}
-    {guide.error ? <div className="stage-two-sound-error"><p role="alert">{guide.error}</p>
+    <PendingStatus pending={guide.pending}>Preparing sound guide…</PendingStatus>
+    {guide.error ? <div className="ui-retry-notice"><p role="alert">{guide.error}</p>
       <Button variant="secondary" size="md" type="button" onClick={guide.retry}>Retry sound guide</Button></div> : null}
     {guide.data ? <SoundGuide key={`${guide.data.sentence_id}:${guide.data.sentence_text}`} data={guide.data}
       reference={originalEvidence} yours={yourEvidence} textHidden={textHidden} onTextHiddenChange={onTextHiddenChange} /> : null}
@@ -53,7 +54,7 @@ function SoundRecordingSummary({ label, analysis }: { label: string; analysis: A
     <p>{analysis.pending ? "Analyzing timing and pitch…" : analysis.error ? "Audio analysis could not finish."
       : features?.quality.status === "usable" ? `Analysis ready · ${(features.speechDurationMs / 1000).toFixed(2)} s of speech · ${features.pauseCount} internal pauses.`
         : features ? "Too little usable speech for measurements." : label === "Reference" ? "Listen with practice audio enabled to prepare reference measurements." : "Record a take to see your measurements."}</p>
-    {analysis.error ? <p role="alert">{analysis.error}{analysis.canRetry !== false ? <Button variant="secondary" size="md" type="button" onClick={analysis.retry}>Retry audio analysis</Button> : null}</p> : null}
+    {analysis.error ? <p className="ui-retry-notice" role="alert">{analysis.error}{analysis.canRetry !== false ? <Button variant="secondary" size="md" type="button" onClick={analysis.retry}>Retry audio analysis</Button> : null}</p> : null}
     <small>Local timing and pitch do not identify individual sounds. Aligned word measurements appear after server analysis.</small>
   </section>;
 }

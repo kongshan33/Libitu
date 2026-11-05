@@ -3,6 +3,7 @@
 import { LoaderCircle, CircleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 
 import { useAuth } from "@clerk/nextjs";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
@@ -27,6 +28,9 @@ export function PracticePersistence({ children }: { children: ReactNode }) {
   const [captureVersion, setCaptureVersion] = useState(0);
   const [preferences, setPreferences] = useState({ owner: "", analyze: true });
   const active = isLoaded && resources?.owner === userId ? resources : null;
+  const showUpload = useDelayedPending(Boolean(active?.captures.pendingUploads));
+  const showSave = useDelayedPending(Boolean(active && state.pending));
+  const showSaveError = Boolean(active && state.errors.length);
   const analyze = Boolean(active && preferences.owner === active.owner && preferences.analyze);
 
   useEffect(() => {
@@ -66,12 +70,12 @@ export function PracticePersistence({ children }: { children: ReactNode }) {
 
   return <Context.Provider value={active ? { api: active.api, referenceApi: active.referenceApi, outbox: active.outbox,
     captures: active.captures, state, analyze, setAnalyze, captureVersion } : null}>
-    {active && (active.captures.pendingUploads || state.pending) ? <aside className="practice-save-notifications" aria-label="Audio saving notifications">
-      {active.captures.pendingUploads ? <div className="practice-save-banner" role="status">
+    {active && (showUpload || showSave || showSaveError) ? <aside className="practice-save-notifications" aria-label="Audio saving notifications">
+      {showUpload ? <div className="practice-save-banner" role="status">
         <LoaderCircle className="practice-save-spinner" size={20} aria-hidden="true" />
         <div><strong>Preparing reference audio…</strong><p>Keep this page open until the upload finishes.</p></div>
       </div> : null}
-      {state.pending ? <div className="practice-save-banner" data-state={state.errors.length ? "error" : "pending"}
+      {showSave || showSaveError ? <div className="practice-save-banner" data-state={state.errors.length ? "error" : "pending"}
         role={state.errors.length ? "alert" : "status"}>
         {state.errors.length ? <CircleAlert size={20} aria-hidden="true" /> : <LoaderCircle className="practice-save-spinner" size={20} aria-hidden="true" />}
         <div>

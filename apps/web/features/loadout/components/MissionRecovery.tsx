@@ -15,7 +15,7 @@ export function MissionRecovery({ problem, advice, draft, disabled, onRetry, onP
   onScene(): void;
   onAdjust(key: string, action: SceneTargetAdjustment): void;
 }) {
-  return <section className={styles.recovery} aria-label="Mission recovery">
+  return <section className="ui-retry-notice" aria-label="Mission recovery">
     <div role="alert"><h2>{problem.title}</h2><p>{problem.message}</p>{problem.detail ? <p className={styles.recoveryDetail}>{problem.detail}</p> : null}</div>
     {problem.kind === "fit" && advice ? <>
       <p className={styles.recoveryBasis}>For <strong>{advice.candidate.title}</strong> · {advice.candidate.register} tone</p>
@@ -26,7 +26,7 @@ export function MissionRecovery({ problem, advice, draft, disabled, onRetry, onP
           <h3>{target.text}<span>{target.fit === "unknown" ? "Fit not established" : "Low fit in this scene"}</span></h3>
           <p>{target.reason}</p>
           {target.fit === "unknown" ? <p>There is not enough evidence of a natural opportunity in this scene.</p> : null}
-          <div className={styles.recoveryActions}>
+          <div className="ui-retry-actions">
             <Button variant="ghost" size="md" type="button" disabled={disabled || !!removeError}
               aria-label={`Remove ${target.text} from this mission`} onClick={() => onAdjust(target.key, "remove")}>Remove target</Button>
           </div>
@@ -34,14 +34,14 @@ export function MissionRecovery({ problem, advice, draft, disabled, onRetry, onP
         </li>;
       })}</ul>
       <p>After changing a target, press Start mission to prepare a new scene.</p>
-      <div className={styles.recoveryActions}>
+      <div className="ui-retry-actions">
         <Button variant="secondary" size="md" type="button" disabled={disabled} onClick={onScene}>Describe your scene</Button>
         <Button variant="ghost" size="md" type="button" disabled={disabled} onClick={onPreferences}>Change scene preferences</Button>
       </div>
     </> : <>
       {problem.kind === "system" ? <>
         <p>{problem.phase === "saving" ? "Retry saving to recover the same mission with its original scene and targets." : "You can retry with the same targets. The suggestions below are optional."}</p>
-        <div className={styles.recoveryActions}>
+        <div className="ui-retry-actions">
           <Button variant="secondary" size="md" type="button" disabled={disabled} onClick={onRetry}>{problem.phase === "saving" ? "Retry saving mission" : "Retry preparation"}</Button>
           {problem.phase === "preparing" ? <>
             <Button variant="ghost" size="md" type="button" disabled={disabled} onClick={onPreferences}>Add scene preferences</Button>

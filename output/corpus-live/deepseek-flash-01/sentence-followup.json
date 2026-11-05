@@ -1,0 +1,25 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "started_at": "2026-11-05T10:17:24.186376+00:00",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "status": 200,
+  "output": "改写：\n\nThe team does some great work in design, but it still has trouble delivering consistently.\n\n改动说明：\n\n- 把 `has pockets of greatness` 换成 `does some great work`，更接近日常说法，同时保留“局部有亮点”的范围，没有说成整体都强。\n- 把 `struggles to deliver` 换成 `has trouble delivering`，保留“有困难”的程度，没有强化成做不到。\n- 保留 `but it still` 的转折和“仍然”的频率感，先肯定再指出问题的语气不变。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 0.68,
+  "total_seconds": 1.481
+}

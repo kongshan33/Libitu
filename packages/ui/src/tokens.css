@@ -1,4 +1,18 @@
 :root {
+  --text-h1: 30px;
+  --text-h2: 22px;
+  --text-h3: 17px;
+  --text-body: 15px;
+  --text-help: 13px;
+  --text-meta: 12px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
   /* Unified v2 palette. Legacy feature tokens remain available during migration. */
   --ink: #0c0a09;
   --ink-2: #44403c;
@@ -12,18 +26,18 @@
   --video-bg: #1c1917;
   --brand: #5a43d6;
 
-  --color-background-primary: #ffffff;
-  --color-background-subtle: #fafafa;
-  --color-background-secondary: #f5f5f5;
-  --color-background-tertiary: #eeeeee;
+  --color-background-primary: var(--bg);
+  --color-background-subtle: var(--surface);
+  --color-background-secondary: var(--surface);
+  --color-background-tertiary: var(--line-soft);
 
-  --color-text-primary: #000000;
-  --color-text-secondary: #4e4e4e;
-  --color-text-tertiary: #757575;
+  --color-text-primary: var(--ink);
+  --color-text-secondary: var(--ink-3);
+  --color-text-tertiary: var(--muted);
 
-  --color-border-tertiary: rgb(0 0 0 / 10%);
-  --color-border-secondary: rgb(0 0 0 / 18%);
-  --color-border-primary: rgb(0 0 0 / 30%);
+  --color-border-tertiary: var(--line-soft);
+  --color-border-secondary: var(--line-strong);
+  --color-border-primary: var(--ink-3);
 
   --color-brand-dot: #9b93d9;
   --color-overlay: rgb(0 0 0 / 32%);
@@ -47,7 +61,7 @@
 
   --purple-50: #eeedfe;
   --purple-200: #afa9ec;
-  --purple-600: #534ab7;
+  --purple-600: var(--brand);
   --purple-800: #3c3489;
 
   --teal-50: #e1f5ee;
@@ -56,7 +70,7 @@
   --amber-50: #faeeda;
   --amber-600: #ba7517;
 
-  --gray-50: #f5f5f5;
+  --gray-50: var(--surface);
 
   --radius-xs: 4px;
   --radius-sm: 6px;

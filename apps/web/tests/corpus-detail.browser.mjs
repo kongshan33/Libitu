@@ -12,6 +12,12 @@ const analysis = { schemaVersion:2,syntaxState:'pending',analysisSource:'ai',sel
 const record={...fixtureRecords[4],item:{...fixtureRecords[4].item,text:'pockets of greatness',sourceText:'pockets of greatness',meaning:analysis.explanation.meaning,level:'B2',register:'professional',analysisDetail:{context:{selectedText:'pockets of greatness',currentSentence:'The team has pockets of greatness, but needs consistency.',contextBefore:'Let us review the results.',contextAfter:'We will focus on delivery.',timestamp:'0:38.120'},analysis}}};
 const headers={'access-control-allow-origin':'*','access-control-allow-headers':'content-type,authorization','access-control-allow-methods':'POST,PATCH,OPTIONS'};
 const apiSyntax={sentence_type:syntax.sentenceType,main_clause:syntax.mainClause,structure_breakdown:syntax.structureBreakdown,logic_relations:syntax.logicRelations,grammar_points:syntax.grammarPoints,information_hierarchy:[],style_features:[],usage_scenarios:[],wording_notes:[],reusable_patterns:[],translations:[],translation_notes:[],evidence:[]};
+// A valid silent WAV exercises real browser playback without a paid provider call.
+const speechWav = Buffer.alloc(44 + 24000 * 2 * 10);
+speechWav.write('RIFF'); speechWav.writeUInt32LE(speechWav.length-8,4); speechWav.write('WAVEfmt ',8);
+speechWav.writeUInt32LE(16,16); speechWav.writeUInt16LE(1,20); speechWav.writeUInt16LE(1,22);
+speechWav.writeUInt32LE(24000,24); speechWav.writeUInt32LE(48000,28); speechWav.writeUInt16LE(2,32);
+speechWav.writeUInt16LE(16,34); speechWav.write('data',36); speechWav.writeUInt32LE(speechWav.length-44,40);
 async function selectTranscriptText(page, text) {
   const line = page.locator('.transcript-text').first();
   await line.scrollIntoViewIfNeeded();
@@ -41,13 +47,24 @@ await mkdir('output/playwright',{recursive:true});
 const browser=await chromium.launch({headless:true,channel:'chrome'});
 try {
   for(const [width, owner] of [[1440,null],[390,loadoutOwner]]) {
-    const context=await browser.newContext({viewport:{width,height:950}});const page=await context.newPage();page.setDefaultTimeout(20000);
+    const context=await browser.newContext({viewport:{width,height:950}});const page=await context.newPage();page.setDefaultTimeout(20000);page.setDefaultNavigationTimeout(60000);
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     const state=await installLoadoutFixture(page,{origin,records:[record],initialOwner:owner});
-    let syntaxCount=0, asks=0;
+    await page.addInitScript(() => {
+      const OriginalAudio = window.Audio;
+      window.__corpusAudio = [];
+      window.Audio = function(...args) { const audio = new OriginalAudio(...args); window.__corpusAudio.push(audio); return audio; };
+    });
+    let syntaxCount=0, asks=0, speeches=0;
     await page.route('**/api/corpus/*',async route=>{
       const req=route.request();const path=new URL(req.url()).pathname;
       if(req.method()==='OPTIONS')return route.fulfill({status:204,headers});
+      if(path.endsWith('/speech')) {
+        speeches++;
+        assert.equal(req.postDataJSON().text,'pockets of greatness');
+        if(speeches===1)return route.fulfill({status:503,headers,json:{detail:'Unavailable'}});
+        return route.fulfill({headers,contentType:'audio/wav',body:speechWav});
+      }
       if(path.endsWith('/analyze-syntax')){
         syntaxCount++;
         assert.equal(req.postDataJSON().selected_text,'pockets of greatness');
@@ -65,7 +82,7 @@ try {
       }
       return route.fallback();
     });
-    await page.goto(origin+'/corpus');await page.getByRole('button',{name:'View pockets of greatness',exact:true}).click();
+    await page.goto(origin+'/corpus',{waitUntil:'domcontentloaded'});await page.getByRole('button',{name:'View pockets of greatness',exact:true}).click();
     const dialog=page.getByRole('dialog');await dialog.getByText('POCK-ets of GREAT-ness',{exact:true}).waitFor();
     assert.equal(syntaxCount,0);assert.equal(asks,0);
     assert.equal(await dialog.evaluate(el=>getComputedStyle(el).boxShadow),'none');
@@ -74,7 +91,26 @@ try {
     assert.equal(await dialog.locator('mark').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
     await dialog.evaluate(el=>Promise.all(el.getAnimations().map(a=>a.finished)));
     await page.screenshot({path:`output/playwright/corpus-detail-v2-${width}.png`});
+    assert.equal(speeches,0,'voice is generated only on Play');
+    const pronunciation=dialog.locator('section').filter({has:page.getByRole('heading',{name:'Pronunciation',exact:true})});
+    await pronunciation.getByRole('button',{name:'Play',exact:true}).click();
+    await pronunciation.getByRole('button',{name:'Retry',exact:true}).click();
+    await pronunciation.getByRole('button',{name:'Stop',exact:true}).waitFor();
+    assert.equal(await page.evaluate(()=>window.__corpusAudio.at(-1).paused),false);
+    await pronunciation.getByRole('button',{name:'Stop',exact:true}).click();
+    // Exercise long IPA wrapping independently of the heading's action.
+    await pronunciation.locator('span').filter({hasText:'/ˈpɒkɪts əv ˈɡreɪtnəs/'}).evaluate(el=>{el.textContent=el.textContent.repeat(5);});
+    const headingBox=await pronunciation.getByRole('heading').boundingBox();
+    const playBox=await pronunciation.getByRole('button',{name:'Play',exact:true}).boundingBox();
+    assert.ok(Math.abs(headingBox.y+headingBox.height/2-playBox.y-playBox.height/2)<2);
+    assert.equal(await pronunciation.evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+    await pronunciation.scrollIntoViewIfNeeded();
+    await page.screenshot({path:`output/playwright/corpus-pronunciation-${width}.png`});
+    await pronunciation.getByRole('button',{name:'Play',exact:true}).click();
+    await pronunciation.getByRole('button',{name:'Stop',exact:true}).waitFor();
+    assert.equal(speeches,2,'replay reuses the generated audio');
     await dialog.getByRole('tab',{name:'Syntax',exact:true}).click();await dialog.getByRole('button',{name:'Retry syntax'}).click();
+    assert.equal(await page.evaluate(()=>window.__corpusAudio.every(audio=>audio.paused)),true,'hiding Explain stops playback');
     await dialog.getByRole('heading',{name:'Role in the sentence'}).waitFor();
     assert.equal(await dialog.getByRole('tabpanel').getByRole('heading').count(),3);
     await dialog.getByRole('tab',{name:'Explain',exact:true}).click();
@@ -87,7 +123,7 @@ try {
     assert.equal(syntaxCount,2);assert.equal(asks,2);
     assert.equal(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth),true);
     await dialog.getByRole('button',{name:'Close corpus detail'}).click();
-    await page.reload();await page.getByRole('button',{name:'View pockets of greatness',exact:true}).click();
+    await page.reload({waitUntil:'domcontentloaded'});await page.getByRole('button',{name:'View pockets of greatness',exact:true}).click();
     await dialog.getByText(/<img src=x onerror=alert\(1\)>/).waitFor();
     await dialog.getByRole('tab',{name:'Syntax',exact:true}).click();await dialog.getByRole('heading',{name:'Role in the sentence'}).waitFor();
     assert.equal(syntaxCount,2,'persisted Syntax is reused after reload');assert.deepEqual(errors,[]);
@@ -95,7 +131,7 @@ try {
     await context.close();
   }
   const context = await browser.newContext({viewport:{width:1440,height:1000}});
-  const page = await context.newPage(); page.setDefaultTimeout(20000);
+  const page = await context.newPage(); page.setDefaultTimeout(20000);page.setDefaultNavigationTimeout(60000);
   await installLoadoutFixture(page,{origin,records:[],shadow:true});
   const snake = value => Array.isArray(value) ? value.map(snake) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key,item])=>[key.replace(/[A-Z]/g,c=>'_'+c.toLowerCase()),snake(item)])) : value;
   const blueprint = {...shadowBlueprint,corpus_items:[{...record.item,id:'detail-candidate',meta:'0:38.120 - B2',source_text:'pockets of greatness'}],transcript:[{...shadowBlueprint.transcript[0],parts:[record.item.analysisDetail.context.currentSentence],time:'0:38.120'}]};
@@ -109,7 +145,7 @@ try {
     if(path.endsWith('/ask'))return route.fulfill({headers,contentType:'text/event-stream',body:'event: delta\ndata: {"text":"A useful reader note."}\n\nevent: done\ndata: {}\n\n'});
     return route.fallback();
   });
-  await page.goto(`${origin}/practice/${fixtureContentId}`);
+  await page.goto(`${origin}/practice/${fixtureContentId}`,{waitUntil:'domcontentloaded'});
   await page.getByRole('button',{name:'Open full analysis for pockets of greatness',exact:true}).click();
   const dialog=page.getByRole('dialog',{name:'pockets of greatness',exact:true});
   await dialog.getByText('POCK-ets of GREAT-ness',{exact:true}).waitFor();

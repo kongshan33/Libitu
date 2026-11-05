@@ -1,0 +1,112 @@
+[
+  {
+    "case": "phrase",
+    "rule": "all endpoints return HTTP 200",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "real AI, no eager syntax",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "teacher note has 60–120 characters",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "one or two examples with exactly one typical",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "framework slot keys match template",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "scenarios are not repeated in syntax",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "source evidence equals supplied context",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "follow-up has actual delta and explicit done, no error",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "follow-up limited Markdown",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "fixture collocations retain target expression",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "phrase has only three syntax modules",
+    "passed": true
+  },
+  {
+    "case": "phrase",
+    "rule": "two English dialog turns, one sentence each",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "all endpoints return HTTP 200",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "real AI, no eager syntax",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "teacher note has 60–120 characters",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "one or two examples with exactly one typical",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "framework slot keys match template",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "scenarios are not repeated in syntax",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "source evidence equals supplied context",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "follow-up has actual delta and explicit done, no error",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "follow-up limited Markdown",
+    "passed": true
+  },
+  {
+    "case": "sentence",
+    "rule": "full sentence includes both translations",
+    "passed": true
+  }
+]

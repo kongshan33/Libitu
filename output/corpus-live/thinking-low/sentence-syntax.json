@@ -1,0 +1,30 @@
+{
+  "case": "sentence",
+  "task": "syntax",
+  "model": "doubao-seed-2-1-lite-260915",
+  "thinking": "low",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "selection_type": "sentence",
+    "kind": "chunk"
+  },
+  "output": "{\"sentence_type\":\"并列句（Compound sentence）\",\"main_clause\":\"两个独立分句主干：The team has pockets of greatness in design；it struggles to deliver consistently。\",\"structure_breakdown\":[\"两个语义独立的分句由并列连词 but 连接，构成标准并列句结构。\",\"第一分句内 in design 为后置介词短语，限定 pockets of greatness 的所属领域。\",\"第二分句内 to deliver consistently 为不定式短语，作不及物动词 struggles 的补足成分。\"],\"grammar_points\":[\"pockets of 在此表“零散分布的少量特质”，greatness 为不可数名词作宾语。\",\"struggle 后接不定式，用于表述“难以完成某事”的动作趋向。\"],\"logic_relations\":[\"承接前句“客观评估团队表现”的指引，给出具体评估结论。\",\"分句间由 but 引出转折，对比“局部设计优势”与“交付稳定性不足”。\"],\"information_hierarchy\":[\"核心信息：团队表现存在两面性，设计有亮点但整体交付不稳定。\",\"内容为后句“将优势融入日常流程”的行动提议提供事实支撑。\"],\"wording_notes\":[\"pockets of greatness 是职场常用比喻，指零散存在的优秀表现。\",\"consistently 作频度状语，精准对应交付质量不稳定的问题指向。\"],\"style_features\":[\"采用先肯定后指出问题的转折句式，表述客观克制。\",\"用词平实简洁，适配工作绩效复盘的正式表达风格。\"],\"usage_scenarios\":[],\"reusable_patterns\":[],\"translations\":[{\"label\":\"直译\",\"text\":\"这个团队在设计领域有零星的出色表现，但它仍然难以稳定地交付成果。\",\"recommended\":false},{\"label\":\"意译\",\"text\":\"这支团队的设计能力虽有不少闪光之处，但整体交付表现始终不够稳定。\",\"recommended\":true}],\"translation_notes\":[\"pockets of greatness 不可直译为“伟大的口袋”，需结合职场语境做意译。\"],\"background_context\":null,\"evidence\":[\"当前句原文：The team has pockets of greatness in design, but it still struggles to deliver consistently.\"]}",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1882,
+    "prompt_tokens": 1003,
+    "total_tokens": 2885,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 1431
+    }
+  },
+  "status": 200,
+  "total_seconds": 27.42
+}

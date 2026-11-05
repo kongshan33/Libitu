@@ -1,0 +1,85 @@
+{
+  "case": "phrase",
+  "task": "explain",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness"
+  },
+  "model": "doubao-seed-2-1-pro-260915",
+  "transport": "application adapter directly",
+  "output": {
+    "analysis_source": "fallback",
+    "provider_notice": "AI 分析暂时不可用；当前仅保留你的原始选择，不会猜测含义或擅自补全边界。 Doubao rejected the selection analysis request (HTTP 404).",
+    "selection_type": "phrase",
+    "completeness": "complete",
+    "selected_text": "pockets of greatness",
+    "recommended_text": "pockets of greatness",
+    "recommendation_reason": "AI 未完成边界判断，因此默认按你实际选中的内容保存。",
+    "fields": {
+      "kind": "chunk",
+      "tags": [
+        "discourse"
+      ],
+      "level": "B1",
+      "usage_register": "neutral"
+    },
+    "note_placeholder": "可选：写下你的理解、联想或使用场景",
+    "explanation": {
+      "pronunciation": {
+        "ipa": "待 AI 分析",
+        "connected_speech": "AI 可用后会结合上下文分析重音、弱读和连读。",
+        "audio_text": "pockets of greatness",
+        "stress_text": ""
+      },
+      "meaning": "AI 暂时不可用，无法可靠解释这段选择在当前上下文中的具体含义。",
+      "pragmatic_function": "AI 暂时不可用，无法可靠判断它在这段对话中的语用作用。",
+      "similar_expressions": [],
+      "examples": [],
+      "usage_chips": [
+        "等待 AI 分析"
+      ]
+    },
+    "syntax_analysis": {
+      "sentence_type": "待 AI 判断",
+      "main_clause": "待 AI 分析",
+      "structure_breakdown": [],
+      "logic_relations": [],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [
+        {
+          "template": "pockets of greatness",
+          "slots": {},
+          "rationale": "AI 暂时不可用，因此不自动抽象结构。"
+        }
+      ],
+      "translations": [
+        {
+          "label": "待分析",
+          "text": "AI 暂时不可用，未生成翻译。",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    },
+    "schema_version": 2,
+    "syntax_state": "pending",
+    "teacher_note": "",
+    "reusable_patterns": [],
+    "collocations": [],
+    "pitfalls": []
+  },
+  "total_seconds": 0.467
+}

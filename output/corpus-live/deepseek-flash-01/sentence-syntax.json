@@ -1,0 +1,66 @@
+{
+  "case": "sentence",
+  "task": "syntax",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "selection_type": "sentence",
+    "kind": "structure"
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "started_at": "2026-11-05T10:17:21.693526+00:00",
+  "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+  "status": 200,
+  "output": {
+    "sentence_type": "并列句",
+    "main_clause": "The team has pockets of greatness, but it still struggles to deliver consistently.",
+    "structure_breakdown": [
+      "第一分句：The team 主语 + has 谓语 + pockets of greatness 宾语，in design 为范围限定",
+      "第二分句：it 主语 + still struggles 谓语 + to deliver consistently 不定式补足成分",
+      "两分句由 but 连接，构成并列句"
+    ],
+    "logic_relations": [
+      "but 表转折，前分句肯定设计优势，后分句指出持续交付不足"
+    ],
+    "information_hierarchy": [
+      "先承认局部优势，再转折强调整体短板"
+    ],
+    "style_features": [
+      "单句内由 but 构成前后对照的并列结构"
+    ],
+    "usage_scenarios": [],
+    "grammar_points": [
+      "pockets of greatness 中中心词为复数 pockets，of greatness 作介词宾语",
+      "struggle 后接 to-infinitive 补充具体难以完成动作，非目的状语"
+    ],
+    "wording_notes": [
+      "pockets of 表零散、局部的存在，非整体性",
+      "consistently 强调稳定持续，与局部优势形成对照"
+    ],
+    "reusable_patterns": [],
+    "translations": [
+      {
+        "label": "直译",
+        "text": "这个团队在设计上有零散的高光之处，但它仍然难以稳定地交付。",
+        "recommended": false
+      },
+      {
+        "label": "意译",
+        "text": "团队在设计上偶有亮点，但整体交付仍不稳定。",
+        "recommended": true
+      }
+    ],
+    "translation_notes": [],
+    "background_context": null,
+    "evidence": [
+      "We need to take an honest look at how the team is performing.",
+      "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "Our next step is to make those strengths part of our everyday process."
+    ]
+  },
+  "total_seconds": 2.492
+}

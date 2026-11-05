@@ -1,0 +1,24 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T09:54:19.783656+00:00",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "status": 200,
+  "output": "**改写版本**：The team has some really strong spots in design, but it still struggles to deliver consistently.\n\n**改动说明**：\n- 把 `pockets of greatness` 换成 `some really strong spots`：去掉了原句里偏书面的比喻，用日常描述“有亮点”的说法，同时保留“局部优秀、不是整体都好”的意思。\n- 后半句 `but it still struggles to deliver consistently` 保持不变：这部分本身就是自然的口语表达，不需要改动。\n- 整体语气没有变化：前半句先肯定设计上的优势，后半句转折指出交付不稳定的问题，符合原句先扬后抑的态度。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.425,
+  "total_seconds": 6.243
+}

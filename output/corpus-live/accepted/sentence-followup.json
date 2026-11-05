@@ -1,0 +1,24 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T09:57:28.728587+00:00",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "status": 200,
+  "output": "改写：The team has some really strong design work, but it still can't deliver consistently.\n\n改动说明：\n- 把 has pockets of greatness 换成 has some really strong design work，去掉比喻，直接说“有一些很强的设计成果”，更符合日常表达。\n- 保留 but it still can't deliver consistently，维持“先肯定、再指出问题”的转折语气。\n- 用 can't 替换 struggles to，意思从“努力但做不到”变成“做不到”，更直接；如果想保留“努力但吃力”的意味，也可以说 but it still struggles to deliver consistently。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.463,
+  "total_seconds": 6.396
+}

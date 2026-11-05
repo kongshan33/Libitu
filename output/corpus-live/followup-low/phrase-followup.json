@@ -1,0 +1,24 @@
+{
+  "case": "phrase",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "pockets of greatness",
+    "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "output": "两者的核心含义一致，都指团队中零散分布、没有覆盖全局的优秀能力区块，而非整体达到优秀水平。\n- `pockets of greatness` 以“口袋”为喻，把零散亮点想象成嵌在整块布料上的小兜，给人的感受是这些优势是从团队整体中自然生长出来的，和周围的普通表现没有生硬割裂，更偏向“藏在日常里、尚未被系统挖掘的零散闪光点”，不会刻意把优秀部分和普通部分对立。\n- `islands of excellence` 以“岛屿”为喻，把优秀区块想象成被平庸的“海洋”隔开的独立陆地，更突出这些优秀部分和团队其他环节是脱节、孤立的，自带“和整体割裂、无法辐射带动周边”的意味。\n两者没有固定的正式度或口语度高低，具体语气感受还要结合上下文的复盘立场判断。\n\n两句职场对话：\nA: When we reviewed the team’s recent design work, we noticed we have pockets of greatness that never get carried through to final delivery.\nB: That’s exactly why we’re mapping those high-performing workflows to turn them into repeatable team-wide standards, instead of letting them stay isolated islands of excellence.",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 23.15,
+  "total_seconds": 24.546,
+  "thinking": "low",
+  "transport": "application adapter directly"
+}

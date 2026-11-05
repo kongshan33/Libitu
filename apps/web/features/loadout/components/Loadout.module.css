@@ -21,10 +21,6 @@
 .emptyLibrary a { display: inline-flex; align-items: center; gap: 6px; color: #534ab7; font-size: 12px; margin-top: 10px; min-height: 36px; }
 .startButton { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; border-width: 1px; border-style: solid; padding: 12px; font: inherit; font-size: 13px; }
 .startButton:hover:not(:disabled) { background: #303035; }
-.error { border: 1px solid #ddd6f0; background: #f7f5fc; border-radius: var(--radius-md); padding: 12px; font-size: 12px; line-height: 1.7; margin: 0 0 18px; color: #5b4f75; }
-.error p { margin: 3px 0 8px; }
-.error button { border: 1px solid currentColor; border-radius: var(--radius-xs); padding: 7px 10px; min-height: 36px; background: transparent; color: inherit; cursor: pointer; font: inherit; font-size: 11px; }
-.error { background: #fff6f2; color: #923b29; border-color: #edcabc; }
 .page button:focus-visible, .page a:focus-visible, .page input:focus-visible, .page textarea:focus-visible, .page select:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .page button:disabled:not(.startButton) { opacity: var(--opacity-disabled); cursor: not-allowed; }
 .sessionMain { max-width: 920px; margin: auto; padding: 28px 32px 45px; }
@@ -90,7 +86,7 @@
 .pageHeading h1 { margin: 8px 0; font-size: 30px; line-height: 1.25; font-weight: 500; letter-spacing: -.02em; }
 .pageHeading p { margin: 0; color: var(--ink-3); font-size: 15px; line-height: 1.6; }
 .draftStatus { position: absolute; top: 0; right: 0; max-width: 60%; min-height: 20px; margin: 0; visibility: hidden; font-size: 12px; text-align: right; }
-.draftStatus[data-pending="true"] { visibility: visible; }
+.draftStatus[data-visible="true"] { visibility: visible; }
 .reference .section { margin: 28px 0; }
 .sectionHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
 .sectionHeading h2 { margin: 0; color: var(--ink); font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -.01em; }
@@ -193,16 +189,11 @@
 .notice p, .missing p { margin: 3px 0 8px; }
 .missing { margin: 0; background: var(--bg); }
 .missing button { display: block; margin-top: 8px; }
-.reference .error { font-size: 13px; line-height: 1.5; }
-.recovery { margin: 0 0 28px; padding: 18px; border-radius: 14px; background: var(--surface); overflow-wrap: anywhere; }
-.recovery h2 { margin: 0 0 8px; font-size: 17px; font-weight: 500; line-height: 1.35; }
-.recovery p { margin: 8px 0; color: var(--ink-3); font-size: 13px; line-height: 1.5; }
-.recovery .recoveryBasis { color: var(--ink); margin-top: 14px; }
+.recoveryBasis { color: var(--ink); margin-top: 14px; }
 .recoveryTargets { display: grid; gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
 .recoveryTargets li { min-width: 0; padding: 14px; border-radius: 10px; background: var(--bg); }
 .recoveryTargets h3 { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.5; }
 .recoveryTargets h3 span { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
-.recoveryActions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .recoveryDetail { padding-left: 10px; border-left: 2px solid var(--line); }
 .recoveryLink { width: 100%; font-size: 13px; }
 .historyPanel { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 16px; border-top: 1px solid var(--line-soft); }
@@ -221,8 +212,6 @@
   .reference .page { padding: 24px 16px; }
   .body { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .preview { position: static; max-height: none; overflow: visible; }
-  .draftStatus { position: static; max-width: none; min-height: 0; height: 0; overflow: hidden; }
-  .draftStatus[data-pending="true"] { height: auto; margin-bottom: 12px; }
   .reference .remove[data-variant][data-size][data-shape] { flex-basis: 44px; width: 44px; min-width: 44px;   }
   .filterChips button, .browseButton { min-height: 44px; }
 }
@@ -244,3 +233,5 @@
 @keyframes libitu-content-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 .srOnly { position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
+
+.sceneStatus { min-height: 1.5em; }

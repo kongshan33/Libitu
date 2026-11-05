@@ -72,6 +72,8 @@ class Settings(BaseSettings):
 
     # Stage 4 has separate, bounded requests; these never use Stage 1 token budgets.
     openai_api_key: str | None = None
+    corpus_tts_model: str = "gpt-realtime-2.1-mini"
+    corpus_tts_voice: str = "marin"
     speaking_realtime_provider: Literal["gemini", "openai"] = "openai"
     gemini_api_key: str | None = None
     gemini_live_model: str = "gemini-3.8-live"

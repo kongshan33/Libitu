@@ -1,0 +1,24 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T10:02:44.055037+00:00",
+  "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+  "status": 200,
+  "output": "改写：The team has some really strong design work, but it still can't deliver that level consistently.\n\n改动说明：\n- 把 `pockets of greatness` 换成 `some really strong design work`，去掉比喻，直接说设计里有突出的好作品，更符合日常口语。\n- 保留 `but it still struggles to deliver consistently` 的转折结构，用 `can't deliver that level consistently` 表达同样的意思：不是完全做不到，而是没法稳定保持高水平。\n- 用 `that level` 指代前面的 `really strong design work`，让前后衔接更自然，同时保留先肯定再指出问题的语气。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.628,
+  "total_seconds": 6.631
+}

@@ -1,0 +1,70 @@
+{
+  "case": "sentence",
+  "task": "syntax",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "selection_type": "sentence",
+    "kind": "chunk"
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T09:57:19.711183+00:00",
+  "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+  "status": 200,
+  "output": {
+    "sentence_type": "并列句（由并列连词 but 连接两个独立限定分句）",
+    "main_clause": "The team has pockets of greatness in design; it still struggles to deliver consistently.",
+    "structure_breakdown": [
+      "第一分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 范围状语 in design。",
+      "第二分句：主语 it（指代 the team）+ 谓语 struggles + 不定式补足成分 to deliver consistently。",
+      "并列连词 but 连接两个独立分句，表转折对比关系。"
+    ],
+    "logic_relations": [
+      "与前句“客观评估团队表现”构成承接，给出评估的具体结论。",
+      "与后句“将优势融入日常流程”构成因果铺垫，点明问题所在。"
+    ],
+    "information_hierarchy": [
+      "先肯定团队在设计领域存在零散的优秀表现，再转折指出其交付不稳定的核心问题。",
+      "转折后为信息重点，突出团队当前的主要短板。"
+    ],
+    "style_features": [
+      "两个分句长度相近，结构对称，形成清晰的转折对比。",
+      "用词简洁务实，符合职场绩效评估的表达风格。"
+    ],
+    "usage_scenarios": [],
+    "grammar_points": [
+      "pockets of + 抽象名词表示“零散分布的少量某类特质”，pocket 用复数形式。",
+      "struggle 后接 to-infinitive 作补足成分，说明艰难完成的具体动作。"
+    ],
+    "wording_notes": [
+      "pockets of greatness 是比喻用法，指局部、零散的优秀表现，而非整体优秀。",
+      "deliver 在此为职场常用动词，指“交付成果、兑现表现”。"
+    ],
+    "reusable_patterns": [],
+    "translations": [
+      {
+        "label": "直译",
+        "text": "这个团队在设计领域有一些零散的优秀之处，但它仍然难以稳定地交付成果。",
+        "recommended": false
+      },
+      {
+        "label": "意译",
+        "text": "这个团队在设计上有不少亮点，但整体表现不够稳定。",
+        "recommended": true
+      }
+    ],
+    "translation_notes": [
+      "pockets of greatness 不宜直译为“伟大的口袋”，需转化为符合中文职场表达的“零散亮点”。"
+    ],
+    "background_context": null,
+    "evidence": [
+      "We need to take an honest look at how the team is performing.",
+      "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "Our next step is to make those strengths part of our everyday process."
+    ]
+  },
+  "total_seconds": 9.017
+}

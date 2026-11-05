@@ -1,0 +1,22 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "status": 200,
+  "output": "改写：The team is really strong in some parts of design, but it still has trouble delivering steady results.\n\n改动说明：\n- 把 `pockets of greatness` 换成 `really strong in some parts`，去掉比喻，直接说“在设计的某些部分很强”，更符合日常表达。\n- 把 `struggles to deliver consistently` 换成 `has trouble delivering steady results`，用更口语的 `has trouble` 替代 `struggles`，同时保留“难以稳定交付”的意思。\n- 保留 `but` 转折结构，先肯定优势再指出问题的语气不变。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.741,
+  "total_seconds": 6.278
+}

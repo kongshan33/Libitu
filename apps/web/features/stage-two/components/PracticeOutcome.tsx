@@ -1,4 +1,5 @@
 "use client";
+import { PendingStatus } from "@/components/ui/PendingStatus";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 import { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
@@ -39,8 +40,7 @@ export function PracticeOutcome({data,loading,pendingSave,requested,text,api,tak
         <Button variant="ghost" size="sm" disabled={busy||!takeId} loading={busy} loadingLabel="Saving…" onClick={()=>void mark()}>Recognition error</Button>}</div>:null}
     </>:check?<><p className="shadow-revealed-text">{text}</p><p role="status">Not enough reliable recognition to check the words. Try another take.</p></>:
       data?.result?<><p className="shadow-revealed-text">{text}</p><p role="status">Saved take · legacy analysis. No word-matching percentage was recorded.</p></>:
-      <p role="status">{pendingSave?'Saving your take…':loading||data&&['queued','processing','awaiting_upload'].includes(data.state)?'Checking your words…':
-        requested?'Word check is unavailable for this take.':'Word check was not requested. Enable recording analysis in Audio settings for your next take.'}</p>}
+      pendingSave || loading || data && ['queued','processing','awaiting_upload'].includes(data.state) ? <PendingStatus pending>{pendingSave ? 'Saving your take…' : 'Checking your words…'}</PendingStatus> : <p role="status">{requested?'Word check is unavailable for this take.':'Word check was not requested. Enable recording analysis in Audio settings for your next take.'}</p>}
     {error?<p role="alert">{error}</p>:null}
     {check?.tier==='below_60'?<p>Listen more slowly or try with key words, then record again. Sound, Rhythm and Melody stay locked below 60%.</p>:
       check?.tier==='partial_60_85'?<p>Only reliably matched words enter Sound comparison. Rhythm and Melody unlock at 85%.</p>:null}

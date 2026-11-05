@@ -1,0 +1,102 @@
+{
+  "case": "sentence",
+  "task": "explain",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "started_at": "2026-11-05T10:02:21.304242+00:00",
+  "prompt_sha256": "f24bf650157c340807b2d1d9204dafab7b618af63be08344002ff0bb94c6cc4f",
+  "status": 200,
+  "output": {
+    "analysis_source": "ai",
+    "provider_notice": null,
+    "selection_type": "sentence",
+    "completeness": "complete",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "recommendation_reason": "所选内容边界完整，无需补全。",
+    "fields": {
+      "kind": "chunk",
+      "tags": [
+        "conceding",
+        "contrast",
+        "framing"
+      ],
+      "level": "C1",
+      "register": "neutral"
+    },
+    "note_placeholder": "可选：写下你的理解、联想或使用场景",
+    "explanation": {
+      "pronunciation": {
+        "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvər kənˈsɪstəntli/",
+        "connected_speech": "非重读的 of 常弱读为 /əv/ 甚至 /ə/，重音落在 pockets、greatness、design、struggles、deliver、consistently 这些承载核心语义的词上。",
+        "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "stress_text": "the TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIVER con-SIS-tent-ly"
+      },
+      "meaning": "这个团队在设计领域有不少亮眼的局部表现，但整体交付仍然难以保持稳定。",
+      "pragmatic_function": "",
+      "similar_expressions": [
+        "The team has isolated strengths in design — 用 isolated strengths 替换 pockets of greatness，强调亮点是零散、孤立存在的",
+        "but it still fails to deliver consistently — 用 fails to 替换 struggles to，把“努力但做不到”的困难语气加强为“未能做到”"
+      ],
+      "examples": [
+        {
+          "english": "The new product has pockets of greatness, but its overall performance is uneven.",
+          "chinese": "这款新产品有不少亮眼的局部设计，但整体表现参差不齐。",
+          "typical": true
+        }
+      ],
+      "usage_chips": [
+        "绩效复盘",
+        "团队评价",
+        "先扬后抑",
+        "客观反馈"
+      ]
+    },
+    "syntax_analysis": {
+      "sentence_type": "",
+      "main_clause": "",
+      "structure_breakdown": [],
+      "logic_relations": [],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    },
+    "schema_version": 2,
+    "syntax_state": "pending",
+    "teacher_note": "这句话先肯定团队在设计领域的局部亮点，再用转折指出整体交付不稳定的问题，是绩效复盘里平衡褒贬的典型表达。记忆时可以把 pockets of greatness 当作固定短语，直接套用到“局部优秀但整体不稳”的评价场景。",
+    "reusable_patterns": [
+      {
+        "template": "[team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+        "slots": {
+          "team": "被评价的团队或主体",
+          "area": "表现突出的具体领域"
+        },
+        "rationale": "把 team 换成具体团队，area 换成该团队表现亮眼的业务方向，即可复用先扬后抑的评价框架。"
+      }
+    ],
+    "collocations": [
+      "pockets of greatness",
+      "struggle to deliver consistently",
+      "pockets of greatness in [area]"
+    ],
+    "pitfalls": []
+  },
+  "total_seconds": 12.571
+}

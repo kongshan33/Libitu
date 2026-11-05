@@ -69,7 +69,7 @@ export function SecondRound({ report, owner, getToken, returnTo, disabled }: { r
       <p className={styles.small}>Confirm to import these scenes into Loadout, where you can choose one before starting.</p>
       <Button variant="primary" size="md" disabled={!!busy || disabled} loading={busy === "import"} loadingLabel="Saving second round…" onClick={() => void run(true)}>Confirm and open Loadout</Button>
     </div> : null}
-    {error ? <p className={styles.error} role="alert">{error}</p> : null}
+    {error ? <p className="ui-retry-notice" role="alert">{error}</p> : null}
   </section>;
 }
 
@@ -94,7 +94,7 @@ export function PracticeComparisonSection({ report, owner, getToken, returnTo }:
   if (!report.session.practice) return null;
   return <section aria-label="Practice comparison"><div className={styles.sectionHeading}><h2>Practice comparison</h2><span className={styles.badge}>{value?.status === "ready" ? "Recorded facts" : "Existing reports"}</span></div>
     <p className={styles.explainer}>Compare recorded use and final support in these two conversations. This does not measure learning gain.</p>
-    {error ? <p className={styles.error} role="alert">{error}</p> : !value ? <ContentSkeleton label="Loading existing reports…" rows={1} /> : <p>{value.reason}</p>}
+    {error ? <p className="ui-retry-notice" role="alert">{error}</p> : !value ? <ContentSkeleton label="Loading existing reports…" rows={1} /> : <p>{value.reason}</p>}
     {value?.status === "ready" ? <>
       <p className={styles.small}>Before: {supportLabel(value.parent_support_level)} · After: {supportLabel(value.child_support_level)}</p>
       {value.items.map(item => <article className={styles.refactor} key={item.session_item_id}><h3>{item.text} {report.session.mission_plan?.version !== 2 ? <span className={styles.badge}>{item.role}</span> : null}</h3><div className={styles.comparison}><div><h3>Before</h3><UseSummary value={item.before} /></div><div><h3>After</h3><UseSummary value={item.after} /></div></div></article>)}

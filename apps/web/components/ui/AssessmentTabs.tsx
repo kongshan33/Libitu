@@ -20,7 +20,7 @@ export function AssessmentTabs({ dimensions, active, onChange, panelId, idPrefix
         }}>
         <span className={styles.label}>{dimension.label}</span>
         <span className={styles.score}>{available ? <>{dimension.score}<small> / 100</small></> : <span className={styles.unassessed}>Not assessed</span>}</span>
-        <span className={styles.track} data-empty={!available} aria-hidden="true">{available ? <i style={{ "--progress": `${dimension.score}%` } as CSSProperties} /> : null}</span>
+        <span className={styles.track} data-empty={!available} aria-hidden="true">{available ? <i style={{ "--progress-scale": (dimension.score ?? 0) / 100 } as CSSProperties} /> : null}</span>
         <span className={styles.basis}>{dimension.description}</span>
       </button>;
     })}

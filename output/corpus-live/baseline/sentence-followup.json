@@ -1,0 +1,22 @@
+{
+  "case": "sentence",
+  "task": "followup",
+  "input": {
+    "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "context_before": "We need to take an honest look at how the team is performing.",
+    "context_after": "Our next step is to make those strengths part of our everyday process.",
+    "timestamp": "0:38.120",
+    "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+    "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+    "history": []
+  },
+  "model": "doubao-seed-2-1-lite-260915",
+  "status": 200,
+  "output": "可以改成：**\"The team has some really strong spots in design, but they still can't pull it off every time.\"**\n\n改动说明：\n- `pockets of greatness` 换成 `some really strong spots`，意思一样，但更像日常随口说的，不那么书面。\n- `struggles to deliver consistently` 换成 `can't pull it off every time`，`pull it off` 是很口语的“做成、搞定”，`every time` 比 `consistently` 更自然。\n- 把 `it` 改成 `they`，口语里指代团队时常用复数，更符合日常说话习惯。\n\n如果想更随意一点，也可以说：**\"Design-wise, the team has some real highlights, but they're still hit or miss.\"** 这里 `hit or miss` 表示“时好时坏、不稳定”，非常地道。",
+  "events": [
+    "delta",
+    "done"
+  ],
+  "first_delta_seconds": 4.991,
+  "total_seconds": 7.279
+}

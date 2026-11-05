@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Volume2 } from "lucide-react";
+import { CorpusPronunciation } from "./CorpusPronunciation";
 import type { CorpusKind, CorpusSelectionAnalysis } from "@libitu/types/stage-one";
 import styles from "./CorpusDetail.module.css";
 
 type SavePattern = (kind?: CorpusKind, text?: string, slots?: Record<string, string>) => void;
 
-export function ExplainPanel({ analysis, isLoading, onSavePattern, saveDisabled }: {
-  analysis: CorpusSelectionAnalysis; isLoading: boolean; onSavePattern?: SavePattern; saveDisabled?: boolean;
+export function ExplainPanel({ analysis, isLoading, onSavePattern, saveDisabled, active = true }: {
+  analysis: CorpusSelectionAnalysis; isLoading: boolean; onSavePattern?: SavePattern; saveDisabled?: boolean; active?: boolean;
 }) {
   const { explanation: e } = analysis;
   const patterns = analysis.reusablePatterns ?? analysis.syntaxAnalysis.reusablePatterns;
@@ -21,10 +21,7 @@ export function ExplainPanel({ analysis, isLoading, onSavePattern, saveDisabled 
       {onSavePattern ? <Button variant="secondary" size="sm" disabled={isLoading || saveDisabled} onClick={() => onSavePattern("structure", pattern.template, pattern.slots)}>Save structure</Button> : null}
     </article>)}{analysis.collocations?.length ? <p className={styles.meta}>常见搭配 · {analysis.collocations.join(" · ")}</p> : null}</section> : null}
     <section><h2>Meaning</h2><p className={styles.summary}>{e.meaning}</p></section>
-    <section><h2>Pronunciation</h2><div className={styles.pronunciation}>
-      <span>{e.pronunciation.ipa}</span>{e.pronunciation.stressText ? <span>{e.pronunciation.stressText}</span> : null}
-      <Button variant="secondary" size="sm" disabled={isLoading} onClick={() => speakText(e.pronunciation.audioText)}><Volume2 size={14} aria-hidden="true" />Play</Button>
-    </div><p>{e.pronunciation.connectedSpeech}</p></section>
+    <CorpusPronunciation key={e.pronunciation.audioText} pronunciation={e.pronunciation} disabled={isLoading} active={active} />
     {e.similarExpressions.length ? <section><h2>Similar expressions</h2><dl className={styles.alternatives}>{e.similarExpressions.map((expression, i) => {
       const [label, ...rest] = expression.split(/\s*[—–]\s*/);
       return <div key={i}><dt>{label}</dt>{rest.length ? <dd>{rest.join(" — ")}</dd> : null}</div>;
@@ -55,9 +52,3 @@ function AnalysisList({ title, items }: { title: string; items: string[] }) {
   return items.length ? <section><h2>{title}</h2><Items items={items} /></section> : null;
 }
 function Items({ items }: { items: string[] }) { return items.length ? <ul>{items.map((item, i) => <li key={i}>{item}</li>)}</ul> : null; }
-function speakText(text: string) {
-  if (!("speechSynthesis" in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text); utterance.lang = "en-US";
-  window.speechSynthesis.speak(utterance);
-}
