@@ -1,0 +1,2494 @@
+{
+  "provider_host": "ark.cn-beijing.volces.com",
+  "date": "2026-11-05",
+  "fixture": "authored English context, not a verified video quotation",
+  "round_names_are_historical_labels_not_acceptance_status": true,
+  "rounds": {
+    "baseline": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "选中的短语本身语义完整，是固定的比喻性表达，无需补全其他成分即可独立学习。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "framing",
+              "conceding"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "这个短语常用来客观评价团队或项目的表现，既肯定局部亮点，又不回避整体不足，适合绩效复盘、项目评审等正式沟通场景。",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ˈpɒkɪts əv ˈɡreɪtnəs/",
+              "connected_speech": "of 弱读为 /əv/ 或 /ə/，与前面的 pockets 连读，重音落在 POCK- 和 GREAT- 两个音节上。",
+              "audio_text": "pockets of greatness",
+              "stress_text": "POCK-ets of GREAT-ness"
+            },
+            "meaning": "名词性短语，指零散分布的局部突出优势、亮点，而非整体全面的优秀表现。",
+            "pragmatic_function": "先让步肯定局部优势，为后续指出整体不足做铺垫，平衡评价的客观性。",
+            "similar_expressions": [
+              "islands of excellence — 更强调优势区域与整体平庸的对比，语气稍正式",
+              "scattered bright spots — 更口语化，指零散的小亮点，程度更轻",
+              "isolated strengths — 更中性直白，指孤立存在的优势，无比喻色彩"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness in its user interface, but its battery life is still a major issue.",
+                "chinese": "这款新产品的用户界面有不少亮点，但续航仍然是个大问题。",
+                "typical": true
+              },
+              {
+                "english": "There are pockets of greatness in the regional sales team, but overall performance is still below target.",
+                "chinese": "区域销售团队有一些局部突出的表现，但整体业绩仍未达标。",
+                "typical": false
+              },
+              {
+                "english": "The report shows pockets of greatness in the company's sustainability efforts, but most departments are still lagging behind.",
+                "chinese": "报告显示公司的可持续发展工作有部分亮点，但多数部门仍处于落后状态。",
+                "typical": false
+              }
+            ],
+            "usage_chips": [
+              "绩效复盘",
+              "项目评审",
+              "客观评价"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "在这段团队绩效复盘的语境里，pockets of greatness 用来先肯定设计领域的局部突出优势，再用 but 引出整体交付不稳定的不足，既做到客观认可，又为后续提出改进方向做铺垫，是职场沟通中平衡肯定与问题的常用表达。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of [strength] in [area], but it still struggles to [overall challenge].",
+              "slots": {
+                "team": "被评价的主体，如团队、部门、项目",
+                "strength": "局部具备的突出优势，如 excellence、creativity",
+                "area": "优势所在的具体领域",
+                "overall challenge": "整体存在的待改进问题"
+              },
+              "rationale": "可用于绩效复盘、项目评审等场景，客观评价主体的局部优势与整体不足，平衡肯定与改进诉求。"
+            }
+          ],
+          "collocations": [
+            "pockets of excellence",
+            "pockets of strength",
+            "pockets of innovation"
+          ],
+          "pitfalls": [
+            "不要将 pockets 理解为字面的“口袋”，该短语是固定比喻，指零散分布的局部亮点，而非整体全面优秀。"
+          ]
+        },
+        "total_seconds": 16.438
+      },
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": "两者都指“局部突出、整体不均”，但语气有细微差别：\n\n- **pockets of greatness**：更口语、更有活力，带一点“亮点虽小但很亮眼”的赞赏感，适合团队内部复盘。\n- **islands of excellence**：更正式、更书面，常见于咨询报告或管理层汇报，语气更中性客观，强调“孤岛式”的割裂感。\n\n**职场对话（两句）**\n\nA: Our design team has pockets of greatness, but the rest of the product is still inconsistent.\nB: Exactly. We need to turn those islands of excellence into a repeatable process.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 2.837,
+        "total_seconds": 4.997
+      },
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词性短语（量词+抽象名词结构）",
+          "main_clause": "作主句谓语 has 的宾语，承接主语 The team，说明团队在设计领域存在局部突出的优势。",
+          "structure_breakdown": [
+            "pockets 为复数可数名词，作量词核心，表“零散分布的小块区域”",
+            "of greatness 为介词短语作后置定语，修饰 pockets，表“属于卓越表现的”",
+            "整体为“量词+抽象名词”的偏正名词短语，无主谓结构"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的转折分句形成语义对照：先肯定团队存在局部突出优势，再转折指出其整体交付表现不稳定",
+            "呼应前文“客观评估团队表现”的语境，是对团队优势的具体描述"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets 此处为比喻用法，不指实体口袋，而指零散分布的局部优势区域",
+            "of 表所属关系，将抽象名词 greatness 与量词 pockets 连接，构成量化表达",
+            "整体在句中作及物动词 has 的宾语，后接 in design 介词短语限定优势的领域"
+          ],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 9.281
+      },
+      {
+        "case": "sentence",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "sentence",
+          "completeness": "complete",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommendation_reason": "选中内容是结构完整的并列复合句，语义自足，无需补全。",
+          "fields": {
+            "kind": "structure",
+            "tags": [
+              "contrast",
+              "framing",
+              "conceding"
+            ],
+            "level": "B2",
+            "register": "professional"
+          },
+          "note_placeholder": "常用于团队复盘、绩效评估场景，先肯定局部亮点再指出整体短板，语气客观不尖锐。",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ðə tiːm hæz ˈpɒkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvə kənˈsɪstəntli/",
+              "connected_speech": "has 弱读为 /həz/，pockets of 连读为 /ˈpɒkɪtsəv/，deliver 末尾的 r 连读后续 consistently 的 /k/ 音。",
+              "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "stress_text": "the TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIV-er con-SIS-tent-ly"
+            },
+            "meaning": "整句意思是：这个团队在设计领域有不少零散的亮眼表现，但整体交付始终难以保持稳定。其中 pockets of greatness 是固定习语，指零散分布的局部突出优势，而非全面的优秀。",
+            "pragmatic_function": "客观平衡地评价团队表现，先肯定局部亮点，再指出整体存在的核心短板，为后续提出改进方向做铺垫。",
+            "similar_expressions": [
+              "has isolated strong points — 语气更平实，偏直白陈述，没有比喻色彩",
+              "shows flashes of brilliance — 更侧重“偶尔闪现的高光”，强调亮点的瞬时性",
+              "is strong in some areas — 表述更中性，弱化了“零散、不成体系”的隐含意味"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness in its user interface, but the overall performance is still inconsistent.",
+                "chinese": "这款新产品的用户界面有不少亮眼设计，但整体表现依然不稳定。",
+                "typical": true
+              },
+              {
+                "english": "As a player, she has pockets of greatness, but she hasn't yet learned to perform at that level every match.",
+                "chinese": "作为选手，她偶尔能打出顶尖水平，但还做不到每场比赛都稳定发挥。",
+                "typical": false
+              },
+              {
+                "english": "The report has pockets of greatness in its data analysis, but the writing is hard to follow.",
+                "chinese": "这份报告的数据分析部分有不少亮点，但行文很难让人跟上思路。",
+                "typical": false
+              }
+            ],
+            "usage_chips": [
+              "团队复盘",
+              "绩效评估",
+              "项目反馈"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话是团队复盘里非常实用的客观评价句式：先用 pockets of greatness 肯定局部亮点，再用 but 转折指出整体交付不稳定的问题，既不否定团队价值，也不回避真实短板，和上下文里“客观审视表现、把优势固化为日常流程”的讨论逻辑完全契合。",
+          "reusable_patterns": [
+            {
+              "template": "[group] has pockets of [strength] in [area], but it still struggles to [improvement action].",
+              "slots": {
+                "group": "被评价的团队或主体",
+                "strength": "局部具备的突出优势",
+                "area": "优势所在的具体领域",
+                "improvement action": "需要改进的核心问题"
+              },
+              "rationale": "可迁移到各类绩效复盘、项目评估场景，客观平衡地评价团队表现，避免全盘否定或过度夸赞。"
+            }
+          ],
+          "collocations": [
+            "pockets of excellence",
+            "struggle to deliver consistently",
+            "deliver consistent results"
+          ],
+          "pitfalls": [
+            "不要把 pockets of greatness 误解为“整体都很优秀”，它特指零散、局部的亮点，而非全面领先。"
+          ]
+        },
+        "total_seconds": 15.951
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": "可以改成：**\"The team has some really strong spots in design, but they still can't pull it off every time.\"**\n\n改动说明：\n- `pockets of greatness` 换成 `some really strong spots`，意思一样，但更像日常随口说的，不那么书面。\n- `struggles to deliver consistently` 换成 `can't pull it off every time`，`pull it off` 是很口语的“做成、搞定”，`every time` 比 `consistently` 更自然。\n- 把 `it` 改成 `they`，口语里指代团队时常用复数，更符合日常说话习惯。\n\n如果想更随意一点，也可以说：**\"Design-wise, the team has some real highlights, but they're still hit or miss.\"** 这里 `hit or miss` 表示“时好时坏、不稳定”，非常地道。",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.991,
+        "total_seconds": 7.279
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "structure"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "sentence_type": "并列复合句（由并列连词 but 连接两个独立分句）",
+          "main_clause": "前分句主干：The team has pockets of greatness；后分句主干：it still struggles to deliver consistently",
+          "structure_breakdown": [
+            "前分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 状语 in design",
+            "后分句：主语 it（指代 the team）+ 状语 still + 谓语 struggles + 宾语 to deliver consistently",
+            "并列连词 but 连接两个分句，表转折对比关系"
+          ],
+          "logic_relations": [
+            "与前句「我们需要客观评估团队表现」构成承接关系，是对团队表现的具体评估结论",
+            "与后句「下一步要把优势融入日常流程」构成因果关系，正因为团队只有零散优势、无法稳定输出，才需要后续改进动作",
+            "分句内部通过 but 形成转折，先肯定局部优势，再指出整体稳定性不足的问题"
+          ],
+          "information_hierarchy": [
+            "核心信息：团队在设计领域有零散的突出优势，但整体交付表现不稳定",
+            "次要信息：明确优势的领域是设计，问题是无法持续稳定输出"
+          ],
+          "style_features": [
+            "采用先扬后抑的转折结构，先肯定局部成绩再指出核心问题，语气客观中立，符合绩效复盘的正式沟通风格",
+            "用词简洁务实，没有冗余修饰，信息密度高"
+          ],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets of greatness 是固定习语，表「局部的、零散的优势」",
+            "struggle to do sth 表「做某事存在困难、难以达成」",
+            "consistently 是副词，修饰 deliver，表「稳定地、持续地」",
+            "but 作为并列连词，连接两个语法地位平等的独立分句"
+          ],
+          "wording_notes": [
+            "pockets of greatness 是职场常用比喻表达，pocket 原义为「小块区域」，此处指「零散分布的优势」，比单纯说 some strengths 更形象",
+            "deliver 在职场语境中专指「交付成果、完成产出」，不是字面的「递送」",
+            "consistently 精准对应「稳定、持续」的要求，是绩效评估类语境的高频词"
+          ],
+          "reusable_patterns": [],
+          "translations": [
+            {
+              "label": "直译",
+              "text": "这个团队在设计领域有零散的优势，但它仍然难以稳定地交付成果。",
+              "recommended": false
+            },
+            {
+              "label": "意译",
+              "text": "团队在设计方面有不少亮眼的局部表现，但整体交付始终不够稳定。",
+              "recommended": true
+            }
+          ],
+          "translation_notes": [
+            "pockets of greatness 不宜直译为「伟大的口袋」，需转化为符合中文职场表达的「零散优势、局部亮眼表现」",
+            "deliver 结合职场语境译为「交付成果」更自然"
+          ],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 13.609
+      }
+    ],
+    "revised": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "所选短语语义完整，可独立作为学习单元，无需补全上下文内容。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "framing",
+              "conceding"
+            ],
+            "level": "B2",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ˈpɑːkɪts əv ˈɡreɪtnəs/",
+              "connected_speech": "of 在非重读音节中常弱读为 /əv/ 或 /ə/，greatness 的重音落在第一个音节。",
+              "audio_text": "pockets of greatness",
+              "stress_text": "POCK-ets of GREAT-ness"
+            },
+            "meaning": "指整体表现并不稳定或全面，但在局部领域、零散环节存在突出的优势或亮点。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "pockets of excellence — 同样指局部突出，更偏向正式的绩效评价语境",
+              "isolated bright spots — 侧重零散的亮眼表现，不强调“优秀”的程度"
+            ],
+            "examples": [
+              {
+                "english": "The product has pockets of greatness in its user interface, but its performance is inconsistent.",
+                "chinese": "这款产品的用户界面有不少亮眼之处，但整体表现并不稳定。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "团队绩效复盘",
+              "产品评价",
+              "客观反馈"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先承认团队在设计领域有突出亮点，再用 but 转折指出整体表现不稳定，是客观复盘时常用的先扬后抑表达。记忆时可以把 pockets 联想成“零散的小口袋”，对应局部存在的优势，方便快速套用。",
+          "reusable_patterns": [
+            {
+              "template": "[Team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+              "slots": {
+                "Team": "被评价的团队或主体",
+                "area": "表现突出的具体领域"
+              },
+              "rationale": "可迁移到各类团队复盘、绩效反馈场景，先肯定局部优势再指出整体不足。"
+            }
+          ],
+          "collocations": [
+            "have pockets of greatness",
+            "pockets of greatness in [area]",
+            "pockets of excellence"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 13.762
+      },
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": "两者都表示“局部突出、整体不均衡”，但语气不同：\n\n- **pockets of greatness**：更口语、更有画面感，像“散落在各处的闪光点”；语气偏温和，适合日常复盘或非正式反馈。\n- **islands of excellence**：更正式、更书面，像“孤立的优秀孤岛”；语气更强调“优秀部分与整体脱节”，常用于报告、评审或正式评估。\n\n职场对话：\n\nA: The team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: Right. We need to make those strengths part of our everyday process.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.566,
+        "total_seconds": 6.155
+      },
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词性短语",
+          "main_clause": "作主句谓语 has 的宾语，说明团队在设计领域存在局部突出的优势。",
+          "structure_breakdown": [
+            "核心名词 pockets 后接介词短语 of greatness 作后置定语，修饰 pockets。",
+            "pockets 此处为比喻用法，指零散分布的局部区域。"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的分句形成转折，突出局部优势与整体表现不稳定的反差。",
+            "呼应前文对团队表现的客观评估，为后续提出改进方向做铺垫。"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 7.378
+      },
+      {
+        "case": "sentence",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "sentence",
+          "completeness": "complete",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommendation_reason": "选中内容是结构完整的并列复合句，语义自足，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "conceding",
+              "contrast",
+              "framing"
+            ],
+            "level": "B2",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvər kənˈsɪstəntli/",
+              "connected_speech": "has 与 pockets 可自然连读，of 在非重读音节中弱读为 /əv/，整句重音落在 pockets、greatness、design、struggles、deliver、consistently 上。",
+              "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "stress_text": "the TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIVER con-SIS-tent-ly."
+            },
+            "meaning": "这个团队在设计领域有不少亮眼的局部表现，但整体交付质量始终不稳定。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "The team shows occasional brilliance in design, yet its output is uneven. — 侧重亮点是偶发闪现的，而非分散存在的局部优势",
+              "The team has isolated strengths in design, but it cannot perform reliably. — 侧重优势是孤立零散的，语气更平实客观"
+            ],
+            "examples": [
+              {
+                "english": "The new product team has pockets of greatness in UI design, but it still struggles to ship on time.",
+                "chinese": "这个新产品团队在 UI 设计上有不少亮眼的局部表现，但始终难以按时交付。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "团队绩效复盘",
+              "客观评价团队表现",
+              "商务沟通"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先肯定团队设计上的局部亮点，再转折指出整体交付不稳定的问题，是绩效复盘里很典型的客观评价句式。记忆时可以把 pockets of greatness 当作固定短语，搭配 but 转折结构一起套用。",
+          "reusable_patterns": [
+            {
+              "template": "[The team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+              "slots": {
+                "[The team]": "被评价的团队或主体",
+                "[area]": "表现突出的具体领域"
+              },
+              "rationale": "可迁移到各类团队绩效复盘、项目评估的客观评价场景。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness",
+            "struggle to deliver consistently",
+            "pockets of greatness in [area]"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 13.428
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": "可以改成：\n\n**\"The team has some really strong spots in design, but they still struggle to deliver consistently.\"**\n\n改动说明：\n- `pockets of greatness` 换成 `some really strong spots`：意思相近，但更口语，不像正式评估里的固定说法。\n- `has` 换成 `have`：这里把 team 看作“团队成员”，用 they/have 更自然；如果强调“团队整体”，也可以保留 `has`。\n- `it still struggles` 换成 `they still struggle`：同样是为了更贴近日常说法。\n- `deliver consistently` 保留：这是职场常用表达，意思是“稳定交付”，不需要改。\n\n如果你想更随意一点，也可以说：\n\n**\"The team has some really strong design moments, but they still struggle to deliver consistently.\"**",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 8.716,
+        "total_seconds": 11.091
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "sentence_type": "并列句，由并列连词 but 连接两个独立分句",
+          "main_clause": "分句 1：The team has pockets of greatness in design；分句 2：it still struggles to deliver consistently",
+          "structure_breakdown": [
+            "分句 1：主语 The team + 谓语 has + 宾语 pockets of greatness + 状语 in design",
+            "分句 2：主语 it + 谓语 struggles + 状语 still + 不定式短语 to deliver consistently 作补足语",
+            "两个独立分句由并列连词 but 连接，形成并列结构"
+          ],
+          "logic_relations": [
+            "前后分句为转折关系：先肯定团队在设计上的局部优势，再指出整体交付不稳定的问题",
+            "与前句“客观评估团队表现”相呼应，是对评估结论的具体展开"
+          ],
+          "information_hierarchy": [
+            "先给出正面评价：团队在设计领域存在局部优势",
+            "再通过 but 转折，指出核心问题：难以稳定交付"
+          ],
+          "style_features": [
+            "句式简洁，用 but 形成鲜明对比，符合职场复盘的客观语气",
+            "用词克制，既肯定成绩又指出问题，避免绝对化表述"
+          ],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets of greatness 为名词短语，作 has 的宾语，表“局部优势”",
+            "to deliver consistently 为不定式短语，作 struggles 的补足语，表“难以做到的事”",
+            "副词 consistently 修饰 deliver，表“稳定地交付”"
+          ],
+          "wording_notes": [
+            "pockets of greatness 为比喻用法，指“零散的、局部的优势”，而非整体优秀",
+            "deliver 在此为职场常用动词，表“交付成果、兑现承诺”"
+          ],
+          "reusable_patterns": [],
+          "translations": [
+            {
+              "label": "直译",
+              "text": "这个团队在设计方面有一些局部的优势，但它仍然难以稳定地交付。",
+              "recommended": false
+            },
+            {
+              "label": "意译",
+              "text": "团队在设计上有亮点，但整体交付不够稳定。",
+              "recommended": true
+            }
+          ],
+          "translation_notes": [
+            "pockets of greatness 不宜直译为“伟大的口袋”，应意译为“局部优势、亮点”"
+          ],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 10.504
+      }
+    ],
+    "final": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "选中的短语语义完整，可独立作为学习单元，无需额外补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "framing",
+              "conceding"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ˈpɑːkɪts əv ˈɡreɪtnəs/",
+              "connected_speech": "非重读的 of 可弱读为 /əv/ 或 /ə/",
+              "audio_text": "pockets of greatness",
+              "stress_text": "POCK-ets of GREAT-ness"
+            },
+            "meaning": "指整体表现并不均衡的情况下，零散分布的局部突出优势。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "islands of excellence — 用“岛屿”比喻独立突出的局部优势",
+              "bright spots — 指零散出现的亮眼表现"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness in its user interface.",
+                "chinese": "这款新产品的用户界面有不少亮眼的局部设计。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效复盘",
+              "优势评估",
+              "客观评价"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先承认团队在设计领域的局部优势，再转折指出整体表现不稳定的问题。记忆时可以把 pocket 联想成“小口袋”，代指零散分布的亮点。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area]",
+              "slots": {
+                "team": "被评价的主体，如团队、产品、项目",
+                "area": "表现突出的具体领域"
+              },
+              "rationale": "把 team 换成被评价的主体，area 换成表现突出的具体领域。"
+            }
+          ],
+          "collocations": [
+            "have pockets of greatness",
+            "pockets of greatness in [area]"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 11.311
+      },
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": "两者都指团队中局部突出、未覆盖整体的优势区域。`pockets of greatness` 用 “pocket” 暗示优势是零散、小范围的，语气更中性，侧重客观描述现状；`islands of excellence` 用 “island” 比喻优势像孤立岛屿，和整体表现形成更强的割裂感，语气更正式，常带“优势被平庸环境包围”的评价色彩。\n\nA: Our design team has pockets of greatness, but we still struggle to deliver consistently.\nB: We should turn those scattered strengths into repeatable everyday processes.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 2.763,
+        "total_seconds": 5.055
+      },
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词性短语",
+          "main_clause": "在句中作谓语 has 的宾语，说明团队存在的优势状态。",
+          "structure_breakdown": [
+            "核心名词 pockets 为中心词，表“零散分布的小块区域”。",
+            "介词短语 of greatness 作后置定语，修饰 pockets，表“卓越的”。"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的分句构成转折逻辑，突出局部优势与整体不足的对比。",
+            "呼应前文“客观评估团队表现”的语境，是对团队优势的具体描述。"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 7.037
+      },
+      {
+        "case": "sentence",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "sentence",
+          "completeness": "complete",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommendation_reason": "选中内容是结构完整的并列复合句，语义自足，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "contrast",
+              "framing"
+            ],
+            "level": "B2",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvər kənˈsɪstəntli/",
+              "connected_speech": "弱读提示：of 可弱读为 /əv/ 或 /ə/；重音落在 POCK-ets、GREAT-ness、de-LI-ver、con-SIS-tent-ly 上。",
+              "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "stress_text": "the team has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LI-ver con-SIS-tent-ly."
+            },
+            "meaning": "这个团队在设计领域有一些局部突出的亮点，但整体仍难以稳定地交付成果。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "The team has isolated strengths in design, but it still struggles to deliver consistently. — 用 isolated strengths 替代 pockets of greatness，强调优势是零散孤立的，而非成块分布的。",
+              "The team shows occasional brilliance in design, but it still struggles to deliver consistently. — 用 occasional brilliance 替代 pockets of greatness，强调优秀表现是偶发的，而非固定存在的局部区域。"
+            ],
+            "examples": [
+              {
+                "english": "The new product team has pockets of greatness in user research, but it still struggles to ship on time.",
+                "chinese": "这个新产品团队在用户研究方面有一些局部亮点，但仍难以按时交付。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "团队绩效评估",
+              "客观反馈",
+              "优势与不足对比"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先肯定团队设计上的局部亮点，再用转折指出其产出不稳定的问题，为后续改进做铺垫。记忆时可把 pockets of greatness 与“局部亮点”绑定，遇到评价团队表现的场景直接套用。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+              "slots": {
+                "team": "替换为被评价的具体团队或群体",
+                "area": "替换为具体的优势领域"
+              },
+              "rationale": "team 换成被评价的对象，area 换成具体的优势领域。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness in [area]",
+            "struggle to deliver consistently"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 12.404
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": "改写：The team is really strong in some parts of design, but it still has trouble delivering steady results.\n\n改动说明：\n- 把 `pockets of greatness` 换成 `really strong in some parts`，去掉比喻，直接说“在设计的某些部分很强”，更符合日常表达。\n- 把 `struggles to deliver consistently` 换成 `has trouble delivering steady results`，用更口语的 `has trouble` 替代 `struggles`，同时保留“难以稳定交付”的意思。\n- 保留 `but` 转折结构，先肯定优势再指出问题的语气不变。",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.741,
+        "total_seconds": 6.278
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "status": 200,
+        "output": {
+          "sentence_type": "并列句，由并列连词 but 连接两个独立分句",
+          "main_clause": "分句 1：The team（主）has（谓）pockets of greatness（宾）in design（状语）；分句 2：it（主）still struggles（谓）to deliver consistently（不定式短语作状语）",
+          "structure_breakdown": [
+            "分句 1 为“主谓宾+地点状语”结构，in design 限定 pockets of greatness 的领域",
+            "分句 2 为“主谓+不定式状语”结构，to deliver consistently 说明 struggles 的具体内容",
+            "but 作为并列连词，连接两个语义对立的独立分句，无主从嵌套关系"
+          ],
+          "logic_relations": [
+            "与前句“客观评估团队表现”构成承接关系，给出具体评估结论",
+            "与后句“将优势融入日常流程”构成因果关系，解释后续改进的必要性"
+          ],
+          "information_hierarchy": [
+            "核心信息：团队在设计领域有局部优势，但整体交付稳定性不足",
+            "次要信息：明确优势的领域是设计，问题是交付不一致"
+          ],
+          "style_features": [
+            "用 but 形成鲜明语义转折，对比局部优势与整体短板",
+            "用词简洁务实，符合职场绩效沟通的直白风格"
+          ],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets of 是固定搭配，表“零散的、局部的”，修饰不可数抽象名词 greatness",
+            "struggle to do sth 为固定搭配，表“做某事很吃力、难以做到”",
+            "副词 consistently 修饰动词 deliver，表“稳定地、持续地”"
+          ],
+          "wording_notes": [
+            "pockets of greatness 是比喻用法，将零散的优势比作“口袋状的局部区域”",
+            "deliver 在此为职场常用词，表“交付成果、产出”"
+          ],
+          "reusable_patterns": [],
+          "translations": [
+            {
+              "label": "直译",
+              "text": "这个团队在设计领域有一些零散的优势，但它仍然难以稳定地交付成果。",
+              "recommended": false
+            },
+            {
+              "label": "意译",
+              "text": "这个团队在设计上有不少亮眼的地方，但整体交付水平不够稳定。",
+              "recommended": true
+            }
+          ],
+          "translation_notes": [
+            "pockets of greatness 不宜直译为“伟大的口袋”，需转化为符合中文职场表达的“零散优势、亮眼之处”"
+          ],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 11.264
+      }
+    ],
+    "verification": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:53:32.422336+00:00",
+        "prompt_sha256": "f6ac4b736f0e943af9efdf2d603da08b7b7b3e40db5ae992b0ff2e298996e865",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "所选内容边界完整，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "framing",
+              "conceding"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ˈpɑːkɪts əv ˈɡreɪtnəs/",
+              "connected_speech": "非重读的 of 可弱读为 /əv/ 或 /ə/，学习时重音落在 POCK-ets 和 GREAT- 上。",
+              "audio_text": "pockets of greatness",
+              "stress_text": "POCK-ets of GREAT-ness"
+            },
+            "meaning": "指零散分布的、局部的突出优势或优秀表现，而非整体都达到高水平。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "islands of excellence — 用“岛屿”比喻孤立存在的优秀板块，强调与周边普通区域的分隔感",
+              "bright spots — 用“亮点”指代局部可取之处，语气更平实通用"
+            ],
+            "examples": [
+              {
+                "english": "The product has pockets of greatness in its user interface, but the backend is unstable.",
+                "chinese": "这款产品的用户界面有不少亮眼之处，但后端不稳定。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效评估",
+              "客观评价",
+              "局部优势"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先承认团队在设计上有突出亮点，再用 but 转折指出整体表现不稳定。记忆时把 pockets 联想成“零散分布的小块区域”，就能记住它表示局部而非整体优秀。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area]",
+              "slots": {
+                "team": "被评价的团队或主体",
+                "area": "表现突出的具体领域"
+              },
+              "rationale": "把 team 换成被评价的对象，area 换成具体表现突出的领域。"
+            }
+          ],
+          "collocations": [
+            "have pockets of greatness",
+            "pockets of greatness in [area]"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 11.344
+      },
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:53:50.824086+00:00",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "status": 200,
+        "output": "两者都指团队中局部突出、但尚未覆盖整体的优势区域。`pockets of greatness` 用“小区域”的意象，强调优势零散分布、规模有限；`islands of excellence` 用“孤岛”的意象，更突出这些优势与周围普通水平之间的隔离感。语气还取决于说话人是在做绩效诊断，还是在强调改进方向。\n\nA: The team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: Our next step is to make those strengths part of our everyday process.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.584,
+        "total_seconds": 6.666
+      },
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:53:43.766490+00:00",
+        "prompt_sha256": "46bb682b27591ee170f637dbf194d4121cea69086066bb1d96075179b395957c",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词短语",
+          "main_clause": "在句中作 has 的宾语，说明团队拥有的能力状态。",
+          "structure_breakdown": [
+            "中心名词 pockets 为复数形式，后接 of greatness 介词短语作后置修饰。",
+            "greatness 为抽象名词，指卓越的能力或表现。"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的分句形成转折，突出局部优势与整体不稳定的反差。"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 7.057
+      },
+      {
+        "case": "sentence",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:53:57.490846+00:00",
+        "prompt_sha256": "f6ac4b736f0e943af9efdf2d603da08b7b7b3e40db5ae992b0ff2e298996e865",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "sentence",
+          "completeness": "complete",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommendation_reason": "所选内容是结构完整的并列复合句，语义边界清晰，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "conceding",
+              "contrast",
+              "framing"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvər kənˈsɪstəntli/",
+              "connected_speech": "功能词 of 可弱读为 /əv/ 或 /ə/，重音落在 POCK-ets、GREAT-ness、de-LIV-er、con-SIS-tent-ly 上。",
+              "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "stress_text": "the team has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIV-er con-SIS-tent-ly"
+            },
+            "meaning": "这个团队在设计领域有不少零散的突出亮点，但整体交付表现依然不稳定。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "scattered bright spots — 侧重零散的亮眼表现，不强调“优秀”的程度",
+              "isolated strong areas — 侧重局部独立的优势板块，不带有“零散分布”的意象"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness in its UI, but its performance is still inconsistent.",
+                "chinese": "这款新产品的用户界面有不少亮眼之处，但性能表现依然不稳定。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效复盘",
+              "团队评价",
+              "客观反馈"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先肯定团队在设计领域的局部突出表现，再转折指出整体交付不稳定的问题，为后续改进做铺垫。记忆时可把 pockets of 联想成“零散的小块”，搭配具体领域就能快速套用。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+              "slots": {
+                "team": "替换为具体的团队或主体",
+                "area": "替换为具体的业务或能力领域"
+              },
+              "rationale": "team 可替换为任意被评价的团队或主体，area 可替换为具体的能力或业务领域。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness in [area]",
+            "struggle to deliver consistently"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 11.825
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:54:19.783656+00:00",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "status": 200,
+        "output": "**改写版本**：The team has some really strong spots in design, but it still struggles to deliver consistently.\n\n**改动说明**：\n- 把 `pockets of greatness` 换成 `some really strong spots`：去掉了原句里偏书面的比喻，用日常描述“有亮点”的说法，同时保留“局部优秀、不是整体都好”的意思。\n- 后半句 `but it still struggles to deliver consistently` 保持不变：这部分本身就是自然的口语表达，不需要改动。\n- 整体语气没有变化：前半句先肯定设计上的优势，后半句转折指出交付不稳定的问题，符合原句先扬后抑的态度。",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.425,
+        "total_seconds": 6.243
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:54:09.316828+00:00",
+        "prompt_sha256": "46bb682b27591ee170f637dbf194d4121cea69086066bb1d96075179b395957c",
+        "status": 200,
+        "output": {
+          "sentence_type": "由并列连词 but 连接的并列句，两个独立限定分句构成转折关系",
+          "main_clause": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "structure_breakdown": [
+            "前一分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 范围状语 in design",
+            "后一分句：主语 it（指代 the team）+ 谓语 struggles + 不定式补足成分 to deliver consistently",
+            "but 作为并列连词连接两个独立分句，标示前后语义的转折对比"
+          ],
+          "logic_relations": [
+            "与前句“需要客观评估团队表现”构成承接关系，本句给出具体评估结论",
+            "与后句“将优势融入日常流程”构成因果铺垫，点明当前问题指向改进方向"
+          ],
+          "information_hierarchy": [
+            "先肯定团队在设计领域存在零散的优秀表现，再转折指出整体交付不稳定的核心问题",
+            "转折后为语义重心，突出团队当前的主要短板"
+          ],
+          "style_features": [
+            "采用先扬后抑的转折结构，先肯定再指出问题，语气客观中立",
+            "用词简洁直白，符合职场绩效复盘的正式沟通风格"
+          ],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets of 是固定搭配，后接抽象名词表示“零散分布的少量优质部分”",
+            "struggle to do sth 表示“费力做某事”，不定式补充说明 struggle 的具体动作"
+          ],
+          "wording_notes": [
+            "pockets of greatness 用比喻手法，将零散的优秀表现比作分散的小块区域",
+            "consistently 修饰 deliver，强调交付质量缺乏稳定性"
+          ],
+          "reusable_patterns": [],
+          "translations": [
+            {
+              "label": "直译",
+              "text": "这个团队在设计领域有零散的优秀表现，但它仍然难以稳定地交付成果。",
+              "recommended": false
+            },
+            {
+              "label": "意译",
+              "text": "团队在设计方面有不少亮眼的闪光点，但整体交付质量始终不稳定。",
+              "recommended": true
+            }
+          ],
+          "translation_notes": [
+            "pockets of greatness 不宜直译为“伟大的口袋”，意译为“亮眼的闪光点”更符合中文职场表达习惯"
+          ],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 10.467
+      }
+    ],
+    "accepted": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:56:43.489455+00:00",
+        "prompt_sha256": "714750f08e831dbfd5a1a75f4f1c0b55d3e0c8cc1542d4dc13964d4beb0b0710",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "所选内容边界完整，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "framing",
+              "conceding"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ˈpɑːkɪts əv ˈɡreɪtnəs/",
+              "connected_speech": "of 非重读时可弱读为 /əv/ 或 /ə/，重音落在 POCK-ets 和 GREAT-ness 上。",
+              "audio_text": "pockets of greatness",
+              "stress_text": "POCK-ets of GREAT-ness"
+            },
+            "meaning": "指团队或事物仅在局部领域、特定环节存在的突出优势，而非整体全面优秀。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "islands of excellence — 用“岛屿”比喻分散的突出亮点，和 pockets 的“小区域”意象相近",
+              "occasional flashes of brilliance — 侧重优势是偶发闪现的，而非稳定存在的局部能力"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness in its user interface, but its performance is still uneven.",
+                "chinese": "这款新产品的用户界面有不少亮点，但整体表现仍不稳定。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效评估",
+              "客观评价",
+              "先扬后抑"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先承认团队在设计上有亮点，再用 but 引出整体表现不稳定的问题，形成先扬后抑的评价。记忆时可把 pocket 联想成“局部小口袋”，表示只在某些区域存在的优势。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area]",
+              "slots": {
+                "team": "被评价的团队或主体",
+                "area": "表现突出的具体领域"
+              },
+              "rationale": "team 替换被评价的主体，area 替换具体表现突出的领域。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness in [area]",
+            "have pockets of greatness",
+            "show pockets of greatness"
+          ],
+          "pitfalls": [
+            "pockets of greatness 中的 pocket 必须用复数 pockets，不能写成单数 pocket of greatness。"
+          ]
+        },
+        "total_seconds": 11.139
+      },
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:57:01.354442+00:00",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "status": 200,
+        "output": "两者都指团队中局部突出、但尚未覆盖整体的优势区域。`pockets of greatness` 把优势比作散落在整体中的小块区域，语气更中性，强调“零散分布”的状态；`islands of excellence` 把优势比作被普通区域隔开的独立岛屿，语气更突出这些优势与整体之间的隔离感，也更强调它们的稀缺性。具体语气还会受说话人态度和上下文影响。\n\nA: The team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: We should turn those scattered strengths into part of our everyday process.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.592,
+        "total_seconds": 6.428
+      },
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:56:54.629350+00:00",
+        "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词短语",
+          "main_clause": "在句中作 has 的宾语，说明团队具备的能力状态。",
+          "structure_breakdown": [
+            "中心词为 pockets，后接 of greatness 介词短语修饰 pockets，表所属范围。",
+            "greatness 为抽象名词，作介词 of 的宾语。"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的分句形成转折，突出团队能力的不均衡性。",
+            "呼应前文“客观评估团队表现”的语境，是对团队优势的具体描述。"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 6.725
+      },
+      {
+        "case": "sentence",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:57:07.782872+00:00",
+        "prompt_sha256": "714750f08e831dbfd5a1a75f4f1c0b55d3e0c8cc1542d4dc13964d4beb0b0710",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "sentence",
+          "completeness": "complete",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommendation_reason": "所选内容边界完整，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "contrast",
+              "framing"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvər kənˈsɪstəntli/",
+              "connected_speech": "非重读的 of 可弱读为 /əv/ 甚至 /ə/，其余实词按标注重音朗读即可。",
+              "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "stress_text": "the TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIV-er con-SIS-tent-ly."
+            },
+            "meaning": "这个团队在设计领域有零星的亮眼表现，但始终难以稳定地交付成果。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "islands of excellence — 用“孤岛”比喻局部突出，和 pockets of greatness 意象相近，都指优势零散不成体系",
+              "struggle to perform consistently — 替换原句后半段，把“交付成果”的具体动作泛化为整体表现稳定"
+            ],
+            "examples": [
+              {
+                "english": "The new team has pockets of greatness in product design, but it still struggles to hit deadlines consistently.",
+                "chinese": "这个新团队在产品设计上有零星亮点，但始终难以稳定地按期交付。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效复盘",
+              "团队评价",
+              "平衡反馈"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先肯定团队在设计领域的局部亮点，再转折指出其产出不稳定的短板，是绩效复盘里平衡评价的常用表达。记忆时可把 pockets of 联想成“零散的小口袋”，对应“局部、零星”的含义。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+              "slots": {
+                "team": "替换为被评价的具体团队或主体",
+                "area": "替换为团队表现突出的具体业务领域"
+              },
+              "rationale": "team 换成具体团队，area 换成对应的优势业务方向，即可套用在各类绩效评价场景中。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness in [area]",
+            "struggle to deliver consistently"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 11.926
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:57:28.728587+00:00",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "status": 200,
+        "output": "改写：The team has some really strong design work, but it still can't deliver consistently.\n\n改动说明：\n- 把 has pockets of greatness 换成 has some really strong design work，去掉比喻，直接说“有一些很强的设计成果”，更符合日常表达。\n- 保留 but it still can't deliver consistently，维持“先肯定、再指出问题”的转折语气。\n- 用 can't 替换 struggles to，意思从“努力但做不到”变成“做不到”，更直接；如果想保留“努力但吃力”的意味，也可以说 but it still struggles to deliver consistently。",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.463,
+        "total_seconds": 6.396
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T09:57:19.711183+00:00",
+        "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+        "status": 200,
+        "output": {
+          "sentence_type": "并列句（由并列连词 but 连接两个独立限定分句）",
+          "main_clause": "The team has pockets of greatness in design; it still struggles to deliver consistently.",
+          "structure_breakdown": [
+            "第一分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 范围状语 in design。",
+            "第二分句：主语 it（指代 the team）+ 谓语 struggles + 不定式补足成分 to deliver consistently。",
+            "并列连词 but 连接两个独立分句，表转折对比关系。"
+          ],
+          "logic_relations": [
+            "与前句“客观评估团队表现”构成承接，给出评估的具体结论。",
+            "与后句“将优势融入日常流程”构成因果铺垫，点明问题所在。"
+          ],
+          "information_hierarchy": [
+            "先肯定团队在设计领域存在零散的优秀表现，再转折指出其交付不稳定的核心问题。",
+            "转折后为信息重点，突出团队当前的主要短板。"
+          ],
+          "style_features": [
+            "两个分句长度相近，结构对称，形成清晰的转折对比。",
+            "用词简洁务实，符合职场绩效评估的表达风格。"
+          ],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets of + 抽象名词表示“零散分布的少量某类特质”，pocket 用复数形式。",
+            "struggle 后接 to-infinitive 作补足成分，说明艰难完成的具体动作。"
+          ],
+          "wording_notes": [
+            "pockets of greatness 是比喻用法，指局部、零散的优秀表现，而非整体优秀。",
+            "deliver 在此为职场常用动词，指“交付成果、兑现表现”。"
+          ],
+          "reusable_patterns": [],
+          "translations": [
+            {
+              "label": "直译",
+              "text": "这个团队在设计领域有一些零散的优秀之处，但它仍然难以稳定地交付成果。",
+              "recommended": false
+            },
+            {
+              "label": "意译",
+              "text": "这个团队在设计上有不少亮点，但整体表现不够稳定。",
+              "recommended": true
+            }
+          ],
+          "translation_notes": [
+            "pockets of greatness 不宜直译为“伟大的口袋”，需转化为符合中文职场表达的“零散亮点”。"
+          ],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 9.017
+      }
+    ],
+    "final-check": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T10:01:56.679184+00:00",
+        "prompt_sha256": "f24bf650157c340807b2d1d9204dafab7b618af63be08344002ff0bb94c6cc4f",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "所选内容边界完整，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "framing",
+              "conceding"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ˈpɑːkɪts əv ˈɡreɪtnəs/",
+              "connected_speech": "of 弱读为 /əv/ 或 /ə/，重音落在 POCK- 和 GREAT- 上。",
+              "audio_text": "pockets of greatness",
+              "stress_text": "POCK-ets of GREAT-ness"
+            },
+            "meaning": "指团队或事物中零散分布、局部突出的优秀表现，并非整体全程都保持高水平。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "flashes of brilliance — 侧重短暂闪现的亮眼表现，而非稳定存在的局部优势",
+              "isolated strengths — 侧重彼此独立的零散优势，不带有“高光突出”的褒义色彩"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness in its user interface, but the overall experience is inconsistent.",
+                "chinese": "这款新产品的用户界面有不少亮眼之处，但整体体验并不稳定。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效评估",
+              "客观评价",
+              "优势分析"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先承认团队在设计领域有亮眼表现，再转折指出整体产出不稳定。记忆时可把 pocket 联想成“零散的小区域”，用来描述局部突出的优势。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area]",
+              "slots": {
+                "team": "替换为被评价的团队或主体",
+                "area": "替换为具体表现突出的领域"
+              },
+              "rationale": "team 换成被评价的对象，area 换成具体表现突出的领域。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness in [area]",
+            "have pockets of greatness"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 9.553
+      },
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T10:02:13.852941+00:00",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "status": 200,
+        "output": "两者都表示“团队中只有局部、零散的优秀表现，而非整体优秀”。`pockets of greatness` 用“口袋”作比喻，给人的画面是优秀之处像小口袋一样嵌在整体之中，语气更平实、日常；`islands of excellence` 用“岛屿”作比喻，给人的画面是优秀之处像被平庸区域隔开的小岛，更突出这些亮点与周围不足的分离感。两者的语气差异主要来自这个意象，正式度高低还需看具体语境。\n\nA: The team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: We should turn those scattered strengths into repeatable everyday results.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.763,
+        "total_seconds": 7.451
+      },
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T10:02:06.232789+00:00",
+        "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词短语（量词 + 抽象名词）",
+          "main_clause": "作主句谓语 has 的宾语，说明团队在设计领域存在局部突出的优势。",
+          "structure_breakdown": [
+            "中心词 pockets 为复数名词，后接 of greatness 介词短语作后置修饰。",
+            "greatness 为抽象不可数名词，作介词 of 的宾语。"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的分句形成转折，突出局部优势与整体表现不稳定的对比。",
+            "呼应前句对团队表现的客观审视，为后续固化优势的行动做铺垫。"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 7.619
+      },
+      {
+        "case": "sentence",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently."
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T10:02:21.304242+00:00",
+        "prompt_sha256": "f24bf650157c340807b2d1d9204dafab7b618af63be08344002ff0bb94c6cc4f",
+        "status": 200,
+        "output": {
+          "analysis_source": "ai",
+          "provider_notice": null,
+          "selection_type": "sentence",
+          "completeness": "complete",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "recommendation_reason": "所选内容边界完整，无需补全。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "conceding",
+              "contrast",
+              "framing"
+            ],
+            "level": "C1",
+            "register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn bʌt ɪt stɪl ˈstrʌɡəlz tuː dɪˈlɪvər kənˈsɪstəntli/",
+              "connected_speech": "非重读的 of 常弱读为 /əv/ 甚至 /ə/，重音落在 pockets、greatness、design、struggles、deliver、consistently 这些承载核心语义的词上。",
+              "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "stress_text": "the TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIVER con-SIS-tent-ly"
+            },
+            "meaning": "这个团队在设计领域有不少亮眼的局部表现，但整体交付仍然难以保持稳定。",
+            "pragmatic_function": "",
+            "similar_expressions": [
+              "The team has isolated strengths in design — 用 isolated strengths 替换 pockets of greatness，强调亮点是零散、孤立存在的",
+              "but it still fails to deliver consistently — 用 fails to 替换 struggles to，把“努力但做不到”的困难语气加强为“未能做到”"
+            ],
+            "examples": [
+              {
+                "english": "The new product has pockets of greatness, but its overall performance is uneven.",
+                "chinese": "这款新产品有不少亮眼的局部设计，但整体表现参差不齐。",
+                "typical": true
+              }
+            ],
+            "usage_chips": [
+              "绩效复盘",
+              "团队评价",
+              "先扬后抑",
+              "客观反馈"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "",
+            "main_clause": "",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [],
+            "translations": [],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "这句话先肯定团队在设计领域的局部亮点，再用转折指出整体交付不稳定的问题，是绩效复盘里平衡褒贬的典型表达。记忆时可以把 pockets of greatness 当作固定短语，直接套用到“局部优秀但整体不稳”的评价场景。",
+          "reusable_patterns": [
+            {
+              "template": "[team] has pockets of greatness in [area], but it still struggles to deliver consistently.",
+              "slots": {
+                "team": "被评价的团队或主体",
+                "area": "表现突出的具体领域"
+              },
+              "rationale": "把 team 换成具体团队，area 换成该团队表现亮眼的业务方向，即可复用先扬后抑的评价框架。"
+            }
+          ],
+          "collocations": [
+            "pockets of greatness",
+            "struggle to deliver consistently",
+            "pockets of greatness in [area]"
+          ],
+          "pitfalls": []
+        },
+        "total_seconds": 12.571
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T10:02:44.055037+00:00",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "status": 200,
+        "output": "改写：The team has some really strong design work, but it still can't deliver that level consistently.\n\n改动说明：\n- 把 `pockets of greatness` 换成 `some really strong design work`，去掉比喻，直接说设计里有突出的好作品，更符合日常口语。\n- 保留 `but it still struggles to deliver consistently` 的转折结构，用 `can't deliver that level consistently` 表达同样的意思：不是完全做不到，而是没法稳定保持高水平。\n- 用 `that level` 指代前面的 `really strong design work`，让前后衔接更自然，同时保留先肯定再指出问题的语气。",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 4.628,
+        "total_seconds": 6.631
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "started_at": "2026-11-05T10:02:33.876098+00:00",
+        "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+        "status": 200,
+        "output": {
+          "sentence_type": "并列句",
+          "main_clause": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "structure_breakdown": [
+            "前一分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 范围状语 in design。",
+            "后一分句：主语 it（指代 the team）+ 谓语 struggles + 不定式补足成分 to deliver consistently。",
+            "并列连词 but 连接两个独立分句，形成语义转折。"
+          ],
+          "logic_relations": [
+            "but 连接前后分句，形成「局部有优势 vs 整体不稳定」的转折对比。",
+            "承接上一句「客观评估团队表现」，给出具体评估结论。"
+          ],
+          "information_hierarchy": [
+            "先给出团队设计领域的局部优势，再转折指出整体交付不稳定的问题。",
+            "后一分句为语义重心，突出团队当前的核心短板。"
+          ],
+          "style_features": [
+            "两个分句长度相近，结构对称，形成平衡的转折对比。",
+            "用词平实客观，符合工作复盘的正式沟通风格。"
+          ],
+          "usage_scenarios": [],
+          "grammar_points": [
+            "pockets of + 抽象名词表示零散分布的少量特质，greatness 为不可数名词。",
+            "struggle to do sth 表示费力做某事，to deliver 是 struggles 的不定式补足成分。"
+          ],
+          "wording_notes": [
+            "pockets of greatness 是比喻用法，指零散存在的优秀表现，而非完整的强大实力。",
+            "consistently 修饰 deliver，强调交付质量的稳定性不足。"
+          ],
+          "reusable_patterns": [],
+          "translations": [
+            {
+              "label": "直译",
+              "text": "这个团队在设计领域有零星的优秀表现，但它仍然难以稳定地交付成果。",
+              "recommended": false
+            },
+            {
+              "label": "意译",
+              "text": "这个团队在设计上有不少亮眼的地方，但整体交付始终不够稳定。",
+              "recommended": true
+            }
+          ],
+          "translation_notes": [
+            "pockets of greatness 译为「零星的优秀表现」或「不少亮眼的地方」，贴合职场复盘语境。"
+          ],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 10.179
+      }
+    ],
+    "thinking": [
+      {
+        "case": "phrase",
+        "task": "followup",
+        "model": "doubao-seed-2-1-lite-260915",
+        "thinking": "minimal",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "status": 200,
+        "finish_reason": "stop",
+        "output": "两者都指团队只有少数局部做得很好，整体尚未稳定发挥。`pockets of greatness` 强调散落、不连续的亮点，语气偏中性务实，类似业务复盘里的事实陈述；`islands of excellence` 强调亮点彼此割裂、孤立，带有“优势没有连成整体”的评价意味，语气更正式一点，但具体偏向仍取决于上下文。\n\nA: Our team has pockets of greatness in design, but it still struggles to deliver consistently.\nB: Right, our next step is to make those strengths part of our everyday process.",
+        "first_delta_seconds": 4.953,
+        "total_seconds": 6.939
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "model": "doubao-seed-2-1-lite-260915",
+        "thinking": "minimal",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "output": "{\"sentence_type\": \"并列复合句（compound-complex sentence，含两个并列独立分句）\", \"main_clause\": \"The team has pockets of greatness in design, but it still struggles to deliver consistently.\", \"structure_breakdown\": [\"由并列连词 but 连接两个句法独立的并列分句，前后语义形成鲜明转折对比。\", \"前一分句：主语 The team + 谓语 has + 宾语 pockets of greatness + 地点状语 in design。\", \"后一分句：主语 it + 状语 still + 谓语 struggles + 不定式补足语 to deliver consistently。\"], \"grammar_points\": [\"pockets of greatness 中 pocket 为名词复数形式，比喻指零散存在的局部优秀表现，后接介词短语修饰范围。\", \"struggle to do sth. 为固定搭配，不定式短语作 struggle 的补足语，说明挣扎的具体行为。\", \"deliver consistently 为固定职场搭配，意为稳定交付成果，副词 consistently 修饰动词 deliver。\"], \"logic_relations\": [\"与前句“客观评估团队表现”顺承，给出评估的具体结论。\", \"与后句“下一步将优势纳入日常流程”构成因果：因当前优势零散，故需要推动固化。\"], \"information_hierarchy\": [\"先肯定设计领域的局部亮点，再通过 but 转折指出整体交付不稳定的核心短板。\", \"转折后为语义重心，突出问题导向，承接前文的客观评估需求。\"], \"wording_notes\": [\"pockets of greatness 是职场商务中常用的比喻表达，替代直白的“some good parts”，更形象。\", \"deliver consistently 是绩效评估高频短语，精准表达“稳定产出成果”的含义。\"], \"style_features\": [\"采用先扬后抑的转折结构，既避免全盘否定，又明确指出待改进的核心问题。\", \"用词正式克制，符合绩效复盘类职场沟通的中性客观风格。\"], \"usage_scenarios\": [], \"reusable_patterns\": [], \"translations\": [{\"label\": \"直译\", \"text\": \"这个团队在设计领域拥有零散的闪光点，但它仍然难以稳定地交付成果。\", \"recommended\": false}, {\"label\": \"意译\", \"text\": \"团队在设计上有不少亮眼的局部表现，但整体交付的稳定性还不足。\", \"recommended\": true}], \"translation_notes\": [\"pockets of greatness 未直译为“ greatness 的口袋”，意译为“零散闪光点/局部亮眼表现”以符合中文表达习惯。\"], \"background_context\": null, \"evidence\": [\"The team has pockets of greatness in design, but it still struggles to deliver consistently.\"]}",
+        "finish_reason": "stop",
+        "usage": {
+          "completion_tokens": 564,
+          "prompt_tokens": 1000,
+          "total_tokens": 1564,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "status": 200,
+        "total_seconds": 14.174
+      }
+    ],
+    "thinking-low": [
+      {
+        "case": "phrase",
+        "task": "followup",
+        "model": "doubao-seed-2-1-lite-260915",
+        "thinking": "low",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "status": 200,
+        "finish_reason": "stop",
+        "output": "二者核心含义一致，都指团队/组织中零散存在、未覆盖全局的优质表现，默认整体表现尚未达到同一优秀水平。\n语气和隐含差异来自喻体本身：\n- `pockets of greatness` 用“衣料上嵌着的零散口袋”做喻，只是点出这些优秀部分是分布在整体表现里的小块区块，语气偏中性务实，更像日常工作中的直白观察，不刻意强调这些亮点和周边的割裂关系。\n- `islands of excellence` 用“被普通区域隔开的孤岛”做喻，自带这些优秀部分孤立存在、和周边脱节、经验没有扩散复用的隐含意味，语气更偏向带导向性的评估，暗指优秀经验没有规模化落地，刚好呼应把局部优势融入日常流程的诉求。\n\n两句职场对话：\nA: We found clear pockets of greatness in the user research phase during this sprint.\nB: Right, we shouldn’t leave these strong practices as isolated islands of excellence, and should roll them out to the whole team next week.",
+        "first_delta_seconds": 20.454,
+        "total_seconds": 21.597
+      },
+      {
+        "case": "sentence",
+        "task": "syntax",
+        "model": "doubao-seed-2-1-lite-260915",
+        "thinking": "low",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "selection_type": "sentence",
+          "kind": "chunk"
+        },
+        "output": "{\"sentence_type\":\"并列句（Compound sentence）\",\"main_clause\":\"两个独立分句主干：The team has pockets of greatness in design；it struggles to deliver consistently。\",\"structure_breakdown\":[\"两个语义独立的分句由并列连词 but 连接，构成标准并列句结构。\",\"第一分句内 in design 为后置介词短语，限定 pockets of greatness 的所属领域。\",\"第二分句内 to deliver consistently 为不定式短语，作不及物动词 struggles 的补足成分。\"],\"grammar_points\":[\"pockets of 在此表“零散分布的少量特质”，greatness 为不可数名词作宾语。\",\"struggle 后接不定式，用于表述“难以完成某事”的动作趋向。\"],\"logic_relations\":[\"承接前句“客观评估团队表现”的指引，给出具体评估结论。\",\"分句间由 but 引出转折，对比“局部设计优势”与“交付稳定性不足”。\"],\"information_hierarchy\":[\"核心信息：团队表现存在两面性，设计有亮点但整体交付不稳定。\",\"内容为后句“将优势融入日常流程”的行动提议提供事实支撑。\"],\"wording_notes\":[\"pockets of greatness 是职场常用比喻，指零散存在的优秀表现。\",\"consistently 作频度状语，精准对应交付质量不稳定的问题指向。\"],\"style_features\":[\"采用先肯定后指出问题的转折句式，表述客观克制。\",\"用词平实简洁，适配工作绩效复盘的正式表达风格。\"],\"usage_scenarios\":[],\"reusable_patterns\":[],\"translations\":[{\"label\":\"直译\",\"text\":\"这个团队在设计领域有零星的出色表现，但它仍然难以稳定地交付成果。\",\"recommended\":false},{\"label\":\"意译\",\"text\":\"这支团队的设计能力虽有不少闪光之处，但整体交付表现始终不够稳定。\",\"recommended\":true}],\"translation_notes\":[\"pockets of greatness 不可直译为“伟大的口袋”，需结合职场语境做意译。\"],\"background_context\":null,\"evidence\":[\"当前句原文：The team has pockets of greatness in design, but it still struggles to deliver consistently.\"]}",
+        "finish_reason": "stop",
+        "usage": {
+          "completion_tokens": 1882,
+          "prompt_tokens": 1003,
+          "total_tokens": 2885,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1431
+          }
+        },
+        "status": 200,
+        "total_seconds": 27.42
+      }
+    ],
+    "followup-low": [
+      {
+        "case": "phrase",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "question": "和 islands of excellence 相比，语气有什么不同？给我一段两句的职场对话。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "output": "两者的核心含义一致，都指团队中零散分布、没有覆盖全局的优秀能力区块，而非整体达到优秀水平。\n- `pockets of greatness` 以“口袋”为喻，把零散亮点想象成嵌在整块布料上的小兜，给人的感受是这些优势是从团队整体中自然生长出来的，和周围的普通表现没有生硬割裂，更偏向“藏在日常里、尚未被系统挖掘的零散闪光点”，不会刻意把优秀部分和普通部分对立。\n- `islands of excellence` 以“岛屿”为喻，把优秀区块想象成被平庸的“海洋”隔开的独立陆地，更突出这些优秀部分和团队其他环节是脱节、孤立的，自带“和整体割裂、无法辐射带动周边”的意味。\n两者没有固定的正式度或口语度高低，具体语气感受还要结合上下文的复盘立场判断。\n\n两句职场对话：\nA: When we reviewed the team’s recent design work, we noticed we have pockets of greatness that never get carried through to final delivery.\nB: That’s exactly why we’re mapping those high-performing workflows to turn them into repeatable team-wide standards, instead of letting them stay isolated islands of excellence.",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 23.15,
+        "total_seconds": 24.546,
+        "thinking": "low",
+        "transport": "application adapter directly"
+      },
+      {
+        "case": "sentence",
+        "task": "followup",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "question": "把这句话换成更自然的日常口语，保留先肯定再指出问题的语气，并说明改动。",
+          "history": []
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "prompt_sha256": "9a89746bda84f5c8d853121833b826db088c256ac83c04ce7e45d4ff0f885a6a",
+        "output": "改写版本：Our team has some genuinely standout design work, but we still struggle to deliver consistent results.\n\n改动说明：\n1.  **替换书面比喻**：原句的 `pockets of greatness` 是偏正式的职场比喻，指零散分布的优秀片段，日常口语换成 `some genuinely standout design work`，保留“有亮眼设计、但并非整体全优”的核心意思，去掉原比喻的生硬感。\n2.  **调整指代视角**：原句用第三人称 `it` 指代团队，是旁观式的报告语气，日常内部交流换成第一人称 `we`，贴合说话人是团队成员的身份，更自然不疏离。\n3.  **简化书面表达**：原句的 `deliver consistently` 是偏正式的职场短语，调整为 `deliver consistent results`，把抽象的动作描述落地为日常常用的“交付稳定成果”的说法，没有改变“持续输出有困难”的程度，也完整保留了先肯定亮点、再点出问题的转折语气。",
+        "events": [
+          "delta",
+          "done"
+        ],
+        "first_delta_seconds": 31.68,
+        "total_seconds": 32.935,
+        "thinking": "low",
+        "transport": "application adapter directly"
+      }
+    ],
+    "pro": [
+      {
+        "case": "phrase",
+        "task": "explain",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness"
+        },
+        "model": "doubao-seed-2-1-pro-260915",
+        "transport": "application adapter directly",
+        "output": {
+          "analysis_source": "fallback",
+          "provider_notice": "AI 分析暂时不可用；当前仅保留你的原始选择，不会猜测含义或擅自补全边界。 Doubao rejected the selection analysis request (HTTP 404).",
+          "selection_type": "phrase",
+          "completeness": "complete",
+          "selected_text": "pockets of greatness",
+          "recommended_text": "pockets of greatness",
+          "recommendation_reason": "AI 未完成边界判断，因此默认按你实际选中的内容保存。",
+          "fields": {
+            "kind": "chunk",
+            "tags": [
+              "discourse"
+            ],
+            "level": "B1",
+            "usage_register": "neutral"
+          },
+          "note_placeholder": "可选：写下你的理解、联想或使用场景",
+          "explanation": {
+            "pronunciation": {
+              "ipa": "待 AI 分析",
+              "connected_speech": "AI 可用后会结合上下文分析重音、弱读和连读。",
+              "audio_text": "pockets of greatness",
+              "stress_text": ""
+            },
+            "meaning": "AI 暂时不可用，无法可靠解释这段选择在当前上下文中的具体含义。",
+            "pragmatic_function": "AI 暂时不可用，无法可靠判断它在这段对话中的语用作用。",
+            "similar_expressions": [],
+            "examples": [],
+            "usage_chips": [
+              "等待 AI 分析"
+            ]
+          },
+          "syntax_analysis": {
+            "sentence_type": "待 AI 判断",
+            "main_clause": "待 AI 分析",
+            "structure_breakdown": [],
+            "logic_relations": [],
+            "information_hierarchy": [],
+            "style_features": [],
+            "usage_scenarios": [],
+            "grammar_points": [],
+            "wording_notes": [],
+            "reusable_patterns": [
+              {
+                "template": "pockets of greatness",
+                "slots": {},
+                "rationale": "AI 暂时不可用，因此不自动抽象结构。"
+              }
+            ],
+            "translations": [
+              {
+                "label": "待分析",
+                "text": "AI 暂时不可用，未生成翻译。",
+                "recommended": true
+              }
+            ],
+            "translation_notes": [],
+            "background_context": null,
+            "evidence": [
+              "We need to take an honest look at how the team is performing.",
+              "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+              "Our next step is to make those strengths part of our everyday process."
+            ]
+          },
+          "schema_version": 2,
+          "syntax_state": "pending",
+          "teacher_note": "",
+          "reusable_patterns": [],
+          "collocations": [],
+          "pitfalls": []
+        },
+        "total_seconds": 0.467
+      }
+    ],
+    "post-guard": [
+      {
+        "case": "phrase",
+        "task": "syntax",
+        "input": {
+          "current_sentence": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "context_before": "We need to take an honest look at how the team is performing.",
+          "context_after": "Our next step is to make those strengths part of our everyday process.",
+          "timestamp": "0:38.120",
+          "selected_text": "pockets of greatness",
+          "selection_type": "phrase",
+          "kind": "chunk"
+        },
+        "model": "doubao-seed-2-1-lite-260915",
+        "prompt_sha256": "2d7c6e0fea503933b51dc27bb6bfde22b63b6db461d0d2ea601ec1a83c9de3b1",
+        "status": 200,
+        "output": {
+          "sentence_type": "名词短语",
+          "main_clause": "作主句谓语 has 的宾语，说明团队在设计领域存在局部突出的优势。",
+          "structure_breakdown": [
+            "pockets 为复数可数名词，作量词性中心语，后接 of greatness 介词短语作后置修饰。",
+            "greatness 为抽象不可数名词，是 of 介词的宾语，说明 pockets 所指的具体内容。"
+          ],
+          "logic_relations": [
+            "与后文 but 引导的分句形成转折，突出团队优势零散、产出不稳定的反差。",
+            "承接前文对团队表现的客观评估，引出后续将零散优势固化为日常流程的行动方向。"
+          ],
+          "information_hierarchy": [],
+          "style_features": [],
+          "usage_scenarios": [],
+          "grammar_points": [],
+          "wording_notes": [],
+          "reusable_patterns": [],
+          "translations": [],
+          "translation_notes": [],
+          "background_context": null,
+          "evidence": [
+            "We need to take an honest look at how the team is performing.",
+            "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+            "Our next step is to make those strengths part of our everyday process."
+          ]
+        },
+        "total_seconds": 7.587,
+        "note": "Live API check after phrase-type label normalization"
+      }
+    ]
+  },
+  "pro_syntax_failure": {
+    "status": 404,
+    "source": "direct adapter exception; no completed syntax response"
+  },
+  "limitations": [
+    "Local API wall time, not browser paint or pure model inference time",
+    "No p50/p95 or complete billing measurement",
+    "Semantic quality is not certified by schema/transport success"
+  ]
+}

@@ -17,7 +17,7 @@ export type CorpusStorageState = {
   records: SavedCorpusRecord[];
   error: string | null;
 };
-export type CorpusEdit = { text: string; meaning: string; usageNote: string; tags: CorpusItem["tags"]; slots: Record<string, string> };
+export type CorpusEdit = { text: string; meaning: string; usageNote: string; tags: CorpusItem["tags"]; slots: Record<string, string>; analysisDetail?: CorpusItem["analysisDetail"] };
 
 export type CorpusRemote = {
   list(signal: AbortSignal): Promise<SavedCorpusRecord[]>;

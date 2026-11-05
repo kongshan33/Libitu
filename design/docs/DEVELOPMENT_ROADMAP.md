@@ -15,8 +15,9 @@ Stage 2 practice refactor update (2026-10-12): execute [the accepted contract](S
 
 ## Doubao text-provider migration — 2026-10-23
 
-The current text provider is Doubao for Stage 1, corpus selection, Mission planning,
+The general text provider is Doubao for Stage 1 analysis, Mission planning,
 Stage 4 analysis/help and Stage 5 assessment. OpenAI Realtime is the voice provider as of 2026-10-30.
+Corpus detail has a separate provider switch as of 2026-11-05; the local API now uses DeepSeek Flash after two live comparison rounds. Broader teaching-quality qualification remains open.
 This infrastructure replacement preserves delivery order and product contracts;
 see `PROJECT.MD` and `TASK.MD` for configuration and verification boundaries.
 
@@ -197,7 +198,7 @@ Goal: move one extracted item through corpus and speaking feedback.
 Deliver:
 
 - Corpus management UI
-- Corpus detail modal with persisted source context and on-demand cached analysis
+- Corpus detail modal with persisted source context, Explain-first generation, lazy Syntax, and explicit follow-up notes (v2 implemented locally 2026-11-05; two authored live text cases measured, with repeated semantic failures still blocking teaching-quality acceptance)
 - Speaking loadout with visible limits
 - Scenario role-play and turn history
 - Selected-item detection with evidence

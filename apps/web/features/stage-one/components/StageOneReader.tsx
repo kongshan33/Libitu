@@ -17,7 +17,8 @@ import { StageTwoSkeleton } from "../../stage-two/components/StageTwoSkeleton";
 import { ReaderSkeleton } from "./ReaderSkeleton";
 import { useReaderReveal } from "./use-reader-reveal";
 import { useAuth, useClerk } from "@clerk/nextjs";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 
 import { ArrowLeft, ArrowRight, Check, Pin, PinOff, Plus, Trash2, X } from "lucide-react";
 import type {
@@ -40,7 +41,9 @@ import {
   type StageOneAnalysisPreview
 } from "../api/stage-one-api";
 import { type YouTubePlayerHandle } from "./YouTubePlayer";
-import { ExplainPanel, SyntaxPanel } from "../../corpus/AnalysisPanels";
+import { CorpusDetailViews, CorpusSourceContext } from "../../corpus/CorpusDetailViews";
+import detailStyles from "../../corpus/CorpusDetail.module.css";
+import { expressionText } from "../../loadout/draft";
 import { useSavedCorpus } from "../../corpus/useSavedCorpus";
 import { savedCorpusKey, type SavedCorpusRecord } from "../../corpus/corpus-storage";
 import { findCurrentTimedItem, parseTimestamp, formatTranscriptTimestamp } from "../timeline";
@@ -320,11 +323,9 @@ export function StageOneReader() {
       timestamp: currentLine.time
     };
     const rect = range.getBoundingClientRect();
-    const cardWidth = Math.min(520, window.innerWidth - 28);
-    const cardHeight = Math.min(620, window.innerHeight - 28);
     const position = {
-      x: Math.min(Math.max(rect.left + rect.width / 2, cardWidth / 2 + 14), window.innerWidth - cardWidth / 2 - 14),
-      y: Math.max(window.scrollY + 14, Math.min(rect.bottom + window.scrollY + 12, window.scrollY + window.innerHeight - cardHeight - 14))
+      x: rect.left + rect.width / 2,
+      y: rect.bottom + 12
     };
 
     const loadingAnalysis = buildLoadingSelectionAnalysis(context);
@@ -377,7 +378,7 @@ export function StageOneReader() {
       meta: `${selectionCard.context.timestamp ?? "--:--"} - ${selectionCard.fieldDraft.level}`,
       saved: true,
       meaning: selectionCard.analysis.explanation.meaning,
-      usageNote: selectionCard.note || selectionCard.analysis.recommendationReason,
+      usageNote: selectionCard.note,
       sourceText: selectionCard.context.selectedText,
       level: selectionCard.fieldDraft.level,
       register: selectionCard.fieldDraft.register,
@@ -446,6 +447,25 @@ export function StageOneReader() {
       ? { ...current, item: enrichedItem, record: enrichedRecord, detail, context: detail.context, status: "ready" }
       : current
     );
+  }
+
+  async function persistDetail(analysis: CorpusSelectionAnalysis, note?: string): Promise<boolean> {
+    if (!corpusDetail) return false;
+    const detail = { context: corpusDetail.context, analysis };
+    detailCacheRef.current.set(corpusDetail.key, detail);
+    const record = corpus.records.find(value => value.key === corpusDetail.key) ?? corpusDetail.record;
+    const item = record?.item ?? corpusDetail.item;
+    const usageNote = note ? [item.usageNote, note].filter(Boolean).join("\n\n") : item.usageNote ?? "";
+    if (usageNote.length > 4000) return false;
+    let ok = true;
+    if (record) {
+      ok = await corpus.update(record, { text: expressionText(record), meaning: item.meaning ?? "", usageNote,
+        tags: item.tags, slots: item.slots ?? {}, analysisDetail: detail });
+    } else if (note) {
+      ok = await saveCorpusItem({ ...item, usageNote, analysisDetail: detail });
+    }
+    setCorpusDetail(current => current?.id === corpusDetail.id ? { ...current, detail, item: { ...current.item, analysisDetail: detail, usageNote } } : current);
+    return ok;
   }
 
   function retryCorpusDetail() {
@@ -686,7 +706,8 @@ export function StageOneReader() {
                   onFieldChange={updateSelectionField}
                   onNoteChange={(note) => setSelectionCard((current) => current ? { ...current, note } : current)}
                   onSave={saveSelectionItem}
-                  onTabChange={(tab) => setSelectionCard((current) => current ? { ...current, tab } : current)}
+                  onSeek={seekToMoment}
+                  onAnalysis={(analysis) => setSelectionCard((current) => current ? { ...current, analysis } : current)}
                 />
               ) : null}
             </>
@@ -802,11 +823,14 @@ export function StageOneReader() {
       </section>
       {corpusDetail ? (
         <CorpusDetailDialog
+          key={corpusDetail.id}
           state={corpusDetail}
+          busy={corpus.busy}
+          onAnalysis={(analysis) => persistDetail(analysis)}
+          onSaveNote={(note) => persistDetail(corpusDetail.detail!.analysis, note)}
           onClose={() => setCorpusDetail(null)}
           onRetry={retryCorpusDetail}
           onSeek={seekToMoment}
-          onTabChange={(tab) => setCorpusDetail((current) => current ? { ...current, tab } : current)}
         />
       ) : null}
     </main>
@@ -1169,126 +1193,38 @@ function buildLoadingSelectionAnalysis(context: CorpusSelectionContext): CorpusS
 
 type CorpusDetailDialogProps = {
   state: CorpusDetailState;
-  onClose: () => void;
-  onRetry: () => void;
-  onSeek: (time: string | null) => void;
-  onTabChange: (tab: "explain" | "syntax") => void;
+  busy: boolean;
+  onClose(): void;
+  onRetry(): void;
+  onSeek(time: string | null): void;
+  onAnalysis(analysis: CorpusSelectionAnalysis): Promise<boolean>;
+  onSaveNote(note: string): Promise<boolean>;
 };
 
-function CorpusDetailDialog({ state, onClose, onRetry, onSeek, onTabChange }: CorpusDetailDialogProps) {
+function CorpusDetailDialog({ state, busy, onClose, onRetry, onSeek, onAnalysis, onSaveNote }: CorpusDetailDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const analysis = state.detail?.analysis;
-
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    dialog.showModal();
-    return () => {
-      if (dialog.open) dialog.close();
-    };
+    const dialog = dialogRef.current; dialog?.showModal();
+    return () => { dialog?.close(); };
   }, []);
-
-  return (
-    <dialog
-      ref={dialogRef}
-      className="corpus-detail-dialog"
-      aria-labelledby="corpus-detail-title"
-      onCancel={(event) => {
-        event.preventDefault();
-        onClose();
-      }}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
-    >
-      <div className="corpus-detail-shell">
-        <header className="corpus-detail-header">
-          <div>
-            <span className="section-label">Corpus detail</span>
-            <h1 id="corpus-detail-title">{analysis?.recommendedText ?? corpusSelectedText(state.item)}</h1>
-          </div>
-          <Button variant="ghost" size="inherit" shape="circle" className="dialog-close" type="button" aria-label="Close corpus detail" title="Close" onClick={onClose}>
-            <X aria-hidden="true" />
-          </Button>
-        </header>
-
-        <section className="source-context" aria-label="Original source context">
-          <div className="source-context-heading">
-            <div>
-              <span>Original context</span>
-              {state.record?.sourceTitle ? <strong>{state.record.sourceTitle}</strong> : null}
-            </div>
-            {state.context.timestamp ? (
-              <Button variant="secondary" size="md" type="button" className="inline-command" onClick={() => onSeek(state.context.timestamp ?? null)}>
-                {state.context.timestamp}
-              </Button>
-            ) : null}
-          </div>
-          {state.context.contextBefore ? <p className="context-neighbor">{state.context.contextBefore}</p> : null}
-          <p className="context-current">{highlightSelection(state.context.currentSentence, state.context.selectedText)}</p>
-          {state.context.contextAfter ? <p className="context-neighbor">{state.context.contextAfter}</p> : null}
-        </section>
-
-        <div className="corpus-detail-tabs" role="tablist" aria-label="Full corpus analysis">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={state.tab === "explain"}
-            className={state.tab === "explain" ? "active" : ""}
-            onClick={() => onTabChange("explain")}
-          >
-            Explain
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={state.tab === "syntax"}
-            className={state.tab === "syntax" ? "active" : ""}
-            onClick={() => onTabChange("syntax")}
-          >
-            Syntax
-          </button>
-        </div>
-
-        <div className="corpus-detail-body" aria-live="polite">
-          {state.status === "loading" ? (
-            <div className="detail-status" role="status">
-              <span className="status-indicator loading" aria-hidden="true" />
-              <div>
-                <h2>Preparing the full analysis</h2>
-                <p>{state.item.meaning ?? "Reading the selected expression in its original context."}</p>
-              </div>
-            </div>
-          ) : state.status === "error" || !analysis ? (
-            <div className="detail-status" role="alert">
-              <span className="status-indicator failed" aria-hidden="true">!</span>
-              <div>
-                <h2>Analysis could not be loaded</h2>
-                <p>{state.error ?? "Please retry."}</p>
-                <Button variant="secondary" size="md" className="inline-command" type="button" onClick={onRetry}>Retry</Button>
-              </div>
-            </div>
-          ) : state.tab === "explain" ? (
-            <ExplainPanel analysis={analysis} isLoading={false} />
-          ) : (
-            <SyntaxPanel analysis={analysis} isLoading={false} saveDisabled />
-          )}
-        </div>
+  return <dialog ref={dialogRef} className={`corpus-detail-dialog ${detailStyles.dialog}`} aria-labelledby="corpus-detail-title"
+    onCancel={event => { event.preventDefault(); onClose(); }}>
+    <div className={detailStyles.shell}>
+      <header className={detailStyles.header}><div><span className={detailStyles.eyebrow}>Corpus detail</span>
+        <h1 id="corpus-detail-title">{analysis?.recommendedText ?? corpusSelectedText(state.item)}</h1>
+        <p className={detailStyles.meta}>{[state.item.kind, analysis?.fields.level ?? state.item.level, analysis?.fields.register ?? state.item.register, ...(analysis?.fields.tags ?? state.item.tags)].filter(Boolean).join(" · ")}</p>
+      </div><Button variant="ghost" size="sm" shape="circle" aria-label="Close corpus detail" onClick={onClose}><X size={18} /></Button></header>
+      <div className={detailStyles.scroll}>
+        <CorpusSourceContext context={state.context} kind={state.item.kind} title={state.record?.sourceTitle} onSeek={onSeek} />
+        {state.status === "loading" ? <div className={detailStyles.panel}><ContentSkeleton label="Preparing explanation…" rows={3} /></div>
+          : state.status === "error" || !analysis ? <p className={detailStyles.notice} role="alert">{state.error ?? "Analysis could not be loaded."} <Button variant="secondary" size="sm" onClick={onRetry}>Retry</Button></p>
+          : <>{analysis.providerNotice ? <p className={detailStyles.notice} role="status">{analysis.providerNotice}</p> : null}
+            <CorpusDetailViews analysis={analysis} context={state.context} onAnalysis={onAnalysis} onSaveNote={onSaveNote} disabled={busy} />
+          </>}
       </div>
-    </dialog>
-  );
-}
-
-function highlightSelection(sentence: string, selectedText: string) {
-  const index = sentence.toLocaleLowerCase().indexOf(selectedText.toLocaleLowerCase());
-  if (index < 0) return sentence;
-  return (
-    <>
-      {sentence.slice(0, index)}
-      <mark>{sentence.slice(index, index + selectedText.length)}</mark>
-      {sentence.slice(index + selectedText.length)}
-    </>
-  );
+    </div>
+  </dialog>;
 }
 
 type SelectionAnalysisCardProps = {
@@ -1299,13 +1235,28 @@ type SelectionAnalysisCardProps = {
   onFieldChange: <K extends keyof CorpusSelectionAnalysis["fields"]>(field: K, value: CorpusSelectionAnalysis["fields"][K]) => void;
   onNoteChange: (note: string) => void;
   onSave: (kindOverride?: CorpusKind, textOverride?: string, slots?: Record<string, string>) => void;
-  onTabChange: (tab: "explain" | "syntax") => void;
+  onSeek: (time: string) => void;
+  onAnalysis: (analysis: CorpusSelectionAnalysis) => void;
 };
 
-function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFieldChange, onNoteChange, onSave, onTabChange }: SelectionAnalysisCardProps) {
+function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFieldChange, onNoteChange, onSave, onSeek, onAnalysis }: SelectionAnalysisCardProps) {
   const { analysis, fieldDraft } = state;
   const isLoading = state.status === "loading";
   const cardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    const card = cardRef.current;
+    card?.focus({ preventScroll: true });
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); }
+    }
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      if (card?.contains(document.activeElement) && previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+    };
+  }, [onClose]);
 
   useEffect(() => {
     if (state.pinned) return;
@@ -1324,74 +1275,88 @@ function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFi
     };
   }, [state.pinned, onClose]);
 
-  return (
-    <section
-      ref={cardRef}
-      className="selection-card"
-      style={{ left: state.position.x, top: state.position.y }}
-      aria-label="Corpus selection analysis"
-    >
-      <div className="selection-card-header">
-        <div>
-          <div className="section-label">Add to corpus</div>
-          <p className="selection-original">{analysis.selectedText}</p>
+  return createPortal(
+    <>
+      <div className={detailStyles.selectionBackdrop} aria-hidden="true" />
+      <section
+        ref={cardRef}
+        className={`selection-card ${detailStyles.dialog} ${detailStyles.selection}`}
+        style={{ "--selection-x": `${state.position.x}px`, "--selection-y": `${state.position.y}px` } as CSSProperties}
+        role="dialog"
+        aria-modal="false"
+        aria-label="Corpus selection analysis"
+        tabIndex={-1}
+      >
+        <div className={detailStyles.shell}>
+          <header className={detailStyles.header}>
+            <div>
+              <span className={detailStyles.eyebrow}>Add to corpus</span>
+              <h2>{analysis.selectedText}</h2>
+              {!isLoading ? <p className={detailStyles.meta}>{[fieldDraft.kind, fieldDraft.level, fieldDraft.register, ...fieldDraft.tags].join(" · ")}</p> : null}
+            </div>
+            <div className={detailStyles.headerActions}>
+              <Button
+                variant="ghost" size="sm" shape="circle"
+                className={detailStyles.pin}
+                type="button"
+                aria-label={state.pinned ? "Unpin selection card" : "Pin selection card"}
+                aria-pressed={state.pinned}
+                title={state.pinned ? "Unpin selection card" : "Pin selection card"}
+                onClick={onTogglePin}
+              >
+                {state.pinned ? <PinOff size={16} aria-hidden="true" /> : <Pin size={16} aria-hidden="true" />}
+              </Button>
+              <Button variant="ghost" size="sm" shape="circle" aria-label="Close selection card" onClick={onClose}><X size={18} aria-hidden="true" /></Button>
+            </div>
+          </header>
+
+          <div className={detailStyles.scroll}>
+            <CorpusSourceContext context={state.context} kind={fieldDraft.kind} onSeek={onSeek} />
+
+            {analysis.completeness === "needs_expansion" ? (
+              <section className={detailStyles.recommendation} aria-label="Suggested completion">
+                <span className={detailStyles.eyebrow}>Suggested completion</span>
+                <p className={detailStyles.summary}>{analysis.recommendedText}</p>
+                <p>{analysis.recommendationReason}</p>
+              </section>
+            ) : null}
+
+            {analysis.providerNotice ? (
+              <p className={detailStyles.notice} role="status">{analysis.providerNotice}</p>
+            ) : null}
+
+            <div aria-busy={isLoading}>
+              {isLoading ? <div className={detailStyles.panel}><ContentSkeleton label="Preparing explanation…" rows={3} /></div> : <CorpusDetailViews analysis={analysis} context={state.context} onAnalysis={onAnalysis}
+                onSaveNote={async note => { onNoteChange([state.note, note].filter(Boolean).join("\n\n")); return true; }} noteIsDraft
+                onSavePattern={onSave} disabled={saveDisabled} />}
+            </div>
+
+            <footer className={detailStyles.management}>
+              <div className={detailStyles.fieldControls} aria-label="Editable AI fields">
+                <CycleChip label="kind" value={fieldDraft.kind} values={editableKinds} disabled={isLoading} onChange={(value) => onFieldChange("kind", value)} />
+                <CycleChip label="tag" value={fieldDraft.tags[0] ?? "discourse"} values={editableTags} disabled={isLoading} onChange={(value) => onFieldChange("tags", [value])} />
+                <CycleChip label="level" value={fieldDraft.level} values={editableLevels} disabled={isLoading} onChange={(value) => onFieldChange("level", value)} />
+                <CycleChip label="register" value={fieldDraft.register} values={editableRegisters} disabled={isLoading} onChange={(value) => onFieldChange("register", value)} />
+              </div>
+              <label className={detailStyles.noteField}>My note
+                <Textarea
+                  className="selection-note"
+                  value={state.note}
+                  placeholder={analysis.notePlaceholder}
+                  onChange={(event) => onNoteChange(event.target.value)}
+                />
+              </label>
+
+              <div className={`${detailStyles.saveActions} ui-button-group`}>
+                <Button variant="primary" size="md" className="selection-save" type="button" disabled={isLoading || saveDisabled} onClick={() => onSave()}>
+                  Save
+                </Button>
+              </div>
+            </footer>
+          </div>
         </div>
-        <button
-          className="selection-pin"
-          type="button"
-          aria-label={state.pinned ? "Unpin selection card" : "Pin selection card"}
-          aria-pressed={state.pinned}
-          title={state.pinned ? "Unpin selection card" : "Pin selection card"}
-          onClick={onTogglePin}
-        >
-          {state.pinned ? <PinOff size={16} aria-hidden="true" /> : <Pin size={16} aria-hidden="true" />}
-        </button>
-      </div>
-
-      {analysis.completeness === "needs_expansion" ? (
-        <div className="selection-recommendation expanded">
-          <span>Suggested completion</span>
-          <strong>{analysis.recommendedText}</strong>
-          <p>{analysis.recommendationReason}</p>
-        </div>
-      ) : null}
-
-      {analysis.providerNotice ? (
-        <p className="selection-provider-notice" role="status">{analysis.providerNotice}</p>
-      ) : null}
-
-      <div className="field-chip-row" aria-label="Editable AI fields">
-        <CycleChip label="kind" value={fieldDraft.kind} values={editableKinds} onChange={(value) => onFieldChange("kind", value)} />
-        <CycleChip label="tag" value={fieldDraft.tags[0] ?? "discourse"} values={editableTags} onChange={(value) => onFieldChange("tags", [value])} />
-        <CycleChip label="level" value={fieldDraft.level} values={editableLevels} onChange={(value) => onFieldChange("level", value)} />
-        <CycleChip label="register" value={fieldDraft.register} values={editableRegisters} onChange={(value) => onFieldChange("register", value)} />
-      </div>
-
-      <Textarea
-        className="selection-note"
-        value={state.note}
-        placeholder={analysis.notePlaceholder}
-        onChange={(event) => onNoteChange(event.target.value)}
-      />
-
-      <div className="selection-actions ui-button-group">
-        <div className="selection-tabs" role="tablist" aria-label="Selection analysis views">
-          <button className={state.tab === "explain" ? "active" : ""} type="button" onClick={() => onTabChange("explain")}>Explain</button>
-          <button className={state.tab === "syntax" ? "active" : ""} type="button" onClick={() => onTabChange("syntax")}>Syntax</button>
-        </div>
-        <Button variant="primary" size="md" className="selection-save" type="button" disabled={isLoading || saveDisabled} onClick={() => onSave()}>
-          Save
-        </Button>
-      </div>
-
-      <div className="selection-panel" aria-busy={isLoading}>
-        {state.tab === "explain" ? (
-          <ExplainPanel analysis={analysis} isLoading={isLoading} />
-        ) : (
-          <SyntaxPanel analysis={analysis} isLoading={isLoading} saveDisabled={saveDisabled} onSavePattern={onSave} />
-        )}
-      </div>
-    </section>
+      </section>
+    </>, document.body
   );
 }
 
@@ -1400,16 +1365,17 @@ type CycleChipProps<T extends string> = {
   value: T;
   values: readonly T[];
   onChange: (value: T) => void;
+  disabled?: boolean;
 };
 
-function CycleChip<T extends string>({ label, value, values, onChange }: CycleChipProps<T>) {
+function CycleChip<T extends string>({ label, value, values, onChange, disabled }: CycleChipProps<T>) {
   function cycle() {
     const currentIndex = values.indexOf(value);
     onChange(values[(currentIndex + 1) % values.length]);
   }
 
   return (
-    <button className="field-chip" type="button" onClick={cycle}>
+    <button className={detailStyles.fieldControl} type="button" disabled={disabled} onClick={cycle}>
       <span>{label}</span>
       {value}
     </button>

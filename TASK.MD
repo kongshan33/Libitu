@@ -1,5 +1,18 @@
 # Complete the next Libitu milestone
 
+## Corpus detail v2 — 2026-11-05
+
+- [x] Preserve the existing workspace as baseline commit `b3a0fd0` before changes.
+- [x] Shared 14px/no-shadow dialog, underline tabs, purple source underlines, mono IPA/metadata and comparison rows in Stage 1 / Corpus library.
+- [x] Unify transcript-selection Add to corpus with the same detail surface, backdrop, header, source context and scrolling; place field editing, note draft and Save below analysis. Preserve pin/outside dismissal and add close/Escape. Web lint/typecheck and 513 tests pass; synthetic browser checks at 1440px/390px verify shared appearance, viewport bounds, lazy Syntax, precise seek, field/note saving and dismissal. Screenshots inspected.
+- [x] Explain-first generation; on-demand Syntax with three-module phrase mode; legacy read compatibility and explicit refresh.
+- [x] Bounded SSE follow-up, safe Markdown, retry and explicit note persistence; saved Syntax reuses existing corpus ownership boundaries.
+- [x] Test a phrase and a full sentence with real Doubao across Explain, Syntax and follow-up; record repeated outputs/latency and fix duplicated fields, speculative pitfalls and phrase type formatting. See [live evidence](design/benchmarks/corpus-detail-20261105/README.md).
+- [x] Switch local Corpus detail to official `deepseek-flash` through a scoped provider setting; compare two live rounds with unchanged prompts. 53 focused API tests pass. See [DeepSeek comparison](design/benchmarks/corpus-detail-20261105/DEEPSEEK_COMPARISON.md).
+- [x] Pre-commit root lint/build/test pass: 1,879 API, 513 Web and 114 Extension tests (Web/Extension cached on the final rerun). The first concurrent build/test run hit the unchanged `test_paused_mfa_keeps_parent_lease_heartbeat` timing assertion; its 24-test file and the full suite passed on separate reruns without code changes.
+- [ ] Qualify teaching consistency: DeepSeek improved speed and both sampled rewrites, but terminology, local-versus-occasional translation and template adherence still need broader evaluation. CEFR calibration and billing measurements remain open.
+
+
 ## Shared button geometry across features — 2026-11-05
 
 Validation: root lint/build/test pass. Shared geometry browser checks pass at 1400/390px across Landing, Corpus, Loadout (including all three Quick start actions), Analytics, Profile and Detailed Shadow: shared font sizes, minimum heights, equal group heights and no document horizontal overflow. Fixtures use synthetic account/data; no microphone or provider calls.
@@ -2031,3 +2044,5 @@ Validation: root lint/build and 371 web tests pass; desktop/mobile browser Refer
 2026-10-17 Enable setup follow-up: show the setup spinner only during the extension handshake. Once armed and waiting for a toolbar click, stop the spinner, show “Click Libitu in Chrome’s toolbar”, and retain the setup instructions and Cancel action. The extension protocol, authorization and audio acquisition remain unchanged.
 
 Enable follow-up verification: root lint/build/test passed (999 API, 371 Web, 114 extension tests). Desktop/mobile browser Reference regression holds the armed state before granting access and confirms no spinner, visible toolbar instructions and an enabled Cancel action, then completes upload and recovery.
+
+Corpus detail v2 verification (2026-11-05): 44 targeted API tests, 513 Web unit tests, Web lint / TypeScript and production build passed. The new synthetic browser regression covers desktop guest and mobile account persistence plus Reader candidate detail: no eager Syntax, failure/retry, cached Syntax after reload, exact timestamp seek, safe follow-up rendering and explicit note persistence. Existing Corpus library mobile edit/filter/pagination regression passed. Screenshots under `output/playwright/corpus-detail-*-v2*.png` are local artifacts. The older Stage 1 all-in-one browser regression stops at playback-highlight restoration after visibilitychange (before detail); it is not claimed passed. Follow-up live sampling is recorded in design/benchmarks/corpus-detail-20261105/README.md; 46 focused API tests pass after its changes. Semantic consistency remains unaccepted and cost unmeasured.

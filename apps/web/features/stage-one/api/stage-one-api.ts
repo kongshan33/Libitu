@@ -195,6 +195,12 @@ type ApiBlueprintSegment = {
 };
 
 export type ApiCorpusSelectionAnalysis = {
+  schema_version?: number;
+  syntax_state?: "pending" | "ready";
+  teacher_note?: string;
+  reusable_patterns?: CorpusSelectionAnalysis["reusablePatterns"];
+  collocations?: string[];
+  pitfalls?: string[];
   analysis_source: "ai" | "fallback";
   provider_notice?: string | null;
   selection_type: "phrase" | "sentence";
@@ -214,6 +220,7 @@ export type ApiCorpusSelectionAnalysis = {
       ipa: string;
       connected_speech: string;
       audio_text: string;
+      stress_text?: string;
     };
     meaning: string;
     pragmatic_function: string;
@@ -281,10 +288,10 @@ export class StageOneApiError extends Error {
   }
 }
 
-export async function analyzeCorpusSelection(input: AnalyzeCorpusSelectionInput): Promise<CorpusSelectionAnalysis> {
+export async function analyzeCorpusSelection(input: AnalyzeCorpusSelectionInput, signal?: AbortSignal): Promise<CorpusSelectionAnalysis> {
   try {
     const analysis = await request<ApiCorpusSelectionAnalysis>("/api/corpus/analyze-selection", {
-      method: "POST",
+      method: "POST", signal,
       body: JSON.stringify({
         content_id: input.contentId,
         selected_text: input.selectedText,
@@ -782,6 +789,12 @@ function toCorpusItem(item: ApiCorpusItem): CorpusItem {
 
 export function toCorpusSelectionAnalysis(analysis: ApiCorpusSelectionAnalysis): CorpusSelectionAnalysis {
   return {
+    schemaVersion: analysis.schema_version ?? 1,
+    syntaxState: analysis.syntax_state ?? (analysis.analysis_source === "ai" ? "ready" : "pending"),
+    teacherNote: analysis.teacher_note,
+    reusablePatterns: analysis.reusable_patterns,
+    collocations: analysis.collocations,
+    pitfalls: analysis.pitfalls,
     analysisSource: analysis.analysis_source,
     providerNotice: analysis.provider_notice ?? undefined,
     selectionType: analysis.selection_type,
@@ -800,6 +813,7 @@ export function toCorpusSelectionAnalysis(analysis: ApiCorpusSelectionAnalysis):
       pronunciation: {
         ipa: analysis.explanation.pronunciation.ipa,
         connectedSpeech: analysis.explanation.pronunciation.connected_speech,
+        stressText: analysis.explanation.pronunciation.stress_text,
         audioText: analysis.explanation.pronunciation.audio_text
       },
       meaning: analysis.explanation.meaning,
@@ -836,6 +850,12 @@ export function toCorpusSelectionAnalysis(analysis: ApiCorpusSelectionAnalysis):
 
 export function toApiCorpusSelectionAnalysis(analysis: CorpusSelectionAnalysis): ApiCorpusSelectionAnalysis {
   return {
+    schema_version: analysis.schemaVersion,
+    syntax_state: analysis.syntaxState,
+    teacher_note: analysis.teacherNote,
+    reusable_patterns: analysis.reusablePatterns,
+    collocations: analysis.collocations,
+    pitfalls: analysis.pitfalls,
     analysis_source: analysis.analysisSource,
     provider_notice: analysis.providerNotice,
     selection_type: analysis.selectionType,
@@ -849,6 +869,7 @@ export function toApiCorpusSelectionAnalysis(analysis: CorpusSelectionAnalysis):
       pronunciation: {
         ipa: analysis.explanation.pronunciation.ipa,
         connected_speech: analysis.explanation.pronunciation.connectedSpeech,
+        stress_text: analysis.explanation.pronunciation.stressText,
         audio_text: analysis.explanation.pronunciation.audioText
       },
       meaning: analysis.explanation.meaning,
@@ -881,6 +902,8 @@ function fallbackSelectionAnalysis(input: AnalyzeCorpusSelectionInput): CorpusSe
   const isSentence = /[.!?]$/.test(selectedText);
 
   return {
+    schemaVersion: 2,
+    syntaxState: "pending",
     analysisSource: "fallback",
     providerNotice: "AI 分析暂时不可用；当前仅保留你的原始选择，不会猜测含义或擅自补全边界。",
     selectionType: isSentence ? "sentence" : "phrase",
@@ -943,4 +966,16 @@ function delay(ms: number, signal?: AbortSignal) {
     }
     signal?.addEventListener("abort", abort, { once: true });
   });
+}
+
+export function corpusContextPayload(input: AnalyzeCorpusSelectionInput) {
+  return { content_id: input.contentId, selected_text: input.selectedText, current_sentence: input.currentSentence,
+    context_before: input.contextBefore, context_after: input.contextAfter, timestamp: input.timestamp };
+}
+
+export async function analyzeCorpusSyntax(context: AnalyzeCorpusSelectionInput, analysis: CorpusSelectionAnalysis, signal: AbortSignal) {
+  const syntax = await request<ApiCorpusSelectionAnalysis["syntax_analysis"]>("/api/corpus/analyze-syntax", {
+    method: "POST", signal, body: JSON.stringify({ ...corpusContextPayload(context), selection_type: analysis.selectionType, kind: analysis.fields.kind })
+  }, 60_000);
+  return toCorpusSelectionAnalysis({ ...toApiCorpusSelectionAnalysis(analysis), syntax_analysis: syntax, syntax_state: "ready" });
 }

@@ -1,5 +1,24 @@
 # Understand the Libitu project
 
+## Add to corpus shares the detail surface — 2026-11-05
+
+Transcript selections now use the same dimensions, neutral backdrop, typography, 14px corners, source context, underline tabs and independent content scrolling as Corpus detail. Editable fields, the note draft and Save sit below the analysis. Pin and outside dismissal remain available; the card has an explicit close button and Escape support. It is positioned in the viewport through a portal so Reader columns cannot clip it.
+
+## Corpus detail DeepSeek comparison — 2026-11-05
+
+Corpus detail now supports a scoped `CORPUS_ANALYSIS_PROVIDER` switch. The current local API uses the official DeepSeek `deepseek-flash` model with the existing server-side credential; repository defaults retain Ark for compatibility. Explain, lazy Syntax and streamed follow-up share the selected provider. Other text/voice tasks keep their own configuration. Two same-prompt live rounds (12 requests) were substantially faster and retained rewrite difficulty in both sentence follow-ups. Grammar terminology, spatial-versus-temporal translation and template adherence still had errors; this is sampled improvement, not broad teaching acceptance. 53 focused API tests pass, including provider/credential isolation. See [comparison, complete outputs and timings](design/benchmarks/corpus-detail-20261105/DEEPSEEK_COMPARISON.md). Existing saved analyses refresh only on the existing explicit action.
+
+## Corpus detail: speaking-first, on-demand analysis — 2026-11-05
+
+Stage 1 and Corpus library share the same Explain/Syntax panels, source underlines and follow-up UI. Explain v2 adds a 60–120-character Chinese teacher note (prompt requirement), reusable speaking frames, collocations, text stress guidance and no speculative pitfalls in new Explain output. Usage scenarios appear once, as mono text. No default etymology or word-family content. Library cards preview the first saved speaking frame and show register alongside level.
+
+`POST /api/corpus/analyze-selection` now generates Explain only and returns `schema_version=2`, `syntax_state=pending` plus an empty compatible syntax object. `/analyze-syntax` runs only on tab activation; phrase/chunk/idiom output is limited to internal structure, sentence role and nearby logic, while sentences/structures retain full analysis. Client requests are deduplicated while pending, abort on dismissal, and retain retryable failures. Saved Syntax uses the existing account-owned/guest corpus update boundary; unsaved candidates cache it for this visit. Legacy combined records remain readable, with an explicit Refresh explanation action and no automatic regeneration.
+
+`POST /api/corpus/ask` streams actual provider SSE deltas with explicit done/error states. Requests carry bounded local context, a question up to 500 characters and at most six completed exchanges. The UI renders only escaped text, paragraphs/lists, emphasis and inline code; no HTML, images or links. Failed/truncated answers cannot be saved. Save as note explicitly appends to the existing usage note; an unsaved transcript selection instead labels this as a note draft until the item is saved. Follow-up history stays in the open detail and is not automatically persisted. Account changes/dismissal dispose its requests.
+
+Initial redesign, before the DeepSeek comparison above: no database migration or provider change; existing Ark configuration was reused. Restart the API process to load new prompt files. A real Doubao follow-up tested one authored phrase and one full sentence across Explain, Syntax and streamed questions, with repeated calls and prompt fixes. Default Explain now leaves speculative pitfalls empty; placeholder and complete-selection boundary copy are application-owned. Transport/contract checks pass, but repeated Lite answers still sometimes alter meaning in follow-up rewrites, so teaching quality is not accepted as stable. Thinking-mode probes were slower and did not resolve every issue; Pro calls returned 404 and no model configuration was switched. See [live results, remaining failures and full prompt snapshots](design/benchmarks/corpus-detail-20261105/README.md). Latency is sampled API wall time; billing and broad model quality remain unqualified.
+
+
 ## Shared button geometry across features — 2026-11-05
 
 Regular actions now use explicit shared sizes instead of legacy inherit geometry. Height tokens are 32/40/44px for sm/md/lg; text is 12/13/14px. Action groups use 44px/14px controls, 8px icon gaps and 12px control gaps across primary/secondary, button/link and loading states. Feature CSS no longer overrides regular button geometry. Icon-only controls, recording controls, navigation and filter/segmented controls retain task-specific geometry.

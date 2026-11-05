@@ -192,6 +192,12 @@ export type CorpusSelectionContext = {
 };
 
 export type CorpusSelectionAnalysis = {
+  schemaVersion?: number;
+  syntaxState?: "pending" | "ready";
+  teacherNote?: string;
+  reusablePatterns?: Array<{ template: string; slots: Record<string, string>; rationale: string }>;
+  collocations?: string[];
+  pitfalls?: string[];
   analysisSource: "ai" | "fallback";
   providerNotice?: string;
   selectionType: "phrase" | "sentence";
@@ -211,6 +217,7 @@ export type CorpusSelectionAnalysis = {
       ipa: string;
       connectedSpeech: string;
       audioText: string;
+      stressText?: string;
     };
     meaning: string;
     pragmaticFunction: string;

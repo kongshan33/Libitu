@@ -52,6 +52,24 @@ class Settings(BaseSettings):
     ark_max_input_chars: int = 240000
     ark_max_output_tokens: int = 32000
 
+    # Corpus detail can compare providers without changing other text tasks.
+    corpus_analysis_provider: Literal["ark", "deepseek"] = "ark"
+    deepseek_api_key: str | None = None
+    deepseek_base_url: str = "https://api.deepseek.com"
+    corpus_deepseek_model: str = "deepseek-flash"
+
+    @property
+    def corpus_api_key(self) -> str | None:
+        return self.deepseek_api_key if self.corpus_analysis_provider == "deepseek" else self.ark_api_key
+
+    @property
+    def corpus_base_url(self) -> str:
+        return self.deepseek_base_url if self.corpus_analysis_provider == "deepseek" else self.ark_base_url
+
+    @property
+    def corpus_model(self) -> str:
+        return self.corpus_deepseek_model if self.corpus_analysis_provider == "deepseek" else self.ark_model
+
     # Stage 4 has separate, bounded requests; these never use Stage 1 token budgets.
     openai_api_key: str | None = None
     speaking_realtime_provider: Literal["gemini", "openai"] = "openai"

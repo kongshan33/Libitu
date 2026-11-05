@@ -2,6 +2,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Path, Response, status
 
+from fastapi.responses import StreamingResponse
+from app.integrations.ark_analysis import AnalysisProviderError
+from app.integrations.ark_corpus_detail import generate_corpus_syntax, stream_corpus_followup
+from app.schemas.corpus import CorpusSyntaxRequest, CorpusFollowupRequest, CorpusSelectionSyntaxAnalysis
+
 from app.auth import CurrentUserDep
 from app.schemas.corpus import (
     CorpusItem,
@@ -25,6 +30,20 @@ router = APIRouter()
 @router.post("/analyze-selection")
 def analyze_selection(payload: CorpusSelectionAnalysisRequest) -> CorpusSelectionAnalysis:
     return analyze_corpus_selection(payload)
+
+
+@router.post("/analyze-syntax")
+def analyze_syntax(payload: CorpusSyntaxRequest) -> CorpusSelectionSyntaxAnalysis:
+    try:
+        return generate_corpus_syntax(payload)
+    except AnalysisProviderError as error:
+        raise HTTPException(status_code=503, detail="Syntax could not be generated. Please retry.") from error
+
+
+@router.post("/ask")
+def ask_about_selection(payload: CorpusFollowupRequest) -> StreamingResponse:
+    return StreamingResponse(stream_corpus_followup(payload), media_type="text/event-stream",
+        headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
 @router.get("")
