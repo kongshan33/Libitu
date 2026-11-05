@@ -17,7 +17,7 @@ export function SupportControls({ workspace, disabled, pending, error, onChange 
       <label>Support<SelectField aria-label="Mission support" value={support?.level ?? "legacy"} disabled={disabled || pending}
         options={[...(!support ? [{ value: "legacy", label: "Existing support" }] : []), ...SUPPORT_OPTIONS.map(({ value, label }) => ({ value, label }))]}
         onValueChange={value => { if (isSupportLevel(value)) onChange(value); }} /></label>
-      {next ? <Button variant="secondary" size="inherit" type="button" disabled={disabled || pending} onClick={() => onChange(next)}>Reduce support</Button> : null}
+      {next ? <Button variant="secondary" size="md" type="button" disabled={disabled || pending} onClick={() => onChange(next)}>Reduce support</Button> : null}
     </div>
     <p>{SUPPORT_OPTIONS.find(option => option.value === support?.level)?.description ?? "This mission keeps its existing support. Choose a level when connected to change how much help you receive."}</p>
     <p>Help already shown in this mission remains recorded. Changing support does not mark a target as mastered.</p>

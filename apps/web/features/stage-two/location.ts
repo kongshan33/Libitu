@@ -12,6 +12,8 @@ export function readStageTwoLocation(url: URL): { segmentId: string; sentenceId:
 /** Sentence changes replace the selection within the content workspace. */
 export function stageTwoLocation(url: URL, selection: { segmentId: string; sentenceId?: string } | null): URL {
   const next = withPracticeSelection(url, selection);
+  const take = url.searchParams.get("takeId");
+  if (take && selection?.segmentId === url.searchParams.get("segmentId") && next.searchParams.get("sentenceId") === url.searchParams.get("sentenceId")) next.searchParams.set("takeId", take);
   const mode = url.searchParams.get("shadowMode");
   if (selection && mode && ["quick", "detailed", "review"].includes(mode)) next.searchParams.set("shadowMode", mode);
   return next;

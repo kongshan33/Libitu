@@ -1,0 +1,5 @@
+.avatar { position: relative; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; background: var(--ink); color: var(--bg); border-radius: 50%; font-size: 13px; font-weight: 500; }
+.accountMenu { position: absolute; inset: 0; }
+.accountMenu :global(.cl-userButtonTrigger) { width: 32px; height: 32px; border-radius: 50%; box-shadow: none; }
+.accountMenu :global(.cl-avatarBox) { opacity: 0; }
+.accountMenu :global(.cl-userButtonTrigger):focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }

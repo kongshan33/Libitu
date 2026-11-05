@@ -35,7 +35,7 @@ function fixture(status) {
       ]
     };
   });
-  const job = { id: `notice-job-${status}`, content_id: `notice-content-${status}`, status: "ready",
+  const job = { id: `notice-job-${status}`, content_id: `15eabce1-7847-4f3e-aa20-f1e49e53a01${["unavailable", "full", "partial"].indexOf(status)}`, status: "ready",
     blueprint_id: `notice-blueprint-${status}`, processing_stage: "completed", analysis_version: "mvp-v9",
     analysis_preview: null, error_message: null };
   const blueprint = {
@@ -90,6 +90,7 @@ try {
         const headers = { "access-control-allow-origin": "*", "access-control-allow-headers": "content-type" };
         if (url.pathname.startsWith("/api/")) {
           if (request.method() === "OPTIONS") return route.fulfill({ status: 204, headers });
+          if (request.method() === "PUT" && url.pathname === `/api/profile/videos/${blueprint.content_id}`) return route.fulfill({ status: 204, headers });
           requests.push(`${request.method()} ${url.pathname}`);
           assert.equal(request.method(), "GET", "timing status is computed locally without writes or analysis requests");
           if (url.pathname === `/api/content/${blueprint.content_id}`) return route.fulfill({ json: contentContextFixture(blueprint, job), headers });
@@ -130,6 +131,15 @@ try {
       await page.waitForFunction(() => window.__activePlayer?.ready);
       assert.equal(await page.locator(".transcript-line").count(), blueprint.transcript.length);
       await expectNotice(page, status);
+      const reference = page.getByRole("region", { name: "Reference preparation", exact: true });
+      assert.equal(await reference.locator(".reader-reference-details, .stage-two-reference-copy > span").count(), 0);
+      await reference.getByRole("button", { name: "Enable reference audio", exact: true }).waitFor();
+      if (status === "full") {
+        await page.evaluate(() => { window.__activePlayer.time = 1.1; window.__activePlayer.playVideo(); });
+        const active = page.locator(".caption-word-active").first(); await active.waitFor();
+        assert.deepEqual(await active.evaluate(node => ({ bg: getComputedStyle(node).backgroundColor, fg: getComputedStyle(node).color })), { bg: "rgb(240, 238, 236)", fg: "rgb(68, 64, 60)" });
+        await page.evaluate(() => window.__activePlayer.pauseVideo());
+      }
       const initialRequests = requests.slice();
       const toggle = page.getByRole("button", { name: "Highlight active", exact: true });
       await toggle.click();

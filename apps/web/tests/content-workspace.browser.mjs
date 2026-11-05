@@ -12,7 +12,8 @@ try {
     const state = await installLoadoutFixture(page, { origin, shadow: true, initialOwner: loadoutOwner });
     const failed = { ...shadowJob, status: "failed", attempt_count: 4, error_message: "Fixture processing failed" };
     let current = failed, available = false, posts = [];
-    const headers = { "access-control-allow-origin": "*", "access-control-allow-headers": "content-type", "access-control-allow-methods": "GET,POST,OPTIONS" };
+    const headers = { "access-control-allow-origin": "*", "access-control-allow-headers": "content-type,authorization", "access-control-allow-methods": "GET,POST,OPTIONS" };
+    await page.route("**/api/practice/attempts/progress?*", route => route.fulfill({ headers, json: { practiced_sentence_ids: [], best_word_matches: {} } }));
     await page.route(`**/api/content/${fixtureContentId}`, route => route.fulfill({ headers, json: {
       ...contentContextFixture(shadowBlueprint, current), processing: { ...contentContextFixture(shadowBlueprint, current).processing, blueprint_available: available }
     } }));
@@ -43,7 +44,7 @@ try {
     await page.locator(".stage-one-segment-card").first().click();
     await page.getByRole("button", { name: /Begin Stage 2/ }).click();
     await page.getByRole("button", { name: "Detailed", exact: true }).click();
-    await page.locator(".stage-two-shadow").waitFor();
+    await page.locator(".stage-two-shadow").filter({ visible: true }).waitFor();
     assert.equal(await page.evaluate(() => window.__loadoutPlayers.length), initialPlayers);
     assert.equal(await frame.evaluate(node => node.isConnected), true);
     // Real history return uses the same cleanup as explicit view navigation.
@@ -53,7 +54,7 @@ try {
     await page.locator(".stage-one-segment-card").first().waitFor();
     await page.waitForFunction(() => window.__loadoutMicrophoneTracks.every(track => track.readyState === "ended"));
     await page.goForward();
-    await page.locator(".stage-two-shadow").waitFor();
+    await page.locator(".stage-two-shadow").filter({ visible: true }).waitFor();
     assert.equal(await frame.evaluate(node => node.isConnected), true);
     // The same public workspace survives owner changes; the private recorder does not.
     await page.getByRole("button", { name: "Record sentence", exact: true }).click();
@@ -75,13 +76,16 @@ try {
     await page.getByRole("button", { name: "Detailed", exact: true }).click();
     let releaseSave;
     state.practiceGate = new Promise(resolve => releaseSave = resolve);
+    // This lifecycle fixture saves metadata only; acoustic analysis is covered separately.
+    await page.locator('.stage-two-audio-settings').filter({ visible: true }).locator('summary').click();
+    await page.getByRole("checkbox", { name: "Server analysis", exact: true }).uncheck();
     await page.getByRole("button", { name: "Record sentence", exact: true }).click();
     await page.getByText("Recording your voice", { exact: true }).waitFor();
     await page.waitForTimeout(800);
     const pending = page.waitForRequest(request => request.url().includes("/api/practice/attempts") && request.method() === "POST");
     await page.getByRole("button", { name: "Stop recording", exact: true }).click();
     await pending;
-    await page.getByRole("link", { name: "Stage 3 - Mission", exact: true }).click();
+    await page.getByRole("link", { name: "Mission", exact: true }).click();
     try { await page.getByRole("heading", { name: "Mission loadout", exact: true }).waitFor(); }
     catch (error) { console.error({ url: page.url(), errors: state.errors, body: (await page.locator("body").innerText()).slice(0, 1800) }); throw error; }
     assert.equal(state.practiceCompleted, 0, "root outbox remains pending after leaving the workspace");

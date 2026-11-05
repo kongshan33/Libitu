@@ -92,3 +92,66 @@ def test_no_attempt_is_404_and_no_analysis_is_null(snapshot):
     snapshot['analysis']=None
     repo,calls=repository(snapshot)
     assert service.read(repo,'owner',snapshot['attempt']['id']) is None and len(calls)==1
+
+
+def test_legacy_measurements_restore_frames_without_audio_or_mutating_result(snapshot, monkeypatch):
+    legacy = analyze_signal(evidence(), boundaries(), 'mfa').model_dump(mode='json')
+    legacy.pop('display_frames')
+    snapshot['analysis']['result']['learner']['rhythm_signal'] = legacy
+    snapshot['analysis']['input_cleaned_at'] = datetime.now(timezone.utc).isoformat()
+    original = deepcopy(snapshot)
+    repo, calls = repository(snapshot)
+    monkeypatch.setattr(repo, 'display_checkpoint', lambda owner, attempt: evidence().model_dump(mode='json'))
+    result = service.read(repo, 'owner', snapshot['attempt']['id'])
+    assert len(result.result.learner.rhythm_signal.display_frames) == 100
+    assert result.result.learner.rhythm_signal.words == analyze_signal(evidence(), boundaries(), 'mfa').words
+    assert snapshot == original
+    assert 'acoustic_checkpoint' not in result.model_dump_json()
+    assert len(calls) == 1
+
+
+def test_missing_or_deleted_evidence_never_invents_frames(snapshot, monkeypatch):
+    legacy = analyze_signal(evidence(), boundaries(), 'mfa').model_dump(mode='json')
+    legacy.pop('display_frames')
+    snapshot['analysis']['result']['learner']['rhythm_signal'] = legacy
+    repo, _ = repository(snapshot)
+    monkeypatch.setattr(repo, 'display_checkpoint', lambda *_: None)
+    assert service.read(repo, 'owner', snapshot['attempt']['id']).result.learner.rhythm_signal.display_frames == []
+    snapshot['analysis']['state'] = 'deleted'
+    monkeypatch.setattr(repo, 'display_checkpoint', lambda *_: pytest.fail('Do not read deleted evidence'))
+    service.read(repo, 'owner', snapshot['attempt']['id'])
+
+
+def test_reference_frames_keep_origin_and_revocation(snapshot, monkeypatch):
+    legacy = analyze_signal(evidence(), boundaries(), 'mfa').model_dump(mode='json')
+    legacy.pop('display_frames')
+    snapshot['analysis']['result']['reference']['rhythm_signal'] = legacy
+    snapshot['attempt'].update(start_ms=1130, end_ms=3130)
+    snapshot['reference']['snapshot']['sentences'][0].update(start_ms=1130, end_ms=3130)
+    full = deepcopy(snapshot['reference'])
+    full['start_ms'] = 100
+    measurements = evidence()
+    for f in measurements.frames: f.time_sec += 1.03
+    for s in measurements.speech: s.start_sec += 1.03; s.end_sec += 1.03
+    full['results'][0]['measurements'] = measurements.model_dump(mode='json')
+    monkeypatch.setattr(service, 'reference_for', lambda *_: full)
+    repo, _ = repository(snapshot)
+    frames = service.read(repo, 'owner', snapshot['attempt']['id']).result.reference.rhythm_signal.display_frames
+    assert len(frames) == 100 and frames[0].time_sec == 0
+    snapshot['reference']['state'] = 'deleted'
+    monkeypatch.setattr(service, 'reference_for', lambda *_: pytest.fail('Do not restore revoked Reference'))
+    assert service.read(repo, 'owner', snapshot['attempt']['id']).result.reference is None
+
+
+def test_checkpoint_query_scopes_owner_parent_and_terminal_state():
+    calls = []
+    def request(method, path, **kwargs):
+        calls.append(kwargs['params'])
+        return httpx.Response(200, json=[])
+    repo = PracticeAnalysisRepository.__new__(PracticeAnalysisRepository)
+    repo.database = SimpleNamespace(_request=request)
+    assert repo.display_checkpoint('owner', 'take') is None
+    params = calls[0]
+    assert params['user_id'] == params['shadow_attempts.user_id'] == 'eq.owner'
+    assert params['shadow_attempts.deleted_at'] == 'is.null'
+    assert params['state'] == 'in.(completed,needs_review)'

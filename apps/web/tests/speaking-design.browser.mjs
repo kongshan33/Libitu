@@ -13,15 +13,16 @@ const browser = await chromium.launch({ channel: "chrome", headless: true });
 async function noOverflow(page) { assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true); }
 async function openTargets(page, width) { if (width <= 800) await page.getByRole("button", { name: "Targets", exact: true }).click(); }
 try {
-  for (const width of [1440, 768, 390]) {
+  for (const width of (process.env.LIBITU_TEST_WIDTH ? [Number(process.env.LIBITU_TEST_WIDTH)] : [1440, 768, 390])) {
     const context = await browser.newContext({ viewport: { width, height: 1100 }, reducedMotion: "reduce" });
-    const page = await context.newPage(); page.setDefaultTimeout(10000);
+    const page = await context.newPage(); page.setDefaultTimeout(10000); page.setDefaultNavigationTimeout(60000);
     const { errors } = await installLoadoutFixture(page, { origin });
     const apiCalls = []; page.on("request", request => { if (new URL(request.url()).pathname.startsWith("/api/speaking")) apiCalls.push(request.url()); });
     try {
       await page.goto(`${origin}/dev/conversation`, { waitUntil: "domcontentloaded" });
       const states = page.getByRole("group", { name: "Prototype state", exact: true });
       await states.waitFor();
+      await page.waitForLoadState("load");
       const choose = label => states.getByRole("button", { name: label, exact: true }).click();
       const conversation = page.getByRole("region", { name: "Conversation", exact: true });
       const hint = conversation.getByRole("region", { name: "Speaking hint" });
@@ -32,8 +33,10 @@ try {
       assert.equal(await sidebar.getByRole("heading", { name: "Hidden until you ask", exact: true }).count(), 0);
       await sidebar.getByRole("heading", { name: "lean into", exact: true }).waitFor();
       await sidebar.getByRole("button", { name: "Hide targets", exact: true }).click();
+      await sidebar.getByRole("button", { name: "Show targets", exact: true }).waitFor();
       assert.equal(await sidebar.getByRole("heading", { name: "zero-sum game", exact: true }).count(), 1);
       await choose("Uncertain model");
+      await sidebar.getByRole("heading", { name: "zero-sum game", exact: true }).waitFor({ state: "detached" });
       assert.equal(await sidebar.getByRole("heading", { name: "zero-sum game", exact: true }).count(), 0, "uncertain is not modeled");
       await choose("Live");
       for (const mode of ["Voice", "Chat"]) {
@@ -63,9 +66,9 @@ try {
         }
         await choose("Direction");
         await conversation.getByRole("textbox").fill("I would start with a small pilot.");
-        assert.equal(await hint.count(), 0, "typing removes the visible hint");
+        assert.equal(await hint.count(), 1, "typing retains the visible hint");
         await conversation.getByRole("textbox").fill("");
-        assert.equal(await hint.count(), 0, "clearing draft does not resurrect help");
+        assert.equal(await hint.count(), 1, "clearing draft keeps the reply reference");
       }
       await choose("Live");
       assert.deepEqual(await conversation.locator('[class*="recast"] strong').allTextContents(), ["produce"], "only changed word is bold");
@@ -78,7 +81,7 @@ try {
   }
 
   // Real route + controller, fully synthetic auth/API/socket. No provider or microphone.
-  for (const width of [1440, 390]) {
+  for (const width of (process.env.LIBITU_TEST_WIDTH ? [Number(process.env.LIBITU_TEST_WIDTH)] : [1440, 390])) {
     const context = await browser.newContext({ viewport: { width, height: 1000 } });
     const page = await context.newPage();
     const { state, errors } = await installSpeakingFixture(page, { origin });

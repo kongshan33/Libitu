@@ -1,10 +1,10 @@
 .wordmark {
   display: inline-block;
-  color: var(--purple-600);
+  color: var(--brand);
   font-family: var(--font-ui);
   font-size: inherit;
-  font-weight: 750;
-  letter-spacing: -0.058em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 

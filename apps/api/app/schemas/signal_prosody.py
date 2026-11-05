@@ -21,6 +21,12 @@ class ProminenceWord(WordBoundary):
     reasons: list[str] = Field(default_factory=list)
 
 
+class DisplayFrame(StrictModel):
+    time_sec: float = Field(ge=0)
+    pitch_st: float | None = None
+    energy_dbfs: float
+
+
 class SignalProsody(StrictModel):
     version: Literal["server-prominence-v1"] = SIGNAL_VERSION
     feature_version: Literal["server-praat-energy-10ms-v1"] = "server-praat-energy-10ms-v1"
@@ -34,6 +40,9 @@ class SignalProsody(StrictModel):
     time_step_sec: Literal[0.05] = 0.05
     pitch_st: list[float | None] = Field(default_factory=list, max_length=12001)
     prominence: list[float | None] = Field(default_factory=list, max_length=12001)
+    # Optional for historical results. Actual 20ms evidence, not the composite
+    # prominence signal; unvoiced pitch remains absent.
+    display_frames: list[DisplayFrame] = Field(default_factory=list, max_length=30001)
     words: list[ProminenceWord] = Field(default_factory=list, max_length=1024)
     reasons: list[str] = Field(default_factory=list)
     experimental: Literal[True] = True

@@ -17,24 +17,12 @@ export function LearningDimensions() {
   return <section className={styles.card} aria-labelledby="dimensions-title">
     <div className={styles.cardHeader}><h2 id="dimensions-title">Learning dimensions</h2><span className={styles.smallMuted}>Assessment pending</span></div>
     <div className={styles.dimensionBody}>
-      <div className={styles.radarArea}>
-        <svg viewBox="0 0 210 190" aria-hidden="true">
-          {[1, 0.66, 0.33].map((scale) => <polygon key={scale} points={Array.from({ length: 5 }, (_, i) => {
-            const angle = (i * 72 - 90) * Math.PI / 180;
-            return `${105 + Math.cos(angle) * 79 * scale},${96 + Math.sin(angle) * 79 * scale}`;
-          }).join(" ")} fill="none" stroke="var(--color-border-secondary)" strokeDasharray="3 4" />)}
-          {Array.from({ length: 5 }, (_, i) => { const angle = (i * 72 - 90) * Math.PI / 180; return <line key={i} x1="105" y1="96" x2={105 + Math.cos(angle) * 79} y2={96 + Math.sin(angle) * 79} stroke="var(--color-border-tertiary)" />; })}
-          <circle cx="105" cy="96" r="28" fill="var(--color-background-primary)" />
-          <text x="105" y="101" textAnchor="middle" fill="var(--color-text-secondary)" fontSize="20">—</text>
-        </svg>
-        <p>Your learning has more<br />than one dimension.</p>
-      </div>
       <div className={styles.dimensionList} role="group" aria-label="Learning dimensions">
         {dimensions.map((dimension, index) => <button type="button" key={dimension.name} aria-pressed={active === index} aria-controls="dimension-detail" onClick={() => setActive(index)}>
-          <dimension.icon size={16} aria-hidden="true" /><span>{dimension.name}<small>{index === 4 ? "Not available yet" : "Not assessed"}</small></span><b aria-hidden="true">—</b>
+          <dimension.icon size={16} strokeWidth={1.5} aria-hidden="true" /><span>{dimension.name}</span><small>{index === 4 ? "Not available yet" : "Not assessed"}</small>
         </button>)}
       </div>
     </div>
-    <div id="dimension-detail" className={styles.dimensionDetail} aria-live="polite"><strong>{dimensions[active].name}</strong><p>{dimensions[active].detail}</p></div>
+    <div id="dimension-detail" className={styles.dimensionDetail} aria-live="polite"><div key={active} data-content-enter><strong>{dimensions[active].name}</strong><p>{dimensions[active].detail}</p></div></div>
   </section>;
 }

@@ -104,7 +104,7 @@ function AnalysisStatus({ layer, label, result, empty }: {
     <strong>{label}: </strong>
     {result.pending ? "Analyzing locally… The first run loads the speech model." : result.error
       ? <><span role="alert">{result.error}</span> {result.canRetry !== false
-        ? <Button variant="secondary" size="inherit" type="button" onClick={result.retry}>Retry analysis</Button>
+        ? <Button variant="secondary" size="md" type="button" onClick={result.retry}>Retry analysis</Button>
         : <span>Play the sentence again to prepare its reference.</span>}</>
       : result.features ? relevantIssues.length
         ? relevantIssues.map((issue) => issues[issue] ?? issue).join(" ") : "Analysis ready."

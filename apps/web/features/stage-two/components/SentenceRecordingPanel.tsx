@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
 import { Mic, Pause, Play, Square, Trash2, X } from "lucide-react";
@@ -15,15 +16,17 @@ type Props = {
   compact?: boolean;
   onCancel?():void;
   historical?:boolean;
+  savedReplay?: ReactNode;
+  savedDurationMs?: number | null;
 };
 
-export function SentenceRecordingPanel({ recording, sentenceNumber, disabled = false, startDisabled = false, startDescriptionId, compact = false, onCancel, historical=false }: Props) {
+export function SentenceRecordingPanel({ recording, sentenceNumber, disabled = false, startDisabled = false, startDescriptionId, compact = false, onCancel, historical=false, savedReplay, savedDurationMs }: Props) {
   const { state, replaying, replayError } = recording;
   const busy = state.phase === "requesting" || state.phase === "recording" || state.phase === "stopping";
   const status = state.phase === "requesting" ? "Waiting for microphone permission…"
     : state.phase === "recording" ? "Recording your voice"
     : state.phase === "stopping" ? "Finishing your recording…"
-    : historical ? "Selected saved take · replay it from Takes below."
+    : historical ? "Selected saved take"
     : state.clip ? "Your take is ready to replay"
     : "";
 
@@ -39,35 +42,36 @@ export function SentenceRecordingPanel({ recording, sentenceNumber, disabled = f
             <Square aria-hidden="true" /> {compact ? `Stop · ${duration(state.elapsedMs)}` : "Stop recording"}
           </Button>
         ) : (
-          <Button variant="primary" size="lg" type="button" className="stage-two-record-start" aria-label={state.clip ? "Record again" : "Record sentence"}
+          <Button variant="primary" size="lg" type="button" className="stage-two-record-start" aria-label={(state.clip || historical) ? "Record again" : "Record sentence"}
             aria-describedby={startDescriptionId} loading={state.phase === "requesting" || state.phase === "stopping"} loadingLabel={state.phase === "stopping" ? "Finishing…" : "Waiting…"} disabled={!sentenceNumber || busy || disabled || startDisabled} onClick={recording.start}>
-            <Mic aria-hidden="true" /> {state.clip ? "Record again" : compact ? "Record" : "Record sentence"}
+            <Mic aria-hidden="true" /> {(state.clip || historical) ? "Record again" : compact ? "Record" : "Record sentence"}
           </Button>
         )}
         {busy ? (
-          <Button variant="secondary" size="inherit" type="button" className="stage-two-record-cancel" aria-label="Cancel recording"
+          <Button variant="secondary" size="md" type="button" className="stage-two-record-cancel" aria-label="Cancel recording"
             onClick={onCancel??(()=>recording.recorder.cancel())}><X aria-hidden="true" /> {compact ? "Cancel" : "Cancel recording"}</Button>
         ) : null}
         {state.clip ? (
           <>
-            {!historical?<><Button variant="secondary" size="inherit" type="button" className="stage-two-record-replay"
+            {!historical?<><Button variant="secondary" size="md" type="button" className="stage-two-record-replay"
               aria-label={replaying ? "Pause recording" : "Replay recording"}
               disabled={busy || disabled} onClick={() => void recording.toggleReplay()}>
               {replaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
               {replaying ? compact ? "Pause mine" : "Pause recording" : compact ? "Replay mine" : "Replay recording"}
             </Button>
-            <Button variant="danger" size="inherit" type="button" className="stage-two-record-delete" aria-label="Clear local recording" title="Clear local take; saved history is kept"
-              disabled={busy || disabled} onClick={recording.clear}><Trash2 aria-hidden="true" />
+            <Button variant="ghost" size="md" type="button" className="stage-two-record-delete" aria-label="Clear local recording" title="Clear local take; saved history is kept"
+              disabled={busy || disabled} onClick={() => { if(window.confirm("Clear this local recording? Saved history will remain."))recording.clear(); }}><Trash2 aria-hidden="true" />
               {!compact ? "Clear local recording" : null}</Button></>:null}
             <audio key={state.clip.url} ref={recording.attachAudio} src={state.clip.url} preload="metadata"
               onPlay={recording.onReplayPlay} onPause={recording.onReplayPause} onEnded={recording.onReplayPause}
               onError={() => recording.onReplayError(state.clip!.url)} />
           </>
         ) : null}
-        {(!compact && state.phase === "recording") || state.phase === "stopping" || state.clip && !historical && !busy ? (
+        {savedReplay}
+        {(!compact && state.phase === "recording") || state.phase === "stopping" || !busy && (historical ? savedDurationMs != null : state.clip) ? (
           <span className={`stage-two-recording-timer ${state.phase === "recording" ? "is-live" : ""}`}
             role="timer" aria-label="Recording duration">
-            {duration(busy ? state.elapsedMs : state.clip?.durationMs ?? 0)}
+            {duration(busy ? state.elapsedMs : historical ? savedDurationMs ?? 0 : state.clip?.durationMs ?? 0)}
           </span>
         ) : null}
       </div>

@@ -170,13 +170,15 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 | 类型 | 样式 | 用法 |
 | --- | --- | --- |
-| 主按钮 | 黑底白字,内边距 14×26,15px / 500,全圆 | 每屏一个,按页面主任务判定 |
-| 次按钮 | 透明底,1px `--line-strong`,内边距 8×14,13px,悬停 `--surface` | 其他操作 |
+| 主按钮 | 黑底白字,尺寸由共享 sm / md / lg 决定,500 字重,全圆 | 每屏一个,按页面主任务判定 |
+| 次按钮 | 透明底,1px `--line-strong`,尺寸与同组主按钮一致,悬停 `--surface` | 其他操作 |
 | 文字链接 | 14px `--ink-2`,悬停 `--ink`,无底 | 导航、查看更多、`Clear` |
 | 圆形播放 | 36px 黑底,白色图标 | 句子、参考音频 |
 | 录音按钮 | 64px 黑色圆,中心白点;录音中变方形 | Stage 2、Stage 4。不用红色或紫色 |
 
 禁用:`--line` 底 + `--muted` 字。主按钮的箭头图标悬停时右移 3px。
+
+普通操作按钮采用共享尺寸：sm 32px / 12px、md 40px / 13px、lg 44px / 14px；图文间距 8px，操作组间距 12px。同一操作组（例如报告页继续练习的三个按钮）统一使用 44px / 14px，主次层级只通过配色表达。Web 使用共享 `ui-button-group` 和显式 `size`；报告操作组统一 `lg`：最小高度 44px、14px 字号、20px 行高、11×18px 内边距，按钮和链接、禁用和加载状态保持相同几何尺寸。
 
 ### 9.2 选择与切换
 
@@ -252,6 +254,134 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 ### 9.11 空状态、加载、错误
 
 空状态:1px 虚线 `--line-strong` 框,14px,标题 + 一句建议 + 次按钮。加载:`--line-soft` 骨架块或一行文字(Preparing…)。错误:行内提示块 + 重试按钮,不用红色。数据缺失显示 `—`。
+
+### 9.12 三层分析(Stage 2 Detailed)
+
+**页面结构**
+
+- 查看分析时使用全局栏 + 流程栏,只有录音中才切换为专注模式栏。标题区:标签 `Shadow`、H1、mono 元信息;右侧是分段控件 `Quick / Detailed / Review` 和次按钮 `Back to segments`。
+- 左栏 280px 句子列表(sticky):`Sentences` 标题 + 折叠图标按钮 + `13 in this segment` + 复选框。行 = mono 序号 + 句子 + mono 元信息(状态 · 时间)。当前行 `--line-soft` 底 + `--ink`;状态只写文字。
+- 主列最宽 820px,自上而下:句子导航 → 参考音频卡 → 当前句 → 已存录音说明 → 三层分析 → Takes。
+
+**当前句与录音区**
+
+- 当前句 26px / 1.75,居中。识别偏差:多说的词用 mono `+ the`(`--muted`);被识别成别的词的原词加 1.5px `--ink` 虚线下划线,下方 mono 小字 `recognized “helping”`。不用橙色。
+- 匹配状态一行:对勾图标 + mono(`96.2% of words matched · three-layer analysis eligible`)。
+- 操作行:`Listen`(次)、`Record again`(**主按钮,整屏唯一**)、`Replay mine`(次)、删除图标按钮(`--ink-3`,带 `aria-label`)、时长 mono。`Back to segments` 只保留页面右上角,不再做第二个黑色大按钮。
+- 破坏性操作(Delete captured reference、Delete analysis、Delete practice record)一律用普通文字链接 `--ink-2`,不用红色;执行前二次确认。
+- 重复的错误提示合并为一处:参考音频卡里一条说明 + 一个次按钮 `Retry reference upload`;`Turn off`、`Audio settings`、`How it works` 为文字链接。
+
+**三层标签页**
+
+- 用标签页(9.2),标签只写 Sound / Rhythm / Melody,去掉原来的对勾徽章。只有被锁定的层才显示锁图标和 `Locked`(如匹配率 60–85% 时 Rhythm / Melody 锁定)。
+- 每层顶部:H2 层名 + 一句 15px `--ink-3` 说明 + 右侧次按钮 `Notes`。
+- **Feedback / Tip 不再占右栏**,默认折叠在 `Notes` 里;展开后是 `--surface` 卡,左 Feedback、右 Tip。图表因此可以使用主列全宽。
+
+**Sound 层**
+
+- 现象过滤:`All` + 10 个现象 chip(Linking、Weak、Flap-T、Elision、Assim.、Glottal、Drop-D、H-drop、Vowel len.、Voicing),自动换行,不横向截断,选中黑底白字。选中某现象后,其他现象的标记降到 20% 不透明度。
+- 现象标记用 mono 小标签(`LK`、`WK`……,`--line-soft` 底,5px 圆角),放在单词下方,不再用彩色字母块和弧线。「Your voice」中尚未评估的标记用虚线轮廓 + `?`(如 `WK?`)。
+- `Reference` 和 `Your voice` 各占一块:标签 + 词流(19px,词间距 10×14px,自动换行),两块之间 1px 分隔。图例合成一行 mono 文字,不着色。
+- `Shadow mode` 行:次按钮 `Hide text` / `Show text`。隐藏时参考词变成 `--line-soft` 词块,点击单个词逐个揭示。
+
+**Rhythm 层**
+
+- 「Your voice」使用共用时间轴(9.14),只显示 Rhythm 轨道,词名在柱子下方;不分行,可缩放和拖动。
+- 柱高 = 相对突出度(共享 0–0.88 刻度,最高 52px,`--ink-3`);不确定 = 虚线轮廓柱;未比较 = 无柱。每词的柱子后面有一层淡色响度包络(见下)。
+- 点击一个词:`--brand` 描边,下方一行读数。选中词与 Melody 标签页、总览保持同步。
+- 原来的 27 行表格去掉,信息已在图里;要精确值时点词查看。
+- 参考不可用时,在时间轴上方写一行 mono 说明 `Reference unavailable for this take.`。
+- 固定说明:`Continuous relative prominence, not a stress label or a correctness score`,以及未校准的免责,13px `--muted`。
+
+**响度包络(背景层):** 每个词的柱子后面加一层淡色响度包络:面积图,底边与柱子基线对齐,最高 52px,填充 `--line`,无描边,柱子仍在最前面。包络只表示响度(能量),不表示重音:图例写「Light shape = loudness」,突出度柱的标题仍写 Prominence,不写 Stress。因为词宽与时长成比例,词与词之间的平坦空隙就是停顿;Rhythm 标签页和总览使用同一套数据与样式。包络需要在分析时保存能量包络(约每 20ms 一个点,不能还原语音内容)。录音不保留(No retained audio),所以不能从录音文件现画。本版为示意数据。
+
+**Melody 层**
+
+- 使用共用时间轴(9.14),只显示 Melody 轨道;图例和 `Play reference` / `Play your voice` 在时间轴上方,不分行,可缩放和拖动。
+- 音高曲线画 F0 连续曲线(每 20ms 一个点),单位是相对各自中位数的半音。**曲线为黑色**:`Your voice` = `--ink` 1.75px 实线;`Reference` = `--muted` 1.5px 虚线,不可用时图例灰显并注明 `unavailable`。紫色不用于曲线。
+- 清音和停顿处曲线断开,不连线插值。纵轴 +12 到 −12,约 4px/半音,轨道高 112px;刻度 `+12` / `0` / `−12` 写在左侧轨道标签栏,0 线 `--line-strong`。
+- 点击一个词:`--brand` 描边(表示当前选中),下方一行读数。
+- 接入真实数据时,用每个词的 F0 帧序列替换示意数据即可;无 F0 的词(未匹配)不画线,只保留词宽。
+
+**Takes**
+
+- 每次录音一行 `--surface` 圆角卡;当前选中 = 白底 + 1.5px `--brand` 描边。行内:时间 15px / 500 + mono 元信息 + `No retained audio` + `View analysis`(次)+ `Delete practice record`(文字链接)。隐私说明 13px `--muted`。
+
+**相对原页面去掉的:** 红色和橙色文字、彩色现象字母块、层标签上的对勾徽章、右侧 Layer focus 栏、27 行表格、重复的状态消息、第二个黑色 `Back to segments` 大按钮。
+
+### 9.13 总览(Stage 2 Review)
+
+**用途:** 复盘时一次看清「哪个词为什么听起来被强调」。逐层学习仍用 Detailed 的三个标签页(9.12),总览不取代它们。
+
+**结构**
+
+- Review 模式下,三层标签页换成 `Overview` 区块;标题区:H2 `Overview` + 一句 15px `--ink-3` 说明 + 右侧三个层开关(`Sound` / `Rhythm` / `Melody`,chip,开 = 黑底白字,可多选)。标题下方是 `Take`(选哪一次录音)和 `Voices`(显示参考 / 你)两行 chip,见 9.15。
+- **不分行**:整句是一条共用时间轴(9.14),可缩放、可拖动。
+- **三条分轨上下对齐,共用词轴**:左侧 72px 轨道标签,右侧每词一列,三条轨道在同一列内垂直叠放,列宽与词时长成比例。
+
+| 轨道 | 高度 | 内容 |
+| --- | --- | --- |
+| Sound | 60px | 词(16px)+ 下方 mono 现象标记(`LK`、`WK`……),标记是文本推断的可能读法 |
+| Rhythm | 72px | 相对突出度柱(最高 52px,`--ink-3`,共享 0–0.88 刻度);不确定 = 虚线轮廓;未比较 = 无柱 |
+| Melody | 112px | F0 曲线(`--ink` 1.75px 黑色,清音与停顿处断开),0 线 `--line-strong` 贯穿 |
+
+总览的 Rhythm 轨道同样在突出度柱后加响度包络背景(高 52px)。因为这里词宽与时长成比例,词与词之间的平坦空隙就是停顿。
+
+- **不做的事:** 不把 Rhythm 和 Melody 画成双纵轴叠在同一张图里。每层各有一条轨道,各用自己的纵轴,只共享词轴(横向)。轨道之间 1px `--line-soft` 分隔。
+- **选中同步**:点任意轨道里的一个词,整列(所有可见轨道)显示 `--brand` 描边,下方一行读数。选中词在 Detailed 的 Rhythm、Melody 标签页里保持一致。
+- **层开关**:关闭一层时,该轨道和左侧轨道标签一起消失,其余轨道自动上移,列宽不变。全部关闭时显示虚线空状态框「Turn on at least one layer」。
+- **参考音频可用时**:两个声音的区分、泳道和读数见 9.15。
+- **说明文字**:图例一行 mono(标记含义、柱高刻度、曲线单位),下方 13px `--muted` 声明数据性质。
+
+### 9.14 共用时间轴(缩放与拖动)
+
+Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组件。**不分行,整句是一条横向时间轴。**
+
+- **结构**:左侧 72px 轨道标签(固定,不随缩放移动),右侧是可滚动区域。顶部 24px 时间尺(每秒一个刻度,mono 10px,1px `--line` 竖线);下面每词一列,**列宽 = 词时长 × 缩放系数**。轨道自上而下:Sound(60px)/ Rhythm(72px)/ Melody(112px,左侧标 `+12` / `0` / `−12`)。没有 Sound 轨道时,底部加一行词名(28px)。
+- **缩放**:工具条右对齐:缩放百分比(mono)+ `−` 按钮 + 滑块(140px)+ `+` 按钮 + `Fit` 次按钮。默认 100%(约 0.18px/ms),范围约 33%–333%(0.06–0.6px/ms);`−` / `+` 每次步进一档;`Fit` = 整句恰好适配主列宽。词变窄时词名单行截断,柱宽随列宽收窄(最窄 3px)。
+- **拖动**:鼠标在时间轴区域按住左右拖动平移(光标 `grab`);拖动超过 4px 后不触发点词,避免误选;触屏用原生横向滚动。
+- **选中**:点一个词,`--brand` 描边贯穿所有可见轨道,下方一行读数 `词 · 时长 · 突出度 · 音高范围 · 现象标记`。选中词在 Rhythm、Melody、总览之间同步。
+- **各视图的轨道**:Rhythm 标签页只开 Rhythm 轨道;Melody 标签页只开 Melody 轨道,图例和 `Play reference` / `Play your voice` 放在时间轴上方;Review 总览按三个层开关组合轨道。
+- **说明文字**:图例随可见的层变化,统一追加「Word width follows duration. Drag to pan.」。
+- **不做**:不分行或分短语;不用滚轮缩放(会和页面滚动冲突);不把 Rhythm 与 Melody 画成双纵轴;时间轴内不放 Notes。
+
+### 9.15 参考音与用户音的区分(Review)
+
+**Review 的定位:** 回来查看某一次录音保存下来的完整分析。因此 Review 总是针对「一次具体的录音」,并且在参考音可用时,同时呈现参考音和你的声音。
+
+**选择录音:** 标题区下方有 `Take` 一行:每次录音一个 chip(如 `9:05 PM · 17.3s · No reference`),选中 = 黑底白字。Takes 列表里的 `View analysis` 按钮会跳到 Review 并选中那一次。
+
+**视觉编码(全站统一,不靠颜色):**
+
+| 元素 | Reference | You |
+| --- | --- | --- |
+| 音高线(Melody) | `--muted` 1.5px 虚线 | `--ink` 1.75px 实线 |
+| 突出度柱(Rhythm) | `--line-strong` 填充 | `--ink-3` 填充(不确定 = 虚线轮廓) |
+| 响度包络 | 更浅的灰(`#EFEDEB`) | 淡灰(`--line` 级) |
+| 词时长基线(Rhythm 泳道底边) | 2px `--line-strong` | 2px `--ink` |
+| Sound 标记 | 实线小标签(文本推断的可能读法) | 已评估 = 实线;未评估 = 虚线轮廓 + `?` |
+
+原则:**参考 = 浅、灰、虚线;你 = 深、黑、实线。** 紫色只用于选中词的描边,不用来区分两个声音。
+
+**对齐方式:** 按词对齐,每词一列;两个声音各按自己的时长在列内左对齐绘制,列宽 = 两者时长中较大的一个。所以词时长和停顿的差异仍然看得出来(短的一条更短),音高曲线按各自时长压缩,可以直接比较形状。两个声音同时在轴上时,秒刻度尺隐藏(两者时间不共线),词内时长靠词时长基线读取。
+
+**分轨内的泳道:**
+
+- Sound:词名一行(28px)+ Ref 标记一行(22px)+ You 标记一行(22px)。
+- Rhythm:Ref 泳道(64px)在上,You 泳道(64px)在下,各有自己的基线,共用 0–0.88 刻度;不把两根柱并排放在一起。
+- Melody:两条曲线叠在同一个纵轴上(单位相同,都是半音),不拆泳道。
+- 左侧轨道标签栏的右侧用 mono `Ref` / `You` 标出各泳道。
+
+**图例与开关:**
+
+- 时间轴上方一行图例:虚线 `Reference`、实线 `You`;参考不可用时 Reference 降到 40% 不透明度并注明 `unavailable`。
+- 参考可用时显示 `Voices` 两个 chip(`Reference` / `You`),可单独隐藏其中一个,至少保留一个。
+
+**读数:** 点词后,下方一行同时给出两侧数值:`词 · You 时长 · 突出度 · Reference 时长 · 突出度 · Δ 时长差 · 现象标记`。Δ = 你 − 参考,正数表示你说得更慢。
+
+**参考不可用:** 只显示你的声音,不显示 Ref 泳道和 Ref 标签;说明一行 mono:`Reference audio unavailable for this take. Showing your voice only.`;`Play reference` 禁用。
+
+参考数据在原型里是示意数据。
 
 ## 10. 页面总表
 
@@ -410,7 +540,7 @@ Radix 各包版本保持一致。Chrome 扩展内的弹层需要把 Portal 的 `
 
 - 页面上方的小标签(如 `Stage 3 · Prepare to use your English`)是否也去掉数字,与流程栏保持一致。
 - 点分区时,如果该分区没有进行中的内容,落点是入口列表,是否合适。
-- Stage 1、选段、Stage 2 的主操作和细节沿用原型,本文没有重新定义。
+- Stage 1 和选段的主操作和细节沿用原型,本文没有重新定义;Stage 2 Detailed 的三层分析见 9.12。
 - High value 的判定规则;Scenario / Register 每条语料的数据来源。
 - Chrome Web Store 上线后 Landing 的 Add to Chrome 状态。
 - 按钮的键盘焦点样式、弹层 Esc 关闭,在原型里尚未逐一实现。

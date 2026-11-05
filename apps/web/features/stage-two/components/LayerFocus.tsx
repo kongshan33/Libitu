@@ -1,5 +1,6 @@
+import styles from './LayerAnalysis.module.css';
 import type { ComparisonView } from '../comparison/view';
-import { phenomena, type Phenomenon } from '../sound/phenomena';
+import type { Phenomenon } from '../sound/phenomena';
 import type { PracticeLayer } from './PracticeLayers';
 
 const soundTips: Record<Phenomenon | 'all', string> = {
@@ -16,36 +17,27 @@ const soundTips: Record<Phenomenon | 'all', string> = {
   voicing: 'Listen to the consonant and its surrounding vowel together. Voicing is not automatically evaluated here.',
 };
 
-export function LayerFocus({ layer, view, soundFilter = 'all', concealed = false }: {
-  layer: PracticeLayer; view: ComparisonView; soundFilter?: Phenomenon | 'all'; concealed?: boolean;
+export function LayerFocus({ id, layer, view, soundFilter = 'all', concealed = false }: {
+  id?: string; layer: PracticeLayer; view: ComparisonView; soundFilter?: Phenomenon | 'all'; concealed?: boolean;
 }) {
   const label = layer === 'sound' ? 'Sound' : layer === 'rhythm' ? 'Rhythm' : 'Melody';
-  const title = layer === 'sound' ? phenomena.find(p => p.id === soundFilter)?.label ?? 'Sound layer'
-    : layer === 'rhythm' ? 'Rhythm layer' : 'Melody layer';
   const candidates = (view.sound?.candidates ?? []).filter(c => soundFilter === 'all' || c.kind === soundFilter);
-  return <aside className="stage-two-layer-focus" aria-label={`${label} layer focus`}>
-    <div className="stage-two-layer-overview">
-      <span className="stage-two-layer-overview-label">LAYER FOCUS</span>
-      <strong>{title}</strong>
-      <p>{layer === 'sound' ? 'Notice how the marked sounds connect in the sentence.'
-        : layer === 'rhythm' ? 'Compare word timing and the spaces between phrases.'
-          : 'Follow the rise and fall of both voices on the same chart.'}</p>
-    </div>
-    <section className="stage-two-focus-feedback" aria-label={`${label} feedback`}>
+  return <aside id={id} className={styles.notes} aria-label={`${label} notes`}>
+    <section aria-label={`${label} feedback`}>
       <h3>Feedback</h3>
       {layer === 'sound' ? <>
-        <p>Colored marks suggest possible readings. Your voice’s “?” marks are not yet evaluated.</p>
         {!concealed && candidates.length ? <ul>{candidates.map(c => <li key={c.id}>
-          <strong>{c.source_text}</strong><p>{c.explanation}</p>
+          <strong>{c.source_text}</strong> {c.explanation}
         </li>)}</ul> : null}
+        {!concealed && !candidates.length ? <p>Colored marks suggest possible readings. Your voice’s “?” marks are not yet evaluated.</p> : null}
         {concealed ? <p>Reveal the text to see word-specific suggestions.</p> : null}
       </> : <p>{layer === 'rhythm'
-        ? 'Dots show dictionary syllable stress; durations and pause bars come from available audio measurements. Sentence emphasis is not evaluated.'
+        ? 'Bars show continuous relative prominence. Light envelopes show loudness; dashed bars indicate boundary sensitivity. These measurements are not calibrated stress grades.'
         : view.wordAligned ? 'The curves share a word axis and each voice’s median pitch is the baseline. Highlight a word to compare its curve interval. Nuclear stress is not evaluated.'
-          : 'Available curves use normalized speech time. Word alignment is still pending; matching positions do not yet mean matching words.'}</p>}
-      {[view.reference, view.yours].map((voice, i) => voice.status ? <p key={i}><strong>{i ? 'Your voice' : 'Reference'}:</strong> {voice.status}</p> : null)}
+          : 'Word timing is not available. Missing evidence stays empty until analysis completes.'}</p>}
+      {layer !== 'sound' ? [view.reference, view.yours].map((voice, i) => voice.status ? <p key={i}><strong>{i ? 'Your voice' : 'Reference'}:</strong> {voice.status}</p> : null) : null}
     </section>
-    <section className="stage-two-focus-tip" aria-label={`${label} practice tip`}>
+    <section aria-label={`${label} practice tip`}>
       <h3>Tip</h3>
       <p>{layer === 'sound' ? soundTips[soundFilter] : layer === 'rhythm'
         ? 'Listen to one phrase at a time. Follow its pace and pauses, then record the whole sentence again.'

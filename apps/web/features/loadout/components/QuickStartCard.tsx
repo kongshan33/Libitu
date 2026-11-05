@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 
 import { Zap } from "lucide-react";
 import type { ReactNode } from "react";
@@ -53,16 +54,16 @@ export function QuickStartCard({ picks, logic, scene, scenarioLabel, difficultyL
 
     {adjustOpen ? children : null}
 
-    <div className={styles.heroActions}>
-      <button type="button" className={`${styles.button} ${styles.heroStart}`} disabled={unavailable || startDisabled || !picks.length} onClick={onStart}>
+    <div className={`${styles.heroActions} ui-button-group`}>
+      <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroStart}`} disabled={unavailable || startDisabled || !picks.length} loading={busy} loadingLabel="Preparing mission…" onClick={onStart}>
         {busy ? "Preparing mission…" : "Quick start"}
-      </button>
-      <button type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable || !picks.length} onClick={onShuffle}>
+      </Button>
+      <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable || !picks.length} onClick={onShuffle}>
         Shuffle picks
-      </button>
-      <button type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable} onClick={onAdjust} aria-expanded={adjustOpen}>
+      </Button>
+      <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable} onClick={onAdjust} aria-expanded={adjustOpen}>
         {adjustOpen ? "Done" : "Adjust"}
-      </button>
+      </Button>
       <p className={styles.preferenceSummary}>{[scenarioLabel, difficultyLabel, feedbackLabel].filter(Boolean).join(" · ")}</p>
     </div>
   </section>;

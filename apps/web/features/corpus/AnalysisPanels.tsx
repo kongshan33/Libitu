@@ -12,7 +12,7 @@ export function ExplainPanel({ analysis, isLoading }: { analysis: CorpusSelectio
         <h2>Pronunciation</h2>
         <p><strong>{analysis.explanation.pronunciation.ipa}</strong></p>
         <p>{analysis.explanation.pronunciation.connectedSpeech}</p>
-        <Button variant="secondary" size="inherit" className="inline-command" type="button" disabled={isLoading} onClick={() => speakText(analysis.explanation.pronunciation.audioText)}>
+        <Button variant="secondary" size="md" className="inline-command" type="button" disabled={isLoading} onClick={() => speakText(analysis.explanation.pronunciation.audioText)}>
           <Volume2 size={13} aria-hidden="true" />
           Play
         </Button>
@@ -78,7 +78,7 @@ export function SyntaxPanel({
             <code>{pattern.template}</code>
             <p>{pattern.rationale}</p>
             {onSavePattern ? (
-              <Button variant="primary" size="inherit" className="inline-command" type="button" disabled={isLoading || saveDisabled} onClick={() => onSavePattern("structure", pattern.template, pattern.slots)}>
+              <Button variant="primary" size="md" className="inline-command" type="button" disabled={isLoading || saveDisabled} onClick={() => onSavePattern("structure", pattern.template, pattern.slots)}>
                 Save structure
               </Button>
             ) : null}

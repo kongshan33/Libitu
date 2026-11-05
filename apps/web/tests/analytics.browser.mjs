@@ -19,6 +19,17 @@ try {
     try {
       await page.goto(origin + reportPath, { waitUntil: "domcontentloaded" });
       await page.getByRole("heading", { name: "Your mission report", exact: true }).waitFor();
+      const retry = page.getByRole("button", { name: "Retry this mission", exact: true });
+      const adjust = page.getByRole("button", { name: "Adjust loadout", exact: true });
+      assert.equal(await retry.locator("small").count(), 0);
+      assert.equal(await adjust.locator("small").count(), 0);
+      assert.equal(await retry.evaluate(n => getComputedStyle(n).fontSize), "14px");
+      assert.equal(await retry.evaluate(n => getComputedStyle(n).backgroundColor), "rgb(12, 10, 9)");
+      assert.equal(await adjust.evaluate(n => getComputedStyle(n).fontSize), "14px");
+      const actionBoxes = await page.locator('.ui-button-group .ui-button').evaluateAll(nodes => nodes.map(el => el.getBoundingClientRect().toJSON()));
+      assert.equal(actionBoxes.length, 3);
+      assert.ok(actionBoxes.every(box => Math.abs(box.height - 44) < 1), JSON.stringify(actionBoxes));
+      assert.ok(actionBoxes.every(box => Math.abs(box.width - actionBoxes[0].width) < 1));
       assert.equal(await page.getByRole("tab").count(), 4);
       assert.equal(await page.getByText("Fluency", { exact: true }).count(), 0);
       const task = page.getByRole("tab", { name: /^Task fit/ }); await task.focus(); await page.keyboard.press("ArrowRight");

@@ -1,16 +1,16 @@
 import type { ComparisonView } from '../comparison/view';
 
 export const phenomena = [
-  {id:'linking',label:'Linking',symbol:'⌢',badge:'LK'},
+  {id:'linking',label:'Linking',symbol:'‿',badge:'LK'},
   {id:'weak_form',label:'Weak',symbol:'ə',badge:'WK'},
   {id:'flap',label:'Flap-T',symbol:'ɾ',badge:'FT'},
-  {id:'elision',label:'Elision',symbol:'∅',badge:'EL'},
+  {id:'elision',label:'Elision',symbol:'ø',badge:'EL'},
   {id:'assimilation',label:'Assim.',symbol:'≈',badge:'AS'},
   {id:'glottal',label:'Glottal',symbol:'ʔ',badge:'GT'},
-  {id:'drop_d',label:'Drop-D',symbol:'∅d',badge:'DD'},
-  {id:'h_drop',label:'H-drop',symbol:'∅h',badge:'HD'},
-  {id:'vowel_length',label:'Vowel len.',symbol:'◌',badge:'VL'},
-  {id:'voicing',label:'Voicing',symbol:'◑',badge:'VC'},
+  {id:'drop_d',label:'Drop-D',symbol:'ød',badge:'DD'},
+  {id:'h_drop',label:'H-drop',symbol:'øh',badge:'HD'},
+  {id:'vowel_length',label:'Vowel len.',symbol:'○',badge:'VL'},
+  {id:'voicing',label:'Voicing',symbol:'◐',badge:'VC'},
 ] as const;
 export type Phenomenon = typeof phenomena[number]['id'];
 export type SoundMark = {id:string;kind:Phenomenon;start:number;end:number;description:string};
@@ -23,6 +23,10 @@ export function soundMarks(view:ComparisonView):SoundMark[] {
   words.forEach((w,i)=>{if(w.vowel!==null||view.yours.words[i]?.vowel!=null)marks.push({id:`vowel-${i}`,kind:'vowel_length',start:i,end:i+1,
     description:'Measured vowel duration. This does not judge vowel quality.'});});
   return marks;
+}
+// The default reading view shows phonology cues. Measurements are opt-in.
+export function visibleSoundMarks(marks: SoundMark[], filter: Phenomenon | 'all' = 'all') {
+  return marks.filter(mark => filter === 'all' ? mark.kind !== 'vowel_length' : mark.kind === filter);
 }
 export function emptyPhenomenon(kind:Phenomenon|'all') {
   return kind==='all'?'No sound suggestions are available for this sentence. Choose Vowel len. to check available vowel measurements.':

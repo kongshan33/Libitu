@@ -12,6 +12,7 @@ from app.schemas.practice import RecognitionFeedback
 from app.services.acoustics.word_check import analysis_scope
 from app.services.acoustics import engine, sources
 from app.schemas.signal_prosody import SignalPair, SignalProsody, SIGNAL_VERSION
+from app.services.analysis_display import needs_frames, with_frames
 
 
 def attempt_owned(repo: PracticeAnalysisRepository, owner: str, attempt: str) -> dict:
@@ -39,6 +40,21 @@ def read(repo: PracticeAnalysisRepository, owner: str, attempt: str) -> Analysis
     # The RPC checks owner, parent deletion and source visibility in one MVCC
     # snapshot. Operator grants remain live local configuration, never cached.
     reference = valid_reference(snapshot["attempt"], snapshot["reference"])
+    result = row.get("result")
+    if result and row["state"] in ("completed", "needs_review"):
+        result = dict(result)
+        if needs_frames(result.get("learner")):
+            result["learner"] = with_frames(result["learner"], repo.display_checkpoint(owner, attempt))
+        if reference and result.get("comparison") == "available" and needs_frames(result.get("reference")):
+            full = reference_for(snapshot["attempt"], row.get("reference_id"))
+            sentence = next((s for s in (full or {}).get("results", [])
+                             if s["sentence_id"] == snapshot["attempt"]["sentence_id"]), None)
+            if sentence:
+                # Reference measurements use segment-relative sentence times.
+                raw = sentence.get("measurements")
+                origin = (snapshot["attempt"]["start_ms"] - full["start_ms"]) / 1000
+                result["reference"] = with_frames(result["reference"], raw, origin)
+        row = {**row, "result": result}
     return format_view(snapshot["attempt"], row, reference)
 
 

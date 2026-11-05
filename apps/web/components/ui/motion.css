@@ -1,0 +1,15 @@
+/* Short, interruptible feedback; no route-level or audio simulation animation. */
+@keyframes libitu-content-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes libitu-feedback-in { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+[data-content-enter] { animation: libitu-content-in 160ms ease-out; }
+[data-feedback="success"] svg { animation: libitu-feedback-in 160ms ease-out; }
+/* Native dialog retains top-layer membership during exit, without delaying close/focus restoration. */
+dialog { box-shadow: none; opacity: 0; transform: translateY(4px); overscroll-behavior: contain; transition: opacity 160ms ease-out, transform 160ms ease-out, display 160ms allow-discrete, overlay 160ms allow-discrete; }
+dialog[open] { opacity: 1; transform: none; }
+dialog::backdrop { opacity: 0; transition: opacity 160ms ease-out, display 160ms allow-discrete, overlay 160ms allow-discrete; }
+dialog[open]::backdrop { opacity: 1; }
+@starting-style { dialog[open] { opacity: 0; transform: translateY(4px); } dialog[open]::backdrop { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  [data-content-enter], [data-feedback="success"] svg { animation: none; }
+  dialog, dialog::backdrop { transition: none; transform: none; }
+}

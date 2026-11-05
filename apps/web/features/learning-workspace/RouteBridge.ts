@@ -1,15 +1,14 @@
 "use client";
 import { useCallback, useEffect, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import type { StageOneBlueprint } from "@libitu/types/stage-one";
 import { parseLearningLocation, workspaceHref } from "../navigation/learning-location";
 import { useCurrentLocation } from "../navigation/use-current-location";
 import type { WorkspaceView } from "./ContentWorkspaceProvider";
 import { useRoutePrefetch } from "../navigation/use-route-prefetch";
+import { STAGE_TWO_LOCATION_CHANGED } from "../stage-two/location";
 
 export function useWorkspaceRoute(blueprint: StageOneBlueprint | null) {
   const href = useCurrentLocation();
-  const router = useRouter();
   const warm = useRoutePrefetch();
   const [isNavigating, startNavigation] = useTransition();
   const location = parseLearningLocation(new URL(href, "https://libitu.invalid"));
@@ -17,9 +16,16 @@ export function useWorkspaceRoute(blueprint: StageOneBlueprint | null) {
   const selectedSegmentId = "segmentId" in location ? location.segmentId ?? null : null;
   const navigate = useCallback((view: WorkspaceView, segmentId?: string, sentenceId?: string, replace = false) => {
     const target = workspaceHref(new URL(window.location.href), view, segmentId, sentenceId);
-    startNavigation(() => router[replace ? "replace" : "push"](target, { scroll: false }));
+    if (target !== window.location.pathname + window.location.search + window.location.hash) {
+      // All three routes render StageOneReader under the same content provider.
+      // Keep this loaded workspace and media alive instead of waiting for RSC.
+      startNavigation(() => {
+        window.history[replace ? "replaceState" : "pushState"](null, "", target);
+        window.dispatchEvent(new Event(STAGE_TWO_LOCATION_CHANGED));
+      });
+    }
     return target;
-  }, [router]);
+  }, []);
   const prefetch = useCallback((view: WorkspaceView, segmentId?: string, sentenceId?: string) => {
     warm(workspaceHref(new URL(window.location.href), view, segmentId, sentenceId));
   }, [warm]);

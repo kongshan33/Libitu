@@ -6,7 +6,7 @@ import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 import { DirectionLink } from "@/components/ui/direction-button";
 
-import { AppHeader } from "@/components/AppHeader";
+import { FlowNavigation } from "@/components/FlowNavigation";
 
 import { Button } from "@/components/ui/button";
 
@@ -40,12 +40,12 @@ export function SessionPreparation({ sessionId }: { sessionId: string }) {
   const current = result && result.owner === userId && result.id === sessionId ? result : null;
   const session = current?.session;
   function signIn() { const returnUrl = currentAuthReturnUrl(); clerk.openSignIn({ forceRedirectUrl: returnUrl, signUpForceRedirectUrl: returnUrl }); }
-  return <><AppHeader active="mission" /><main className={styles.page}><section className={styles.shell} aria-label="Saved speaking mission">
+  return <><FlowNavigation title="Mission loadout" current={0} steps={[{ label: "Loadout", href: "/loadout" }, { label: "Conversation" }, { label: "Report" }]} /><main className={styles.page}><section className={styles.shell} aria-label="Saved speaking mission">
 
     <div className={styles.sessionMain}>
       <DirectionLink className={styles.back} href={missionHref("loadout", returnTo)}><ArrowLeft size={14} aria-hidden="true" /> Back to loadout</DirectionLink>
-      {!isLoaded ? <ContentSkeleton label="Checking sign-in…" /> : !userId ? <div className={styles.emptyLibrary}><h1>Sign in to view your mission</h1><p>Your saved mission belongs to your account.</p><Button variant="primary" size="inherit" className={styles.startButton} type="button" onClick={signIn}>Sign in</Button></div>
-        : current?.error ? <div className={styles.error} role="alert"><h1>Mission unavailable</h1><p>{current.error}</p>{current.status === 401 ? <Button variant="secondary" size="inherit" type="button" onClick={signIn}>Sign in again</Button> : current.status !== 404 ? <Button variant="secondary" size="inherit" type="button" onClick={() => setAttempt((value) => value + 1)}>Retry loading mission</Button> : null}</div>
+      {!isLoaded ? <ContentSkeleton label="Checking sign-in…" /> : !userId ? <div className={styles.emptyLibrary}><h1>Sign in to view your mission</h1><p>Your saved mission belongs to your account.</p><Button variant="primary" size="md" className={styles.startButton} type="button" onClick={signIn}>Sign in</Button></div>
+        : current?.error ? <div className={styles.error} role="alert"><h1>Mission unavailable</h1><p>{current.error}</p>{current.status === 401 ? <Button variant="secondary" size="md" type="button" onClick={signIn}>Sign in again</Button> : current.status !== 404 ? <Button variant="secondary" size="md" type="button" onClick={() => setAttempt((value) => value + 1)}>Retry loading mission</Button> : null}</div>
           : !session ? <ContentSkeleton label="Loading your saved mission…" variant="cards" /> : <>
             <div className={styles.savedBadge}><Check size={15} aria-hidden="true" /> Saved to your account</div>
             <h1>Your mission is prepared</h1><p className={styles.sessionGoal}>{session.goal}</p>

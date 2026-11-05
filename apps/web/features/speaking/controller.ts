@@ -14,9 +14,10 @@ export type ConversationState = {
   recastSourceRetired: string | null;
   retainedConversationHelp: ConversationHelp | null;
   helpLoadingVisible: boolean;
+  replyReference: { question: string | null; assistantId: string | null; outputIds: string[]; help: ConversationHelp | null; legacyHelp: SpeakingWorkspace["help"] } | null;
 };
-export const initialConversationState = (): ConversationState => ({ workspace: null, connection: "loading", phase: "listening", microphone: false, microphoneBusy: false, userSpeaking: false, error: null, conflict: false, busy: false, partials: {}, pending: null, supportPending: null, supportError: null, recastSourceRetired: null, retainedConversationHelp: null, helpLoadingVisible: false });
-type AudioPort = Pick<ConversationAudio, "prepare" | "enableMicrophone" | "disableMicrophone" | "append" | "report" | "clear" | "dispose">;
+export const initialConversationState = (): ConversationState => ({ workspace: null, connection: "loading", phase: "listening", microphone: false, microphoneBusy: false, userSpeaking: false, error: null, conflict: false, busy: false, partials: {}, pending: null, supportPending: null, supportError: null, recastSourceRetired: null, retainedConversationHelp: null, helpLoadingVisible: false, replyReference: null });
+type AudioPort = Pick<ConversationAudio, "prepare" | "enableMicrophone" | "disableMicrophone" | "append" | "report" | "clear" | "dispose"> & Partial<Pick<ConversationAudio, "getOutputLevel">>;
 type Dependencies = {
   socket?: (url: string) => WebSocket;
   socketUrl?: (path: string) => string;
@@ -132,6 +133,9 @@ export class ConversationController {
         this.conversationTimer = null;
       }
     }
+    const reference = this.state.replyReference;
+    const latestAssistant = workspace.messages.findLast(message => message.role === "assistant" && message.text.trim());
+    if (reference && latestAssistant && latestAssistant.id !== reference.assistantId) this.patch({ replyReference: null });
     const activeHelp = workspace.conversation?.help;
     if (this.conversationRequest && activeHelp?.id !== this.conversationRequest) {
       this.retiredConversationHelp.add(this.conversationRequest);
@@ -176,6 +180,7 @@ export class ConversationController {
     if (this.socket.bufferedAmount > 256_000) { this.disconnect("Your connection fell behind. Reconnect to continue."); return false; }
     try { this.socket.send(JSON.stringify(event)); return true; } catch { this.disconnect("Connection interrupted. Reconnect to continue."); return false; }
   }
+  getOutputLevel = (): number => this.state.connection === "connected" ? this.audio?.getOutputLevel?.() ?? 0 : 0;
   private getAudio(): AudioPort {
     if (!this.audio) {
       const create = this.dependencies.audio ?? ((frame, boundary, lost) => new ConversationAudio(frame, boundary, lost));
@@ -270,11 +275,13 @@ export class ConversationController {
     if (event.type === "transcript.delta") {
       const previous = this.state.partials[event.item_id]?.text ?? "";
       if (typeof event.delta !== "string" || previous.length + event.delta.length > 12_000 || Object.keys(this.state.partials).length > 5) return;
+      if (event.role === "assistant" && event.delta.trim() && !this.state.replyReference?.outputIds.includes(event.item_id)) this.patch({ replyReference: null });
       if (event.role === "user" && event.delta.trim()) this.retireAutomaticHint();
       this.patch({ partials: { ...this.state.partials, [event.item_id]: { role: event.role, text: previous + event.delta } } }); return;
     }
     if (event.type === "audio.delta") {
       if (this.awaitingAudioClear || this.suppressedResponses.has(event.response_id)) return;
+      if (!this.state.replyReference?.outputIds.includes(event.response_id)) this.patch({ replyReference: null });
       this.playingResponse = event.response_id;
       try { this.audio?.append(event.item_id, event.audio); } catch (error) { this.disconnect(this.message(error)); }
       return;
@@ -338,6 +345,7 @@ export class ConversationController {
     this.acknowledgementTimer = setTimeout(() => { if (this.state.pending?.id === id) this.patch({ pending: { ...this.state.pending, status: "unconfirmed" }, error: "Your message is not confirmed yet. Retry the same message to check safely." }); }, 20_000);
   }
   hint(level: "usage" | "example" = "usage", targetItemId?: string): void {
+    if (this.state.replyReference) return;
     const workspace = this.state.workspace;
     if (!workspace || this.state.connection !== "connected") return;
     if (!targetItemId && workspace.session.mission_plan && workspace.opportunities?.length && workspace.opportunities.every(value => value.status === "skipped")) return;
@@ -398,6 +406,7 @@ export class ConversationController {
   }
   setActivity(draftPresent: boolean, surfaceVisible: boolean): void {
     if (draftPresent === this.draftPresent && surfaceVisible === this.surfaceVisible) return;
+    if (draftPresent && !this.draftPresent) this.holdReplyReference();
     if ((draftPresent && !this.draftPresent) || (!surfaceVisible && this.surfaceVisible)) { this.retireVoiceRecast(); this.retireConversationHelp(); }
     this.draftPresent = draftPresent; this.surfaceVisible = surfaceVisible; this.sendActivity();
   }
@@ -431,7 +440,7 @@ export class ConversationController {
   }
   requestHelp(targetItemId?: string): void {
     const workspace = this.state.workspace, question = workspace?.conversation?.question;
-    if (!question || !workspace?.conversation || this.state.connection !== "connected" || this.state.userSpeaking || this.draftPresent || this.conversationRequest || !["presenting", "awaiting_reply", "responding"].includes(question.status)) return;
+    if (this.state.replyReference || !question || !workspace?.conversation || this.state.connection !== "connected" || this.state.userSpeaking || this.draftPresent || this.conversationRequest || !["presenting", "awaiting_reply", "responding"].includes(question.status)) return;
     const previous = workspace.conversation.help;
     const same = previous && previous.question_id === question.id && previous.question_version === question.context_version && previous.target_item_id === (targetItemId ?? question.target_item_id) && previous.status !== "retired";
     if (same && previous.status === "ready" && previous.level === "example") { this.retireConversationHelp(); return; }
@@ -470,11 +479,22 @@ export class ConversationController {
     const source = this.state.workspace?.messages.findLast(message => message.role === "user")?.id ?? null;
     if (source !== this.state.recastSourceRetired) this.patch({ recastSourceRetired: source });
   }
+  private holdReplyReference(): void {
+    if (this.state.replyReference || this.state.connection !== "connected") return;
+    const workspace = this.state.workspace;
+    const assistant = workspace?.messages.findLast(message => message.role === "assistant" && message.text.trim());
+    const help = [workspace?.conversation?.help, this.state.retainedConversationHelp].find(card => card?.status === "ready" && this.shownHints.has(`conversation:${card.id}:${card.version}`)) ?? null;
+    const legacy = workspace?.help;
+    const legacyHelp = legacy?.status === "ready" && this.shownHints.has(`${legacy.id}:${legacy.version}:${legacy.level}`) ? legacy : null;
+    this.patch({ replyReference: { question: workspace?.conversation?.question?.current.quote ?? assistant?.text ?? null,
+      assistantId: assistant?.id ?? null, outputIds: [...Object.entries(this.state.partials).filter(([, value]) => value.role === "assistant").map(([id]) => id), assistant?.provider_item_id, this.playingResponse].filter((id): id is string => !!id), help, legacyHelp } });
+  }
   private retireAutomaticHint(): void {
+    this.holdReplyReference();
     this.retireVoiceRecast();
     this.retireConversationHelp();
     const workspace = this.state.workspace;
-    if (workspace?.help?.source !== "automatic") return;
+    if (!workspace?.help) return;
     this.retiredHints.add(workspace.help.id);
     this.patch({ workspace: { ...workspace, help: null } });
   }
@@ -532,7 +552,7 @@ export class ConversationController {
     if (this.supportTimer) clearTimeout(this.supportTimer);
     this.supportTimer = null;
     if (this.state.supportPending) this.unconfirmedSupport = this.state.supportPending;
-    this.patch({ userSpeaking: false, supportPending: null, retainedConversationHelp: null, helpLoadingVisible: this.syncHelpLoading(null) });
+    this.patch({ replyReference: null, userSpeaking: false, supportPending: null, retainedConversationHelp: null, helpLoadingVisible: this.syncHelpLoading(null) });
     if (this.heartbeat) clearInterval(this.heartbeat); if (this.boundary) clearInterval(this.boundary); if (this.readyTimer) clearTimeout(this.readyTimer); if (this.acknowledgementTimer) clearTimeout(this.acknowledgementTimer);
     this.acknowledgementTimer = null;
     this.heartbeat = null; this.boundary = null; this.readyTimer = null;

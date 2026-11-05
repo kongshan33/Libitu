@@ -3287,12 +3287,12 @@ svg {
 }
 
 .stage-two-reference-compact {
-  margin-top: 10px !important;
-  padding: 10px 12px !important;
-  border-color: rgb(78 50 23 / 8%) !important;
-  border-radius: 10px !important;
-  background: rgb(245 242 239 / 72%) !important;
-  box-shadow: rgb(78 50 23 / 4%) 0 6px 16px;
+  margin-top: 12px;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: none;
 }
 
 .stage-two-reference-connection {
@@ -3320,8 +3320,8 @@ svg {
 }
 
 .stage-two-reference-copy strong {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .stage-two-reference-copy span {
@@ -3704,10 +3704,15 @@ svg {
   }
 }
 /* Provider word offsets are approximate caption timing, not pronunciation evidence. */
-.caption-word-active {
-  background-color: #d5f3df;
-  box-shadow: 0 2px 0 #29804d;
-  border-radius: 2px;
+.caption-word-active,
+.shadow-practice-prompt .is-playing {
+  background-color: var(--line-soft);
+  color: var(--ink-2);
+  box-shadow: none;
+  padding: 2px 0;
+  border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .word-timing-notice {
@@ -3936,46 +3941,18 @@ svg {
 @media(max-width:600px) { .stage-two-operation-footer { grid-template-columns: minmax(0,1fr); gap: 8px; } }
 .layer-comparison .paired-grid { min-width: calc(var(--paired-count) * var(--paired-word-width, 92px)); }
 .layer-comparison .paired-row { grid-template-columns: repeat(var(--paired-count), var(--paired-word-width, 92px)); justify-content: start; }
-/* Sound follows the prototype: phenomenon chips above two marked text flows. */
-.layer-comparison-sound { padding: 0 0 14px; }
-.sound-phenomenon-strip { display: flex; gap: 5px; padding: 9px 12px; overflow-x: auto; border-bottom: 1px solid var(--color-border-tertiary); background: var(--color-background-secondary); }
-.sound-phenomenon-strip button { flex-shrink: 0; min-height: 34px; padding: 5px 10px; border: 1px solid var(--color-border-tertiary); border-radius: 20px; font-size: 11px; white-space: nowrap; color: var(--color-text-secondary); background: var(--color-background-primary); cursor: pointer; }
-.sound-phenomenon-strip button[aria-pressed="true"] { border-color: #e24b4a; background: #fcebeb; color: #7f1d1d; }
-.sound-reveal-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; padding: 8px 12px; border-bottom: 1px solid var(--color-border-tertiary); color: var(--color-text-secondary); font-size: 11px; }
-.sound-reveal-bar > span { flex: 1; min-width: 150px; }
-.sound-reveal-bar strong { color: #534ab7; font-weight: 500; }
-.sound-reveal-bar button { min-height: 34px; padding: 5px 10px; border: 1px solid var(--color-border-tertiary); border-radius: 20px; background: transparent; color: var(--color-text-primary); cursor: pointer; }
-.sound-comparison-text { padding: 12px; }
-.sound-word-flow { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 6px 2px; }
-.sound-word-group { display: flex; align-items: center; transition: opacity 150ms; }
-.sound-word-group.is-muted { opacity: .35; }
-.sound-word-card { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 32px; padding: 5px 7px; border: 1px solid transparent; border-radius: var(--radius-md); }
-.sound-word-card strong { font-size: 14px; font-weight: 500; white-space: nowrap; }
-.sound-word-card.is-highlighted { border-color: #afa9ec; background: #eeedfe; }
-.sound-word-ipa { min-height: 12px; font-size: 10px; color: var(--color-text-secondary); opacity: 0; }
-.sound-word-card:hover .sound-word-ipa,.sound-word-card:focus .sound-word-ipa,.sound-word-card:focus-within .sound-word-ipa { opacity: 1; }
-.sound-word-marks { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; min-height: 16px; }
-.sound-inline-badge { display: inline-block; border-radius: 3px; padding: 2px 4px; font-size: 9px; line-height: 1.2; font-weight: 600; white-space: nowrap; }
-.sound-inline-badge[data-phenomenon="linking"] { background: #dbeafe; color: #1d4ed8; }
-.sound-inline-badge[data-phenomenon="weak_form"] { background: #f1efe8; color: #44403c; }
-.sound-inline-badge[data-phenomenon="flap"] { background: #ccfbf1; color: #0f766e; }
-.sound-inline-badge[data-phenomenon="elision"] { background: #ede9fe; color: #6d28d9; }
-.sound-inline-badge[data-phenomenon="assimilation"] { background: #e0e7ff; color: #3730a3; }
-.sound-inline-badge[data-phenomenon="glottal"] { background: #ffedd5; color: #c2410c; }
-.sound-inline-badge[data-phenomenon="drop_d"] { background: #fef3c7; color: #92400e; }
-.sound-inline-badge[data-phenomenon="h_drop"] { background: #fce7f3; color: #be185d; }
-.sound-inline-badge[data-phenomenon="vowel_length"] { background: #dcfce7; color: #166534; }
-.sound-inline-badge[data-phenomenon="voicing"] { background: #f3e8ff; color: #7e22ce; }
-.sound-link { display: flex; align-self: center; flex-direction: column; align-items: center; min-width: 22px; color: #2563eb; }
-.sound-link > span { font-size: 25px; line-height: 16px; }
-.sound-link small { font-size: 8px; }
-.sound-boundary-pause { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0 5px; font-size: 9px; color: var(--color-text-secondary); white-space: nowrap; }
-.sound-boundary-pause i { height: 14px; width: 1px; background: currentColor; }
-.sound-phenomenon-legend { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 10px 12px; border-top: 1px solid var(--color-border-tertiary); font-size: 10px; color: var(--color-text-secondary); }
-.sound-phenomenon-legend > span { display: flex; align-items: center; gap: 4px; }
-.layer-comparison-sound > .comparison-footnote { padding: 0 12px; }
-.sound-word-card:focus-visible,.sound-phenomenon-strip button:focus-visible,.sound-reveal-bar button:focus-visible { outline: 2px solid #6554a4; outline-offset: var(--focus-offset); }
-@media(prefers-reduced-motion:reduce) { .sound-word-group { transition: none; } }
+/* Shared Sound palette for Detailed text cues and the Review timeline. */
+.sound-inline-badge { display:inline-block;border-radius:3px;padding:2px 4px;font-size:9px;line-height:1.2;font-weight:600;white-space:nowrap; }
+.sound-inline-badge[data-phenomenon="linking"] { background:#E3ECFF;color:#1D4ED8; }
+.sound-inline-badge[data-phenomenon="weak_form"] { background:#EFEBE3;color:#57534E; }
+.sound-inline-badge[data-phenomenon="flap"] { background:#D9F2EC;color:#0F766E; }
+.sound-inline-badge[data-phenomenon="elision"] { background:#EAE4FB;color:#5B3FC7; }
+.sound-inline-badge[data-phenomenon="assimilation"] { background:#E0E6FA;color:#3C4FA8; }
+.sound-inline-badge[data-phenomenon="glottal"] { background:#FDE8D7;color:#B45309; }
+.sound-inline-badge[data-phenomenon="drop_d"] { background:#FBF0C9;color:#92700C; }
+.sound-inline-badge[data-phenomenon="h_drop"] { background:#FADDE8;color:#BE185D; }
+.sound-inline-badge[data-phenomenon="vowel_length"] { background:#DDF1DC;color:#2E7D32; }
+.sound-inline-badge[data-phenomenon="voicing"] { background:#EDE3FA;color:#7E3FBF; }
 
 /* Keep layer guidance beside the comparison, and below it on narrow screens. */
 .stage-two-layers .layer-comparison { padding: 0; }
@@ -4041,7 +4018,7 @@ svg {
 
 /* Compact audio preferences; processing feedback stays visible above. */
 .stage-two-operation-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; }
-.stage-two-audio-settings { min-width: 0; max-width: 100%; font-size: 12px; }
+.stage-two-audio-settings { flex-basis: 100%; width: 100%; min-width: 0; max-width: 100%; font-size: 12px; }
 .stage-two-audio-settings > summary {
   display: inline-flex; align-items: center; gap: 6px; min-height: 32px;
   padding: 6px 10px; border: 1px solid var(--color-border-tertiary);
@@ -4051,7 +4028,6 @@ svg {
 .stage-two-audio-settings > summary::-webkit-details-marker { display: none; }
 .stage-two-audio-settings > summary:hover { background: var(--color-background-secondary); }
 .stage-two-audio-settings > summary:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
-.stage-two-audio-settings[open] { flex-basis: 100%; }
 .stage-two-audio-settings-content { display: grid; gap: 12px; padding: 12px 0 4px; }
 .stage-two-audio-preference .practice-retention { min-height: 32px; font-size: 12px; }
 .stage-two-audio-preference p { margin: 4px 0 0 24px; color: var(--color-text-secondary); font-size: 11px; line-height: 1.6; }

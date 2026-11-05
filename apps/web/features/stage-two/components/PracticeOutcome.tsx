@@ -1,5 +1,7 @@
 "use client";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 import { useEffect, useRef, useState } from 'react';
+import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { PracticeAnalysis, PracticeApi } from '../persistence/practice-api';
 import { matchLabel } from '../practice/flow';
@@ -22,6 +24,7 @@ export function PracticeOutcome({data,loading,pendingSave,requested,text,api,tak
     catch(cause){if(!signal.aborted)setError(cause instanceof Error?cause.message:'Please retry.');}
     finally{if(!signal.aborted)setBusy(false);}
   }
+  if (loading && !data && !pendingSave) return <ContentSkeleton label="Loading saved analysis…" rows={1} />;
   const label=matchLabel(data);
   return <div className="shadow-practice-outcome" data-tier={check?.tier??undefined}>
     {check?.status==='reliable'?<>
@@ -31,7 +34,7 @@ export function PracticeOutcome({data,loading,pendingSave,requested,text,api,tak
             {op.kind==='substituted'?<small>recognized “{check.recognized_tokens[op.recognized_index!]?.display}”</small>:
               op.kind==='omitted'?<small>not recognized</small>:null}</span>)}
       </div>
-      <p role="status"><span className="shadow-tier-dot"/>{label} · {check.tier==='below_60'?'word check only':check.tier==='partial_60_85'?'Sound on matched words':'three-layer analysis eligible'}</p>
+      <p role="status"><Check size={14} aria-hidden="true"/>{label} · {check.tier==='below_60'?'word check only':check.tier==='partial_60_85'?'Sound on matched words':'three-layer analysis eligible'}</p>
       {differing?<div className="shadow-recognition-feedback">{disagreement?<span>Recognition error marked. Original recognition results are retained.</span>:
         <Button variant="ghost" size="sm" disabled={busy||!takeId} loading={busy} loadingLabel="Saving…" onClick={()=>void mark()}>Recognition error</Button>}</div>:null}
     </>:check?<><p className="shadow-revealed-text">{text}</p><p role="status">Not enough reliable recognition to check the words. Try another take.</p></>:

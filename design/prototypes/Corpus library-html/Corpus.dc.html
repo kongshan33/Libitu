@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Corpus library</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+:root{--ink:#0C0A09;--ink-2:#44403C;--ink-3:#57534E;--muted:#78716C;--line-strong:#D6D3D1;--line:#E7E5E4;--line-soft:#F0EEEC;--surface:#FAFAF9;--bg:#FFFFFF;--brand:#5A43D6;--font:Inter,system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace}
+.pg{font-family:var(--font);color:var(--ink);background:var(--bg);min-height:100%}
+.pg *{box-sizing:border-box}
+.pg h1,.pg h2,.pg h3,.pg p{margin:0}
+.pg button{font-family:var(--font);cursor:pointer}
+.pg a{text-decoration:none}
+.lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.btn-p{background:var(--ink);color:#fff;border:0;border-radius:999px;padding:14px 26px;font-size:15px;font-weight:500;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
+.btn-s{background:transparent;color:var(--ink);border:1px solid var(--line-strong);border-radius:999px;padding:8px 14px;font-size:13px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
+.btn-s:hover{background:var(--surface)}
+.link{color:var(--ink-2);font-size:14px;padding:8px 10px;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.link:hover{color:var(--ink)}
+.nav{padding:8px 14px;border-radius:999px;font-size:14px;color:var(--ink-3)}
+.nav.on{background:var(--line-soft);color:var(--ink);font-weight:500}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.chip{border:0;border-radius:999px;background:var(--line-soft);color:var(--ink-2);font-size:13px;padding:6px 12px}
+.chip:hover{background:var(--line)}
+.chip.on{background:var(--ink);color:#fff}
+.fh{font-size:13px;font-weight:500;color:var(--ink);margin:28px 0 12px}
+.card{background:var(--surface);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:196px}
+.card:hover{background:var(--line-soft)}
+.card .d{font-size:14px;line-height:1.55;color:var(--ink-3);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.tab{background:none;border:0;border-bottom:2px solid transparent;padding:10px 0;font-size:14px;color:var(--muted)}
+.tab.on{color:var(--ink);font-weight:500;border-bottom-color:var(--brand)}
+.sq{width:34px;height:34px;border-radius:999px;border:0;background:transparent;color:var(--muted);display:inline-flex;align-items:center;justify-content:center}
+.sq.on{background:var(--ink);color:#fff}
+.card.sel{background:#fff;outline:1.5px solid var(--brand);outline-offset:-1.5px}
+.srcb{display:flex;justify-content:space-between;gap:12px;width:calc(100% + 16px);margin:0 -8px;text-align:left;border:0;background:transparent;border-radius:8px;padding:7px 8px;font-size:13px;line-height:1.4;color:var(--ink-2)}
+.srcb:hover{background:var(--line-soft)}
+.srcb.on{background:var(--line-soft);color:var(--ink);font-weight:500}
+.acc{display:flex;align-items:center;gap:8px;width:100%;min-height:52px;background:transparent;border:0;padding:0;font-size:14px;font-weight:500;color:var(--ink);text-align:left}
+.chip{padding:7px 14px;transition:background .15s ease-out,color .15s ease-out}
+.fp{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--line-soft);color:var(--ink-2);font-size:14px;white-space:nowrap;transition:background .15s ease-out,color .15s ease-out}
+.fp:hover{background:var(--line)}
+.fp.open{background:var(--line)}
+.fp.on{background:var(--ink);color:#fff}
+.pop{position:absolute;top:calc(100% + 8px);left:0;z-index:10;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;max-height:360px;overflow:auto;animation:pop .16s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.card{transition:background .15s ease-out}
+</style>
+</helmet>
+<div class="pg" style="width:100%">
+
+<header style="height:64px;padding:0 32px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line-soft)"><a href="#" style="font-size:20px;font-weight:600;color:var(--brand);letter-spacing:-.02em;margin-right:24px">libitu.</a><nav aria-label="Primary" style="display:flex;gap:4px"><a class="nav" href="#">Practice</a><a class="nav" href="#">Mission</a><a class="nav on" aria-current="page" href="#">Corpus</a><a class="nav" href="#">My learning</a></nav><span style="flex:1"></span><span role="img" aria-label="Shanshan Kong" style="width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center">S</span></header>
+
+<div style="display:flex;flex-wrap:wrap;max-width:1440px;margin:0 auto">
+
+
+<main style="flex:999 1 560px;min-width:0;padding:32px 32px 64px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div><p class="lbl">From saved to spoken</p><h1 style="font-size:30px;line-height:1.25;font-weight:500;letter-spacing:-.02em;margin-top:8px">Corpus library</h1><p style="font-size:15px;line-height:1.6;color:var(--ink-3);margin-top:8px">Keep useful language close. Make it part of your next conversation.</p><p class="mono" style="margin-top:12px">33 saved items · 22 chunks · 7 idioms · 4 structures</p></div>
+<button class="btn-p" type="button">Open Loadout<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
+</div>
+
+<div role="tablist" aria-label="Corpus views" style="display:flex;gap:28px;margin-top:28px;border-bottom:1px solid var(--line-soft)"><sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button class="tab {{t.cls}}" role="tab" aria-selected="{{t.on}}" type="button" onClick="{{t.pick}}">{{t.label}}</button></sc-for></div>
+
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:20px">
+<label style="flex:1 1 220px;max-width:320px;display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:999px;padding:0 16px;height:40px;color:var(--muted)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" placeholder="Search expressions, meanings, tags…" aria-label="Search corpus" value="{{q}}" onInput="{{onSearch}}" style="flex:1;min-width:0;border:0;background:transparent;outline:none;font:400 14px var(--font);color:var(--ink)"></label>
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="6">
+<div style="position:relative;z-index:{{f.z}}">
+<button type="button" class="fp {{f.cls}}" aria-haspopup="true" aria-expanded="{{f.open}}" onClick="{{f.toggle}}">{{f.label}}<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="transform:{{f.rot}}"><path d="m6 9 6 6 6-6"></path></svg></button>
+<sc-if value="{{f.open}}" hint-placeholder-val="{{ false }}">
+<div class="pop" style="width:{{f.w}}">
+<sc-if value="{{f.isChips}}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{f.chips}}" as="c" hint-placeholder-count="6"><button class="chip {{c.cls}}" type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}">{{c.t}}</button></sc-for></div></sc-if>
+<sc-if value="{{f.isSrc}}" hint-placeholder-val="{{ false }}"><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px"><sc-for list="{{f.rows}}" as="s" hint-placeholder-count="5"><li><button type="button" class="srcb {{s.cls}}" aria-pressed="{{s.on}}" onClick="{{s.pick}}"><span>{{s.name}}</span><span class="mono" style="flex:none">{{s.n}}</span></button></li></sc-for></ul></sc-if>
+<sc-if value="{{f.hasSel}}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="link" type="button" onClick="{{f.clear}}" style="border:0;background:transparent;margin-right:-10px">Clear</button></div></sc-if>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{showReset}}" hint-placeholder-val="{{ false }}"><button class="link" type="button" onClick="{{reset}}" style="border:0;background:transparent">Clear all</button></sc-if>
+<div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+<button class="btn-s" type="button" onClick="{{toggleSort}}" style="height:40px;padding:0 16px;font-size:14px">{{sortLabel}}<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path></svg></button>
+<div role="group" aria-label="View" style="display:flex;gap:2px"><button class="sq {{gridCls}}" type="button" aria-label="Grid view" aria-pressed="{{isGrid}}" onClick="{{setGrid}}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></button><button class="sq {{listCls}}" type="button" aria-label="List view" aria-pressed="{{isList}}" onClick="{{setList}}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg></button></div>
+</div>
+</div>
+<sc-if value="{{anyOpen}}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Close filter" onClick="{{closeAll}}" style="position:fixed;inset:0;z-index:5;background:transparent;border:0;cursor:default"></button></sc-if>
+<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:20px 0 12px"><span>{{total}}</span><span>{{selCount}}</span></div>
+
+<div style="display:grid;grid-template-columns:{{cols}};gap:16px">
+<sc-for list="{{cards}}" as="c" hint-placeholder-count="6">
+<article class="card {{c.cls}}" style="min-height:{{c.minH}}">
+<div style="display:flex;align-items:center;gap:12px"><span class="lbl" style="flex:1">{{c.type}}</span><span class="mono">{{c.level}}</span><input type="checkbox" aria-label="Select item" checked="{{c.checked}}" onChange="{{c.toggle}}" style="width:18px;height:18px;margin:0;accent-color:#0C0A09"></div>
+<sc-if value="{{c.mono}}" hint-placeholder-val="{{ false }}"><h3 style="font:500 15px/1.5 var(--mono);color:var(--ink);letter-spacing:-.01em">{{c.title}}</h3></sc-if>
+<sc-if value="{{c.plain}}" hint-placeholder-val="{{ true }}"><h3 style="font-size:17px;line-height:1.35;font-weight:500;letter-spacing:-.01em">{{c.title}}</h3></sc-if>
+<p class="d">{{c.desc}}</p>
+<p class="mono" style="margin-top:auto">{{c.tagsText}}</p>
+<div style="display:flex;align-items:center;gap:8px"><span style="flex:1;min-width:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{c.src}}</span><button type="button" aria-label="Edit item" style="border:0;background:transparent;color:var(--ink-3);width:32px;height:32px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.4 3.6a2.1 2.1 0 0 1 3 3L7.4 18.6l-4 1 1-4Z"></path></svg></button></div>
+</article>
+</sc-for>
+</div>
+<sc-if value="{{empty}}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed var(--line-strong);border-radius:14px;padding:48px 24px;text-align:center"><p style="font-size:15px;font-weight:500">{{emptyTitle}}</p><p style="font-size:14px;color:var(--ink-3);margin-top:6px">Try removing a filter or searching a different word.</p><button class="btn-s" type="button" onClick="{{reset}}" style="margin-top:16px">Reset all filters</button></div></sc-if>
+<sc-if value="{{hasMoreItems}}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:40px"><p style="font-size:13px;color:var(--muted)">{{showing}}</p><button class="btn-s" type="button" onClick="{{loadMore}}" style="padding:10px 18px;font-size:14px">Load more</button></div></sc-if>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+data() {
+const BT = 'Big Think Interview With Peter Thiel | Big Think', NV = 'Announcing NVIDIA RTX Spark | GTC Taipei 2026 Keynote by CEO Jensen Huang', PT = 'Peter Thiel Returns to Stanford to Share Business Tips from “Zero to One”', CP = 'Competition is for Losers with Peter Thiel (How to Start a Startup 2014: 5)', SC = 'Stanford CS Professor: AI Can Code. That’s Why You Should Learn | Chris Piech';
+const SJ = 'Steve Jobs - Get Much Simpler, Be Really Clear - Sept. 23, 1997', NX = 'Internal NeXT video (1991)', YT = 'Untitled YouTube video', AMD = 'AMD Acquires Fei-Fei Li’s World Labs for $8.2 Billion';
+const K = (type, level, title, desc, tags, src) => ({ type, level, title, desc, tags, src, mono: type === 'Structure', plain: type !== 'Structure' });
+return {
+filters: [
+{ title: 'Type', chips: ['chunk', 'idiom', 'structure'] },
+{ title: 'Functional tags', chips: ['acknowledging', 'clarifying', 'contrast', 'discourse', 'emphasising', 'framing', 'hedging', 'idiom', 'justifying', 'proposing', 'reframing', 'softening', 'summarising'] },
+{ title: 'Difficulty', chips: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Unassessed'] },
+{ title: 'Scenario', chips: ['daily_life', 'disagreement', 'explanation', 'negotiation', 'presentation', 'small_talk', 'storytelling', 'workplace'], more: 'Show 38 more' },
+{ title: 'Register', chips: ['professional', 'neutral', 'casual', 'formal', 'Unassessed'] }
+],
+sources: [
+{ name: SJ, n: 3 }, { name: NX, n: 5 }, { name: YT, n: 8 }, { name: AMD, n: 2 },
+{ name: 'Announcing NVIDIA RTX Spark | GTC Taipei 2026 Keynote by CEO Jensen Huang', n: 2 },
+{ name: 'Big Think Interview With Peter Thiel | Big Think', n: 8 },
+{ name: 'Peter Thiel Returns to Stanford to Share Business Tips from “Zero to One”', n: 2 },
+{ name: 'Competition is for Losers with Peter Thiel (How to Start a Startup 2014: 5)', n: 2 },
+{ name: 'Stanford CS Professor: AI Can Code. That’s Why You Should Learn | Chris Piech', n: 1 }
+],
+cards: [
+K('Chunk', 'C1', 'not to talk about speeds and feeds', 'Industry shorthand for technical specifications and performance numbers, framed as shallow marketing.', 'contrast · framing', SJ),
+K('Chunk', 'B1', 'We’re trying to get back to the basics.', 'Returning to fundamental, proven principles rather than chasing complexity. Signals a simplification strategy.', 'framing · reframing', SJ),
+K('Chunk', 'B2', 'pockets of greatness', 'Acknowledging scattered strengths within a larger system while implying overall performance is inconsistent.', 'acknowledging · framing', SJ),
+K('Structure', 'B2', 'What makes [X] [quality] is [core driver].', 'Highlights the single most important factor behind a customer decision. Emphasizes a core, non-negotiable priority.', 'emphasising · justifying', NX),
+K('Structure', 'B2', 'Less about [overrated quality], more about [underrated quality].', 'Reframes a product’s identity by rejecting a common surface assumption and highlighting its core, underrecognized value. Persuasive pivot for positioning talks.', 'reframing · contrast', NX),
+K('Idiom', 'C1', 'eek out a beach head', 'Refers to gaining a small, initial foothold in a new market. Describes early, limited market entry by a competitor.', 'idiom · framing', NX),
+K('Idiom', 'B2', 'winning hands down', 'Means winning easily, with no close competition. Used to describe a lopsided, clear competitive victory.', 'idiom · emphasising', NX),
+K('Chunk', 'B2', 'A lot of light bulbs have come on over the last 90 days', 'Signals that many sudden, clear strategic insights have emerged from recent work. Used to frame a breakthrough realization for an audience.', 'framing · emphasising', NX),
+K('Chunk', 'B2', 'helming of this company', '名词短语，意为“对这家公司的掌舵/领导”。helming 是动词 helm 的动名词形式，本义为“掌舵”，此处比喻“领导、管理、指引方向”。', 'discourse · emphasising', YT),
+K('Structure', 'B2', 'you have to tell us if you were ever at any point leading this company and you thought about that possibility.', '你必须告诉我们，你是否曾经在领导这家公司的任何时候，考虑过那种可能性。', 'discourse · emphasising', YT),
+K('Idiom', 'B2', 'come to fruition', '实现；取得成果；开花结果。指计划、想法或努力经过一段时间后达到预期的结果。', 'idiom · discourse', YT),
+K('Chunk', 'B2', 'have your board behind you', '字面意思是“让你的董事会支持你”，在商业语境中表示获得董事会的支持、认可或 backing。', 'discourse · emphasising', YT),
+K('Idiom', 'B2', 'pinch me moment.', '指一个令人难以置信、激动到让人怀疑是否真实的时刻，仿佛需要掐自己一下来确认不是在做梦。', 'idiom · discourse', YT),
+K('Idiom', 'B2', 'lean into', 'To embrace or commit more strongly to something. Common in strategy and culture discussions.', 'idiom · framing', AMD),
+K('Chunk', 'B2', 'cross-pollinate', '动词，本义指植物异花授粉；在商业/创新语境中比喻不同领域、想法或团队之间相互交流、碰撞，从而激发新的创意和机会。', 'discourse · framing', AMD),
+K('Chunk', 'B2', 'tenor', '名词，指（言论、事件、氛围的）总体基调、主流倾向或一般趋势。此处指当前关于 AI 的讨论氛围和人们感知它的总体倾向。', 'discourse · framing', YT),
+K('Idiom', 'B2', 'the size of the fight in the dog', 'Determination matters more than physical size or resources. Used to praise underdogs.', 'idiom · emphasising', YT),
+K('Chunk', 'B1', 'that’s something that has stuck with me', 'An idea or lesson that has remained memorable and influential over time.', 'emphasising · summarising', YT),
+K('Chunk', 'B2', 'as big of a deal as', 'Compares the importance of two things, often used to highlight significance.', 'emphasising · framing', NV),
+K('Chunk', 'B1', 'in a lot of ways', 'Hedges a statement by indicating it is true from certain perspectives, not absolutely.', 'hedging · softening', NV),
+K('Chunk', 'B2', 'the fact of the matter is that', 'Introduces an indisputable truth or key point.', 'emphasising · framing', BT),
+K('Idiom', 'B2', 'zero-sum game', 'A situation where one person’s gain is another’s loss, with no net benefit.', 'idiom · framing', BT),
+K('Chunk', 'B2', 'hedging your bets', 'To reduce risk by pursuing multiple options simultaneously.', 'idiom · framing', BT),
+K('Chunk', 'B2', 'by and large', 'Means ‘generally’ or ‘mostly’, used to summarize a typical situation.', 'hedging · summarising', BT),
+K('Chunk', 'B2', 'have long-term time horizons', '短语，意为“拥有长远的眼光”或“具备长期的时间视野”，指在决策时考虑长远影响而非短期利益。', 'framing', BT),
+K('Chunk', 'B2', 'was alluding to', '短语动词，意为“暗指、间接提到”。这里指说话者之前提到的某部电影，但未直接说出名字。', 'clarifying', BT),
+K('Chunk', 'B2', 'the portrayal of the film', '名词短语，意为“电影对……的描绘/呈现”。此处指电影对人物和事件的刻画方式。', 'framing', BT),
+K('Chunk', 'C1', 'remunerative', '形容词，意为“报酬丰厚的，有利可图的”，此处指“(工作等)能带来经济回报的”。', 'clarifying', BT),
+K('Chunk', 'C1', 'idiosyncratic', '形容词，意为‘独特的、与众不同的’，强调个人特有的、不寻常的习性、风格或方法。此处指 PayPal 的经历非常特殊，难以归纳出普遍规律。', 'clarifying', PT),
+K('Chunk', 'B2', 'it’s always a tremendous privilege to come back to STANFORD', '这是一个表达荣幸之情的句型，意为“总是莫大的荣幸去做某事”。在当前语境中，说话者强调回到斯坦福大学对他而言是极大的荣幸。', 'framing · emphasising', PT),
+K('Chunk', 'B2', 'That’s where you get a foothold', 'To establish a secure initial position in a market or endeavor.', 'idiom · proposing', CP),
+K('Chunk', 'B1', 'on a high level', 'At a general or summary level, without going into details.', 'framing · hedging', CP),
+K('Structure', 'B1', 'The more you [action], the more you [result].', 'Expresses a proportional relationship between two actions or outcomes.', 'emphasising · justifying', SC)
+]
+};
+}
+renderVals() {
+const d = this.data();
+const st = this.state || {};
+const sel = st.sel || {}, q = (st.q || '').trim().toLowerCase();
+const tab = st.tab || 'all', sort = st.sort || 'recent', view = st.view || 'grid', limit = st.limit || 15, picked = st.picked || {}, open = !!st.openScn;
+const MORE = ['中性偏正式', '书面语', '创新讨论', '商业演讲', '商业讨论', '商业领导力', '商务访谈', '学术交流', '常用于描述计划、梦想、项目等', '开场白', '描述性', '支持与授权', '新闻评论', '日常口语', '正式/中性', '正式/中性场合', '正式/半正式', '正式口语', '正式场合', '正式或中性场合', '正式演讲', '正式讨论', '比喻用法', '表达惊喜', '表达荣幸', '褒义', '解释说明', '讨论', '访谈场景', '评论', '非正式', 'Unassessed'];
+const key = { 'Type': 'type', 'Functional tags': 'tag', 'Difficulty': 'lvl', 'Scenario': 'scn', 'Register': 'reg' };
+const has = (k, v) => (sel[k] || []).includes(v);
+const flip = (k, v) => { const cur = sel[k] || []; this.setState({ sel: { ...sel, [k]: cur.includes(v) ? cur.filter((x) => x !== v) : cur.concat(v) }, limit: 15 }); };
+const ok = (c) => {
+if (tab === 'high') return false;
+if ((sel.type || []).length && !sel.type.includes(c.type.toLowerCase())) return false;
+if ((sel.tag || []).length && !sel.tag.some((t) => c.tagList.includes(t))) return false;
+if ((sel.lvl || []).length && !sel.lvl.includes(c.level)) return false;
+if ((sel.src || []).length && !sel.src.includes(c.src)) return false;
+if (q && !(c.title + ' ' + c.desc + ' ' + c.tags + ' ' + c.type).toLowerCase().includes(q)) return false;
+return true;
+};
+let list = d.cards.map((c, i) => ({ ...c, id: i, tagList: c.tags.split(' · ') })).filter(ok);
+if (sort === 'az') list = list.slice().sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+const shown = list.slice(0, limit);
+const openG = st.openG || null;
+const grp = (title, k) => { const o = openG === title, c = (sel[k] || []).length; return { title, label: c ? title + ' · ' + c : title, cls: (c ? 'on' : '') + (o ? ' open' : ''), open: o, rot: o ? 'rotate(180deg)' : 'none', toggle: () => this.setState({ openG: o ? null : title }), hasSel: c > 0, clear: () => this.setState({ sel: { ...sel, [k]: [] }, limit: 15 }), w: title === 'Source' ? '340px' : '320px', z: openG ? 6 : 'auto' }; };
+const mk = (f) => {
+const k = key[f.title];
+const scn = f.title === 'Scenario';
+const chips = (scn ? f.chips.concat(MORE) : f.chips).map((t) => ({ t, on: has(k, t), cls: has(k, t) ? 'on' : '', pick: () => flip(k, t) }));
+return { ...grp(f.title, k), isChips: true, isSrc: false, chips };
+};
+const srcGroup = { ...grp('Source', 'src'), isChips: false, isSrc: true, hasMore: false, chips: [], rows: d.sources.map((s) => ({ name: s.name, n: s.n, on: has('src', s.name), cls: has('src', s.name) ? 'on' : '', pick: () => flip('src', s.name) })) };
+const active = [];
+Object.keys(sel).forEach((k) => (sel[k] || []).forEach((v) => active.push({ label: k === 'src' && v.length > 26 ? v.slice(0, 26) + '…' : v, remove: () => flip(k, v) })));
+const n = list.length;
+return {
+filters: d.filters.map(mk).concat([srcGroup]),
+active, anyOpen: !!openG, closeAll: () => this.setState({ openG: null }), showReset: active.length > 0 || !!st.q,
+cards: shown.map((c) => ({ ...c, tagsText: c.tags, cls: picked[c.id] ? 'sel' : '', checked: !!picked[c.id], toggle: () => this.setState({ picked: { ...picked, [c.id]: !picked[c.id] } }), minH: view === 'list' ? '0' : '196px' })),
+tabs: [['all', 'All items'], ['high', 'High value']].map(([k, label]) => ({ label, on: tab === k, cls: tab === k ? 'on' : '', pick: () => this.setState({ tab: k, limit: 15 }) })),
+q: st.q || '',
+onSearch: (e) => this.setState({ q: e.target.value, limit: 15 }),
+sortLabel: sort === 'recent' ? 'Recently added' : 'A–Z',
+toggleSort: () => this.setState({ sort: sort === 'recent' ? 'az' : 'recent' }),
+isGrid: view === 'grid', isList: view === 'list', gridCls: view === 'grid' ? 'on' : '', listCls: view === 'list' ? 'on' : '',
+setGrid: () => this.setState({ view: 'grid' }), setList: () => this.setState({ view: 'list' }),
+cols: view === 'list' ? 'minmax(0, 1fr)' : 'repeat(auto-fill, minmax(280px, 1fr))',
+total: n + (n === 1 ? ' item' : ' items'),
+selCount: Object.values(picked).filter(Boolean).length + ' selected',
+empty: n === 0,
+emptyTitle: tab === 'high' ? 'No high-value items yet' : 'No items match these filters',
+hasMoreItems: n > shown.length,
+showing: 'Showing ' + shown.length + ' of ' + n,
+loadMore: () => this.setState({ limit: limit + 15 }),
+reset: () => this.setState({ sel: {}, q: '', tab: 'all', limit: 15 })
+};
+}
+}
+</script>
+</body>
+</html>

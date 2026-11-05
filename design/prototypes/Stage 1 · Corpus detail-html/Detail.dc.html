@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Corpus detail</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+:root{--ink:#0C0A09;--ink-2:#44403C;--ink-3:#57534E;--muted:#78716C;--line-strong:#D6D3D1;--line:#E7E5E4;--line-soft:#F0EEEC;--surface:#FAFAF9;--bg:#FFFFFF;--brand:#5A43D6;--font:Inter,system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace}
+.pg{font-family:var(--font);color:var(--ink);background:#8F8D8B;min-height:100%}
+.pg *{box-sizing:border-box}
+.pg h2,.pg h3,.pg p{margin:0}
+.pg button{font-family:var(--font);cursor:pointer}
+.lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.btn-s{background:transparent;color:var(--ink);border:1px solid var(--line-strong);border-radius:999px;padding:8px 14px;font-size:13px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;flex:none;transition:background .15s ease-out}
+.btn-s:hover{background:var(--surface)}
+.link{background:none;border:0;color:var(--ink-2);font-size:13px;padding:8px 10px;white-space:nowrap}
+.link:hover{color:var(--ink)}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tab{background:none;border:0;border-bottom:2px solid transparent;padding:14px 0;margin-right:28px;font-size:15px;color:var(--muted);transition:color .15s ease-out}
+.tab.on{color:var(--ink);font-weight:500;border-bottom-color:var(--brand)}
+.sec{padding:24px 0;border-top:1px solid var(--line-soft)}
+.sec:first-child{border-top:0}
+.h3{font-size:17px;line-height:1.35;font-weight:500;letter-spacing:-.01em}
+.body{font-size:15px;line-height:1.7;color:var(--ink-3)}
+.sum{font-size:15px;line-height:1.6;font-weight:500;color:var(--ink)}
+.row{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:16px;padding:10px 0;border-top:1px solid var(--line-soft);font-size:14px;line-height:1.6}
+.row:first-of-type{border-top:0}
+.chip{border:0;border-radius:999px;background:var(--line-soft);color:var(--ink-2);font-size:13px;padding:8px 14px;transition:background .15s ease-out}
+.chip:hover{background:var(--line)}
+.chip.on{background:var(--ink);color:#fff}
+.sl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:8px 0;font-size:14px;line-height:1.6;border-top:1px solid var(--line-soft)}
+</style>
+</helmet>
+<div class="pg" style="width:100%;padding:40px 0;display:flex;justify-content:center">
+<div role="dialog" aria-modal="true" aria-labelledby="dt" style="width:880px;max-width:100%;max-height:920px;background:#fff;border-radius:14px;display:flex;flex-direction:column;overflow:hidden">
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 32px 16px">
+<div><p class="lbl">Corpus detail</p><h2 id="dt" style="font-size:22px;line-height:1.3;font-weight:500;letter-spacing:-.01em;margin-top:8px">pockets of greatness</h2><p class="mono" style="margin-top:8px">chunk · B2 · professional · acknowledging · framing</p></div>
+<button class="btn-s" type="button" aria-label="Close" style="width:36px;height:36px;padding:0;justify-content:center;border-color:transparent"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</div>
+
+<div style="overflow-y:auto;flex:1;min-height:0">
+<div style="margin:0 32px 0;background:var(--surface);border-radius:12px;padding:16px 20px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><p class="lbl">Original context</p><p style="font-size:14px;font-weight:500;color:var(--ink-2);margin-top:4px">Steve Jobs - Get Much Simpler, Be Really Clear - Sept. 23, 1997</p></div><button class="btn-s" type="button" aria-label="Play from 0:38"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3 20 12 6 21Z"></path></svg>0:38</button></div>
+<p style="font-size:14px;line-height:1.6;color:var(--muted);margin-top:12px">We’re trying to get back to the basics of great products, great marketing, and great distribution.</p>
+<p style="font-size:17px;line-height:1.65;margin-top:6px">And I think that that Apple has has <span style="border-bottom:2px solid var(--brand);padding-bottom:2px;font-weight:500">pockets of greatness</span>, but in some ways has drifted away from from doing the basics really well.</p>
+<p style="font-size:14px;line-height:1.6;color:var(--muted);margin-top:6px">So, we started with the product line.</p>
+</div>
+
+<div role="tablist" aria-label="Detail views" style="position:sticky;top:0;z-index:2;background:#fff;padding:0 32px;margin-top:8px;border-bottom:1px solid var(--line-soft)">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button class="tab {{t.cls}}" role="tab" aria-selected="{{t.on}}" type="button" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+</div>
+
+<div style="padding:8px 32px 32px">
+
+<sc-if value="{{isExplain}}" hint-placeholder-val="{{ true }}">
+<div class="sec"><p style="font-size:16px;line-height:1.75;color:var(--ink)">Jobs 先肯定苹果仍有零散的强项，再用 but 转到整体偏离基础的问题，这是商业场合里“先让步、再指出问题”的典型开场。记住它的搭配：have pockets of greatness (in …)，后面通常紧跟一个转折。</p></div>
+
+<div class="sec"><h3 class="h3">Meaning</h3><p class="sum" style="margin-top:10px">名词性短语，指整体平庸之中零散出现的优秀之处。</p><p class="body" style="margin-top:6px">字面义是“greatness 的口袋”。在这里，说话人承认苹果仍有局部的强项，但整体已经偏离了做好基础业务的核心。语气是委婉让步，既肯定了优点，也为后面的批评做铺垫。</p></div>
+
+<div class="sec"><h3 class="h3">Use it</h3>
+<p style="font-family:var(--mono);font-size:14px;line-height:1.7;color:var(--ink);background:var(--surface);border-radius:12px;padding:14px 18px;margin-top:12px">[team / company] has pockets of greatness in [area], but [problem].</p>
+<div style="margin-top:12px"><div class="sl" style="border-top:0"><span class="mono">team / company</span><span style="color:var(--ink-3)">被评价的对象，如 the team、our product</span></div><div class="sl"><span class="mono">area</span><span style="color:var(--ink-3)">有强项的领域，如 design、delivery</span></div><div class="sl"><span class="mono">problem</span><span style="color:var(--ink-3)">转折后指出的整体问题</span></div></div>
+<p class="mono" style="margin-top:12px;line-height:1.8">常见搭配 · have / find pockets of greatness · pockets of greatness in [area]</p></div>
+
+<div class="sec"><h3 class="h3">Pronunciation</h3>
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:12px"><span style="font-family:var(--mono);font-size:15px;color:var(--ink)">/ˈpɒkɪts əv ˈɡreɪtnəs/</span><span style="font-family:var(--mono);font-size:15px;color:var(--ink-2)">POCK-ets of GREAT-ness</span><button class="btn-s" type="button" style="margin-left:auto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg>Play</button></div>
+<p class="body" style="margin-top:10px">口语里 of 弱读为 /əv/，和前后的 pockets、greatness 自然连读；重音落在 pockets 和 greatness 的第一个音节。</p></div>
+
+<div class="sec"><h3 class="h3">Similar expressions</h3>
+<div style="margin-top:8px">
+<div class="row"><span style="font-weight:500">islands of excellence</span><span style="color:var(--ink-3)">语义几乎完全对等，更常见于书面报告</span></div>
+<div class="row"><span style="font-weight:500">scattered bright spots</span><span style="color:var(--ink-3)">更口语化，指零散的亮点</span></div>
+<div class="row"><span style="font-weight:500">isolated areas of strength</span><span style="color:var(--ink-3)">更正式，强调孤立存在的优势领域</span></div>
+</div></div>
+
+<div class="sec"><h3 class="h3">Examples</h3>
+<div style="margin-top:8px">
+<div style="padding:10px 0"><p style="font-size:15px;line-height:1.6;color:var(--ink)">The old system has pockets of greatness, but it is too slow for modern needs. <span class="mono" style="margin-left:6px">typical</span></p><p style="font-size:14px;line-height:1.6;color:var(--muted);margin-top:2px">这套旧系统仍有一些零散的优秀之处，但对现代需求来说太慢了。</p></div>
+<div style="padding:10px 0;border-top:1px solid var(--line-soft)"><p style="font-size:15px;line-height:1.6;color:var(--ink)">The team has pockets of greatness in design, but struggles with consistent delivery.</p><p style="font-size:14px;line-height:1.6;color:var(--muted);margin-top:2px">这个团队在设计领域有局部突出的优势，但在稳定交付方面存在困难。</p></div>
+<div style="padding:10px 0;border-top:1px solid var(--line-soft)"><p style="font-size:15px;line-height:1.6;color:var(--ink)">Despite the company’s recent struggles, there are pockets of greatness worth preserving.</p><p style="font-size:14px;line-height:1.6;color:var(--muted);margin-top:2px">尽管这家公司近期陷入困境，仍有一些值得保留的局部优势。</p></div>
+</div>
+<p class="mono" style="margin-top:12px">商业评论 · 委婉评价 · 正式演讲 · 复盘分析</p></div>
+
+<div class="sec"><h3 class="h3">Ask about this</h3>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px"><sc-for list="{{asks}}" as="a" hint-placeholder-count="3"><button class="chip {{a.cls}}" type="button" aria-pressed="{{a.on}}" onClick="{{a.pick}}">{{a.t}}</button></sc-for></div>
+<label style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:999px;padding:0 8px 0 20px;height:48px;margin-top:12px"><input type="text" placeholder="Ask anything about “pockets of greatness”…" aria-label="Ask about this expression" style="flex:1;min-width:0;border:0;background:transparent;outline:none;font:400 14px var(--font);color:var(--ink)"><button type="button" aria-label="Send" style="width:34px;height:34px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></button></label>
+<sc-if value="{{hasAnswer}}" hint-placeholder-val="{{ false }}"><div style="background:var(--surface);border-radius:14px;padding:18px 20px;margin-top:16px"><p style="font-size:15px;line-height:1.7;color:var(--ink);white-space:pre-line">{{answer}}</p><div style="display:flex;align-items:center;gap:8px;margin-top:12px"><button class="link" type="button" onClick="{{saveNote}}" style="padding-left:0">{{saveLabel}}</button><span class="mono">Illustrative answer</span></div></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isSyntax}}" hint-placeholder-val="{{ false }}">
+<div class="sec"><p class="mono">Generated when you open this tab · phrase mode: 3 sections</p></div>
+<div class="sec"><h3 class="h3">Internal structure</h3><p class="sum" style="margin-top:10px">名词性习语短语，在句中作 has 的宾语。</p>
+<div style="margin-top:8px"><div class="sl" style="border-top:0"><span class="mono">pockets</span><span style="color:var(--ink-3)">中心词，复数名词</span></div><div class="sl"><span class="mono">of greatness</span><span style="color:var(--ink-3)">介词短语，后置定语，修饰 pockets</span></div><div class="sl"><span class="mono">pattern</span><span style="color:var(--ink-3)">pockets + of + 抽象名词，偏正结构</span></div></div></div>
+<div class="sec"><h3 class="h3">Role in the sentence</h3><p class="sum" style="margin-top:10px">宾语从句里第一个并列谓语 has 的宾语。</p><p class="body" style="margin-top:6px">所在句主干是 I think [that Apple has pockets of greatness, but in some ways has drifted away …]。从句内部由 but 连接两个并列谓语，两个谓语的主语都是 Apple。</p></div>
+<div class="sec"><h3 class="h3">Logic with nearby sentences</h3><p class="sum" style="margin-top:10px">让步 → 转折：先承认局部优势，再指出整体问题。</p><p class="body" style="margin-top:6px">这个短语是转折前的让步前提，核心信息在 but 之后，也为下一句“从产品线入手”的改进措施做了铺垫。</p></div>
+<div class="sec"><h3 class="h3">Translation</h3>
+<div style="margin-top:8px"><div class="sl" style="border-top:0"><span class="mono">直译</span><span style="color:var(--ink-3)">greatness 的口袋</span></div><div class="sl"><span class="mono" style="color:var(--ink)">意译 · 推荐</span><span style="color:var(--ink)">局部的亮点；零星的出色之处</span></div></div>
+<p class="body" style="margin-top:8px">需要更完整的分析（句式风格、用词、适用场景）时，请选中整句而不是短语。</p></div>
+</sc-if>
+
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const tab = st.tab || 'explain', ask = st.ask == null ? null : st.ask, saved = !!st.saved;
+const A = [
+['Make it more casual', '更口语的说法：some bright spots、a few things we do really well。例如：We’ve got a few bright spots, but overall we’ve lost the plot. 口语里不需要 of greatness 这么郑重的搭配。'],
+['Give me a workplace dialogue', 'A: How do you see the product line?\nB: We have pockets of greatness in design, but the experience isn’t consistent yet.\nA: Which pockets should we protect first?'],
+['Compare with “islands of excellence”', '两者语义接近。pockets of greatness 强调“零散出现、整体并不好”，口语里更自然；islands of excellence 更正式，更像被孤立出来的卓越领域，常见于报告和评估。']
+];
+return {
+tabs: [['explain', 'Explain'], ['syntax', 'Syntax']].map(([k, label]) => ({ label, on: tab === k, cls: tab === k ? 'on' : '', pick: () => this.setState({ tab: k }) })),
+isExplain: tab === 'explain', isSyntax: tab === 'syntax',
+asks: A.map(([t], i) => ({ t, on: ask === i, cls: ask === i ? 'on' : '', pick: () => this.setState({ ask: ask === i ? null : i, saved: false }) })),
+hasAnswer: ask != null, answer: ask != null ? A[ask][1] : '',
+saveLabel: saved ? 'Saved to note' : 'Save as note', saveNote: () => this.setState({ saved: true })
+};
+}
+}
+</script>
+</body>
+</html>

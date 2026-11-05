@@ -1,0 +1,65 @@
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { mkdir } from "node:fs/promises";
+import { installProfileFixture, profileFeedbackSummary } from "./helpers/profile-fixture.mjs";
+import { installSpeakingFixture, speakingSessionId } from "./helpers/speaking-fixture.mjs";
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.LIBITU_PLAYWRIGHT_MODULE ?? "playwright");
+const origin = process.env.LIBITU_TEST_URL ?? "http://localhost:3000";
+const output = process.env.LIBITU_SCREENSHOTS ?? "output/playwright";
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({ channel: "chrome", headless: true });
+try {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, timezoneId: "Asia/Shanghai" });
+  const page = await context.newPage();
+  page.setDefaultTimeout(20_000);
+  const profile = await installProfileFixture(page, { origin });
+  profile.transformProfile = data => ({ ...data, latest_feedback: profileFeedbackSummary("partial") });
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${origin}/profile`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.getByRole("heading", { name: "Recent practice", exact: true }).waitFor();
+    await page.getByRole("tab", { name: /^Task fit/ }).waitFor();
+    const nav = page.getByRole("navigation", { name: "Main navigation", exact: true });
+    assert.equal(await nav.count(), 1);
+    assert.equal(await nav.getByRole("link", { name: "My learning", exact: true }).getAttribute("aria-current"), "page");
+    const navBox = await nav.boundingBox();
+    assert.ok(width < 720 ? navBox.y > 800 : navBox.y < 64);
+    const cta = page.getByRole("link", { name: "Continue Mission", exact: true });
+    assert.equal(await cta.evaluate(el => getComputedStyle(el).backgroundColor), "rgb(12, 10, 9)");
+    assert.equal(await cta.evaluate(el => getComputedStyle(el).borderRadius), "999px");
+    await page.getByRole("tab", { name: /^Task fit/ }).press("ArrowRight");
+    assert.equal(await page.getByRole("tab", { name: /^Language transfer/ }).getAttribute("aria-selected"), "true");
+    assert.equal(await page.getByRole("tab", { name: /^Language transfer/ }).getByText("Not assessed").count(), 1);
+    await page.getByRole("tab", { name: "Shadowing takes", exact: true }).press("ArrowRight");
+    await page.getByRole("img", { name: /^Speaking turns:/ }).waitFor();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
+    await page.locator("h1").click();
+    await page.screenshot({ path: `${output}/my-learning-${width}.png`, fullPage: true });
+    await nav.getByRole("link", { name: "My learning", exact: true }).click();
+    assert.equal(new URL(page.url()).pathname, "/profile");
+    console.log(`PASS ${width}: shared header, bottom navigation, black pill CTA, keyboard tabs, null scores, bar chart and no overflow`);
+  }
+  assert.deepEqual(profile.errors, []);
+  // A separate page uses an injected conversation runtime; no provider or physical microphone.
+  const conversation = await context.newPage();
+  conversation.setDefaultTimeout(20_000);
+  await conversation.setViewportSize({ width: 320, height: 900 });
+  const fixture = await installSpeakingFixture(conversation, { origin });
+  await conversation.goto(`${origin}/speaking/${speakingSessionId}`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await conversation.getByRole("heading", { name: "Align the migration plan", exact: true }).waitFor();
+  await conversation.getByRole("button", { name: "Chat", exact: true }).click();
+  await conversation.getByRole("textbox", { name: "Message your AI partner" }).fill("To be fair, we need another week.");
+  await conversation.getByRole("button", { name: "Send message", exact: true }).click();
+  await conversation.locator('[data-navigation-focus="true"]').waitFor();
+  assert.equal(await conversation.getByRole("navigation", { name: "Main navigation" }).count(), 0);
+  assert.equal(await conversation.getByRole("button", { name: "End mission", exact: true }).count(), 1);
+  assert.equal(await conversation.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
+  await conversation.screenshot({ path: `${output}/conversation-focus-320.png`, fullPage: true });
+  await conversation.getByRole("button", { name: "End mission", exact: true }).click();
+  await conversation.getByRole("region", { name: "End mission confirmation" }).waitFor();
+  await conversation.getByRole("button", { name: "Cancel", exact: true }).click();
+  assert.equal(fixture.state.workspace.session.status, "active");
+  assert.deepEqual(fixture.errors, []);
+  console.log("PASS conversation focus: global sections hide, one End mission opens the existing confirmation, cancellation retains the active session");
+} finally { await browser.close(); }

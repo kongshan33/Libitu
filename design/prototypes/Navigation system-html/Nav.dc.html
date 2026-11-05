@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Navigation</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+:root{--ink:#0C0A09;--ink-2:#44403C;--ink-3:#57534E;--muted:#78716C;--line-strong:#D6D3D1;--line:#E7E5E4;--line-soft:#F0EEEC;--surface:#FAFAF9;--bg:#FFFFFF;--brand:#5A43D6;--font:Inter,system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace}
+.pg{font-family:var(--font);color:var(--ink);background:var(--bg);min-height:100%}
+.pg *{box-sizing:border-box}
+.pg h1,.pg h2,.pg p{margin:0}
+.lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.strip{display:grid;grid-template-columns:260px minmax(0,1fr);gap:32px;align-items:start;padding:32px 0;border-top:1px solid var(--line-soft)}
+.frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.gb{height:64px;display:flex;align-items:center;gap:8px;padding:0 32px;border-bottom:1px solid var(--line-soft)}
+.fb{height:52px;display:flex;align-items:center;gap:16px;padding:0 32px;border-bottom:1px solid var(--line-soft)}
+.logo{font-size:20px;font-weight:600;color:var(--brand);letter-spacing:-.02em;margin-right:24px;flex:none}
+.sec{padding:8px 14px;border-radius:999px;font-size:14px;color:var(--ink-3)}
+.sec.on{background:var(--line-soft);color:var(--ink);font-weight:500}
+.lk{font-size:14px;color:var(--ink-2);padding:8px 10px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center}
+.sp{flex:1}
+.step{display:flex;align-items:center;gap:6px;flex:none}
+.st{padding:6px 12px;border-radius:999px;font-size:13px;color:var(--muted);display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.st.on{background:var(--ink);color:#fff}
+.st.done{color:var(--ink-3)}
+.cn{width:14px;height:1px;background:var(--line-strong)}
+.ctx{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px;flex:0 1 auto;min-width:0}
+.btn-s{border:1px solid var(--line-strong);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--ink);background:transparent;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;flex:none}
+.body{height:56px;background:var(--surface)}
+.ico{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.note{font-size:14px;line-height:1.6;color:var(--ink-3);margin-top:8px}
+</style>
+</helmet>
+<div class="pg" style="width:100%">
+<div style="max-width:1280px;margin:0 auto;padding:56px 32px 64px">
+<p class="lbl">Navigation system</p>
+<h1 style="font-size:30px;line-height:1.25;font-weight:500;letter-spacing:-.02em;margin-top:8px">One global bar. One flow bar. One focus mode.</h1>
+<p style="font-size:15px;line-height:1.6;color:var(--ink-3);margin-top:8px;max-width:640px">全站只有一个顶栏结构。它回答「我在产品的哪个区域」;流程页再多一条流程栏,回答「我在这次练习的哪一步」。两个问题分开回答,就不再需要每页各画一套导航。</p>
+
+<div class="strip" style="margin-top:32px"><div><p class="lbl">A · Landing(未登录)</p><p class="note">只有 logo(点击回 Landing)、How it works、登录。不出现产品分区。已登录时右侧改为 My learning + 头像。</p></div>
+<div class="frame"><div class="gb"><span class="logo">libitu.</span><span class="sp"></span><span class="lk">How it works</span><span class="btn-s">Sign in</span></div><div class="body"></div></div></div>
+
+<div class="strip"><div><p class="lbl">B · 全局栏(所有应用页)</p><p class="note">左:logo(点击回 Landing)+ 四个分区。右:头像。点分区会回到该分区最近的流程页;没有进行中的内容时回到入口列表。当前分区 = <code>--line-soft</code> 底 + <code>--ink</code> 500;其余 <code>--ink-3</code>。适用于 My learning、Practice history、Corpus、各列表页。</p></div>
+<div class="frame"><div class="gb"><span class="logo">libitu.</span><span class="sec">Practice</span><span class="sec">Mission</span><span class="sec">Corpus</span><span class="sec on">My learning</span><span class="sp"></span><span class="av">S</span></div><div class="body"></div></div></div>
+
+<div class="strip"><div><p class="lbl">C · 流程页 · Practice</p><p class="note">全局栏不变,当前分区是 Practice。下面多一条 52px 流程栏:左边是这次的视频标题,右边是该分区自己的步骤。当前步骤 = 黑底胶囊,已完成 = 带对勾。Stage 1、选段、Stage 2 都用它。</p></div>
+<div class="frame"><div class="gb"><span class="logo">libitu.</span><span class="sec on">Practice</span><span class="sec">Mission</span><span class="sec">Corpus</span><span class="sec">My learning</span><span class="sp"></span><span class="av">S</span></div>
+<div class="fb"><span class="ctx">Steve Jobs - Get Much Simpler, Be Really Clear - Sept. 23, 1997</span><span class="sp"></span><div class="step"><span class="st done"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Ingest</span><i class="cn"></i><span class="st on">Shadow</span></div></div><div class="body"></div></div></div>
+
+<div class="strip"><div><p class="lbl">D · 流程页 · Mission</p><p class="note">同一结构,当前分区是 Mission,步骤是 Loadout → Conversation → Report。步骤只写名称、不带数字,顺序靠位置、对勾和连接线表达;每个分区只显示自己的几步。</p></div>
+<div class="frame"><div class="gb"><span class="logo">libitu.</span><span class="sec">Practice</span><span class="sec on">Mission</span><span class="sec">Corpus</span><span class="sec">My learning</span><span class="sp"></span><span class="av">S</span></div>
+<div class="fb"><span class="ctx">Secure leadership approval for a new market entry strategy</span><span class="sp"></span><div class="step"><span class="st done"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Loadout</span><i class="cn"></i><span class="st on">Conversation</span><i class="cn"></i><span class="st">Report</span></div></div><div class="body"></div></div></div>
+
+<div class="strip"><div><p class="lbl">E · 专注模式</p><p class="note">录音(Stage 2)和实时对话(Stage 4)时,两条栏合成一条 64px:logo、上下文、步骤、退出按钮。分区链接隐藏,避免误点离开。logo 点击先确认。</p></div>
+<div class="frame"><div class="gb"><span class="logo" style="margin-right:16px">libitu.</span><span class="ctx">Secure leadership approval for a new market entry strategy</span><span class="sp"></span><div class="step"><span class="st done"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Loadout</span><i class="cn"></i><span class="st on">Conversation</span><i class="cn"></i><span class="st">Report</span></div><span class="btn-s" style="margin-left:16px">End mission</span></div><div class="body"></div></div></div>
+
+<div class="strip"><div><p class="lbl">F · 窄屏(&lt; 720px)</p><p class="note">顶栏只留 logo 和头像;四个分区移到底部标签栏。流程栏变成一行:当前步骤名 + 进度小圆点,点开可看全部步骤。</p></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><div class="frame" style="width:300px"><div class="gb" style="height:56px;padding:0 16px"><span class="logo" style="font-size:18px">libitu.</span><span class="sp"></span><span class="av" style="width:28px;height:28px">S</span></div><div class="fb" style="height:44px;padding:0 16px"><span class="ctx" style="max-width:150px">Steve Jobs…</span><span class="sp"></span><span class="mono">Shadow ○ ●</span></div><div class="body" style="height:120px"></div><div style="display:flex;justify-content:space-around;padding:12px 8px;border-top:1px solid var(--line-soft);font-size:12px"><span style="color:var(--ink);font-weight:500">Practice</span><span style="color:var(--muted)">Mission</span><span style="color:var(--muted)">Corpus</span><span style="color:var(--muted)">Me</span></div></div></div></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

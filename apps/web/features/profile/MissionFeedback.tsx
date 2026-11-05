@@ -1,11 +1,12 @@
 "use client";
 
+import { AssessmentTabs } from "@/components/ui/AssessmentTabs";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 import { DirectionLink } from "@/components/ui/direction-button";
 
 import { useState } from "react";
-import { ArrowRight, ClipboardCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { FeedbackDimensionId } from "@libitu/types/speaking";
 import type { ProfileData, ProfileFeedback } from "./types";
 import styles from "./Profile.module.css";
@@ -21,8 +22,8 @@ export function MissionFeedback({ data, loading }: { data: ProfileData | null; l
   const report = data?.latest_feedback;
   const unavailable = data?.latest_feedback_unavailable_reason;
   return <section className={styles.card} aria-labelledby="feedback-title">
-    <div className={styles.cardHeader}><h2 id="feedback-title"><ClipboardCheck size={16} aria-hidden="true" />Latest Mission feedback</h2>
-      <span className={styles.smallMuted}>{report?.status === "partial" ? "Partial report" : "Stage 5"}</span></div>
+    <div className={styles.cardHeader}><h2 id="feedback-title" className={styles.feedbackEyebrow}>Latest Mission feedback</h2>
+      <span className={styles.smallMuted}>{report?.status === "partial" ? "Partial report" : ""}</span></div>
     {report ? <FeedbackDetails key={`${report.id}:${report.updated_at}`} report={report} timezone={data!.timezone} />
       : loading ? <ContentSkeleton label="Loading Mission feedback…" rows={1} />
         : !data ? <p className={styles.loading}>Mission feedback is unavailable. Retry loading your learning records above.</p>
@@ -43,21 +44,11 @@ function FeedbackDetails({ report, timezone }: { report: ProfileFeedback; timezo
   return <div className={styles.feedbackBody}>
     <div className={styles.feedbackHeading}><div><h3>{report.goal}</h3><p><time dateTime={report.practiced_at}>{new Date(report.practiced_at).toLocaleDateString("en", { timeZone: timezone, month: "short", day: "numeric", year: "numeric" })}</time>
       <span aria-hidden="true"> · </span>{report.scenario_type === "workplace" ? "Workplace" : report.scenario_type === "travel" ? "Travel" : "Everyday life"}<span aria-hidden="true"> · </span>{report.difficulty[0].toUpperCase() + report.difficulty.slice(1)}</p></div>
-      <DirectionLink href={`/speaking/${encodeURIComponent(report.session_id)}/analytics`} className={styles.textLink}>View full report <ArrowRight size={14} aria-hidden="true" /></DirectionLink>
+      <DirectionLink href={`/speaking/${encodeURIComponent(report.session_id)}/analytics`} className={styles.secondary}>View full report <ArrowRight size={14} aria-hidden="true" /></DirectionLink>
     </div>
-    <div className={styles.feedbackScores} role="group" aria-label="Mission feedback dimensions">
-      {dimensions.map((dimension) => {
-        const value = report.dimensions.find((item) => item.id === dimension.id);
-        const score = value?.score;
-        const available = typeof score === "number";
-        return <button type="button" key={dimension.id} aria-pressed={active === dimension.id} aria-controls="mission-feedback-detail" onClick={() => setActive(dimension.id)}>
-          <span className={styles.feedbackLabel}>{dimension.label}</span><span className={styles.feedbackScore}>{available ? <>{score}<small> / 100</small></> : <span className={styles.unassessedScore}>Not assessed</span>}</span>
-          <span className={styles.feedbackBar} aria-hidden="true">{available ? <span style={{ width: `${score}%` }} /> : null}</span>
-          <span className={styles.feedbackBasis}>{dimension.id === "transfer" ? "Coverage" : "AI assessment"}</span>
-        </button>;
-      })}
-    </div>
-    <div className={styles.feedbackDetail} id="mission-feedback-detail" aria-live="polite"><strong>{label.label}</strong><p>{selected?.summary || "There is not enough evidence to assess this dimension."}</p><span>{label.explanation}</span></div>
+    <AssessmentTabs dimensions={dimensions.map(dimension => ({ ...dimension, score: report.dimensions.find(item => item.id === dimension.id)?.score, description: dimension.id === "transfer" ? "Coverage" : "AI assessment" }))}
+      active={active} onChange={setActive} label="Mission feedback dimensions" idPrefix="feedback-tab" panelId="mission-feedback-detail" />
+    <div className={styles.feedbackDetail} id="mission-feedback-detail" role="tabpanel" aria-labelledby={`feedback-tab-${active}`} tabIndex={0}><div key={active} data-content-enter><strong>{label.label}</strong><p>{selected?.summary || "There is not enough evidence to assess this dimension."}</p><span>{label.explanation}</span></div></div>
     <p className={styles.feedbackNote}>{report.status === "partial" ? "Some dimensions lack enough evidence. Missing scores stay unassessed. " : ""}Scores describe this conversation, not your overall English level.</p>
   </div>;
 }

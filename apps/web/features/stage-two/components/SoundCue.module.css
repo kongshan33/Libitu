@@ -1,0 +1,6 @@
+.badge:global(.sound-inline-badge) { display:inline-block;flex:none;font-family:var(--font-mono);font-size:10.5px;line-height:1;font-weight:400;border-radius:5px;padding:3px 5px;white-space:nowrap;transition:opacity 150ms ease-out; }
+.badge[data-phenomenon][data-uncertain="true"] { background:transparent;outline:1px dashed currentColor;outline-offset:-1px; }
+.link { display:inline-flex;flex:none;flex-direction:column;align-items:center;gap:3px;min-width:22px;color:#1d4ed8;transition:opacity 150ms ease-out; }
+.link svg { display:block;flex:none; }
+.badge[data-muted="true"],.link[data-muted="true"] { opacity:.2; }
+@media(prefers-reduced-motion:reduce) { .badge,.link { transition:none; } }

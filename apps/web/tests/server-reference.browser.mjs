@@ -292,23 +292,22 @@ try {
     assert.equal(await filters.getByRole('button').count(),11);
     const linking = filters.getByRole('button',{name:'Linking',exact:true});
     await linking.click();
-    assert.equal(await soundComparison.locator('.sound-word-card.is-highlighted').count(),4);
+    assert.equal(await soundComparison.locator('.sound-word-card.is-highlighted').count(),0);
     assert.equal(await soundComparison.locator('.sound-link').count(),2);
-    assert.equal(await soundComparison.locator('.sound-word-group.is-muted').count(),6);
-    const soundFocus = soundComparison.getByRole('complementary',{name:'Sound layer focus'});
-    await soundFocus.getByText('Linking',{exact:true}).waitFor();
+    assert.equal(await soundComparison.locator('.sound-word-group.is-muted').count(),0);
+    const soundFocus = soundComparison.getByRole('complementary',{name:'Sound notes'});
+    assert.equal(await soundFocus.count(),0);
+    await soundComparison.getByRole('button',{name:'Notes',exact:true}).click();
     await soundFocus.getByText('This is',{exact:true}).waitFor();
-    const canvasBox = await soundComparison.locator('.stage-two-comparison-canvas').boundingBox();
-    const focusBox = await soundFocus.boundingBox();
-    assert.ok(viewport.width > 1000 ? focusBox.x >= canvasBox.x + canvasBox.width - 1 : focusBox.y >= canvasBox.y + canvasBox.height - 1, 'guidance sits beside desktop canvas and below mobile canvas');
+
 
     await page.getByRole('tab',{name:'Rhythm',exact:true}).click();
     await page.getByRole('tab',{name:'Sound',exact:true}).click();
     assert.equal(await linking.getAttribute('aria-pressed'),'true','filter survives tab change');
     await filters.getByRole('button',{name:'Weak',exact:true}).click();
-    assert.equal(await soundComparison.locator('.sound-word-card.is-highlighted').count(),2);
+    assert.equal(await soundComparison.locator('.sound-word-card.is-highlighted').count(),0);
     assert.equal(await soundComparison.locator('.sound-word-flow .sound-inline-badge[data-phenomenon="weak_form"]').count(),2);
-    assert.equal(await soundComparison.locator('.paired-learner .sound-inline-badge[data-phenomenon="weak_form"]').innerText(),'WK ?');
+    assert.equal(await soundComparison.locator('.paired-learner .sound-inline-badge[data-phenomenon="weak_form"]').innerText(),'WK?');
     await filters.getByRole('button',{name:'Glottal',exact:true}).click();
     await soundComparison.getByText('Automatic identification of this phenomenon is not available yet.',{exact:true}).waitFor();
     await filters.getByRole('button',{name:'All',exact:true}).click();
@@ -318,9 +317,9 @@ try {
     assert.ok((await soundComparison.locator('.sound-word-ipa').allTextContents()).every(t=>!t.trim()));
     await soundComparison.getByRole('button',{name:'Reveal word 1',exact:true}).first().click();
     assert.equal(await soundComparison.locator('.sound-word-card strong').count(),2,'peek reveals the same occurrence in both rows');
-    await soundComparison.getByRole('button',{name:'Reveal all',exact:true}).click();
+    await soundComparison.getByRole('button',{name:'Show text',exact:true}).click();
     await soundComparison.locator('.paired-reference .sound-word-card').first().focus();
-    assert.equal(await soundComparison.locator('.paired-reference .sound-word-ipa').first().evaluate(el=>getComputedStyle(el).opacity),'1');
+    await page.waitForFunction(()=>getComputedStyle(document.querySelector('.paired-reference .sound-word-ipa')).opacity==='1');
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     await soundComparison.screenshot({path:join(artifacts,`paired-sound-${viewport.width}.png`)});
     await page.getByRole("tab", { name: "Rhythm", exact: true }).click();

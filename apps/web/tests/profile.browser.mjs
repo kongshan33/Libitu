@@ -140,7 +140,7 @@ try {
   });
   await emptyPage.goto(`${origin}/profile`, { waitUntil: "domcontentloaded" });
   await emptyPage.getByText(profileHistory[0].title, { exact: true }).first().waitFor();
-  await emptyPage.getByRole("button", { name: "Corpus added", exact: true }).click();
+  await emptyPage.getByRole("tab", { name: "Corpus added", exact: true }).click();
   await emptyPage.getByText("Dates aren’t available for this activity yet.", { exact: true }).waitFor();
   assert.equal(await emptyPage.getByText(/\+\d+ this week/).count(), 0,
     "unknown corpus creation dates do not fabricate a weekly addition count");

@@ -68,7 +68,7 @@
   --button-bg: transparent; --button-fg: var(--ink); --button-edge: var(--line-strong);
   --button-hover: var(--surface); --button-pressed: var(--line-soft);
   border: 1px solid var(--button-edge); border-radius: 999px; box-shadow: none;
-  background: var(--button-bg); color: var(--button-fg); font-size: 13px; font-weight: 500; padding: 8px 14px;
+  background: var(--button-bg); color: var(--button-fg);
 }
 .reference :global(.ui-button[data-variant="primary"][data-size][data-shape]) { --button-bg: var(--ink); --button-fg: #fff; --button-edge: transparent; --button-hover: var(--ink-2); --button-pressed: var(--ink); }
 .reference :global(.ui-button[data-variant="ghost"][data-size][data-shape]) { --button-edge: transparent; }
@@ -180,14 +180,14 @@
 .slotText { display: grid; flex: 1; gap: 3px; min-width: 0; color: var(--ink); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 .slotText strong { font-weight: 500; }
 .slotText span { color: var(--muted); font-size: 12px; }
-.reference .remove[data-variant][data-size][data-shape] { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 28px; width: 28px; min-width: 28px; height: 28px; min-height: 28px; margin: 0 -4px 0 0; padding: 0; border: 0; border-radius: 50%; }
+.reference .remove[data-variant][data-size][data-shape] { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 28px; width: 28px; min-width: 28px;   margin: 0 -4px 0 0;  border: 0; border-radius: 50%; }
 .previewLogic { display: flex; flex-direction: column; gap: 6px; }
 .logicPreview { display: flex; flex-direction: column; gap: 5px; padding: 10px 12px; border-radius: 10px; background: var(--bg); }
 .logicPreview strong { font-size: 14px; font-weight: 500; }
 .logicPreview span { color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5; }
 .goalPreview, .preparationNote, .validation, .readiness { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 .startArea { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
-.reference .startButton[data-variant][data-size][data-shape] { width: 100%; min-height: 44px; padding: 14px 26px; font-size: 15px; font-weight: 500; }
+.reference .startButton[data-variant][data-size][data-shape] { width: 100%;     }
 .freeButton { width: 100%; min-height: 44px; }
 .notice, .missing { margin: 0 0 18px; padding: 12px; border-radius: 12px; background: var(--surface); color: var(--ink-3); font-size: 13px; line-height: 1.5; }
 .notice p, .missing p { margin: 3px 0 8px; }
@@ -223,7 +223,7 @@
   .preview { position: static; max-height: none; overflow: visible; }
   .draftStatus { position: static; max-width: none; min-height: 0; height: 0; overflow: hidden; }
   .draftStatus[data-pending="true"] { height: auto; margin-bottom: 12px; }
-  .reference .remove[data-variant][data-size][data-shape] { flex-basis: 44px; width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
+  .reference .remove[data-variant][data-size][data-shape] { flex-basis: 44px; width: 44px; min-width: 44px;   }
   .filterChips button, .browseButton { min-height: 44px; }
 }
 @media (max-width: 480px) {
@@ -234,3 +234,13 @@
   .advancedRow > summary > span, .advancedRowButton > span { max-width: 50%; }
   .advancedPanel { padding: 14px; }
 }
+
+.corpusCard, .logicCard, .sceneCard { transition: border-color 160ms ease-out, background-color 160ms ease-out; }
+.preview { border-radius: 14px; }
+.filledSlot { animation: libitu-content-in 160ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) { .page * { animation: none; transition: none; } }
+
+@keyframes libitu-content-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.srOnly { position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }

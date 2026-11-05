@@ -17,6 +17,7 @@
   --shadow-warm: none;
   --motion-fast: 160ms;
   width: 100%;
+  min-height: 0;
   max-width: none;
   margin-inline: 0;
   padding: 0 16px;
@@ -25,14 +26,14 @@
 
 .practice-redesign .reader-shell {
   grid-template-columns: 268px minmax(0, 1fr) 332px;
-  grid-template-rows: 64px minmax(0, 1fr) auto;
-  height: 100dvh;
+  grid-template-rows: 52px minmax(0, 1fr) auto;
+  height: calc(100dvh - 64px);
 }
 
 /* Keep appearance local instead of changing the shared button system. */
 .practice-redesign .ui-button[data-variant][data-size][data-shape] {
   border-radius: 999px;
-  min-height: 32px;
+
 }
 .practice-redesign .ui-button[data-variant="primary"][data-size][data-shape] {
   --button-bg: #0c0a09;
@@ -48,12 +49,6 @@
   opacity: 1;
 }
 .practice-redesign .ui-button[data-shape="circle"] { border-radius: 50%; }
-.practice-redesign .ui-button[data-variant="primary"][data-size="lg"],
-.practice-redesign :is(.stage-one-cta-button, .stage-one-picker-begin).ui-button[data-variant][data-size][data-shape] {
-  padding: 14px 26px;
-  font-size: 15px;
-  font-weight: 500;
-}
 .practice-redesign .topbar {
   padding: 0 var(--practice-page-inset);
   gap: 16px;
@@ -81,9 +76,9 @@
   --button-fg: #78716c;
   --button-edge: transparent;
   --button-hover: #fafaf9;
-  padding: 6px 10px;
-  font-size: 13px;
-  line-height: 1.5;
+
+
+
 }
 .practice-redesign .topbar .stage-pill.ui-button[data-variant][data-size][data-shape].active,
 .practice-redesign .topbar .auth-button.primary.ui-button[data-variant][data-size][data-shape] {
@@ -127,7 +122,6 @@
 .practice-redesign .center-panel .stage-two-recording-heading h2 { font-size: 14px; font-weight: 500; margin: 0 0 4px; }
 .practice-redesign .center-panel .stage-two-recording-heading > span { font-size: 12px; color: #78716c; }
 .practice-redesign .center-panel .stage-two-recording-controls { margin: 0; }
-.practice-redesign .center-panel .stage-two-recording-controls .ui-button { font-size: 13px; padding: 8px 14px; }
 .practice-redesign .center-panel :is(.stage-two-recording-status, .stage-two-recording-note, .stage-two-recording-error) {
   grid-column: 1 / -1;
   margin: 0;
@@ -246,7 +240,6 @@
   .practice-redesign :is(.video-summary h1, .stage-one-picker-heading h1) { font-size: 26px; }
   .practice-redesign .center-panel > .buffered-reference { grid-template-columns: minmax(0, 1fr); }
   .practice-redesign .stage-one-picker-header { align-items: start; padding: 24px var(--practice-page-inset) 8px; gap: 12px; }
-  .practice-redesign .practice-topbar .stage-pills .ui-button[data-variant][data-size][data-shape] { padding-inline: 8px; font-size: 12px; }
   .practice-redesign .stage-one-picker-timeline { padding: 24px var(--practice-page-inset) 0; }
   .practice-redesign .stage-one-picker-scroll { padding: 28px var(--practice-page-inset) 24px; }
   .practice-redesign :is(.stage-one-cta, .stage-one-picker-footer) { padding: 16px var(--practice-page-inset); }
@@ -257,3 +250,14 @@
   .practice-redesign .save-button { width: 44px; }
   .practice-redesign :is(.corpus-text, .structure-text) { margin-right: 36px; }
 }
+
+[data-navigation-focus="true"] .practice-redesign .reader-shell { height: 100dvh; grid-template-rows: 64px minmax(0, 1fr) auto; }
+@media (max-width: 719px) {
+  .practice-redesign .reader-shell { height: auto; min-height: calc(100dvh - 128px); }
+  [data-navigation-focus="true"] .practice-redesign .reader-shell { height: auto; min-height: 100dvh; }
+}
+
+@media (max-width: 719px) { .practice-redesign .stage-one-cta { bottom: calc(64px + env(safe-area-inset-bottom)); } [data-navigation-focus="true"] .practice-redesign .stage-one-cta { bottom: 0; } }
+
+/* Ingest reuses Shadow's compact reference controls without introductory copy. */
+.practice-redesign .center-panel > .stage-two-reference-compact { display: block; }

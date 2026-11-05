@@ -47,7 +47,7 @@ export function VideoEntry() {
   }
 
   return <form className={styles.entryForm} onSubmit={submit} noValidate aria-busy={pending}>
-    {/* <label className={styles.inputLabel} htmlFor="video-url">Your YouTube video</label> */}
+    <label className={styles.srOnly} htmlFor="video-url">YouTube video link</label>
     <div className={styles.entryRow}>
       <div className={`ui-field-surface ${styles.inputWrap}`} data-field-surface>
         <Link2 size={19} aria-hidden="true" />
@@ -61,7 +61,7 @@ export function VideoEntry() {
       </DirectionButton>
     </div>
     <p id="video-error" className={styles.error} role="alert">{error}</p>
-    {/* <p id="video-help" className={styles.entryHelp}>No sign-in required · English videos with available captions</p> */}
+    <p id="video-help" className={styles.srOnly}>No sign-in required · English videos with available captions</p>
     <span className={styles.srOnly} role="status">{pending ? "Opening your video workspace." : ""}</span>
   </form>;
 }

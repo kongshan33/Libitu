@@ -1,5 +1,193 @@
 # Understand the Libitu project
 
+## Shared button geometry across features — 2026-11-05
+
+Regular actions now use explicit shared sizes instead of legacy inherit geometry. Height tokens are 32/40/44px for sm/md/lg; text is 12/13/14px. Action groups use 44px/14px controls, 8px icon gaps and 12px control gaps across primary/secondary, button/link and loading states. Feature CSS no longer overrides regular button geometry. Icon-only controls, recording controls, navigation and filter/segmented controls retain task-specific geometry.
+
+## Consistent report action sizes — 2026-11-05
+
+Report continuation actions use the shared ui-button-group geometry with explicit lg sizing: Retry this mission, Adjust loadout and New mission share 44px height, 14px text and common padding across button/link, primary/secondary and loading states. Legacy inherited controls remain opt-in to avoid changing unrelated layouts.
+
+## Quiet initial loading — 2026-11-05
+
+Initial data reads use skeletons or screen-reader-only status, without redundant visible loading copy: Review takes/analysis, Detailed progress, Corpus counts, profile history counts, Loadout draft/options and report comparison reads. Existing content stays visible during refresh. Upload, save, queued analysis, countdown, user-triggered button progress and error/retry feedback remain explicit.
+
+## Page-shaped loading placeholders — 2026-11-05
+
+Shadow loading now follows Quick setup versus Detailed/Review workspace structure, with no video in Review. Corpus loading uses the actual responsive 280px-minimum card grid (or rows in list view), including a compact heading/filter outline during auth loading. Loadout uses one dark Quick start placeholder instead of generic cards; draft loading remains a short status. Placeholders remain decorative with reduced-motion support.
+
+## Workspace layout and navigation fixes — 2026-11-04
+
+Corpus filter popovers now anchor to each pill, clamp to the viewport and update on scroll/resize. Detailed/Review primary and secondary practice actions share a 50px height and centered duration; Quick/Detailed Audio settings stays full-width and left-aligned when opened or closed. Pending-save notifications sit above mobile global navigation so they do not block its links. Removing the workspace main’s inherited 100dvh minimum eliminates the extra global-header-height document scroll on desktop Ingest/segments; the existing content scrollers and footer geometry remain.
+
+Ingest, segments and Shadow render the same content workspace. Their internal navigation now updates native history through Next’s supported integration, reusing the ready blueprint/media instead of awaiting another RSC response. Shadow code warms when the picker opens and on Begin intent; its styles belong to the shared content layout. Canonical deep links, auth checks and cross-content/external navigation remain route-owned.
+
+## Review shares Detailed Sound cues — 2026-11-04
+
+Review and Detailed now render phonology badges and linking arcs through the same SoundCue components. Both use the same palette, badge typography, solid Reference cues, dashed unevaluated learner badges with “?” and dashed learner SVG arcs. Review places each link on its outgoing source boundary, reserves sufficient lane height/marker width and retains the shared acoustic timeline, selection, zoom and voice controls. No analysis data or left-panel behavior changes.
+
+## Sound follows the revised Detailed prototype — 2026-11-04
+
+Detailed Sound now follows `design/prototypes/Stage 2 · Detailed (three-layer analysis)-html (1)/Shadow.dc.html`: full-width Reference/Your voice text rows, 19px words, gray filter pills with a black active state, colored badges and SVG linking arcs. Learner practice targets use dashed marks with question marks; filtering dims other cues without dimming or reflowing the sentence. Vowel durations remain opt-in. IPA appears on hover/keyboard focus without reserving an empty text row. Notes folds Feedback/Tip above the filters instead of taking a permanent right column; its two columns stack on mobile. Review shares the updated phenomenon palette. Left panels, acquisition, analysis results and eligibility gates are unchanged; the alignment defect below remains open.
+
+## Saved-take alignment audit — 2026-11-04
+
+Read-only database inspection of take `b4b8631e-e26c-5edc-8a42-40d20b155762` found unreliable MFA word boundaries despite `alignment_status=aligned`, no quality issues and a completed analysis. MFA places `the` at 1.93–3.61s (DH 30ms + AH0 1650ms), then `same/way/I` at 6.65–6.95s. Independent saved ASR places `the` at 1.94–2.14s and `same way` at 2.14–3.08s. These are conflicting estimates, not verified word durations; ASR also absorbs silence into `in` and `I`, so it is not a drop-in precision replacement.
+
+The saved VAD interval is 3.680–6.688s (3008ms); its 4.0–6.5s interior has 250 frames, no F0 and energy averaging approximately −64.51 dBFS in the linear-power domain. This supports a quiet interval in the recording, not its attribution to `the`. ASR suggests it follows `way`. The analysis input was cleaned at 2026-11-04 10:52:55 UTC, recording retention is `none`, and no Storage objects remain for this take; exact phonetic boundaries cannot be confirmed by replay. No analysis rows or application code were changed during this audit.
+
+The current parser checks ordering, bounds and transcript tokens, but not cross-method timing disagreement or implausibly stretched/compressed phones. Downstream word duration, VAD pause attribution and word-level rhythm/pitch aggregation trust those boundaries. Earlier “true/measured interval” statements establish provenance and rendering only, not alignment accuracy. Alignment-quality validation and audio-backed realignment remain unimplemented.
+
+## Sound presentation restored; pauses separated — 2026-11-04
+
+Restored the accepted 2026-10-15 text-first Sound presentation: colored phenomenon badges, linking arcs, dictionary IPA on hover/focus, explicit Vowel len. and Linking measurements, and the right-hand Layer focus/Feedback/Tip panel (below on mobile). Filter chips wrap. All excludes per-word vowel measurements even for completed takes. Review keeps the shared timeline but uses the same phenomenon palette and default mark filtering. Rhythm/Melody retain their current plots and folded Notes; left panels and analysis gates are unchanged.
+
+Timeline word labels, selection and playback highlights now exclude trailing pause space. The full recording axis, curves, envelope and ruler keep their stored scale; long gaps have a separate Pause label. Word hit areas exclude trailing gap space. The saved 1.68-second `the` duration and its 3.008-second pause attribution were subsequently found unreliable in the audit above; the layout change did not repair them. Stored alignment is unchanged.
+
+## Shadow acoustic timeline completion — 2026-11-04
+
+Detailed and Review share true word/boundary intervals, a recording-time ruler for the single visible voice, and continuous pitch paths across verified voiced word boundaries. Silence, unvoiced and unknown intervals still break paths. Text padding never adds measured duration. Selected-word readouts share sound markers and wrap compactly on narrow screens; saved take duration appears beside playback actions. Takes reads every analysis state in the same bounded list query and refreshes while listed work is queued/processing.
+
+Saved legacy learner/reference measurements can supply real 20ms energy/pitch display frames on authenticated read, without audio downloads, ASR/MFA reruns, database rewrites or changed analysis scores. Raw 10ms frames stay server-side; deleted/revoked/missing evidence is not reconstructed. New analysis uses the same frame projection before persistence. The current learner-only take was verified against its actual stored evidence: 1,950 raw frames yield 975 display frames, including 398 voiced points. No synthetic historical envelope is used. Left panels are unchanged.
+
+## Shadow readability and quiet states — 2026-11-04
+
+Timeline columns now reserve measured text width in Detailed Rhythm/Melody and Review. Duration baselines, pitch and energy keep their true scale inside those columns; Fit stops shrinking when names need more room and permits horizontal scrolling. The seconds ruler accounts for label spacing. Removed the timeline explanation block, duplicate no-Reference paragraph and Takes privacy paragraph per user feedback. Completed analysis has no persistent status card; Takes holds its status and delete-analysis action. Processing/failure use a compact actionable notice. Review with no available layers omits the overview controls and empty plot; locked analysis is one line. Left panels remain unchanged.
+
+## Shadow Detailed and Review timeline — 2026-11-04
+
+Detailed follows visual specification 9.12–9.15 with an 820px main column, neutral recognition differences and sound tags, folded Feedback/Tip Notes, and shared Rhythm/Melody timelines. Review uses Overview with independent layer, saved-take and voice controls. Sentence directories retain their existing layout and behavior. View analysis opens the exact saved take in Review; selection survives mode changes. Quick still has only Audio settings; Review has neither preparation nor settings; How It Works stays removed.
+
+The server now saves optional 20ms pitch/energy display frames with signal results. Both voices align by source word while retaining independent durations; unvoiced frames remain gaps, and prominence remains experimental. Historical analyses without these frames use their actual coarse pitch samples and explicitly omit unavailable energy envelopes. This is implemented locally, not deployed or validated as a pronunciation score.
+
+## Shadow highlight and control placement — 2026-11-03
+
+All caption playback highlights share line-soft backgrounds, ink-2 text and 3px corners in Ingest and all Shadow modes. Quick keeps only Audio settings beneath its setup card. Review shows neither Reference preparation nor Audio settings. Detailed retains both. Existing capture/session state and playback logic remain intact.
+
+## Quiet Stage 1 word highlight — 2026-11-03
+
+Stage 1 current words now use line-soft warm gray backgrounds with ink-2 text, 3px corners and no shadow. This replaces inverted black/white highlighting per user feedback. Font weight, horizontal spacing, corpus underlines and playback timing stay unchanged; Shadow styling is unaffected.
+
+## Shared Shadow controls — 2026-11-03
+
+Quick and Review now render the same quiet compact BufferedReferencePanel as Detailed. All three modes share AudioSettings with Server analysis / Keep recordings labels and busy-recording guards. The old Quick reference summary and duplicate settings markup are removed.
+
+## Shadow compact reference and settings — 2026-11-03
+
+Detailed Shadow reuses the same quiet compact reference layout as Ingest, retaining readiness titles, setup instructions, errors and reference actions. Audio settings show only checkbox labels; How It Works is removed. Quick settings use the same concise labels. Capture, retention and analysis behavior are unchanged.
+
+## Visual corrections — 2026-11-03
+
+Quick start retains a black card as an explicit product exception, with 14px geometry and inverse actions. Report action buttons use a single label and standard primary/secondary sizes. Active caption words use black with white text. Ingest reuses compact Reference audio controls without introductory copy; setup instructions and actionable errors remain visible.
+
+## Shared visual consistency and interaction feedback — 2026-11-03
+
+Shared primary controls now use black pills, and recording controls retain neutral colors. Quick start uses the light v2 surface; measurement charts distinguish reference/learner traces by solid/dashed strokes. Report styles remove the outer shadow and decorative score colors. Native dialogs, Corpus filters/selection tray, assessment content and saved-feedback icons use short CSS motion with reduced-motion fallback. Clerk appearance remains unchanged.
+
+## Stage 4 reply references — 2026-11-03
+
+User instruction supersedes speech-start hint fade-out: retain the already
+visible ready hint and the current partner question while the learner speaks,
+types, submits and waits for the next reply. Retention is a client-only read-only
+reference, separate from live question/help state. Do not show pending or unseen
+results, advance help, restart timers, or create duplicate exposure receipts.
+The first subsequent partner text/audio output (or new finalized assistant turn)
+replaces the reference; pause, disconnect and end clear it. Voice retains the
+partner question instead of replacing it with the learner's live transcription.
+Backend question/version retirement and delayed-result rejection stay intact.
+
+
+## Stage 4 target hint feedback — 2026-11-03
+
+Target-card Hint retains the explicit selected target ID and the existing
+question-versioned three-level flow in the shared conversation hint slot.
+Its button now reports loading/retry/next-level state and disables unavailable
+requests with an explanation (offline, speaking/draft, no question, busy/help
+pending). Generic Need a hint? routing and generation remain unchanged. Compact
+target actions share a baseline with no nested opportunity top margin.
+
+
+## Stage 4 reactive partner orb and Chat pause — 2026-11-03
+
+The partner orb uses layered local CSS motion for gentle breathing and fluid
+color movement, inspired by the ElevenLabs Orb interaction. Actual rendered
+output volume from Web Audio controls its amplitude; queued network chunks and
+microphone input do not. Interrupted/ended/suspended output reads zero. Animation
+sampling stays outside React state, stops in hidden tabs, and respects reduced motion.
+No provider change or extra microphone stream is introduced.
+
+Chat places Pause conversation beside the microphone in the bottom audio bar.
+Pause uses the existing runtime cleanup and preserves the transcript; the same
+position offers Resume conversation (or Start/Reconnect while offline). Chat
+resume keeps capture off until explicitly enabled. Narrow screens retain an
+accessible icon-only pause button. Target visibility and hint policy are unchanged.
+
+
+## Signed-out authentication controls — 2026-11-03
+
+Landing and shared application headers expose one Sign in action. The Clerk modal starts in sign-in mode and offers an explicit switch to Sign up and back. Sign-in-or-up and implicit sign-in-to-registration transfer are disabled; both flows retain the initiating URL. The reverted Clerk appearance customization remains removed.
+
+## Landing section scrolling — 2026-11-02
+
+Landing now uses viewport-height sections and native document scroll snapping,
+with a sticky header, smooth anchor movement and a first-screen scroll cue.
+Sections have a minimum height, so phone/zoom content can grow and remain readable.
+The snap styles apply only while Landing is mounted; application routes retain
+normal scrolling. Reduced motion uses immediate anchors and proximity snapping.
+Existing section reveal animations remain on content, not on the snap targets.
+
+## Landing and navigation presentation — 2026-11-02
+
+Landing follows the supplied artboard: 1080px content, neutral cards, a joined
+video-entry field, monochrome Chrome icon and black pill actions. CSS adds a
+looping decorative waveform, staggered hero entry, supported scroll reveals and
+hover feedback; reduced motion disables animations. The five waveform bars continuously alternate with staggered timing. URL validation, input drafts, auth return paths and truthful store
+availability remain intact. Landing header links react to client-side sign-in changes. Shared navigation controls use neutral pills and
+flow-context typography while retaining account-scoped routes and focus guards.
+
+## Corpus library visual alignment — 2026-11-02
+
+`/corpus` follows the supplied Corpus artboard and unified v2 reference: a 1440px
+full-width shell, collection counts in the heading, top filter popovers, neutral
+cards and black primary actions. Local rendering starts at 15 matching items and
+Load more appends 15; search/sort still cover the complete loaded collection.
+Selection survives filters, sorting and incremental display. The selected-items
+tray clears mobile navigation, and becomes the primary action when present.
+Existing detail/edit/delete, account boundaries and Loadout limits are retained.
+
+## Practice history visual alignment — 2026-11-02
+
+`/profile/history` now follows the supplied Practice history artboard: a white,
+unboxed date-grouped list, outlined return link, one black New Mission action,
+neutral filter pills, inline Mission state and separated pagination/footer.
+The counter reports loaded entries while more pages exist. Newest-first ordering,
+server-side filtering, account isolation and pagination/retry behavior remain intact.
+
+
+## My learning and shared navigation — 2026-11-02
+
+The supplied unified v2 visual reference is implemented for My learning: neutral
+surface cards, compact duration labels, a next-step primary action, monochrome
+activity bars, keyboard-operable assessment/series tabs and unboxed history rows.
+Profile and Mission reports share `AssessmentTabs`; absent scores remain unassessed.
+Overall learning dimensions remain descriptive, without an illustrative radar.
+
+The root application layout now owns one global header: lowercase brand, left-aligned
+Practice / Mission / Corpus / My learning sections and the existing Clerk account
+menu under an initial avatar. Below 720px sections move to a fixed bottom bar.
+Practice and Mission have separate named workflow steps. Recording and connected
+conversation hide global sections; paused/ended conversation restores them. Focus
+exits preserve the existing End mission confirmation and warn before leaving an
+unfinished recording/message; they do not claim unsaved work has been persisted.
+Practice reuses the account-owned saved source. Mission remembers the last visited
+flow in sessionStorage per account; no-history entries remain Landing and Loadout
+because dedicated entry lists do not exist. Landing retains its separate header.
+
+This is a scoped visual migration, not a rewrite of all legacy global CSS or all
+v2 product proposals. Existing provider, storage, reporting and permission rules
+remain in force. Browser verification uses synthetic authenticated fixtures.
+
+
 ## Stage 4 targets visible from entry — 2026-11-01
 
 User decision supersedes the earlier default concealment: show all target

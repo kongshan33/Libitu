@@ -1,18 +1,16 @@
 import { buttonAppearance } from "@/components/ui/button";
 import Link from "@/components/ui/PrefetchLink";
 import { BrandLogo } from "@/components/BrandLogo";
-import { ArrowRight, Bookmark, Puzzle, MessageCircle, Quote, Waves } from "lucide-react";
-import { AuthControls } from "@/features/auth/components/AuthControls";
+import { ArrowDown, ArrowRight, Bookmark, Puzzle, MessageCircle, Quote, Waves } from "lucide-react";
+import { LandingNavigation } from "./LandingNavigation";
 import { VideoEntry } from "./VideoEntry";
 import { chromeStoreHref } from "./entry";
 import styles from "./LandingPage.module.css";
 
 function ChromeIcon() {
-  return <svg className={styles.chromeIcon} viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="11" fill="#ea4335" />
-    <path d="M12 12H23A11 11 0 0 1 6.5 21.53Z" fill="#fbbc05" />
-    <path d="M12 12 6.5 21.53A11 11 0 0 1 2.47 6.5Z" fill="#34a853" />
-    <circle cx="12" cy="12" r="4.7" fill="#4285f4" stroke="white" strokeWidth="1.4" />
+  return <svg className={styles.chromeIcon} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" />
+    <path d="M21.17 8H12M3.95 6.06 8.54 14M10.88 21.94 15.46 14" />
   </svg>;
 }
 
@@ -23,21 +21,17 @@ export function LandingPage() {
     <a className={styles.skipLink} href="#main">Skip to content</a>
     <header className={styles.header}>
       <BrandLogo className={styles.logo} />
-      <nav className={styles.nav} aria-label="Main navigation">
-        <a className={styles.howLink} href="#how-it-works">How it works</a>
-        <div className={styles.account}><AuthControls /></div>
-      </nav>
+      <LandingNavigation />
     </header>
 
     <main id="main">
       <section className={styles.hero} aria-labelledby="hero-title">
-        <p className={styles.eyebrow}><span aria-hidden="true" />For work and everyday English</p>
-        <h1 id="hero-title">Learn from real speech.<br /><em>Then actually say it.</em></h1>
-        <p className={styles.subtitle}>Turn the videos you watch into English you can use.<br className={styles.desktopBreak} /> Collect useful phrases, practice out loud, and bring them into real conversations.</p>
+        <div className={styles.wave} aria-hidden="true">{[0, 1, 2, 3, 4].map(index => <i key={index} />)}</div>
+        <h1 id="hero-title"><span>Learn from real speech.</span><em>Then actually say it.</em></h1>
         <VideoEntry />
         <div className={styles.extensionEntry}>
           <span className={styles.entryDivider}>or</span>
-          <a {...buttonAppearance({ variant: "secondary", size: "inherit", className: `${styles.extensionButton} ${styles.installButton}` })}  href={extensionUrl ?? "#extension"}
+          <a {...buttonAppearance({ variant: "secondary", size: "md", className: `${styles.extensionButton} ${styles.installButton}` })}  href={extensionUrl ?? "#extension"}
             target={extensionUrl ? "_blank" : undefined} rel={extensionUrl ? "noopener noreferrer" : undefined}
             aria-describedby="extension-help">
             <ChromeIcon />Add to Chrome
@@ -46,25 +40,26 @@ export function LandingPage() {
             {!extensionUrl ? <span>Chrome Web Store release coming soon · View installation details</span> : null}
           </p>
         </div>
+        <a className={styles.scrollCue} href="#how-it-works">Explore how it works <ArrowDown size={16} aria-hidden="true" /></a>
       </section>
 
       <section id="how-it-works" className={styles.stepsSection} aria-labelledby="steps-title">
         <div className={styles.sectionIntro}><p className={styles.kicker}>FROM WATCHING TO SPEAKING</p><h2 id="steps-title">Make it your English.</h2><p>Keep what is useful. Practice in a way that works for you.</p></div>
         <div className={styles.stepsGrid}>
           <article className={styles.step}>
-            <div className={`${styles.stepIcon} ${styles.teal}`}><Bookmark size={21} aria-hidden="true" /></div>
+            <div className={styles.stepIcon}><Bookmark size={21} aria-hidden="true" /></div>
             <div className={styles.stepHeading}><h3>Collect</h3><span>01</span></div>
             <p>Discover phrases, idioms, and sentence patterns in a video. Save the ones you want to make your own.</p>
             <span className={styles.stepCaption}>Your words, in context</span>
           </article>
           <article className={styles.step}>
-            <div className={`${styles.stepIcon} ${styles.rose}`}><Waves size={22} aria-hidden="true" /></div>
+            <div className={styles.stepIcon}><Waves size={22} aria-hidden="true" /></div>
             <div className={styles.stepHeading}><h3>Shadow</h3><span>OPTIONAL</span></div>
             <p>Listen, repeat, and explore sound, rhythm, and melody, one sentence at a time. Or go straight to a conversation.</p>
             <span className={styles.stepCaption}>A little practice out loud</span>
           </article>
           <article className={styles.step}>
-            <div className={`${styles.stepIcon} ${styles.purple}`}><MessageCircle size={21} aria-hidden="true" /></div>
+            <div className={styles.stepIcon}><MessageCircle size={21} aria-hidden="true" /></div>
             <div className={styles.stepHeading}><h3>Use</h3><span>02</span></div>
             <p>Take your saved phrases into a work or everyday scenario. Speak with an AI partner and get feedback on your conversation.</p>
             <span className={styles.stepCaption}>Language you can reach for</span>

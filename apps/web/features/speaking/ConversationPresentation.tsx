@@ -2,11 +2,11 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import { Mic, MicOff } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
+import { FlowNavigation } from "@/components/FlowNavigation";
 import { stageCue } from "./conversation-view";
 import { observeVisible } from "./visibility";
+import { PartnerOrb } from "./PartnerOrb";
 import styles from "./Speaking.module.css";
 
 /** Display-only models. These are not the negotiated realtime wire contract. */
@@ -21,18 +21,12 @@ export type TargetPresentation = {
   actions?: ReactNode;
 };
 
-export function ConversationHeader({ title, loadoutHref, reportHref, practiceHref = "/", account }: {
-  title?: string; loadoutHref: string; reportHref?: string; practiceHref?: string; account: ReactNode;
+export function ConversationHeader({ title, loadoutHref, reportHref, exit }: {
+  title?: string; loadoutHref: string; reportHref?: string; practiceHref?: string; account?: ReactNode; exit?: ReactNode;
 }) {
-  return <header className={styles.header}>
-    <div className={styles.headerIdentity}><BrandLogo className={styles.logo} /><span title={title}>{title}</span></div>
-    <nav className={styles.stageNav} aria-label="Stages">
-      <Link href={practiceHref}>Stage 1</Link><span aria-disabled="true">Stage 2</span>
-      <Link href={loadoutHref}>Stage 3</Link><span aria-current="step">Stage 4</span>
-      {reportHref ? <Link href={reportHref}>Stage 5</Link> : <span aria-disabled="true">Stage 5</span>}
-    </nav>
-    <div className={styles.headerLinks}><Link href="/corpus">Corpus</Link><Link href="/profile">My learning</Link>{account}</div>
-  </header>;
+  return <FlowNavigation title={title ?? "Conversation"} current={1} steps={[
+    { label: "Loadout", href: loadoutHref }, { label: "Conversation" }, { label: "Report", href: reportHref }
+  ]} exit={exit} />;
 }
 
 export function MissionIntro({ goal, metadata, setting, actions }: { goal: string; metadata: string; setting?: string; actions: ReactNode }) {
@@ -66,12 +60,12 @@ export function ConversationToolbar({ view, onView, status, online, actions }: {
   </div>;
 }
 
-export function VoiceSurface({ phase, speaker, utterance, recast, hint, controls, action }: {
-  phase: string; speaker?: string; utterance?: ReactNode; recast?: ReactNode;
+export function VoiceSurface({ phase, speaker, utterance, recast, hint, controls, action, getOutputLevel }: {
+  phase: string; getOutputLevel?: () => number; speaker?: string; utterance?: ReactNode; recast?: ReactNode;
   hint?: ReactNode; controls?: ReactNode; action?: ReactNode;
 }) {
   return <div className={styles.voice} data-phase={phase}>
-    <div className={styles.orb} role="img" aria-label="AI partner" />
+    <PartnerOrb phase={phase} getOutputLevel={getOutputLevel} />
     {utterance ? <div className={styles.currentUtterance}><span className={styles.eyebrow}>{speaker ?? "AI partner · now"}</span><div className={styles.currentText}>{utterance}</div></div> : null}
     {recast}{hint}{action}{controls}
   </div>;
@@ -84,10 +78,10 @@ export function MicrophoneButton({ enabled, disabled, onClick, large = false }: 
 }
 
 /** Static waveform only communicates activity, never pretends to measure audio. */
-export function MicrophoneBar({ enabled, disabled, onClick, status, active }: { enabled: boolean; disabled?: boolean; onClick: () => void; status: string; active: boolean }) {
+export function MicrophoneBar({ enabled, disabled, onClick, status, active, action }: { action?: ReactNode; enabled: boolean; disabled?: boolean; onClick: () => void; status: string; active: boolean }) {
   return <div className={styles.microphoneBar}>
     <div className={styles.activityBars} data-active={active} aria-hidden="true">{[10, 18, 28, 16, 34, 22, 12, 30, 38, 20, 14, 26, 34, 18, 10, 24, 32, 16, 12, 28, 36, 20, 14, 30, 22, 12, 26, 34, 18, 10].map((height, index) => <i key={index} style={{ height: active ? height : 6 }} />)}</div>
-    <span>{status}</span><MicrophoneButton enabled={enabled} disabled={disabled} onClick={onClick} />
+    <span>{status}</span><MicrophoneButton enabled={enabled} disabled={disabled} onClick={onClick} />{action}
   </div>;
 }
 

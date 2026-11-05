@@ -42,10 +42,17 @@ class PracticeRepository:
 
     def list(self, owner: str, content: str, sentence: str | None, offset: int, limit: int) -> list[dict]:
         params = {"user_id": f"eq.{owner}", "content_id": f"eq.{content}", "deleted_at": "is.null",
-                  "select": "*", "order": "created_at.desc,id.desc", "offset": str(offset), "limit": str(limit)}
+                  "analysis.user_id": f"eq.{owner}",
+                  "select": "*,analysis:practice_analyses(state,tier:word_check->>tier)", "order": "created_at.desc,id.desc", "offset": str(offset), "limit": str(limit)}
         if sentence is not None:
             params["sentence_id"] = f"eq.{sentence}"
-        return self.database._request("GET", "/shadow_attempts", params=params).json()
+        rows = self.database._request("GET", "/shadow_attempts", params=params).json()
+        for row in rows:
+            summary = row.pop("analysis", None)
+            if summary:
+                row["analysis_state"] = summary["state"]
+                row["analysis_scope"] = {"full_85_plus": "all_layers", "partial_60_85": "sound_only"}.get(summary.get("tier"), "none")
+        return rows
 
     def practiced_sentences(self, owner: str, content: str) -> list[str]:
         return self.database._request("POST", "/rpc/practice_directory_progress",

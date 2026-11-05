@@ -14,7 +14,7 @@ const reportPath = `/speaking/${profileFeedbackSessionId}/analytics`;
 const browser = await chromium.launch({ channel: process.env.LIBITU_BROWSER_CHANNEL ?? "chrome", headless: true });
 
 const feedbackCard = (page) => page.locator('section[aria-labelledby="feedback-title"]');
-const dimension = (page, name) => feedbackCard(page).getByRole("button", { name: new RegExp(`^${name}`) });
+const dimension = (page, name) => feedbackCard(page).getByRole("tab", { name: new RegExp(`^${name}`) });
 
 async function waitFor(check, message) {
   for (let index = 0; index < 200; index++) {
@@ -55,7 +55,7 @@ try {
     try {
       await page.goto(`${origin}/profile`, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await feedbackCard(page).getByRole("heading", { name: summary.goal, exact: true }).waitFor();
-      assert.equal(await feedbackCard(page).getByRole("button").count(), 4);
+      assert.equal(await feedbackCard(page).getByRole("tab").count(), 4);
       assert.match(await dimension(page, "Task fit").innerText(), /75\s*\/\s*100/);
       assert.match(await dimension(page, "Language transfer").innerText(), /67\s*\/\s*100/);
       assert.match(await dimension(page, "Task fit").innerText(), /AI assessment/);
@@ -64,7 +64,7 @@ try {
         "conversation feedback is presented before overall learning dimensions");
       const naturalness = dimension(page, "Naturalness");
       await naturalness.focus(); await naturalness.press("Enter");
-      assert.equal(await naturalness.getAttribute("aria-pressed"), "true");
+      assert.equal(await naturalness.getAttribute("aria-selected"), "true");
       await page.locator("#mission-feedback-detail").getByText(/does not assess pronunciation or speech timing/).waitFor();
       const overall = page.getByRole("group", { name: "Learning dimensions", exact: true });
       assert.equal(await overall.getByText("Not assessed", { exact: true }).count(), 4);
@@ -95,7 +95,7 @@ try {
       assert.doesNotMatch(await dimension(page, "Language transfer").innerText(), /\/\s*100/);
       const transfer = dimension(page, "Language transfer");
       await transfer.focus(); await transfer.press("Space");
-      assert.equal(await transfer.getAttribute("aria-pressed"), "true");
+      assert.equal(await transfer.getAttribute("aria-selected"), "true");
       await feedbackCard(page).getByText(/Missing scores stay unassessed/).waitFor();
       await screenshot(page, `feedback-partial-${width}`);
       assert.deepEqual(state.errors, []);
@@ -133,7 +133,7 @@ try {
   fixture.transformHistory = () => ({ items: rows, next_offset: null });
   await statePage.goto(`${origin}/profile`, { waitUntil: "domcontentloaded" });
   await feedbackCard(statePage).getByText("Your next Mission can bring new insight", { exact: true }).waitFor();
-  assert.equal(await feedbackCard(statePage).getByRole("button").count(), 0,
+  assert.equal(await feedbackCard(statePage).getByRole("tab").count(), 0,
     "queued, processing, and failed reports never supply latest scores");
   for (const status of ["Report queued", "Report in progress", "Report needs retry"]) await statePage.getByText(status, { exact: true }).waitFor();
   assert.equal(fixture.requests.some((request) => request.path.endsWith("/feedback")), false,
@@ -143,17 +143,17 @@ try {
   await statePage.reload({ waitUntil: "domcontentloaded" });
   await feedbackCard(statePage).getByText("Your earlier report is in your history", { exact: true }).waitFor();
   await feedbackCard(statePage).getByText(/current scoring rubric/).waitFor();
-  assert.equal(await feedbackCard(statePage).getByRole("button").count(), 0);
+  assert.equal(await feedbackCard(statePage).getByRole("tab").count(), 0);
   await screenshot(statePage, "feedback-version-mismatch-390");
   reason = "invalid_result";
   await statePage.reload({ waitUntil: "domcontentloaded" });
   await feedbackCard(statePage).getByText("This report needs a closer look", { exact: true }).waitFor();
-  assert.equal(await feedbackCard(statePage).getByRole("button").count(), 0);
+  assert.equal(await feedbackCard(statePage).getByRole("tab").count(), 0);
   reason = "legacy_report";
   await statePage.reload({ waitUntil: "domcontentloaded" });
   await feedbackCard(statePage).getByText("Your earlier conversation is in your history", { exact: true }).waitFor();
   await feedbackCard(statePage).getByText(/older record has no compatible report/).waitFor();
-  assert.equal(await feedbackCard(statePage).getByRole("button").count(), 0,
+  assert.equal(await feedbackCard(statePage).getByRole("tab").count(), 0,
     "legacy records do not fabricate scores or offer an incompatible report");
   await statePage.goto(`${origin}/profile/history`, { waitUntil: "domcontentloaded" });
   for (let index = 0; index < rows.length; index++) {
@@ -182,7 +182,7 @@ try {
   const newRequest = gate(); raceFixture.profileGate = newRequest.promise;
   await racePage.evaluate((owner) => window.__setProfileUser(owner), otherProfileOwner);
   await waitFor(() => raceFixture.requests.some((request) => request.owner === otherProfileOwner), "new account profile read started");
-  assert.equal(await feedbackCard(racePage).getByRole("button").count(), 0,
+  assert.equal(await feedbackCard(racePage).getByRole("tab").count(), 0,
     "old account scores clear before a new account's request resolves");
   assert.equal(await racePage.getByText(summary.goal, { exact: true }).count(), 0);
   newRequest.release();
@@ -190,7 +190,7 @@ try {
   oldRequest.release();
   await waitFor(() => raceFixture.responses.some((request) => request.owner === profileOwner && request.query.range === "3m"), "late prior-account report summary resolved");
   await settle(racePage);
-  assert.equal(await feedbackCard(racePage).getByRole("button").count(), 0);
+  assert.equal(await feedbackCard(racePage).getByRole("tab").count(), 0);
   assert.equal(await racePage.getByText(summary.goal, { exact: true }).count(), 0,
     "a delayed old-account score/goal cannot reappear");
   assert.deepEqual(raceFixture.errors, []); await raceContext.close();

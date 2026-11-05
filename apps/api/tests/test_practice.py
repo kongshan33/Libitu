@@ -428,3 +428,24 @@ def test_quick_long_take_uses_trusted_sentence_duration(setup, monkeypatch):
 def test_short_sentence_does_not_authorize_arbitrary_long_recordings(setup):
     client, _ = setup
     assert client.post("/api/practice/attempts", json={**payload(False), "duration_ms": 61_001}).status_code == 422
+
+
+def test_history_embeds_all_analysis_states_without_full_results():
+    from types import SimpleNamespace
+    import httpx
+    from app.integrations.practice_repository import PracticeRepository
+    calls = []
+    def request(method, path, **kwargs):
+        calls.append(kwargs['params'])
+        return httpx.Response(200, json=[
+            {'id':'one', 'analysis':{'state':'completed','tier':'full_85_plus'}},
+            {'id':'two', 'analysis':{'state':'needs_review','tier':None}},
+            {'id':'three', 'analysis':None}])
+    repo = PracticeRepository.__new__(PracticeRepository)
+    repo.database = SimpleNamespace(_request=request)
+    rows = repo.list('owner','content','sentence',0,20)
+    assert rows[0]['analysis_state'] == 'completed' and rows[0]['analysis_scope'] == 'all_layers'
+    assert rows[1]['analysis_state'] == 'needs_review' and rows[1]['analysis_scope'] == 'none'
+    assert rows[2].get('analysis_state') is None
+    assert calls[0]['analysis.user_id'] == calls[0]['user_id'] == 'eq.owner'
+    assert 'result' not in calls[0]['select'] and len(calls) == 1

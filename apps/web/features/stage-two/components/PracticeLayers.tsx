@@ -1,13 +1,13 @@
 "use client";
 
 import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
-import { AudioLines, ChartNoAxesCombined, Music2 } from "lucide-react";
+import { AudioLines, ChartNoAxesCombined, Music2, LockKeyhole } from "lucide-react";
 import type { LayerBadge } from '../practice/layer-presentation';
 
 export const practiceLayers = [
   { id: "sound", label: "Sound", description: "Phonemes · connected speech", icon: AudioLines },
   { id: "rhythm", label: "Rhythm", description: "Stress guide · pauses", icon: ChartNoAxesCombined },
-  { id: "melody", label: "Melody", description: "Pitch · intonation", icon: Music2 }
+  { id: "melody", label: "Melody", description: "Pitch · intonation", icon: Music2, LockKeyhole }
 ] as const;
 export type PracticeLayer = (typeof practiceLayers)[number]["id"];
 
@@ -48,14 +48,13 @@ export function PracticeLayers({ active, onChange, sound, rhythm, melody, badges
   }
   return <div className="stage-two-layers">
     <div className="stage-two-layer-tabs" role="tablist" aria-label="Practice layers">
-      {practiceLayers.map(({ id: layer, label, description, icon: Icon }, index) => <button key={layer}
+      {practiceLayers.map(({ id: layer, label }, index) => <button key={layer}
         ref={(element) => { tabs.current[index] = element; }} type="button" role="tab" data-layer={layer}
         id={`${id}-tab-${layer}`} aria-controls={`${id}-panel-${layer}`} aria-selected={active === layer}
-        aria-describedby={badges?.[layer] ? `${id}-status-${layer}` : undefined}
+        title={locked?.[layer] ? badges?.[layer]?.title : undefined}
         aria-label={label} disabled={locked?.[layer]} tabIndex={active === layer&&!locked?.[layer] ? 0 : -1} onClick={() => onChange(layer)}
         onKeyDown={(event) => navigate(event, index)}>
-        <span><Icon aria-hidden="true" />{label}{badges?.[layer] ? <em className="paired-tab-badge" data-state={badges[layer].state}
-          id={`${id}-status-${layer}`} title={badges[layer].title} aria-label={badges[layer].title}>{badges[layer].text}</em> : null}</span><small aria-hidden="true">{description}</small>
+        <span>{label}{locked?.[layer] ? <em className="analysis-locked"><LockKeyhole size={12} aria-hidden="true"/> Locked</em> : null}</span>
       </button>)}
     </div>
     {locked?.[active]?<div className="shadow-layer-gate" role="status">{gate??'Complete a word check to compare your take.'}</div>:null}

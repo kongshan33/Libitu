@@ -1,27 +1,27 @@
 .voices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
-.voice { min-width: 0; border: 1px solid var(--color-border-tertiary); border-radius: var(--radius-lg); padding: 14px; background: var(--color-background-subtle); }
-.yourVoice { background: #f5faf9; border-color: #d8e7e3; }
+.voice { min-width: 0; border: 0; border-radius: 14px; padding: 14px; background: var(--surface); }
+.yourVoice { background: var(--surface); }
 .voiceHeading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; }
 .voiceHeading h4 { margin: 0; font-size: 14px; font-weight: 600; }
-.voiceHeading span { color: #75716a; font-size: 11px; }
+.voiceHeading span { color: var(--muted); font-size: 11px; }
 .voice p { line-height: 1.6; overflow-wrap: anywhere; }
 .values { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; margin: 16px 0 0; }
-.values dt { color: #68645f; font-size: 11px; line-height: 1.5; }
-.values dd { margin: 4px 0 0; color: #27241f; font-size: 19px; font-variant-numeric: tabular-nums; }
+.values dt { color: var(--ink-3); font-size: 11px; line-height: 1.5; }
+.values dd { margin: 4px 0 0; color: var(--ink); font-size: 19px; font-variant-numeric: tabular-nums; }
 .retry { min-height: 44px; margin-top: 8px; border-width: 1px; border-style: solid; padding: 8px 12px; }
 .note { margin-bottom: 0; line-height: 1.6; }
-.pitchChart { margin: 18px 0 0; border: 1px solid var(--color-border-tertiary); border-radius: var(--radius-lg); padding: 14px; background: var(--color-background-subtle); }
+.pitchChart { margin: 18px 0 0; border: 0; border-radius: 14px; padding: 14px; background: var(--surface); }
 .pitchChart figcaption { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13px; }
 .pitchChart svg { display: block; width: 100%; height: auto; margin-top: 12px; overflow: visible; }
 .pitchChart p { line-height: 1.6; }
-.legend { display: inline-flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: #68645f; }
+.legend { display: inline-flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--ink-3); }
 .legend span { display: inline-flex; align-items: center; gap: 5px; }
-.legend span::before { content: ""; width: 18px; border-top: 2px solid #7261ae; }
-.legend span:last-child::before { border-color: #087e80; border-top-style: dashed; }
-.axis line { stroke: #e8e3db; stroke-width: 1; }
-.axis text { fill: #77716a; font-size: 10px; }
-.referenceTrace, .yourTrace { fill: none; stroke: #7261ae; stroke-width: 2; }
-.yourTrace { stroke: #087e80; stroke-dasharray: 5 3; }
+.legend span::before { content: ""; width: 18px; border-top: 2px solid var(--ink); }
+.legend span:last-child::before { border-color: var(--ink-3); border-top-style: dashed; }
+.axis line { stroke: var(--line); stroke-width: 1; }
+.axis text { fill: var(--muted); font-size: 10px; }
+.referenceTrace, .yourTrace { fill: none; stroke: var(--ink); stroke-width: 2; }
+.yourTrace { stroke: var(--ink-3); stroke-dasharray: 5 3; }
 @media (max-width: 700px) {
   .voices { grid-template-columns: 1fr; }
   .voice, .pitchChart { padding: 12px; }

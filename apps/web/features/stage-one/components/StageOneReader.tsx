@@ -8,10 +8,10 @@ import { DirectionButton } from "@/components/ui/direction-button";
 
 import { Textarea } from "@/components/ui/field";
 
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
-import { BrandLogo } from "@/components/BrandLogo";
-import { AuthControls } from "@/features/auth/components/AuthControls";
+import { FlowNavigation } from "@/components/FlowNavigation";
+
 import dynamic from "next/dynamic";
 import { StageTwoSkeleton } from "../../stage-two/components/StageTwoSkeleton";
 import { ReaderSkeleton } from "./ReaderSkeleton";
@@ -113,7 +113,7 @@ export function StageOneReader() {
     stageOneView, navigate, prefetch, isNavigating, selectedSegmentId, setSelectedSegmentId,
     isPlayerPlaying, handlePlaybackChange, timingRecovery, bufferedReference,
     sharedReferenceCache, captureGeneration, suspendReference } = useContentWorkspace();
-  const sourceTitle = source?.title || (stageOneView === "shadow" ? "Loading practice" : "Loading Stage 1 content");
+  const sourceTitle = source?.title || (stageOneView === "shadow" ? "Practice" : "Video");
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [activeTranscriptIdentity, setActiveTranscriptIdentity] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CorpusFilter>("chunks");
@@ -467,13 +467,16 @@ export function StageOneReader() {
   const readerRevealRef = useReaderReveal(sourceKey, revealRevision);
   const selectedSegment = playableSegments.find((segment) => segment.id === selectedSegmentId) ?? null;
 
-  useEffect(() => {
-    if (stageOneView !== "picker" || !selectedSegment || !blueprint) return;
-    const first = buildSentenceUnits(blueprint.contentId, selectedSegment, blueprint.transcript)[0];
-    prefetch("shadow", selectedSegment.id, first?.id);
+  const warmShadow = useCallback(() => {
     // Load code only; recorder/audio effects still start when Shadow mounts.
     void loadShadow().catch(() => { /* The normal entry retains its loading/error boundary. */ });
-  }, [stageOneView, selectedSegment, blueprint, prefetch]);
+    if (!selectedSegment || !blueprint) return;
+    const first = buildSentenceUnits(blueprint.contentId, selectedSegment, blueprint.transcript)[0];
+    prefetch("shadow", selectedSegment.id, first?.id);
+  }, [selectedSegment, blueprint, prefetch]);
+  useEffect(() => {
+    if (stageOneView === "picker") warmShadow();
+  }, [stageOneView, warmShadow]);
 
   const openSegmentPicker = useCallback(() => {
     if (playableSegments.length === 0) return;
@@ -502,33 +505,9 @@ export function StageOneReader() {
     <>
     <main className="stage-page practice-redesign">
       <section ref={readerRevealRef} className="reader-shell" aria-label="Libitu stage 1 ingest reader" aria-busy={isNavigating}>
-        <header className="topbar practice-topbar">
-          <div className="practice-topbar-source">
-            <BrandLogo className="logo" />
-            <div className="topbar-title" title={blueprint?.title ?? sourceTitle}>{blueprint?.title ?? sourceTitle}</div>
-          </div>
-          <div className="stage-pills" aria-label="Learning stages">
-            <Button variant="secondary" size="inherit" shape="pill"
-              className={`stage-pill ${stageOneView === "reader" || stageOneView === "picker" ? "active" : ""}`}
-              type="button"
-              onClick={closeSegmentPicker}
-            >
-              Stage 1 - Ingest
-            </Button>
-            <Button variant="secondary" size="inherit" shape="pill"
-              className={`stage-pill ${stageOneView === "shadow" ? "active" : ""}`}
-              type="button"
-              disabled={!isReady}
-            >
-              Stage 2 - Shadow
-            </Button>
-            <LoadoutLink className="stage-pill">Stage 3 - Mission</LoadoutLink>
-          </div>
-          <div className="practice-topbar-account">
-            <ButtonLink variant="secondary" size="inherit" shape="pill" className="stage-pill" href="/corpus">Corpus</ButtonLink>
-            <AuthControls />
-          </div>
-        </header>
+        <FlowNavigation title={blueprint?.title ?? sourceTitle} current={stageOneView === "reader" ? 0 : 1}
+          steps={[{ label: "Ingest", onClick: closeSegmentPicker }, { label: "Shadow", onClick: isReady ? () => navigate("picker") : undefined }]}
+          exit={<button type="button" onClick={() => navigate("picker")}>Back to segments</button>} />
 
         {stageOneView !== "reader" && status !== "failed" && status !== "unsupported"
           && (status === "loading" || (stageOneView !== "picker" && !selectedSegment) || (stageOneView === "shadow" && !authLoaded)) ? (
@@ -542,17 +521,19 @@ export function StageOneReader() {
             onBack={closeSegmentPicker}
             onSelect={setSelectedSegmentId}
             onBegin={launchStageTwo}
+            onPrefetch={warmShadow}
+            isNavigating={isNavigating}
           />
         ) : stageOneView === "shadow" && selectedSegment && (!authLoaded || !userId) ? (
           <section className="shadow-sign-in" aria-label="Sign in to Shadow">
             <h1>Sign in to start Shadow</h1>
             <p>Save your practice history to your account. You choose whether to keep recordings for later playback.</p>
             <p>{selectedSegment.title} · Your selected sentence will be kept.</p>
-            <Button variant="secondary" size="inherit" type="button" disabled={!authLoaded} onClick={() => {
+            <Button variant="secondary" size="md" type="button" disabled={!authLoaded} onClick={() => {
               const returnUrl = currentAuthReturnUrl();
               clerk.openSignIn({ forceRedirectUrl: returnUrl, signUpForceRedirectUrl: returnUrl });
             }}>{authLoaded ? "Sign in or create account" : "Checking sign-in…"}</Button>
-            <Button variant="secondary" size="inherit" type="button" onClick={closeSegmentPicker}>Back to Stage 1</Button>
+            <Button variant="secondary" size="md" type="button" onClick={closeSegmentPicker}>Back to Stage 1</Button>
           </section>
         ) : stageOneView === "shadow" && selectedSegment && authLoaded && userId ? (
           <StageTwoShadowing
@@ -624,7 +605,7 @@ export function StageOneReader() {
               <p className="empty-state">The source video URL is unavailable.</p>
             ) : <div className="reader-skeleton-video" aria-hidden="true" />}
           </div>
-          {displaySourceUrl && blueprint?.contentId ? <BufferedReferencePanel capture={bufferedReference} playable /> : null}
+          {displaySourceUrl && blueprint?.contentId ? <BufferedReferencePanel capture={bufferedReference} playable compact quiet /> : null}
 
           {!isReady ? (
             <StageOneStatusPanel
@@ -663,7 +644,7 @@ export function StageOneReader() {
                   <span className="toggle-track"><span /></span>
                   Highlight active
                 </button>
-                {/* <Button variant="secondary" size="inherit" className="control-button" type="button" disabled={!isReady}>
+                {/* <Button variant="secondary" size="md" className="control-button" type="button" disabled={!isReady}>
                   <LibraryIcon />
                   Add to corpus
                 </Button> */}
@@ -749,7 +730,7 @@ export function StageOneReader() {
             {corpus.error ? (
               <div className="corpus-sync-status" role="alert">
                 <p>{corpus.error}</p>
-                <Button variant="secondary" size="inherit" type="button" className="inline-command" onClick={corpus.retry} disabled={corpus.busy} loading={corpus.busy} loadingLabel="Syncing…">Retry sync</Button>
+                <Button variant="secondary" size="md" type="button" className="inline-command" onClick={corpus.retry} disabled={corpus.busy} loading={corpus.busy} loadingLabel="Syncing…">Retry sync</Button>
               </div>
             ) : corpus.busy ? <ContentSkeleton label="Loading saved corpus…" rows={1} /> : null}
             <div className="corpus-list">
@@ -788,6 +769,7 @@ export function StageOneReader() {
                       aria-label={saveLabel}
                       title={saveLabel}
                       aria-pressed={saved}
+                      data-feedback={saved && activeTab !== "saved" ? "success" : undefined}
                       onClick={() => record ? void corpus.remove(record) : void saveCorpusItem(item)}
                     >
                       {saved ? activeTab === "saved" ? <Trash2 /> : <Check /> : <Plus />}
@@ -803,7 +785,7 @@ export function StageOneReader() {
               <span>Your saved language</span>
               <strong>{savedRecords.length} items saved from this source</strong>
             </div>
-            <LoadoutLink className="mission-button" size="sm" shape="default">Open loadout</LoadoutLink>
+            <LoadoutLink className="mission-button" size="sm" shape="default">Open Loadout</LoadoutLink>
           </div>
         </aside>
 
@@ -812,6 +794,7 @@ export function StageOneReader() {
             segmentCount={playableSegments.length}
             onChooseSegment={openSegmentPicker}
             onPrefetch={() => prefetch("picker")}
+            isNavigating={isNavigating}
           />
         ) : null}
           </>
@@ -841,9 +824,10 @@ type StageOneStageCtaProps = {
   segmentCount: number;
   onChooseSegment?: () => void;
   onPrefetch?: () => void;
+  isNavigating?: boolean;
 };
 
-function StageOneStageCta({ segmentCount, onChooseSegment, onPrefetch }: StageOneStageCtaProps) {
+function StageOneStageCta({ segmentCount, onChooseSegment, onPrefetch, isNavigating }: StageOneStageCtaProps) {
   const canChooseSegment = segmentCount > 0;
 
   return (
@@ -862,6 +846,8 @@ function StageOneStageCta({ segmentCount, onChooseSegment, onPrefetch }: StageOn
         className="stage-one-cta-button"
         type="button"
         disabled={!canChooseSegment}
+        loading={isNavigating}
+        loadingLabel="Opening segments…"
         onClick={onChooseSegment}
         onMouseEnter={onPrefetch} onFocus={onPrefetch} onTouchStart={onPrefetch}
       >
@@ -881,7 +867,9 @@ function StageOneSegmentPicker({
   title,
   onBack,
   onSelect,
-  onBegin
+  onBegin,
+  onPrefetch,
+  isNavigating
 }: {
   segments: StageOneSegment[];
   logicNodes: StageOneBlueprint["logicNodes"];
@@ -890,6 +878,8 @@ function StageOneSegmentPicker({
   onBack: () => void;
   onSelect: (segmentId: string) => void;
   onBegin?: (segment: StageOneSegment) => void;
+  onPrefetch?: () => void;
+  isNavigating?: boolean;
 }) {
   const totalDurationMs = Math.max(...segments.map((segment) => segment.endMs ?? 0), 0);
   const selectedSegment = segments.find((segment) => segment.id === selectedSegmentId) ?? null;
@@ -982,6 +972,9 @@ function StageOneSegmentPicker({
           className="stage-one-picker-begin"
           type="button"
           disabled={!selectedSegment}
+          loading={isNavigating}
+          loadingLabel="Opening practice…"
+          onMouseEnter={onPrefetch} onFocus={onPrefetch} onTouchStart={onPrefetch}
           onClick={() => selectedSegment && onBegin?.(selectedSegment)}
         >
           Begin Stage 2{selectedSegment ? ` · ${selectedSegment.title}` : ""}
@@ -1226,7 +1219,7 @@ function CorpusDetailDialog({ state, onClose, onRetry, onSeek, onTabChange }: Co
               {state.record?.sourceTitle ? <strong>{state.record.sourceTitle}</strong> : null}
             </div>
             {state.context.timestamp ? (
-              <Button variant="secondary" size="inherit" type="button" className="inline-command" onClick={() => onSeek(state.context.timestamp ?? null)}>
+              <Button variant="secondary" size="md" type="button" className="inline-command" onClick={() => onSeek(state.context.timestamp ?? null)}>
                 {state.context.timestamp}
               </Button>
             ) : null}
@@ -1272,7 +1265,7 @@ function CorpusDetailDialog({ state, onClose, onRetry, onSeek, onTabChange }: Co
               <div>
                 <h2>Analysis could not be loaded</h2>
                 <p>{state.error ?? "Please retry."}</p>
-                <Button variant="secondary" size="inherit" className="inline-command" type="button" onClick={onRetry}>Retry</Button>
+                <Button variant="secondary" size="md" className="inline-command" type="button" onClick={onRetry}>Retry</Button>
               </div>
             </div>
           ) : state.tab === "explain" ? (
@@ -1381,12 +1374,12 @@ function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFi
         onChange={(event) => onNoteChange(event.target.value)}
       />
 
-      <div className="selection-actions">
+      <div className="selection-actions ui-button-group">
         <div className="selection-tabs" role="tablist" aria-label="Selection analysis views">
           <button className={state.tab === "explain" ? "active" : ""} type="button" onClick={() => onTabChange("explain")}>Explain</button>
           <button className={state.tab === "syntax" ? "active" : ""} type="button" onClick={() => onTabChange("syntax")}>Syntax</button>
         </div>
-        <Button variant="primary" size="inherit" className="selection-save" type="button" disabled={isLoading || saveDisabled} onClick={() => onSave()}>
+        <Button variant="primary" size="md" className="selection-save" type="button" disabled={isLoading || saveDisabled} onClick={() => onSave()}>
           Save
         </Button>
       </div>
@@ -1462,7 +1455,7 @@ function StageOneStatusPanel({ status, message, onRetry, preview }: StageOneStat
         </div>
       ) : null}
       {!isLoading ? (
-        <Button variant="secondary" size="inherit" className="mission-button" type="button" onClick={onRetry}>
+        <Button variant="secondary" size="md" className="mission-button" type="button" onClick={onRetry}>
           Retry
         </Button>
       ) : null}

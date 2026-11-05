@@ -1,5 +1,41 @@
 # Personal learning center
 
+## Practice history visual update — 2026-11-02
+
+The history route follows `design/prototypes/Practice history-html/Practice.dc.html`
+and the unified v2 design: 1080px content shell, white unboxed rows, 32px date-group
+spacing, neutral filter pills and inline Mission state. Its single primary action
+is New Mission; return, empty-state and pagination actions are secondary.
+The toolbar shows “N entries loaded” while another page exists and “N entries”
+when exhausted. Loading/failure never masquerades as zero. Ordering stays newest
+first; the prototype's local sort toggle is not offered on partial server pages.
+Dashboard history rows retain their compact presentation and existing destinations.
+
+
+## My learning and shared navigation — 2026-11-02
+
+The supplied unified v2 visual reference is implemented for My learning: neutral
+surface cards, compact duration labels, a next-step primary action, monochrome
+activity bars, keyboard-operable assessment/series tabs and unboxed history rows.
+Profile and Mission reports share `AssessmentTabs`; absent scores remain unassessed.
+Overall learning dimensions remain descriptive, without an illustrative radar.
+
+The root application layout now owns one global header: lowercase brand, left-aligned
+Practice / Mission / Corpus / My learning sections and the existing Clerk account
+menu under an initial avatar. Below 720px sections move to a fixed bottom bar.
+Practice and Mission have separate named workflow steps. Recording and connected
+conversation hide global sections; paused/ended conversation restores them. Focus
+exits preserve the existing End mission confirmation and warn before leaving an
+unfinished recording/message; they do not claim unsaved work has been persisted.
+Practice reuses the account-owned saved source. Mission remembers the last visited
+flow in sessionStorage per account; no-history entries remain Landing and Loadout
+because dedicated entry lists do not exist. Landing retains its separate header.
+
+This is a scoped visual migration, not a rewrite of all legacy global CSS or all
+v2 product proposals. Existing provider, storage, reporting and permission rules
+remain in force. Browser verification uses synthetic authenticated fixtures.
+
+
 Implemented locally on 2026-10-02 from `design/prototypes/toneflow_profile_page.html`. The prototype supplies layout and interaction direction; its example identity, scores, recommendations and release promises are not product data.
 
 ## Delivered experience
@@ -31,7 +67,7 @@ The browser stores one ready YouTube source per account with title and update ti
 
 The local destination restores the selected source and Shadow sentence without autoplay. If no device position exists, the page can link to the latest visible source associated with a saved take. Every source link includes the canonical YouTube URL, so older blueprints without their own source URL cannot fall back to the wrong video. Historical attempts lack segment identity, so their action is **View source**, not a promise to open the exact take. Removed/inaccessible sources and missing/invalid source URLs have no clickable action. Active Missions resume the conversation; completed Missions open Analytics with their current report state. Unversioned legacy records link to the read-only conversation because they lack a recoverable report.
 
-Pronunciation, expression, pragmatics and intake are **Not assessed**. Writing is **Not available yet**. The decorative empty radar contains no score polygon. Explanations distinguish descriptive measurements and usage evidence from validated ability. Next-step suggestions only use resumable work or existing corpus, never fabricated weaknesses.
+Pronunciation, expression, pragmatics and intake are **Not assessed**. Writing is **Not available yet**. The neutral dimension list contains no radar or fabricated score. Explanations distinguish descriptive measurements and usage evidence from validated ability. Next-step suggestions only use resumable work or existing corpus, never fabricated weaknesses.
 
 Persistent goals, validated general ability assessment and score trends, full corpus management, cross-device reader positions, permanent activity ledgers and production scale qualification are not delivered by this increment. Stage 5's model judgments still require independent human calibration.
 

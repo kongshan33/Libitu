@@ -10,9 +10,9 @@
   background: var(--button-bg);
   background-clip: padding-box;
   color: var(--button-fg);
-  border-color: transparent;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 0 0 1px var(--button-edge);
+  border: 1px solid var(--button-edge);
+  border-radius: 999px;
+  box-shadow: none;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
@@ -21,11 +21,11 @@
 }
 
 .ui-button[data-variant="primary"][data-size][data-shape] {
-  --button-bg: var(--purple-600);
+  --button-bg: var(--ink);
   --button-fg: #fff;
   --button-edge: transparent;
-  --button-hover: var(--purple-800);
-  --button-pressed: #30296f;
+  --button-hover: var(--ink-2);
+  --button-pressed: var(--ink);
 }
 
 .ui-button[data-variant="soft"][data-size][data-shape] {
@@ -62,8 +62,7 @@
   --button-pressed: #000;
 }
 
-.ui-button[data-variant="danger-solid"][data-size][data-shape],
-.ui-button[data-variant="record"][data-recording="true"][data-size][data-shape] {
+.ui-button[data-variant="danger-solid"][data-size][data-shape] {
   --button-bg: var(--color-danger);
   --button-fg: #fff;
   --button-edge: transparent;
@@ -75,8 +74,8 @@
   background: var(--button-hover);
   background-clip: padding-box;
   color: var(--button-fg);
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px var(--button-edge);
+  border-color: var(--button-edge);
+  box-shadow: none;
   transform: none;
 }
 
@@ -92,13 +91,14 @@
 }
 
 .ui-button[data-variant][data-size][data-shape]:disabled {
-  background: var(--button-bg);
-  color: var(--button-fg);
-  border-color: transparent;
+  --button-edge: transparent;
+  background: var(--line);
+  color: var(--muted);
+  border-color: var(--button-edge);
   background-clip: padding-box;
-  opacity: var(--opacity-disabled);
+  opacity: 1;
   cursor: not-allowed;
-  box-shadow: inset 0 0 0 1px var(--button-edge);
+  box-shadow: none;
   transform: none;
 }
 
@@ -115,14 +115,14 @@
   border-width: 1px;
   border-style: solid;
   font-family: var(--font-ui);
-  line-height: 1.4;
+  line-height: 20px;
   padding: 9px 14px;
-  min-height: 40px;
+  min-height: var(--button-height-md);
   font-size: 13px;
   --button-icon-size: 16px;
 }
-.ui-button[data-variant][data-size="sm"][data-shape] { min-height: 32px; padding: 6px 10px; gap: 6px; font-size: 12px; --button-icon-size: 14px; }
-.ui-button[data-variant][data-size="lg"][data-shape] { min-height: 44px; padding: 11px 18px; font-size: 14px; --button-icon-size: 18px; }
+.ui-button[data-variant][data-size="sm"][data-shape] { min-height: var(--button-height-sm); line-height:18px; padding: 6px 10px; gap: 6px; font-size: 12px; --button-icon-size: 14px; }
+.ui-button[data-variant][data-size="lg"][data-shape] { min-height: var(--button-height-lg); padding: 11px 18px; font-size: 14px; --button-icon-size: 18px; }
 .ui-button[data-variant][data-size]:not([data-size="inherit"]) svg { width: var(--button-icon-size); height: var(--button-icon-size); flex-shrink: 0; }
 .ui-button-label { display: contents; }
 .ui-button[data-loading="true"] > .ui-button-label { visibility: hidden; }
@@ -142,4 +142,10 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-button[data-variant][data-size][data-shape] { transition: none; }
   .ui-button-spinner { animation: none; }
+}
+
+/* A group owns one control size, independent of emphasis and element type. */
+.ui-button-group { column-gap:var(--button-group-gap);row-gap:var(--button-group-gap); }
+.ui-button-group .ui-button[data-variant][data-size][data-shape]:not([data-size="inherit"]):not([data-shape="circle"]) {
+  min-height:var(--button-height-lg);padding:11px 18px;font-size:14px;line-height:20px;font-weight:500;gap:var(--button-gap);--button-icon-size:18px;
 }

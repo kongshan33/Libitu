@@ -1,5 +1,258 @@
 # Complete the next Libitu milestone
 
+## Shared button geometry across features — 2026-11-05
+
+Validation: root lint/build/test pass. Shared geometry browser checks pass at 1400/390px across Landing, Corpus, Loadout (including all three Quick start actions), Analytics, Profile and Detailed Shadow: shared font sizes, minimum heights, equal group heights and no document horizontal overflow. Fixtures use synthetic account/data; no microphone or provider calls.
+
+Regular actions now use explicit shared sizes instead of legacy inherit geometry. Height tokens are 32/40/44px for sm/md/lg; text is 12/13/14px. Action groups use 44px/14px controls, 8px icon gaps and 12px control gaps across primary/secondary, button/link and loading states. Feature CSS no longer overrides regular button geometry. Icon-only controls, recording controls, navigation and filter/segmented controls retain task-specific geometry.
+
+## Consistent report action sizes — 2026-11-05
+
+Validation: root lint/build/test pass. Focused button geometry checks cover 1400/768/390px. The existing full analytics browser flow reaches its older Loadout Scene preferences selector and times out; this batch does not claim that full flow passed.
+
+Report continuation actions use the shared ui-button-group geometry with explicit lg sizing: Retry this mission, Adjust loadout and New mission share 44px height, 14px text and common padding across button/link, primary/secondary and loading states. Legacy inherited controls remain opt-in to avoid changing unrelated layouts.
+
+## Quiet initial loading — 2026-11-05
+
+Initial data reads use skeletons or screen-reader-only status, without redundant visible loading copy: Review takes/analysis, Detailed progress, Corpus counts, profile history counts, Loadout draft/options and report comparison reads. Existing content stays visible during refresh. Upload, save, queued analysis, countdown, user-triggered button progress and error/retry feedback remain explicit.
+
+## Loading layout refresh — 2026-11-05
+
+- [x] Simplify Shadow, Loadout and Corpus skeletons around current page regions; retain explicit errors and loading accessibility. Root lint/test pass; desktop 1440px and mobile 390px loading-boundary regression passes for Reader, segments, Shadow and import using delayed-content fixtures.
+
+## Nine browser layout/navigation annotations — 2026-11-04
+
+- [x] Anchor all Corpus facets to their pills, with viewport clamping and scroll/resize repositioning; preserve focus, Escape, outside dismissal and transitions.
+- [x] Equalize Detailed/Review practice actions at 50px including disabled states, center duration, and keep Quick/Detailed Audio settings on the left before/after disclosure.
+- [x] Remove the inherited full-viewport main minimum that added 64px document scroll below the header on desktop Ingest/segments; preserve internal scrolling and stable 84px CTAs in the reported viewport.
+- [x] Reuse the loaded content workspace through native history for internal views, warm Shadow code upon entering the picker/on Begin intent, and load shared Shadow styles from the content layout.
+- [x] Root lint/build/test pass (513 Web; unchanged API/Extension suites cached). Corpus browser acceptance/pagination passes at 1440/768/390/320px, including pill-relative geometry. Detailed/Review actions and Quick/Detailed disclosure checks pass at 1512/390px with existing Sound/acoustic timeline regression. Production navigation passes at 1512/1192/390px with both destination RSC responses blocked, stable iframe/public reads, exact prefetch, back/forward, cross-page return and refresh. Production workspace lifecycle passes at 1440/390px using synthetic microphone/account fixtures, including cancellation/owner isolation/outbox survival; no physical microphone or provider inference was used.
+- [x] Real signed-in IAB verification: Corpus popover sits 8px below Type; Review buttons are all 50px at the same y coordinate; Quick/Detailed disclosure coordinates remain unchanged; Ingest/segments document height equals the 1506px viewport. Screenshots under `output/playwright/ui-feedback-*-actual.png`. One initial content read returned a transient 503 and recovered on Retry. Original selected segment was restored.
+- [x] Follow-up found during lifecycle verification: mobile pending-save notifications now sit above the bottom navigation. Desktop/mobile pointer navigation while saving passes in the development build; production lifecycle/history/outbox checks also passed. The notification offset applies only while global navigation is present.
+
+## Review Sound cue consistency — 2026-11-04
+
+- [x] Share Detailed/Review badge and SVG arc rendering, including typography, palette and unevaluated learner dashed/question-mark states. Reserve marker space without duplicating linking cues on the end word.
+- [x] Root lint/build/test passed (513 Web; API/Extension test results cached). Browser regressions at 1192px/390px compare actual Detailed/Review badge styles, verify solid/dashed SVG arcs and learner question marks, reject duplicate end-word links and check lane clipping at minimum zoom/Fit. Paired/learner-only modes, shared acoustic paths, layer/voice switching, hide/peek and long-sentence wrapping pass. Screenshots inspected; synthetic browser fixtures only.
+
+## Revised Detailed Sound prototype — 2026-11-04
+
+- [x] Replace the permanent right guidance column with folded Notes and full-width Reference/Your voice rows. Match the new prototype's typography, filters, marker palette, SVG arcs, dashed unevaluated marks and legend.
+- [x] Keep IPA keyboard access, synchronized hide/peek, explicit measurements, actual evidence and left panels. Scope the Sound layout in its own CSS Module and remove conflicting legacy Sound styles.
+- [x] Root lint/build/test passed (513 Web, 1,861 API and 114 Extension tests; API/Extension test results cached). Browser regressions passed at 1192px and 390px, including the prototype's 27-word sentence, folded Notes, ten-color palette, dashed learner cues/arcs, IPA, filtering, concealment and existing timeline interactions. Screenshots inspected. Browser data is synthetic; the in-app browser was unavailable. The initial browser run encountered a stopped Web server; verification passed after restoring Web dev.
+
+## Saved-take alignment audit — 2026-11-04
+
+- [x] Inspect the reported take's persisted MFA words/phones, independent ASR timings, VAD intervals, raw frame energy/F0 and audio-retention state. Confirm major timing disagreement and missing alignment-quality checks; correct the earlier claim that the displayed `the` duration/pause was verified.
+- [ ] Add evidence-based alignment validation and recovery before publishing word/phone durations, pause attribution and dependent word-level measurements. Do not silently replace MFA with ASR timestamps or clip a long word to an arbitrary duration. Validate on retained audio with checked boundaries; this take's analysis audio has been cleaned, so exact corrected boundaries remain unknown.
+
+## Sound restoration and pause hit areas — 2026-11-04
+
+- [x] Check the cited conversation and restore its Sound default, ten-color palette, arcs, IPA and right-side guidance; keep measurements under explicit filters.
+- [x] Match Review's default phonology colors/filtering and separate pause space from word selection in both timeline views.
+- [x] Root lint/build/test pass (513 Web; unchanged 1,861 API and 114 Extension suites cached). Desktop 1192px and mobile 390px browser regression verifies all ten badge colors, linking arcs, explicit measurements, IPA, conceal/reveal, responsive guidance and filters, separate pause hit areas, readable labels and identical Detailed/Review acoustic paths. Mobile rerun passed after a local worker connection timeout interrupted dev. Screenshots inspected; browser fixtures use synthetic account/analysis data.
+
+## Shadow six-gap completion — 2026-11-04
+
+- [x] Restore 20ms envelope/F0 from actual saved legacy measurements when available; retain missing evidence and deletion/Reference boundaries.
+- [x] Include measured word-boundary gaps and recording-specific seconds; join continuous voiced pitch across words in shared Detailed/Review plotting.
+- [x] Compact shared readouts with sound markers; show saved take duration; list every take’s analysis status without N+1 analysis reads.
+- [x] Load Shadow styles with its route to avoid an unstyled dynamically prefetched workspace. Preserve left panels and earlier quiet-state exceptions.
+- [x] Root lint/build/test pass (1,861 API, 511 Web, 114 Extension tests). Browser checks at 1192/390px verify measured gaps, envelope colors, identical Detailed/Review paths, readable labels, duration and every take’s status. Authenticated legacy take: 1,950 retained measurement frames produce 975 display frames; both modes show 18 measured envelopes and one segmented Melody path. Screenshots inspected. No real microphone or new analysis job was submitted.
+
+## Shadow readability follow-up — 2026-11-04
+
+- [x] Prevent word clipping across Rhythm, Melody and Review at minimum zoom and Fit; retain real measurement scale and horizontal scrolling.
+- [x] Remove requested timeline/Takes explanatory text; move completed analysis state and deletion to Takes.
+- [x] Compact pending/failure notices and fully locked Review; preserve layer gates and left panels.
+- [x] Root lint/build/test pass (507 Web tests; API/Extension suites cached). Browser checks at 1192/390px verify complete word labels at minimum zoom and Fit; separate locked/uncertain/processing/failed checks verify compact states, retained recovery controls and cancelled analysis deletion. Screenshots inspected.
+
+## Shadow analysis design 9.12–9.15 — 2026-11-04
+
+- [x] Rebuild Detailed first, then Review Overview; preserve the left sentence panels.
+- [x] Shared zoom/drag timeline, neutral Sound markers, Notes, exact-take routing, synchronized word selection, dual-voice lanes and destructive-action confirmations.
+- [x] Persist real 20ms energy/pitch display frames without fabricating historical evidence; preserve word-matching gates and unassessed states.
+- [x] Synthetic desktop/mobile browser checks cover Notes, saved-take selection, cross-view word selection, layers, voices, zoom, drag suppression, missing reference and page overflow. No real microphone, provider or account write was used.
+- [x] Root lint/build/test pass (504 Web, 1,855 API, 114 Extension tests). Browser validation at 1440/390px also verifies 40%/60% layer gates and cancelled deletion; screenshots inspected. Existing optional frames remain backward compatible.
+
+## Shadow highlight and control placement — 2026-11-03
+
+All caption playback highlights share line-soft backgrounds, ink-2 text and 3px corners in Ingest and all Shadow modes. Quick keeps only Audio settings beneath its setup card. Review shows neither Reference preparation nor Audio settings. Detailed retains both. Existing capture/session state and playback logic remain intact.
+
+## Quiet Stage 1 word highlight — 2026-11-03
+
+Stage 1 current words now use line-soft warm gray backgrounds with ink-2 text, 3px corners and no shadow. This replaces inverted black/white highlighting per user feedback. Font weight, horizontal spacing, corpus underlines and playback timing stay unchanged; Shadow styling is unaffected.
+
+## Shared Shadow controls — 2026-11-03
+
+Quick and Review now render the same quiet compact BufferedReferencePanel as Detailed. All three modes share AudioSettings with Server analysis / Keep recordings labels and busy-recording guards. The old Quick reference summary and duplicate settings markup are removed.
+
+## Shadow compact reference and settings — 2026-11-03
+
+Detailed Shadow reuses the same quiet compact reference layout as Ingest, retaining readiness titles, setup instructions, errors and reference actions. Audio settings show only checkbox labels; How It Works is removed. Quick settings use the same concise labels. Capture, retention and analysis behavior are unchanged.
+
+## Visual corrections — 2026-11-03
+
+Validation: root lint/build/test passed. Focused browser checks passed at 1440/390px for the dark Quick start card, report button labels/sizes/colors, compact Reference copy and active-word black/white colors driven by the simulated playback clock. The broad legacy report suite encountered a reload timeout; it is not claimed as passing. Timing fixtures now use valid content UUIDs and mock the existing profile video visit write.
+
+Quick start retains a black card as an explicit product exception, with 14px geometry and inverse actions. Report action buttons use a single label and standard primary/secondary sizes. Active caption words use black with white text. Ingest reuses compact Reference audio controls without introductory copy; setup instructions and actionable errors remain visible.
+
+## Visual consistency and feedback pass — 2026-11-03
+
+- [x] Unify shared primary/recording controls, Quick start, measurement palette and report shell.
+- [x] Add reduced-motion-aware dialog/filter/tray transitions, selection feedback and assessment/save feedback.
+- [x] Root lint/build/test pass (498 Web tests; unchanged API/extension suites may use cache). Corpus regression passes at 1440/768/390px and the final wrapped-filter/tray correction passes at 320px, including pagination. Loadout Quick start, drawer, manual preferences, retry and empty-state regression passes at 1440/390px. Motion checks verify focus restoration, reduced-motion and light Quick start at 1440/390px. Screenshots inspected. No real microphone or provider session was submitted.
+
+## Stage 4 reply references — 2026-11-03
+
+User instruction supersedes speech-start hint fade-out: retain the already
+visible ready hint and the current partner question while the learner speaks,
+types, submits and waits for the next reply. Retention is a client-only read-only
+reference, separate from live question/help state. Do not show pending or unseen
+results, advance help, restart timers, or create duplicate exposure receipts.
+The first subsequent partner text/audio output (or new finalized assistant turn)
+replaces the reference; pause, disconnect and end clear it. Voice retains the
+partner question instead of replacing it with the learner's live transcription.
+Backend question/version retirement and delayed-result rejection stay intact.
+
+Verification: root lint/build/test pass (API 1854, Web 498, Extension 114;
+unchanged tasks may use cache). Controller tests pass 52/52, including shown-only
+retention, pending-upgrade rejection, old output tails, read-only waiting and
+runtime cleanup. Browser checks pass at 1440/390px for retained hint/question,
+Voice/Chat continuity, speaking/thinking and next-reply replacement. Preview
+regression passes 1440/768/390px; real-route design regression passes 1440/390px.
+Desktop/mobile reply-reference screenshots inspected. Concurrent workspace builds
+initially invalidated the shared production directory; final browser checks used
+an isolated build copy with workspace dependencies. Synthetic sessions only;
+no physical microphone or live provider session was started.
+
+
+## Stage 4 target hint feedback — 2026-11-03
+
+Target-card Hint retains the explicit selected target ID and the existing
+question-versioned three-level flow in the shared conversation hint slot.
+Its button now reports loading/retry/next-level state and disables unavailable
+requests with an explanation (offline, speaking/draft, no question, busy/help
+pending). Generic Need a hint? routing and generation remain unchanged. Compact
+target actions share a baseline with no nested opportunity top margin.
+
+Verification: root lint/build/test pass (API 1854, Web 496, Extension 114;
+unchanged tasks may use cache). Synthetic browser checks pass at 1192/390px
+for aligned action bounds, offline/draft gating, selected target request IDs,
+loading feedback, direction and target opening display. Existing hint-bundle
+regression passes at 1440/390px for cached switching, receipts, retries and stale
+versions. Screenshot inspected under `output/playwright/target-hint/`. No live
+provider or physical microphone was used.
+
+
+## Stage 4 reactive partner orb and Chat pause — 2026-11-03
+
+The partner orb uses layered local CSS motion for gentle breathing and fluid
+color movement, inspired by the ElevenLabs Orb interaction. Actual rendered
+output volume from Web Audio controls its amplitude; queued network chunks and
+microphone input do not. Interrupted/ended/suspended output reads zero. Animation
+sampling stays outside React state, stops in hidden tabs, and respects reduced motion.
+No provider change or extra microphone stream is introduced.
+
+Chat places Pause conversation beside the microphone in the bottom audio bar.
+Pause uses the existing runtime cleanup and preserves the transcript; the same
+position offers Resume conversation (or Start/Reconnect while offline). Chat
+resume keeps capture off until explicitly enabled. Narrow screens retain an
+accessible icon-only pause button. Target visibility and hint policy are unchanged.
+
+Verification: root lint/build/test pass (API 1854, Web 496, Extension 114;
+unchanged tasks may use cache). Output-meter unit coverage includes queued,
+silent, suspended, interrupted and ended audio. Browser checks at 1192/390/320px
+pass breathing, synthetic PCM through real Web Audio, clear, reduced motion,
+Chat pause/resume, released tracks and no overflow. Existing design regression
+passes preview 1440/768/390px and real routes 1440/390px. Desktop/mobile screenshots
+reviewed under `output/playwright/stage4-orb/`. No physical microphone or live
+provider session was used. Initial browser animation timing was stabilized by
+waiting for observable motion; the test-only lint issue was corrected.
+
+
+## Signed-out auth controls — 2026-11-03
+
+- [x] Keep one Sign in header action, with explicit login/registration switching inside Clerk; disable implicit sign-in-to-registration transfer and preserve return URLs.
+- [x] Synthetic checks pass on Landing/Corpus at 1440/390/360/320px for the single entry, explicit-flow options, return query/hash, signed-in visibility and no overflow. Real Clerk login → registration → login modal switching passes at 1440/390px without submitting credentials or completing OAuth.
+
+## Landing viewport sections — 2026-11-02
+
+- [x] Make the hero and following sections at least one viewport below a sticky
+  header; native snapping and smooth anchors move between content sections.
+- [x] Keep oversized phone content scrollable, scope snapping to Landing, and
+  preserve reduced-motion behavior and content-only entry animation.
+- [x] Root lint/build/test pass. Browser checks pass at 1192×1506, 1440×900,
+  390×844 and 320×640 for full-height layout, wheel advance/snap, long-content
+  access, return-to-input anchors, reduced motion and route cleanup.
+  Screenshots reviewed under `output/playwright/landing-screen-*`.
+
+## Landing waveform correction — 2026-11-02
+
+- [x] Match the reference's continuous five-bar waveform: 1.1-second alternating
+  cycles with 0.15-second staggering, replacing the former four-cycle stop.
+- [x] Browser sampling confirms changing bar transforms and infinite iterations;
+  prefers-reduced-motion still disables the animation.
+
+## Landing / navigation artboards — 2026-11-02
+
+- [x] Align Landing layout, typography, field, cards, icons and buttons with v2.
+- [x] Add looping waveform/hero entry, progressive scroll reveal and hover motion;
+  disable motion under prefers-reduced-motion.
+- [x] Align global account pills and flow context/step/exit styles with the supplied
+  navigation reference while preserving existing routing and focus safeguards.
+- [x] Root lint/build/test pass. Synthetic Landing browser checks pass at
+  1440/768/390/320px for empty/invalid URL feedback, focus, responsive layout,
+  client sign-in navigation, anchor entry and normal/reduced motion. Screenshots
+  reviewed under `output/playwright/landing-*`.
+- [x] Shared navigation regression passes at 1440/390/320px, including connected
+  conversation focus and cancelling the existing End mission confirmation.
+  No provider call, real account write or deployment is part of this verification.
+
+## Corpus library reference — 2026-11-02
+
+- [x] Match the supplied 1440px full-width artboard: heading counts, filter
+  popovers, neutral cards/metadata, pill controls and selected-item action tray.
+- [x] Add 15-item incremental display, keyboard content tabs, per-group clearing,
+  responsive popover placement and mobile bottom-navigation clearance.
+- [x] Retain real High value metadata, full-collection search/sort, stable
+  selection, detail/edit/delete and existing Loadout handoff/account boundaries.
+- [x] Root lint/build/test pass. Synthetic browser checks pass at
+  1440/768/390/320px: keyboard tabs/popovers, search/facets, incremental display,
+  sort/reset, stable selection, hidden counts, long-title/source wrapping,
+  detail/edit/delete/retry, account changes and Loadout handoff.
+  Reviewed desktop, mobile and filter screenshots under `output/playwright/corpus-*`.
+  The browser fixture does not contact a paid provider or modify real user data.
+
+## Practice history reference — 2026-11-02
+
+- [x] Match the supplied white list layout, title/return spacing, black New Mission,
+  filter pills, inline Mission states and pagination separator.
+- [x] Show truthful loaded-entry counts; retain existing server filtering/order.
+- [x] Root lint/build/test pass. Synthetic history browser regression passes at
+  1440/390/320px: local dates, keyboard focus, counts, pagination retry, late
+  responses, all four filters, source/report links, long titles and empty states.
+  Desktop/mobile screenshots reviewed under `output/playwright/practice-history-*`.
+
+
+## My learning / global navigation v2 — 2026-11-02
+
+- [x] Apply the supplied My learning reference with live data and existing empty/error states.
+- [x] Share accessible assessment tabs with the Mission report; preserve zero/null semantics.
+- [x] Move global navigation to the root layout; split Practice/Mission workflow steps.
+- [x] Add bottom navigation below 720px, focus chrome during recording/conversation,
+  account-scoped continuation links and collision clearance for fixed actions.
+- [x] Verify root lint/build/test; fixture checks cover profile/history, feedback,
+  keyboard tabs, 1440/390/320px layouts and conversation focus/end cancellation.
+- Current Detailed practice-flow browser checks pass at 1440/390px; focused
+  Reader → picker → Shadow checks pass at 1440/768/390px and retain the media host.
+- Legacy full browser suites are not recorded as passing: `navigation.browser.mjs`
+  timed out on Retry after the back-navigation hydration race was isolated;
+  `stage-two-navigation.browser.mjs` has an unhandled video-visit request and
+  selectors that match both mounted modes. The original scripts are retained.
+- Physical audio, provider quality and deployment are not part of this style change.
+
+
 ## Stage 4 targets visible from entry — 2026-11-01
 
 User decision supersedes the earlier default concealment: show all target
