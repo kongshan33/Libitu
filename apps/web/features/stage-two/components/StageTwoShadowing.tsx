@@ -1,4 +1,5 @@
 'use client';
+import { AnalysisSelection } from '../comparison/AnalysisSelection';
 import { useAuth } from '@clerk/nextjs';
 import { useCurrentLocation } from '../../navigation/use-current-location';
 import { StageTwoDetailed, type StageTwoProps } from './StageTwoDetailed';
@@ -21,8 +22,8 @@ export function StageTwoShadowing(props: StageTwoProps) {
     {(['quick', 'detailed', 'review'] as const).map(item => <button key={item} type="button" aria-current={mode === item ? 'page' : undefined}
       onClick={() => changeMode(item)}>{item[0].toUpperCase()+item.slice(1)}</button>)}
   </nav>;
-  return <>
+  return <AnalysisSelection>
     {mode === 'detailed' ? <StageTwoDetailed {...props} modes={tabs}/> : null}
     <QuickShadowing key={`${userId ?? 'anonymous'}:${props.contentId}:${props.segment.id}`} {...props} mode={mode} modes={tabs} onMode={changeMode}/>
-  </>;
+  </AnalysisSelection>;
 }

@@ -138,10 +138,12 @@ async function defaultStartAndRetry(width) {
     assert.equal(state.sessions.size, 1, "uncertain success recovers a single Mission");
     assert.equal((await draft(page)).submission, undefined, "successful acknowledgement releases the setup lock");
     assert.equal((await draft(page)).lastLogicId, request.logic_template_id, "acknowledgement records the previous logic for automatic recommendations");
+    if (width < 720) await page.getByRole("button", { name: "Show practice steps", exact: true }).click();
     await page.getByRole("link", { name: "Loadout", exact: true }).click();
     await saved(page);
     assert.equal((await draft(page)).origin, "quick", "returning does not turn automatic picks into a manual selection");
     assert.deepEqual((await draft(page)).pinnedKeys, []);
+    await preview.getByRole("region", { name: "Selected targets", exact: true }).locator("strong").first().waitFor();
     const nextPicks = await preview.getByRole("region", { name: "Selected targets", exact: true }).locator("strong").allTextContents();
     const plansBeforeNextStart = state.planRequests.length;
     await preview.getByRole("button", { name: "Quick start", exact: true }).click();
@@ -274,6 +276,7 @@ async function manualDrawerAndFree(width) {
     assert.equal(state.planRequests.length, 1);
     assert.equal(state.planRequests[0].input.targets.length, 5);
     assert.ok(state.planRequests[0].input.targets.every(target => target.role === "primary"));
+    if (width < 720) await page.getByRole("button", { name: "Show practice steps", exact: true }).click();
     await page.getByRole("link", { name: "Loadout", exact: true }).click();
     const plansBeforeFree = state.planRequests.length;
     await page.getByRole("button", { name: "Free conversation, no targets", exact: true }).click();

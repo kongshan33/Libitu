@@ -1,36 +1,43 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
+import { LockKeyhole } from 'lucide-react';
 import type { SentenceUnit } from '@libitu/types/stage-two';
 import type { PracticeApi } from '../persistence/practice-api';
 import { useSoundGuide } from '../sound/use-sound-guide';
 import { comparisonView } from '../comparison/view';
 import { layerPresentation } from '../practice/layer-presentation';
-import { PracticeLayers, type PracticeLayer } from '../components/PracticeLayers';
-import { PracticeLayerState } from '../components/PracticeLayerState';
-import { LayerComparison, type ComparisonPlayback } from '../components/LayerComparison';
-import { ProgressiveComparison } from '../components/ProgressiveComparison';
+import { practiceLayers, type PracticeLayer } from '../components/PracticeLayers';
+import { AnalysisTimeline } from '../components/AnalysisTimeline';
 import { PracticeAnalysisPanel } from '../components/PracticeAnalysisPanel';
 import { Button } from '@/components/ui/button';
 import type { QuickTake } from './use-quick-takes';
+import styles from './QuickShadowing.module.css';
+import type { ComparisonPlayback } from '../comparison/use-playing-word';
 
-export function QuickReviewAnalysis({content, sentence, take, api, reload, playback}: {
-  content: string; sentence: SentenceUnit; take: QuickTake; api?: PracticeApi; reload(): void; playback: ComparisonPlayback;
+export function QuickReviewAnalysis({content,sentence,take,api,reload,takeControls,playback}:{
+  content:string; sentence:SentenceUnit; take:QuickTake; api:PracticeApi|undefined; reload():void; takeControls:ReactNode;
+  playback?:ComparisonPlayback;
 }) {
-  const [layer, setLayer] = useState<PracticeLayer>('sound');
+  const [shown, setShown] = useState<PracticeLayer[]>(['sound','rhythm','melody']);
   const guide = useSoundGuide(content, sentence.id, sentence.text);
-  const data = take.analysis ?? null;
-  const presentation = layerPresentation(data, true, false);
-  const active = presentation.locked[layer] ? 'sound' : layer;
-  const view = useMemo(() => comparisonView({sentence, guide: guide.data, data, server: null, reference: null, yours: null}), [sentence, guide.data, data]);
-  const panel = (name: PracticeLayer) => <PracticeLayerState label={name[0].toUpperCase()+name.slice(1)} status={presentation.statuses[name]} waitingReference={data?.phase === 'waiting_reference'}>
-    <LayerComparison layer={name} view={view} playback={playback}/>
-    {name === 'rhythm' && data?.result?.learner.rhythm_signal ? <ProgressiveComparison layer="rhythm" fine pair={{learner: data.result.learner.rhythm_signal, reference: data.result.reference?.rhythm_signal ?? null}}/> : null}
-  </PracticeLayerState>;
+  const data = take.analysis ?? null, presentation = layerPresentation(data, true, false);
+  const view = useMemo(() => comparisonView({sentence,guide:guide.data,data,server:null,reference:null,yours:null}), [sentence,guide.data,data]);
+  const available = (layer:PracticeLayer) => presentation.visible && ['available','partial'].includes(presentation.statuses[layer].state);
+  const hasAvailable = practiceLayers.some(({id}) => available(id));
+  const pending = !take.id || !take.loaded || Boolean(data && ['awaiting_upload','queued','processing'].includes(data.state));
+  const locked = Boolean(data?.word_check) && data?.state !== 'deleted' && data?.state !== 'cancelled' && practiceLayers.every(({id}) => presentation.locked[id]);
   return <div className="shadow-analysis-workspace">
-    <PracticeAnalysisPanel api={api} attemptId={take.id} data={data} error={take.error ?? null} loading={Boolean(take.id && !take.loaded)} reload={reload}/>
-    {guide.error && presentation.visible ? <p role="alert">Sound guide unavailable. <Button size="sm" onClick={guide.retry}>Retry guide</Button></p> : null}
-    {presentation.visible ? <PracticeLayers active={active} onChange={setLayer} locked={presentation.locked} badges={presentation.badges}
-      gate={<><strong>Word matching comes first</strong><p>Sound opens at 60%. Rhythm and Melody open at 85%.</p></>}
-      sound={panel('sound')} rhythm={panel('rhythm')} melody={panel('melody')}/> : null}
+    <PracticeAnalysisPanel api={api} attemptId={take.id} data={data} error={take.error??null} loading={Boolean(take.id&&!take.loaded)} reload={reload}/>
+    {hasAvailable ? <section aria-label="Overview">
+      <div className={styles.overviewHeading}><div><h2>Overview</h2></div>
+        <div className={styles.overviewLayers} role="group" aria-label="Overview layers">{practiceLayers.map(({id,label}) => <button key={id} type="button" className="analysis-chip" aria-pressed={shown.includes(id) && available(id)} disabled={!available(id)}
+          title={presentation.badges[id].title} onClick={() => setShown(current => current.includes(id) ? current.filter(item => item !== id) : [...current,id])}>{label}{presentation.locked[id] ? ' · Locked' : ''}</button>)}</div>
+      </div>
+      <div className={styles.takeSelection}><span>Take</span>{takeControls}</div>
+      {guide.error ? <p role="alert">{guide.error} <Button size="sm" onClick={guide.retry}>Retry sound guide</Button></p> : null}
+      <AnalysisTimeline view={view} data={data} layers={shown.filter(available)} sentenceId={sentence.id} voiceControls playback={playback}/>
+    </section> : !pending && !take.error && data?.state !== 'failed' ? <div className={styles.lockedOverview} role="status">
+      {locked ? <LockKeyhole size={15} aria-hidden="true"/> : null}{locked ? 'Analysis locked' : 'Analysis unavailable'}
+    </div> : null}
   </div>;
 }

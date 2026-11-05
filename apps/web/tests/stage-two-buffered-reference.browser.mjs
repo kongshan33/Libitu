@@ -191,7 +191,7 @@ try {
       await reference.getByRole("button", { name: "Enable reference audio", exact: true }).click();
       await reference.getByText(/Click Libitu in Chrome/).waitFor();
       await page.evaluate(() => window.__grantBuffer());
-      await reference.getByText("Audio enabled", { exact: true }).waitFor();
+      await reference.getByText("Reference connected", { exact: true }).waitFor();
       const session = await activeSession();
       assert.ok(session);
       await assertPaused("enabling reference preparation never autoplays");
@@ -335,7 +335,7 @@ try {
       await page.getByRole("button", { name: "Back to segments", exact: true }).click();
       assert.equal(await activeSession(), session, "returning to the picker retains the same source session");
       await page.getByRole("button", { name: "Stage 1 - Ingest", exact: true }).click();
-      await reference.getByText("Audio enabled", { exact: true }).waitFor();
+      await reference.getByText("Reference connected", { exact: true }).waitFor();
       await reference.getByRole("button", { name: "Turn off audio preparation", exact: true }).click();
       await reference.getByRole("button", { name: "Enable reference audio", exact: true }).waitFor();
       await page.waitForFunction(() => window.__bufferSession === null);

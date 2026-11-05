@@ -1,4 +1,9 @@
 'use client';
+import { ContentSkeleton } from '@/components/ui/ContentSkeleton';
+import { PracticeHistory } from '../persistence/PracticeHistory';
+
+import { AudioSettings } from "../components/AudioSettings";
+import { useNavigationFocus } from "@/components/AppNavigation";
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ArrowLeft, Check, ChevronLeft, ChevronRight, Pause, Play, RotateCcw, SkipForward } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -43,13 +48,14 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const buffered = useBufferedReferenceContext();
   const suspend = buffered?.suspend;
   const [phase, setPhaseState] = useState<QuickPhase>('idle');
+  useNavigationFocus(active && phase === 'recording');
   const phaseRef = useRef<QuickPhase>('idle');
   const setPhase = useCallback((next: QuickPhase) => { phaseRef.current = next; setPhaseState(next); }, []);
   const [run, setRun] = useState<Run>(emptyRun);
   const [sentenceId, setSentenceId] = useState<string | null>(null);
   const href = useCurrentLocation();
   const location = readStageTwoLocation(new URL(href, 'https://libitu.invalid'));
-  const selectedId = sentenceId ?? (location?.segmentId === segment.id ? location.sentenceId : null);
+  const selectedId = mode === 'review' ? (location?.segmentId === segment.id ? location.sentenceId : null) ?? sentenceId : sentenceId ?? (location?.segmentId === segment.id ? location.sentenceId : null);
   const selected = sentences.find(sentence => sentence.id === selectedId) ?? sentences[0] ?? null;
   const [first, setFirst] = useState(0), [last, setLast] = useState(Math.max(0, sentences.length - 1));
   const [skipShort, setSkipShort] = useState(true), [chooseRange, setChooseRange] = useState(false);
@@ -59,7 +65,8 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const [preparationSeconds, setPreparationSeconds] = useState(2);
   const [time, setTime] = useState(0), [videoReady, setVideoReady] = useState(false);
   const [selectedTakeKey, setSelectedTakeKey] = useState<string | null>(null);
-  const results = useQuickTakes(persistence?.api, contentId, mode === 'review', selectedTakeKey, sentences);
+  const requestedTake = new URL(href, 'https://libitu.invalid').searchParams.get('takeId');
+  const results = useQuickTakes(persistence?.api, contentId, mode === 'review', requestedTake ?? selectedTakeKey, sentences);
   const {add, acknowledge} = results;
   const references = useQuickReference(contentId, segment.id, sentences, selected, rate);
   const player = useRef<YouTubePlayerHandle>(null), referenceAudio = useRef<HTMLAudioElement>(null), takeAudio = useRef<HTMLAudioElement>(null);
@@ -80,7 +87,7 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
     if (!context || context.sentenceId !== clip.sentenceId || !persistence) return;
     frozen.current = null;
     const key = crypto.randomUUID();
-    const take: QuickTake = {key, id: null, sentenceId: clip.sentenceId, createdAt: new Date().toISOString(), requested: context.analyze,
+    const take: QuickTake = {durationMs:clip.durationMs,key, id: null, sentenceId: clip.sentenceId, createdAt: new Date().toISOString(), requested: context.analyze,
       recordingState: context.retain ? 'ready' : 'none'};
     add(take, clip.blob);
     setRun(old => ({...old, takes: {...old.takes, [clip.sentenceId]: key}}));
@@ -213,7 +220,6 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   }
   function endRun() { ending.current = true; pauseRun(); if (phaseRef.current !== 'saving') setPhase('done'); }
   function leave() { pauseRun(); recording.recorder.cancel(); stopPlayback(); onBack(); }
-  function showDetailed(sentence = selected) { pauseRun(); if (sentence) replaceStageTwoLocation({segmentId: segment.id, sentenceId: sentence.id}); onMode('detailed'); }
   function reveal(index: number) {
     setRevealed(old => [...new Set([...old, index])]);
     if (frozen.current) frozen.current.support.revealed_source_indices = [...new Set([...frozen.current.support.revealed_source_indices,index])];
@@ -226,9 +232,9 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const [filter, setFilter] = useState<'all'|'need'|'matched'>('all'), [collapsed, setCollapsed] = useState(false);
   const statusOf = (take: QuickTake) => quickStatus(take.analysis, take.requested, Boolean(take.id));
   const filtered = practiced.filter(sentence => filter === 'all' || (filter === 'matched' ? statusOf(latestTakes.get(sentence.id)!) === 'matched' : ['close','redo','failed','unchecked'].includes(statusOf(latestTakes.get(sentence.id)!))));
-  const reviewSentence = filtered.find(sentence => sentence.id === selectedId) ?? filtered[0] ?? null;
+  const reviewSentence = (requestedTake ? practiced : filtered).find(sentence => sentence.id === selectedId) ?? filtered[0] ?? null;
   const sentenceTakes = results.takes.filter(take => take.sentenceId === reviewSentence?.id);
-  const take = sentenceTakes.find(item => item.key === selectedTakeKey) ?? sentenceTakes[0] ?? null;
+  const take = sentenceTakes.find(item => item.id === requestedTake) ?? sentenceTakes.find(item => item.key === selectedTakeKey) ?? sentenceTakes[0] ?? null;
   useEffect(() => {
     if (!['requesting','recording','stopping'].includes(recording.state.phase) && mode === 'review' && reviewSentence && reviewSentence.id !== sentenceId) setSentenceId(reviewSentence.id);
   }, [mode, reviewSentence, sentenceId, recording.state.phase]);
@@ -257,6 +263,13 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
       try { await referenceAudio.current.play(); } catch { setError('Reference playback was blocked. Try again.'); }
     } else if (reviewSentence) player.current?.playRange(reviewSentence.startMs/1000, reviewSentence.endMs/1000, {loop: false});
   }
+  function selectTake(key: string) {
+    stopPlayback();setSelectedTakeKey(key);
+    const url = new URL(window.location.href), item = results.takes.find(t => t.key === key || t.id === key);
+    if(item?.id)url.searchParams.set('takeId', item.id);else url.searchParams.delete('takeId');
+    if(reviewSentence)url.searchParams.set('sentenceId', reviewSentence.id);
+    window.history.replaceState(null,'',url);window.dispatchEvent(new Event('libitu:stage-two-location'));
+  }
   function selectReview(id: string) { if (recording.isBusy()) return; stopPlayback(); replaceStageTwoLocation({segmentId: segment.id, sentenceId: id}); setSentenceId(id); setSelectedTakeKey(null); setError(''); }
   const roundTakes = run.ids.flatMap(id => { const item = results.takes.find(t => t.key === run.takes[id]); return item ? [item] : []; });
   const need = roundTakes.filter(item => ['close','redo','failed','unchecked'].includes(statusOf(item))).map(item => item.sentenceId);
@@ -266,7 +279,7 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
     : phase === 'listening' && selected ? Math.min(1, Math.max(0,(time*1000-selected.startMs)/(selected.endMs-selected.startMs))) : 0;
   const showVideo = mode === 'review' ? !references.url && referencePlaying : running && (phase === 'listening' ? listenSource.current === 'video' : !references.url);
 
-  return <section hidden={!active} className={`stage-two-shadow ${practiceStyles.workspace} ${styles.workspace}`} aria-label="Stage 2 quick shadowing">
+  return <section hidden={!active} className={`stage-two-shadow ${practiceStyles.workspace} ${styles.workspace}`} aria-label="Stage 2 quick shadowing" data-analysis-mode={mode}>
     <header className={`stage-two-shadow-header ${styles.header}`}>
       <div><div className="section-label">Stage 2 · Shadow</div><h1>{segment.title}</h1><p>{title} · {clock(segment.startMs ?? 0)} – {clock(segment.endMs ?? 0)}</p></div>
       {modes}<DirectionButton variant="secondary" className="stage-two-shadow-back" onClick={leave}><ArrowLeft aria-hidden="true"/> Back to segments</DirectionButton>
@@ -300,14 +313,13 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
             <div className={styles.setup}>
               <div><span>This run</span><p>Sentences {first+1}–{last+1} · {queue.length} to practice <small>· {last-first+1-queue.length} short ones skipped · about {Math.ceil(queue.reduce((sum,s) => sum+(s.endMs-s.startMs)*(1/rate+2),0)/60000)} min</small></p><button onClick={() => setChooseRange(!chooseRange)}>Change</button></div>
               {chooseRange ? <div className={styles.range}><label>First sentence<input type="number" min={1} max={last+1} value={first+1} onChange={event => setFirst(Math.max(0,Math.min(last,Number(event.target.value)-1)))}/></label><label>Last sentence<input type="number" min={first+1} max={sentences.length} value={last+1} onChange={event => setLast(Math.max(first,Math.min(sentences.length-1,Number(event.target.value)-1)))}/></label><label><input type="checkbox" checked={skipShort} onChange={event => setSkipShort(event.target.checked)}/>Skip sentences under 4 words</label></div> : null}
-              <div><span>Reference audio</span><p>Ready for {references.readyCount} of {sentences.length}<small> · other sentences play from the video</small></p><button onClick={() => showDetailed()}>Prepare the rest</button></div>
+
               <div><span>Speed</span><Choices<number> label="Playback speed" values={[0.75,1,1.25]} value={rate} onChange={setRate} labelOf={value => `${value}×`}/></div>
               <div><span>Time to repeat</span><p>2× the original sentence duration <small>· finish early with Done</small></p></div>
               <div><span>Text</span><Choices<TextSupport['mode']> label="Text support" values={['hidden','keywords','full'] as const} value={support} onChange={setSupport} labelOf={value => ({hidden:'Hidden',keywords:'Key words',full:'Full'})[value]}/></div>
               <div><span>After each sentence</span><Choices<boolean> label="Auto advance" values={[true,false]} value={auto} onChange={setAuto} labelOf={value => value ? 'Go on by itself' : 'Wait for me'}/></div>
             </div>
-            <details className={styles.audioSettings}><summary>Audio settings</summary><label><input type="checkbox" checked={persistence?.analyze ?? false} onChange={event => persistence?.setAnalyze(event.target.checked)}/>Server analysis</label><p>Uploads new recordings privately for analysis. Analysis audio is removed after processing or within 24 hours. Reference comparison is optional.</p><label><input type="checkbox" checked={retain} onChange={event => setRetain(event.target.checked)}/>Keep new recordings in my account for later playback</label><p>Off by default. Without this, replay is temporary on this page. Saved recordings stay private until you delete them; no training or human review.</p></details>
-
+            <div className="stage-two-operation-footer"><AudioSettings analyze={persistence?.analyze ?? false} retain={retain} disabled={recording.isBusy()} onAnalyze={value => persistence?.setAnalyze(value)} onRetain={setRetain} /></div>
           </> : null}
           {mode === 'quick' && phase !== 'idle' ? <div><div className={styles.strip} aria-label="Round progress">{run.ids.map((id,index) => {const item = results.takes.find(t => t.key === run.takes[id]); return <span key={id} data-status={item ? statusOf(item) : run.skipped.includes(id) ? 'skipped' : index === run.index && running ? 'current' : 'empty'} title={`Sentence ${sentences.findIndex(s => s.id === id)+1}: ${item ? statusOf(item) : run.skipped.includes(id) ? 'skipped' : 'not recorded'}`}/>;})}</div><div className={styles.progressLabel}><span>Round {run.round} · {phase === 'done' ? 'complete' : `Sentence ${Math.min(run.index+1,run.ids.length)} of ${run.ids.length}`}</span><span>No scoring while you practice</span></div></div> : null}
           {active ? <div hidden={!showVideo} className={styles.video} data-dim={phase === 'recording'}><WorkspacePlayer ref={player} sourceUrl={sourceUrl ?? ''} title={title} wordClock={referenceClock}
@@ -322,7 +334,7 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
               <PracticePrompt sentence={selected} mode={support} revealed={revealed} onReveal={reveal} clock={referenceClock}/>
               <div className={styles.timer} role="progressbar" aria-label={phase === 'preparing' ? 'Preparation countdown' : phase === 'recording' ? 'Recording time remaining' : 'Sentence playback'} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(fraction*100)} data-recording={phase === 'recording'}><i style={{width:`${fraction*100}%`}}/></div>
               {phase === 'preparing' ? <p role="status" aria-live="polite">Recording starts in {preparationSeconds}…</p> : phase === 'recording' ? <><RecordingWaveform stream={recording.recorder.getActiveStream()}/><p>{Math.ceil(Math.max(0,duration-recording.state.elapsedMs)/1000)} seconds left · finish early with Done</p></> : <p className={styles.muted}>{phase === 'paused' ? 'Resume replays this sentence. Unfinished recording is discarded; completed takes are kept.' : phase === 'requesting' ? 'Allow microphone access to continue, or pause to cancel.' : phase === 'listening' ? 'Listen, then say it back. Click a covered word to peek.' : phase === 'wait' ? 'Go on when you are ready.' : 'Please wait…'}</p>}
-              <div className={styles.actions}>
+              <div className={`${styles.actions} ui-button-group`}>
                 {phase === 'recording' ? <Button variant="primary" size="lg" onClick={() => {setPhase('saving');recording.recorder.stop();}}><Check size={16}/>Done</Button> : null}
                 {phase === 'paused' ? <Button variant="primary" size="lg" disabled={!persistence?.outbox.canRecord()} onClick={resume}><Play size={16}/>Resume</Button> : null}
                 {phase === 'wait' ? <Button variant="primary" size="lg" onClick={() => advance()}>Next sentence <ChevronRight size={16}/></Button> : null}
@@ -335,20 +347,21 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
               {['listening','paused','wait'].includes(phase) ? <details className={styles.audioSettings}><summary>Settings · {rate}×</summary><Choices<number> label="Playback speed" values={[0.75,1,1.25]} value={rate} onChange={value => {if (phase === 'listening') pauseRun();setRate(value);}} labelOf={value => `${value}×`}/><p>Time to repeat: 2× the original sentence duration.</p><Choices<boolean> label="Auto advance" values={[true,false]} value={auto} onChange={setAuto} labelOf={value => value ? 'Go on by itself' : 'Wait for me'}/></details> : null}
             </div>
           </> : null}
-          {mode === 'quick' && phase === 'done'  ? <div className={styles.summary}><h2>Round {run.round} done</h2><div className={styles.counts}>{(['matched','close','redo'] as const).map(status => <div key={status} data-status={status}><b>{roundTakes.filter(t => statusOf(t) === status).length}</b><span>{status === 'redo' ? 'to redo' : status}</span></div>)}</div><p>{roundTakes.filter(t => statusOf(t) === 'pending').length} pending · {roundTakes.filter(t => ['failed','unchecked'].includes(statusOf(t))).length} unchecked or failed · {run.ids.length-roundTakes.length} skipped or not recorded</p><p className={styles.muted}>Word matching and acoustic analysis finish in the background. Open Review for each take’s status.</p><div className={styles.actions}><Button variant="primary" size="lg" onClick={() => startRun(need.length ? need : run.ids,run.round+1)}>{need.length ? `Practice the ${need.length} that need work` : 'Run again'}</Button><Button variant="secondary" size="lg" onClick={() => onMode('review')}>Review details</Button></div><button onClick={() => setPhase('idle')}>Change run settings</button><button onClick={onBack}>Back to segments</button></div> : null}
+          {mode === 'quick' && phase === 'done'  ? <div className={styles.summary}><h2>Round {run.round} done</h2><div className={styles.counts}>{(['matched','close','redo'] as const).map(status => <div key={status} data-status={status}><b>{roundTakes.filter(t => statusOf(t) === status).length}</b><span>{status === 'redo' ? 'to redo' : status}</span></div>)}</div><p>{roundTakes.filter(t => statusOf(t) === 'pending').length} pending · {roundTakes.filter(t => ['failed','unchecked'].includes(statusOf(t))).length} unchecked or failed · {run.ids.length-roundTakes.length} skipped or not recorded</p><p className={styles.muted}>Word matching and acoustic analysis finish in the background. Open Review for each take’s status.</p><div className={`${styles.actions} ui-button-group`}><Button variant="primary" size="lg" onClick={() => startRun(need.length ? need : run.ids,run.round+1)}>{need.length ? `Practice the ${need.length} that need work` : 'Run again'}</Button><Button variant="secondary" size="lg" onClick={() => onMode('review')}>Review details</Button></div><button onClick={() => setPhase('idle')}>Change run settings</button><button onClick={onBack}>Back to segments</button></div> : null}
           {mode === 'review' ? <>
-            {results.history.loading ? <p role="status">Loading saved takes…</p> : null}
+            {results.history.loading && !take ? <ContentSkeleton label="Loading saved takes…" rows={2} /> : null}
             {results.history.error ? <p role="alert">{results.history.error} <button onClick={results.retryHistory}>Retry history</button></p> : null}
             {take && reviewSentence ? <>
               <div className="stage-two-sentence-navigation"><Button variant="secondary" disabled={filtered.indexOf(reviewSentence) === 0} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)-1].id)}><ChevronLeft size={16}/>Previous</Button><span>Sentence {sentences.indexOf(reviewSentence)+1} · ~{clock(reviewSentence.startMs)}</span><Button variant="secondary" disabled={filtered.indexOf(reviewSentence) === filtered.length-1} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)+1].id)}>Next<ChevronRight size={16}/></Button></div>
               <section className="shadow-practice-flow" aria-label="Take review">
               <PracticeOutcome key={`outcome:${take.key}`} data={take.analysis ?? null} text={reviewSentence.text} loading={Boolean(take.id && !take.loaded)} pendingSave={!take.id} requested={take.requested} api={persistence?.api} takeId={take.id} onMarked={() => results.refresh(take.key)}/>
-              <div className="shadow-practice-actions"><Button variant="secondary" size="lg" onClick={() => void playReference()} disabled={references.loading || !references.url && !sourceUrl}>{referencePlaying ? <Pause size={16}/> : <Play size={16}/>}Reference</Button><Button variant="secondary" size="lg" onClick={() => void playTake()} disabled={!replayUrl && (!take.id || take.recordingState !== 'ready')}><Play size={16}/>My take</Button><Button variant="primary" size="lg" onClick={() => startRun([reviewSentence.id])}>Practice again</Button></div>
+              <div className="shadow-practice-actions ui-button-group"><Button variant="secondary" size="lg" onClick={() => void playReference()} disabled={take.analysis?.result?.comparison !== 'available' || references.loading || !references.url && !sourceUrl}>{referencePlaying ? <Pause size={16}/> : <Play size={16}/>}Reference</Button><Button variant="secondary" size="lg" onClick={() => void playTake()} disabled={!replayUrl && (!take.id || take.recordingState !== 'ready')}><Play size={16}/>My take</Button><Button variant="primary" size="lg" onClick={() => startRun([reviewSentence.id])}>Practice again</Button>{take.durationMs != null ? <span className="stage-two-recording-timer" aria-label="Recording duration">{Math.floor(take.durationMs/60000)}:{String(Math.floor(take.durationMs/1000)%60).padStart(2,'0')}</span> : null}</div>
               {!replayUrl && take.recordingState !== 'ready' ? <p className={styles.muted}>Audio was not retained, or this temporary replay has expired. Enable recording retention before your next run for later playback.</p> : null}
               <audio ref={takeAudio} src={replayUrl ?? undefined} onError={() => setError('Your take could not play. Try again or record a new take.')}/>
-              <div className={styles.takes}>{sentenceTakes.map((item,index) => <button key={item.key} aria-pressed={item.key === take.key} onClick={() => {stopPlayback();setSelectedTakeKey(item.key);}}>Take {sentenceTakes.length-index} · {new Date(item.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · {statusOf(item)}</button>)}</div>
+
               </section>
-              <QuickReviewAnalysis key={`analysis:${take.key}`} content={contentId} sentence={reviewSentence} take={take} api={persistence?.api} reload={() => results.refresh(take.key)} playback={{reference: referenceClock, yours: learnerClock, referenceOffsetMs: reviewSentence.startMs}}/>
+              <QuickReviewAnalysis key={`analysis:${take.key}`} content={contentId} sentence={reviewSentence} take={take} api={persistence?.api} reload={() => results.refresh(take.key)} playback={{reference:referenceClock,yours:learnerClock,referenceOffsetMs:reviewSentence.startMs}} takeControls={<div className={styles.takes} role="group" aria-label="Saved take">{sentenceTakes.map((item,index) => <button className="analysis-chip" key={item.key} aria-pressed={item.key === take.key} onClick={() => selectTake(item.key)}>Take {sentenceTakes.length-index} · {new Date(item.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}{item.durationMs ? ` · ${(item.durationMs/1000).toFixed(1)}s` : ''}{item.loaded && item.analysis?.result?.comparison !== 'available' ? ' · no Reference' : ''}</button>)}</div>}/>
+              <PracticeHistory selectedAnalysis={take.analysis} onAnalysisChanged={()=>results.refresh(take.key)} key={reviewSentence.id} contentId={contentId} sentenceId={reviewSentence.id} selectedAnalysisId={take.id} onAnalysisSelect={id=>{if(id)selectTake(id);}} onViewAnalysis={selectTake} blocked={recording.isBusy()} onPlay={stopPlayback} playbackClock={learnerClock} onRecordDeleted={id=>{results.remove(id);if(take.id===id){const url=new URL(window.location.href);url.searchParams.delete('takeId');window.history.replaceState(null,'',url);window.dispatchEvent(new Event('libitu:stage-two-location'));setSelectedTakeKey(null);}}}/>
             </> : !results.history.loading ? <div className={styles.empty}><h2>{practiced.length ? 'Nothing in this filter' : 'Nothing to review yet'}</h2><p>Run Quick shadowing. Your takes and their analysis will appear here.</p><Button variant="primary" onClick={() => onMode('quick')}>Go to Quick shadowing</Button></div> : null}
           </> : null}
           {error ? <p className={styles.error} role="alert">{error}</p> : null}

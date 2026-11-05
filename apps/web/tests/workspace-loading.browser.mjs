@@ -60,10 +60,8 @@ try {
         assert.equal(await placeholder.locator("button, input, iframe, audio, video").count(), 0, "skeletons are decorative and create no controls/media");
         assert.equal(await placeholder.locator("span").last().evaluate(node => getComputedStyle(node).animationName), "none");
         if (view === "shadow") {
-          const sidebar = await placeholder.locator('[data-skeleton-region="sentences"]').boundingBox();
-          const main = await placeholder.locator(".stage-two-practice-main").boundingBox();
-          assert.ok(width >= 1024 ? sidebar.x < main.x : sidebar.y >= main.y + main.height - 1, "sentence sidebar follows the real desktop/mobile order");
-          assert.equal(await placeholder.locator('[data-skeleton-region="media"], [data-skeleton-region="analysis"]').count(), 2);
+          assert.equal(await placeholder.locator('[data-skeleton-region="sentences"]').count(), 0, "default Quick has no sentence sidebar");
+          assert.equal(await placeholder.locator('[data-skeleton-region="media"]').count(), 0, "default Quick has no video placeholder");
         }
       }
       await page.screenshot({ path: `/tmp/libitu-workspace-loading-${view}-${width}.png`, fullPage: true });

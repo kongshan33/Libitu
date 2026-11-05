@@ -3,10 +3,10 @@ import { CONTENT_ID, learningHref } from "../navigation/learning-location.ts";
 
 export function recordedDuration(milliseconds: number): string {
   const seconds = Math.floor(Math.max(0, milliseconds) / 1000);
-  if (!seconds && milliseconds > 0) return "<1 sec";
-  if (seconds < 60) return `${seconds} sec`;
+  if (!seconds && milliseconds > 0) return "<1s";
+  if (seconds < 60) return `${seconds}s`;
   const minutes = Math.floor(seconds / 60);
-  return minutes < 60 ? `${minutes} min ${seconds % 60} sec` : `${Math.floor(minutes / 60)} hr ${minutes % 60} min`;
+  return minutes < 60 ? `${minutes}m ${seconds % 60}s` : `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
 export function historyHref(item: HistoryItem): string | null {

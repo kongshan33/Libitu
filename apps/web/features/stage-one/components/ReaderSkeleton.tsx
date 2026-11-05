@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/BrandLogo";
+import { FlowNavigation } from "@/components/FlowNavigation";
 
 /** Decorative only: actual progress and errors belong to the reader status panel. */
 export function ReaderSkeleton({ rows = 3 }: { rows?: number }) {
@@ -14,7 +14,7 @@ export function ReaderSkeleton({ rows = 3 }: { rows?: number }) {
 export function ReaderLoadingShell() {
   return <main className="stage-page practice-redesign">
     <section className="reader-shell" aria-label="Loading Libitu" aria-busy="true">
-      <header className="topbar"><BrandLogo className="logo" /><span className="topbar-title" role="status">Opening your workspace…</span></header>
+      <FlowNavigation title="Practice" current={0} steps={[{ label: "Ingest" }, { label: "Shadow" }]} />
       <aside className="left-panel"><ReaderSkeleton /></aside>
       <section className="center-panel">
         <div className="video-summary"><ReaderSkeleton rows={1} /></div>

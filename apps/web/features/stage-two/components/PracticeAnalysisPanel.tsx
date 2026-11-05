@@ -1,54 +1,48 @@
-"use client";
-import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { AlertCircle, LoaderCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import type { PracticeAnalysis, PracticeApi } from '../persistence/practice-api';
+import styles from './PracticeAnalysisPanel.module.css';
 
-import { Button } from "@/components/ui/button";
-
-import { useEffect, useRef, useState } from "react";
-import type { PracticeAnalysis, PracticeApi } from "../persistence/practice-api";
-
-function analysisFailure(code: string | null) {
-  if (code === "recording_duration_invalid") return "This recording is too short or too long. Record the sentence again.";
-  if (code === "audio_decode_failed" || code === "recording_integrity_failed") return "This recording could not be read. Please record another take.";
-  if (code === "asr_timeout") return "The speech check took too long. You can retry this analysis.";
-  if (code === "reference_not_ready") return "The reference is still being prepared. Retry when it is ready.";
-  return "Analysis could not finish. Retry if available, or record another take.";
+function failureMessage(code: string | null) {
+  if (code === 'recording_duration_invalid') return 'Recording length is invalid. Record another take.';
+  if (code === 'audio_decode_failed' || code === 'recording_integrity_failed') return 'Recording could not be read. Record another take.';
+  if (code === 'asr_timeout') return 'Word check timed out.';
+  if (code === 'reference_not_ready') return 'Reference is not ready yet.';
+  return 'Analysis could not finish.';
 }
 
+/** Only active work and recoverable failures interrupt the analysis workspace. */
 export function PracticeAnalysisPanel({ api, attemptId, data, error, loading, reload }: {
   api: PracticeApi | undefined; attemptId: string | null; data: PracticeAnalysis | null;
   error: string | null; loading: boolean; reload(): void;
 }) {
   const [failure, setFailure] = useState<string | null>(null);
-  const [busyAction, setBusyAction] = useState<string | null>(null);
-  const busy = busyAction !== null;
+  const [busyAction, setBusyAction] = useState<'retry' | 'cancel' | null>(null);
   const active = useRef<AbortController | null>(null);
-  useEffect(() => { const abort = new AbortController(); active.current = abort; return () => abort.abort(); }, [attemptId]);
-  async function act(action: "retry" | "cancel" | "delete") {
-    if (!api || !attemptId || !active.current || busy) return;
+  useEffect(() => { const abort = new AbortController(); active.current = abort; setFailure(null); setBusyAction(null); return () => abort.abort(); }, [attemptId]);
+  async function act(action: 'retry' | 'cancel') {
+    if (!api || !attemptId || !active.current || busyAction) return;
     const signal = active.current.signal;
     setBusyAction(action); setFailure(null);
     try { await api.controlAnalysis(attemptId, action, signal); if (!signal.aborted) reload(); }
-    catch (cause) { if (!signal.aborted) setFailure(cause instanceof Error ? cause.message : "Please retry."); }
+    catch (cause) { if (!signal.aborted) setFailure(cause instanceof Error ? cause.message : 'Please retry.'); }
     finally { if (!signal.aborted) setBusyAction(null); }
   }
   if (!attemptId) return null;
-  const content = data?.result?.learner.content;
-  return <section className="practice-analysis-status" aria-label="Saved take analysis">
-    <strong>Your recording · selected saved take</strong>
-    <>{loading && !data ? <ContentSkeleton label="Loading analysis…" rows={1} /> : <p role="status">{error ? "Analysis could not load." : !data ? "Server analysis was not requested for this take."
-      : data.state === "queued" ? data.error_code === 'reference_pending' ? 'Waiting for reference analysis. Comparison will continue automatically.' : "Queued for analysis. You can keep practicing."
-          : data.state === "processing" ? data.phase==='checking_words'?'Checking spoken words…':data.analysis_scope==='sound_only'?'Analyzing Sound on matched words…':'Analyzing your recording…'
-          : data.state === "completed" ? data.analysis_scope==='none'?'Word check saved. This take did not enter acoustic analysis.':data.analysis_scope==='sound_only'?'Sound analysis saved for matched words. Rhythm and Melody remain locked.':"Analysis saved. Available evidence appears in the three layers."
-            : data.state === "needs_review" ? "Comparison withheld: the words or alignment need review. This is not a pronunciation grade."
-              : data.state === "failed" ? analysisFailure(data.error_code)
-                : data.state === "awaiting_upload" ? "Waiting for the recording upload. Keep this page open."
-                  : data.state === "deleted" ? "Analysis deleted." : "Analysis cancelled."}</p>}</>
-    {content ? <p>Content check: {content.status === "matched" ? "recognized words match the practice text" : content.status === "mismatch" ? "recognized words differ from the practice text; recognition can be mistaken" : "not enough reliable evidence"}.</p> : null}
-    {content?.transcript&&!data?.word_check ? <p>Recognized: “{content.transcript}”</p> : null}
-    {data?.result?.comparison === "unavailable" && content?.status === "matched" ? <p>Your recording was analyzed independently. Reference comparison is unavailable for this take.</p> : null}
-    {error || failure ? <p role="alert">{error ?? failure} <Button variant="secondary" size="inherit" type="button" loading={loading} loadingLabel="Loading…" onClick={reload}>Reload analysis</Button></p> : null}
-    {data?.retryable ? <Button variant="secondary" size="inherit" disabled={busy} loading={busyAction === "retry"} loadingLabel="Requesting…" onClick={() => void act("retry")}>Retry analysis</Button> : null}
-    {data && ["queued", "processing", "awaiting_upload"].includes(data.state) ? <Button variant="secondary" size="inherit" disabled={busy} loading={busyAction === "cancel"} loadingLabel="Cancelling…" onClick={() => void act("cancel")}>Cancel analysis</Button> : null}
-    {data && data.state !== "deleted" ? <Button variant="danger" size="inherit" disabled={busy} loading={busyAction === "delete"} loadingLabel="Deleting…" onClick={() => void act("delete")}>Delete analysis</Button> : null}
+  const pending = Boolean(data && ['queued', 'processing', 'awaiting_upload'].includes(data.state));
+  const failed = data?.state === 'failed' || data?.state === 'cancelled' && data.retryable;
+  const issue = error ?? failure ?? (failed ? failureMessage(data?.error_code ?? null) : null);
+  if (!issue && !pending) return null;
+  const message = issue ?? (data?.state === 'awaiting_upload' ? 'Uploading recording…'
+    : data?.phase === 'waiting_reference' || data?.error_code === 'reference_pending' ? 'Waiting for reference…'
+    : data?.phase === 'checking_words' ? 'Checking words…'
+    : data?.state === 'queued' ? 'Analysis queued…' : 'Analyzing recording…');
+  return <section className={styles.notice} aria-label="Analysis status">
+    <span className={styles.message} role={issue ? 'alert' : 'status'}>{issue ? <AlertCircle size={15} aria-hidden="true"/> : <LoaderCircle className={styles.spinner} size={15} aria-hidden="true"/>}{message}</span>
+    {error || failure ? <Button variant="ghost" size="sm" loading={loading} loadingLabel="Loading…" onClick={reload}>Reload</Button> : null}
+    {data?.retryable ? <Button variant="secondary" size="sm" disabled={Boolean(busyAction)} loading={busyAction === 'retry'} loadingLabel="Requesting…" onClick={() => void act('retry')}>Retry analysis</Button> : null}
+    {pending ? <Button variant="ghost" size="sm" disabled={Boolean(busyAction)} loading={busyAction === 'cancel'} loadingLabel="Cancelling…" onClick={() => void act('cancel')}>Cancel</Button> : null}
   </section>;
 }

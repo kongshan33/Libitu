@@ -25,6 +25,15 @@ class PracticeAnalysisRepository(PracticeRepository):
         return self.database._request("POST", "/rpc/practice_analysis_read_snapshot",
                                       json={"p_owner": owner, "p_id": attempt}).json()
 
+    def display_checkpoint(self, owner: str, attempt: str) -> dict | None:
+        # Legacy terminal results only. Raw frames stay on the server and are
+        # never included in AnalysisView. Recheck parent ownership/deletion.
+        rows = self.database._request("GET", "/practice_analyses", params={
+            "id": f"eq.{attempt}", "user_id": f"eq.{owner}", "state": "in.(completed,needs_review)",
+            "shadow_attempts.user_id": f"eq.{owner}", "shadow_attempts.deleted_at": "is.null",
+            "select": "acoustic_checkpoint,shadow_attempts!inner(id)", "limit": "1"}).json()
+        return rows[0].get("acoustic_checkpoint") if rows else None
+
     def submission_rpc(self, name: str, data: dict) -> dict | None:
         import httpx
         from fastapi import HTTPException

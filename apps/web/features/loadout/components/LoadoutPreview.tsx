@@ -24,7 +24,7 @@ export function LoadoutPreview({ draft, records, logic, suggested, onRemove, sub
         const text = expressionText(slot.record);
         const index = draft.targetStages?.[slot.key];
         const stage = draft.targetStages && slot.key in draft.targetStages ? index == null ? "Any stage" : logic?.steps[index] ?? "Any stage" : targetStage(slot.record, logic);
-        return <div className={`${styles.slot} ${styles.filledSlot}`} key={slot.key}><div className={styles.slotText}><strong>{text}</strong><span>{stage}{suggested ? " · AI pick" : ""}</span></div><Button variant="ghost" size="inherit" type="button" className={styles.remove} aria-label={`Remove ${text} from loadout`} disabled={submitting} onClick={() => onRemove(slot.key)}><X size={15} aria-hidden="true" /></Button></div>;
+        return <div className={`${styles.slot} ${styles.filledSlot}`} key={slot.key}><div className={styles.slotText}><strong>{text}</strong><span>{stage}{suggested ? " · AI pick" : ""}</span></div><Button variant="ghost" size="md" type="button" className={styles.remove} aria-label={`Remove ${text} from loadout`} disabled={submitting} onClick={() => onRemove(slot.key)}><X size={15} aria-hidden="true" /></Button></div>;
       })}
       {draft.freeConversation ? <p className={styles.fieldHelp}>No targets. Follow the conversation wherever it goes.</p> : null}
     </section>
@@ -34,7 +34,7 @@ export function LoadoutPreview({ draft, records, logic, suggested, onRemove, sub
     </div></div>
     {candidate ? <p className={styles.goalPreview}>{candidate.title} · {candidate.goal}</p> : null}
     <p className={styles.preparationNote}>{suggested ? "These are your Quick start picks. Choose your own below to build a different mission." : draft.freeConversation ? "Your conversation settings still apply." : "Your chosen targets stay selected when you browse or shuffle suggestions."}</p>
-    {selection.missing.length ? <div className={styles.missing} role="status"><strong>Unavailable selections</strong><p>These items were removed or could not be loaded.</p>{selection.missing.map(({ key }, index) => <Button variant="secondary" size="inherit" type="button" key={key} disabled={submitting} onClick={() => onRemove(key)}>Remove unavailable item {index + 1}</Button>)}</div> : null}
+    {selection.missing.length ? <div className={styles.missing} role="status"><strong>Unavailable selections</strong><p>These items were removed or could not be loaded.</p>{selection.missing.map(({ key }, index) => <Button variant="secondary" size="md" type="button" key={key} disabled={submitting} onClick={() => onRemove(key)}>Remove unavailable item {index + 1}</Button>)}</div> : null}
     <div className={styles.startArea}>{children}</div>
   </aside>;
 }

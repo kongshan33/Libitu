@@ -324,6 +324,8 @@ content、analysis version 和重试次数分别校验。新客户端不携带 j
 
 根 loading 保持 stage-neutral；Reader、segments、Shadow、会话、报告分别提供匹配任务的路由 fallback。Shadow 深链接从第一帧保留跟读意图，即使 blueprint/auth 尚未返回，也不能先展示 Reader 再闪切。
 
+2026-11-04 已加载工作区内导航修正：Ingest、选段、Shadow 的 route page 都渲染同一个 StageOneReader，因此同一内容内使用 Next 支持的原生 History API 同步路径和视图，避免阻塞在 RSC 路由请求上。进入选段即加载 Shadow 代码，选段确定及 Begin 的 hover/focus/touch 继续预取准确目标；共享样式移至内容 layout。保留登录门槛、规范深链接、刷新、浏览器前后退和媒体清理；跨内容及外部页面仍由 Next 路由处理。此条覆盖下文中“已就绪工作区等待导航提交”的旧实现，不改变内容初次加载边界。
+
 2026-10-10 加载边界与预取修正：内容 layout 的 Suspense 在冷进入时按 pathname 选择 fallback；Reader 使用 ReaderLoadingShell，segments/Shadow 使用各自页面结构的骨架。fallback 不读取 searchParams 或 workspace 数据，避免其自身再次挂起。移除上一轮新增的内容路由 loading：已有内容时保留当前工作区，等待导航提交，不用整页骨架替换。共享 provider/MediaHost 保持原有生命周期；扩展点击后的字幕 preflight 等待保持现状。
 
 2026-10-11 跨页加载修正：全局 `app/loading.tsx` 与 Corpus、Loadout、Profile 的通用路由骨架会先后覆盖页面自身的登录／数据加载骨架，造成连续闪切。移除这些重叠边界；Landing 直接呈现，三个页面使用各自已有的页面内加载状态。保留 import、内容工作区和 speaking 的专属边界；已就绪页面的客户端导航等待目标提交。

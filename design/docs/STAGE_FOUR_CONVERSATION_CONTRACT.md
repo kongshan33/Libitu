@@ -1,5 +1,18 @@
 # Stage 4 Conversation redesign: state and data contract
 
+## Stage 4 reply references — 2026-11-03
+
+User instruction supersedes speech-start hint fade-out: retain the already
+visible ready hint and the current partner question while the learner speaks,
+types, submits and waits for the next reply. Retention is a client-only read-only
+reference, separate from live question/help state. Do not show pending or unseen
+results, advance help, restart timers, or create duplicate exposure receipts.
+The first subsequent partner text/audio output (or new finalized assistant turn)
+replaces the reference; pause, disconnect and end clear it. Voice retains the
+partner question instead of replacing it with the learner's live transcription.
+Backend question/version retirement and delayed-result rejection stay intact.
+
+
 Date: 2026-11-01. Status: **steps 1–4 implemented: contract, UI/fixtures,
 negotiated OpenAI question/help runtime and minimal recast/report integration**. See
 [UI implementation and boundaries](STAGE_FOUR_IMPLEMENTATION.md).
@@ -106,7 +119,7 @@ created also closes its automatic help, even without a new draft-change event.
 | Normal next invitation | New UUID; previous unresolved question superseded |
 | Simplification of current invitation | Same UUID; append a real assistant message; advance context_version/current ref only after validation; do not reset budgets |
 | Question transcript revision changes | Increment context_version; retire old requests/results and revalidate refs; preserve consumed budgets |
-| Learner speech starts | responding; immediately close automatic help and retire visible/in-flight help |
+| Learner speech starts | responding; close automatic help and retire live/in-flight help; keep already shown content as a read-only reply reference |
 | Finalized nonblank learner reply | answered; a reply is not automatically a target use or a correct answer |
 | Speech ends without usable transcript | Return to awaiting_reply when safe, but automatic_help_closed stays true; manual help remains possible |
 | New text draft | Retire current help and close automatic help; clearing the draft does not reopen automatic budgets |
@@ -272,11 +285,11 @@ session; check these conditions again on commit. Speech, draft activity or
 retirement invalidates that request even if question wording has not changed.
 An unrelated higher workspace version is not proof a stale hint is current.
 
-At learner onset, stop exposing/announcing content immediately. A short exit
-transition may fade the container, but must not keep readable help or send a
-new receipt during speech; reduced-motion hides immediately. Previously seen
-content remains in the assistance ledger. Hints never automatically reappear
-after speech ends; the learner may explicitly request help again when safe.
+At learner onset, freeze the already shown ready hint and partner question as
+read-only references. Do not display late results, upgrade hints or send new
+exposure receipts. Retire the live request independently. Keep references through
+pauses in speech and thinking; clear them on the next partner output or runtime
+closure. Reduced motion changes animation, not reference retention.
 
 ## 6. Simpler questions and the frozen plan
 

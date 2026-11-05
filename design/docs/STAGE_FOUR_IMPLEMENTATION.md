@@ -1,5 +1,34 @@
 # Stage 4: live conversation
 
+## Stage 4 reply references — 2026-11-03
+
+User instruction supersedes speech-start hint fade-out: retain the already
+visible ready hint and the current partner question while the learner speaks,
+types, submits and waits for the next reply. Retention is a client-only read-only
+reference, separate from live question/help state. Do not show pending or unseen
+results, advance help, restart timers, or create duplicate exposure receipts.
+The first subsequent partner text/audio output (or new finalized assistant turn)
+replaces the reference; pause, disconnect and end clear it. Voice retains the
+partner question instead of replacing it with the learner's live transcription.
+Backend question/version retirement and delayed-result rejection stay intact.
+
+
+## Stage 4 reactive partner orb and Chat pause — 2026-11-03
+
+The partner orb uses layered local CSS motion for gentle breathing and fluid
+color movement, inspired by the ElevenLabs Orb interaction. Actual rendered
+output volume from Web Audio controls its amplitude; queued network chunks and
+microphone input do not. Interrupted/ended/suspended output reads zero. Animation
+sampling stays outside React state, stops in hidden tabs, and respects reduced motion.
+No provider change or extra microphone stream is introduced.
+
+Chat places Pause conversation beside the microphone in the bottom audio bar.
+Pause uses the existing runtime cleanup and preserves the transcript; the same
+position offers Resume conversation (or Start/Reconnect while offline). Chat
+resume keeps capture off until explicitly enabled. Narrow screens retain an
+accessible icon-only pause button. Target visibility and hint policy are unchanged.
+
+
 2026-11-01 target visibility correction: the live and preview target panels start
 expanded with wording and meanings visible. Manual Hide/Show remains available;
 speech only hides question help. Actual visibility still records assistance,
@@ -271,3 +300,12 @@ A subsequent [real Gemini/DeepSeek/Supabase browser probe](../benchmarks/teachin
 - Full Loadout/Shadow persistence browser regression passed, including cross-tab locks, identity changes and pending writes across navigation.
 
 This verification does not establish physical-phone audio quality, human accent accuracy, network-wide latency/cost distributions or completed real Clerk/OAuth sign-in. Manual transcript editing, detected logic-stage progression and Stage 5 assessment remain separate work.
+
+## Stage 4 target hint feedback — 2026-11-03
+
+Target-card Hint retains the explicit selected target ID and the existing
+question-versioned three-level flow in the shared conversation hint slot.
+Its button now reports loading/retry/next-level state and disables unavailable
+requests with an explanation (offline, speaking/draft, no question, busy/help
+pending). Generic Need a hint? routing and generation remain unchanged. Compact
+target actions share a baseline with no nested opportunity top margin.

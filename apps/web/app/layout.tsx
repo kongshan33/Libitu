@@ -1,3 +1,4 @@
+import { AppNavigation } from "@/components/AppNavigation";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -5,6 +6,7 @@ import "@libitu/ui/tokens.css";
 import "./globals.css";
 import "@/components/ui/button.css";
 import "@/components/ui/field.css";
+import "@/components/ui/motion.css";
 import "@/features/learning-workspace/practice-theme.css";
 import { PracticePersistence } from "@/features/stage-two/persistence/PracticePersistence";
 
@@ -31,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <ClerkProvider><PracticePersistence>{children}</PracticePersistence></ClerkProvider>
+        <ClerkProvider><PracticePersistence><AppNavigation>{children}</AppNavigation></PracticePersistence></ClerkProvider>
       </body>
     </html>
   );

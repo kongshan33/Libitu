@@ -29,8 +29,13 @@ function bootstrap(blueprint) {
  const content=blueprint.content_id;
  const job={id:'fixture-job',content_id:content,status:'ready',blueprint_id:blueprint.id,analysis_version:'mvp-v9',processing_stage:'completed',analysis_preview:null,error_message:null};
  const saved=JSON.parse(sessionStorage.getItem('quick-fixture-takes')??'[]');
+ for(const sentence of blueprint.transcript){
+  const fixture=saved.find(t=>t.sentence_id===sentence.id&&t.fixture_analysis);
+  if(fixture){sentence.parts=[fixture.sentence_text];sentence.source_token_end=sentence.source_token_start+fixture.fixture_analysis.word_check.source_count;}
+ }
  const blobs=new Map();
  function analysis(take){
+  if(take.fixture_analysis)return take.fixture_analysis;
   const words=take.sentence_text.match(/[a-z]+/gi);let offset=0;
   const source_tokens=words.map(word=>{const start=take.sentence_text.indexOf(word,offset);offset=start+word.length;return{display:word,normalized:word.toLowerCase(),start,end:offset};});
   const count=source_tokens.length,matched=take.sentence_id.endsWith('-2')?Math.ceil(count*.7):count;
@@ -52,6 +57,11 @@ function bootstrap(blueprint) {
   if(path===`/api/blueprints/${content}`)return json(blueprint);
   if(path===`/api/jobs/${job.id}`)return json(job);
   if(path.includes('/references/'))return json(path.endsWith('/capability')?{available:false,input_mode:null}:null);
+  if(path.endsWith('/sound')) {
+   const fixture=saved.find(t=>t.sentence_id===path.split('/').at(-2)&&t.fixture_analysis);
+   if(fixture){const tokens=fixture.fixture_analysis.word_check.source_tokens.map((t,index)=>({index,text:t.display,start:t.start,end:t.end,status:'unknown',pronunciations:[],ipa:[]}));
+    return json({version:'sound-rules-v1',content_id:content,sentence_id:fixture.sentence_id,sentence_text:fixture.sentence_text,dialect:'en-US',provider:'cmudict-rules',lexicon_version:'synthetic-qa',tokens,candidates:[{id:'fixture-link',kind:'linking',token_start:0,token_end:2,source_text:fixture.sentence_text.slice(tokens[0].start,tokens[1].end),phonemes_before:'test',phonemes_after:'test',explanation:'Synthetic linking cue for visual testing.',conditions:['synthetic'],rule_id:'fixture',status:'candidate'}],coverage:{known:0,total:tokens.length},warnings:[],...fixture.fixture_sound});}
+  }
   if(path.endsWith('/sound'))return json({detail:'Dictionary unavailable in this fixture'},404);
   if(path.endsWith('/attempts/progress'))return json({practiced_sentence_ids:[...new Set(saved.map(t=>t.sentence_id))],best_word_matches:{}});
   if(path.endsWith('/attempts/submit')||path==='/api/practice/attempts'&&init?.method==='POST'){
@@ -62,7 +72,7 @@ function bootstrap(blueprint) {
    const take={...input,id:input.client_id,sentence_text:sentence.parts[0],start_ms:sentence.start_ms,end_ms:sentence.end_ms,recording_state:input.recording?'ready':'none',created_at:new Date().toISOString(),reference_version:'fixture',evidence_source:'browser_recording'};
    saved.push(take);if(init.body instanceof FormData)blobs.set(take.id,init.body.get('audio'));sessionStorage.setItem('quick-fixture-takes',JSON.stringify(saved));return json(take,202);
   }
-  if(path==='/api/practice/attempts')return json({items:saved.filter(t=>t.sentence_id===url.searchParams.get('sentence_id')).slice().reverse(),next_offset:null});
+  if(path==='/api/practice/attempts')return json({items:saved.filter(t=>t.sentence_id===url.searchParams.get('sentence_id')).map(t=>({...t,analysis_state:analysis(t)?.state??null,analysis_scope:analysis(t)?.analysis_scope??null})).reverse(),next_offset:null});
   if(path.endsWith('/analysis')){const take=saved.find(t=>t.id===path.split('/')[4]);return json(take?analysis(take):null);}
   if(path.endsWith('/recording')){const blob=blobs.get(path.split('/')[4]);return blob?new Response(blob):json({detail:'Fixture audio is no longer in memory'},404);}
   if(path==='/api/corpus')return json([]);

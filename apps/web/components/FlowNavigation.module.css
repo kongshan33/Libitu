@@ -1,0 +1,47 @@
+.flow { min-height: 52px; padding: 8px 32px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid var(--line-soft); background: var(--bg); color: var(--ink); letter-spacing: 0; grid-column: 1 / -1; }
+.flow[data-focused="true"] { min-height: 64px; }
+.logo { min-height: 32px; display: inline-flex; align-items: center; font-size: 20px; text-decoration: none; }
+.title { max-width: 420px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--ink-3); }
+.steps { margin-left: auto; }
+.flow ol { display: flex; align-items: center; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.flow li { display: flex; align-items: center; gap: 8px; }
+.flow li + li::before { content: ""; width: 14px; height: 1px; background: var(--line-strong); }
+.flow li :is(a, button, span) { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 7px 12px; border: 0; border-radius: 999px; background: transparent; text-decoration: none; color: var(--ink-3); font-size: 13px; white-space: nowrap; }
+.flow li [aria-current] { background: var(--ink); color: var(--bg); }
+.flow li [aria-disabled] { color: var(--muted); }
+.flow li :is(a, button):hover { background: var(--surface); }
+.flow :is(a, button):focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.compact { display: none; }
+.exit { margin-left: auto; }
+.exit button { background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 14px; font-size: 13px; white-space: nowrap; }
+@media (max-width: 719px) {
+  .flow { padding-inline: 16px; gap: 12px; flex-wrap: wrap; }
+  .title { flex: 1; }
+  .steps { display: none; }
+  .compact { display: block; margin-left: auto; position: relative; }
+  .compact > button { display: flex; align-items: center; gap: 8px; min-height: 36px; border: 0; background: transparent; color: var(--ink); font-size: 13px; }
+  .compact nav { position: absolute; right: 0; top: 100%; z-index: 65; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .compact ol { flex-direction: column; align-items: stretch; }
+  .compact li + li::before { display: none; }
+  .dots { display: flex; gap: 4px; }
+  .dots i { width: 6px; height: 6px; border: 1px solid var(--line-strong); border-radius: 50%; }
+  .dots i[data-current="true"] { background: var(--ink); border-color: var(--ink); }
+  .flow[data-focused="true"] .title { display: none; }
+}
+
+@media (max-width: 719px) {
+  .flow[data-focused="true"] { gap: 8px; }
+  .flow[data-focused="true"] .dots { display: none; }
+  .flow[data-focused="true"] .compact > button { padding-inline: 0; font-size: 12px; }
+  .flow[data-focused="true"] .exit button { padding-inline: 10px; font-size: 12px; }
+}
+
+.flow { gap: 16px; }
+.title { color: var(--muted); }
+.flow svg { stroke-width: 1.5; }
+.flow li :is(a, button) { transition: background 160ms ease-out, color 160ms ease-out; }
+.flow li [aria-current]:hover { background: var(--ink); color: var(--bg); }
+.exit button:global(.ui-button)[data-variant][data-size][data-shape] {   border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink); background: var(--bg);  box-shadow: none; }
+.exit button:hover { background: var(--surface); }
+@media (max-width: 719px) { .flow { gap: 12px; } .flow[data-focused=true] { gap: 8px; } .flow[data-focused=true] .exit button { padding-inline: 10px; font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .flow * { transition: none; } }

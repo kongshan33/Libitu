@@ -18,6 +18,8 @@ type Segment = { item: string; start: number; duration: number; node: AudioBuffe
 export class ConversationAudio {
   private context: AudioContext | null = null;
   private stream: MediaStream | null = null;
+  private outputMeter: AnalyserNode | null = null;
+  private meterSamples = new Float32Array(256);
   private capture: AudioWorkletNode | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
   private sink: GainNode | null = null;
@@ -65,13 +67,26 @@ export class ConversationAudio {
     if (!samples.length) return;
     if (this.nextAt - context.currentTime > 15) throw new Error("Audio playback fell behind. Reconnect to continue.");
     const buffer = context.createBuffer(1, samples.length, 24000); buffer.copyToChannel(samples, 0);
-    const node = context.createBufferSource(); node.buffer = buffer; node.connect(context.destination);
+    const node = context.createBufferSource(); node.buffer = buffer;
+    if (!this.outputMeter) {
+      this.outputMeter = context.createAnalyser(); this.outputMeter.fftSize = 256;
+      this.outputMeter.connect(context.destination);
+    }
+    node.connect(this.outputMeter);
     const start = Math.max(context.currentTime + 0.015, this.nextAt);
     this.nextAt = start + buffer.duration;
     const segment = { item, start, duration: buffer.duration, node }; this.segments.push(segment);
     const generation = this.generation;
     node.onended = () => { if (generation !== this.generation) return; this.played.set(item, (this.played.get(item) ?? 0) + segment.duration * 1000); this.segments = this.segments.filter(value => value !== segment); node.disconnect(); this.report(); };
     node.start(start);
+  }
+  /** Measure rendered output, not arriving network chunks or microphone input. */
+  getOutputLevel(): number {
+    if (!this.outputMeter || this.context?.state !== "running" || !this.segments.some(segment => this.context!.currentTime >= segment.start && this.context!.currentTime < segment.start + segment.duration)) return 0;
+    this.outputMeter.getFloatTimeDomainData(this.meterSamples);
+    let energy = 0;
+    for (const sample of this.meterSamples) energy += sample * sample;
+    return Math.min(1, Math.sqrt(energy / this.meterSamples.length) * 4);
   }
   report(): void {
     if (!this.context) return;
@@ -84,5 +99,5 @@ export class ConversationAudio {
     for (const segment of this.segments) { segment.node.onended = null; try { segment.node.stop(); } catch { /* Already ended. */ } segment.node.disconnect(); }
     this.segments = []; this.played.clear(); this.nextAt = 0;
   }
-  dispose(): void { if (this.disposed) return; this.clear(); this.disableMicrophone(); this.disposed = true; void this.context?.close().catch(() => {}); this.context = null; }
+  dispose(): void { if (this.disposed) return; this.clear(); this.disableMicrophone(); this.disposed = true; this.outputMeter?.disconnect(); this.outputMeter = null; void this.context?.close().catch(() => {}); this.context = null; }
 }

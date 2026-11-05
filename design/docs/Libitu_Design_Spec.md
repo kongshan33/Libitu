@@ -1,5 +1,44 @@
 # Build the Libitu MVP experience
 
+## Revised Detailed Sound presentation — 2026-11-04
+
+Review's Sound track uses the same cue components: matching ten-color badges, typography, SVG linking arcs and dashed/question-mark learner targets. Keep the Review timeline and its other tracks; render linking at outgoing source boundaries only and reserve enough space to avoid clipping at Fit/minimum zoom.
+
+Use the newly supplied `design/prototypes/Stage 2 · Detailed (three-layer analysis)-html (1)/Shadow.dc.html` for Sound styling. It supersedes the permanent guidance sidebar below: Reference and Your voice occupy the full content width; Feedback/Tip is collapsed into Notes above the filters. Match the prototype's 19px words, gray/black filter pills, ten-color badges, SVG linking arcs and dashed unevaluated learner marks. Filtering dims unrelated cues without changing the sentence layout. Keep actual data availability, opt-in vowel measurements, IPA hover/focus and synchronized hide/peek. Left panels and analysis logic are unchanged.
+
+## Sound restoration exception — 2026-11-04
+
+Per the user's explicit request, restore the 2026-10-15 Sound presentation over the neutral badges/folded Sound Notes introduced by visual section 9.12. All shows colored phonology cues and linking arcs; Vowel len. reveals saved vowel durations and Linking reveals measured pauses. Preserve wrapping text, dictionary IPA hover/focus and right-side guidance, moved below on mobile. Filter chips wrap. Review retains Overview but shares the same default cue filtering and phenomenon colors. Rhythm/Melody Notes, analysis gates, recordings and left panels remain unchanged.
+
+Word labels and selection/playback highlights exclude trailing gap space. The timeline still reserves the measured word-plus-gap span, with long pauses labeled separately; curves, envelopes and recording ticks retain the same time scale. Do not shorten unusual saved word durations to make a word appear smaller.
+
+## Shadow measured display compatibility — 2026-11-04
+
+Detailed and Review use the same real 20ms energy/F0 projection, including legacy results whose private raw acoustic measurements remain available. No retained audio is required; missing measurements stay missing. Include verified word-boundary intervals in the shared axis, distinguish measured pause baselines from word duration, and use the visible recording's timestamps for a single-voice ruler. Melody may join across a voiced continuous word boundary, but never across silence, unvoiced or unknown evidence. Preserve readable word widths and existing left panels. Selected readouts include sound markers in every layer and wrap only as needed; saved-take actions show duration, and every Takes row displays its analysis status.
+
+## Shadow analysis readability correction — 2026-11-04
+
+User feedback supersedes the duration-only word width and always-visible explanations in visual sections 9.12–9.15. Give each timeline word enough measured text space, preserve real trace/baseline widths within it, and allow horizontal scrolling when Fit cannot fit all readable labels. Seconds ticks account for this extra layout space. Remove the timeline footer explanations, duplicate Reference-unavailable sentence and Takes privacy paragraph. Completed analysis shows its state and delete action in Takes, with only processing/failure needing a compact notice. Fully locked Review shows a single status line and no layer/voice/zoom controls or empty timeline. Partial locks still retain the available layers. Left panels remain unchanged.
+
+## Shadow analysis presentation — 2026-11-04
+
+Detailed and Review follow sections 9.12–9.15 of `libitu 设计规范 v2.0(统一版).md`, with the existing left panels preserved by explicit user instruction. Detailed uses folded Notes and one layer at a time; Review uses an Overview with multiple tracks, exact saved-take selection and voice toggles. Shared word selection persists between the views. Current word-matching gates (60% Sound / 85% Rhythm and Melody), measurement uncertainty, recording privacy and retained-audio availability remain authoritative.
+
+The shared timeline uses actual saved measurements, source-word alignment, independent per-voice durations, drag-to-pan and explicit zoom/Fit controls. Unmatched words and unvoiced intervals stay blank. Optional saved 20ms pitch/energy frames support the new traces and loudness envelopes; older results retain their available coarse pitch and omit unavailable envelopes. No interpolated speech, stress classification or pronunciation accuracy claim is introduced. Destructive actions require confirmation. Review keeps Reference preparation and Audio settings absent, and How It Works remains removed.
+
+## Stage 4 reply references — 2026-11-03
+
+User instruction supersedes speech-start hint fade-out: retain the already
+visible ready hint and the current partner question while the learner speaks,
+types, submits and waits for the next reply. Retention is a client-only read-only
+reference, separate from live question/help state. Do not show pending or unseen
+results, advance help, restart timers, or create duplicate exposure receipts.
+The first subsequent partner text/audio output (or new finalized assistant turn)
+replaces the reference; pause, disconnect and end clear it. Voice retains the
+partner question instead of replacing it with the learner's live transcription.
+Backend question/version retirement and delayed-result rejection stay intact.
+
+
 ```yaml
 meta:
   contentType: Reference
@@ -10,6 +49,34 @@ meta:
 ```
 
 This specification defines the current Libitu MVP product and interaction model. Use it for product behavior and user experience. Use `MVP_SYSTEM_DESIGN.md` for system boundaries, `BACKEND_SYSTEM_DESIGN.md` for API implementation, and `DESIGN.md` for visual direction.
+
+## Landing section scrolling — 2026-11-02
+
+The requested Landing scroll interaction uses one viewport per content section,
+accounting for the sticky header. Native scroll snapping moves between sections;
+content taller than the viewport remains fully scrollable. Keep smooth anchors
+and content-entry motion, with immediate movement under reduced motion. Scope
+scroll snapping to Landing so application pages keep their existing scrolling.
+
+## Landing and navigation visual direction — 2026-11-02
+
+Apply the supplied Landing and Navigation system artboards with the unified v2
+palette: 1080px Landing content, neutral cards, joined video input, black primary
+pills and monochrome icons. Keep the existing separate Landing/global/flow/focus
+navigation structure and real account transitions. Add CSS hero entry, a continuously looping
+decorative waveform, supported scroll reveals and hover feedback; reduced motion
+shows content immediately. URL validation, draft recovery, authentication and
+configured Chrome-store availability remain the owning runtime contracts.
+
+## Corpus visual direction — 2026-11-02
+
+The user-approved Corpus library artboard and unified v2 visual reference now
+apply to `/corpus`: a full-width 1440px shell, top search/filter/sort toolbar,
+neutral borderless cards, underline tabs and black primary actions. Retain real
+collection metadata, the existing High value rule and private management flows.
+Display 15 filtered records initially with Load more increments of 15; filtering
+and sorting still run over the full loaded collection. See
+[the library contract](CORPUS_LIBRARY_IMPLEMENTATION.md) for behavior and scope.
 
 ## Practice workspace visual direction — 2026-10-25
 
@@ -146,7 +213,7 @@ The source-free root introduces Libitu and accepts a supported English YouTube v
 
 Normalize watch, share, mobile and Shorts links to a canonical watch URL and enter the existing Stage 1 flow. Invalid links remain in the form with an accessible explanation. Do not assert spoken language or fabricate video metadata from the URL. The root always remains Landing; source and handoff enter `/practice/import`, and resolved content links use `/practice/{contentId}`. Root query bookmarks no longer open the reader.
 
-Sign in and Create account open real Clerk modals and return to the initiating URL, including switching between login and registration. A bounded same-tab video draft survives refresh and authentication redirects. Signed-in users receive the existing My learning and account controls. Keep processing anonymous until the existing Shadow/speaking/persistence gates apply.
+A single Sign in header button opens the Clerk login modal. Inside it, users explicitly switch to Sign up to register or back to Sign in to log in. Sign-in-or-up and implicit sign-in-to-registration transfer are disabled. Both flows return to the initiating URL. A bounded same-tab video draft survives refresh and authentication redirects. Signed-in users receive the existing My learning and account controls. Keep processing anonymous until the existing Shadow/speaking/persistence gates apply.
 
 The Chrome extension is an alternative entry. The first screen uses the prototype’s centered “or / Add to Chrome” entry and explicitly states no sign-in is required for video analysis. Store navigation requires a configured public listing; before publication, the button opens installation guidance with a visible coming-soon notice. English/caption availability restrictions must remain visible. See [implementation and verification boundaries](LANDING_IMPLEMENTATION.md).
 
@@ -582,7 +649,8 @@ after approximately 20 eligible seconds, one automatic “You could…” direct
 may appear. Exclude generation/playback time. This is one spoken simplification
 plus one UI escalation per question, not two recurring prompts. Opening words
 and a full example require successive clicks; every level replaces the prior
-content. Speech/drafts retire help and prevent its automatic return. Pure text
+content. Speech/drafts retire live requests while retaining already shown help
+and the partner question as read-only references until the next partner reply. Pure text
 chat is user-paced. Reconnect does not reset consumed budgets.
 
 Hint latency update (2026-11-01): prepare three validated levels in one call when
@@ -605,7 +673,7 @@ panel. Recast generation and actual delivery remain separate facts.
 
 Targets default visible with meanings, including Guided, so learners know which
 expressions to transfer (2026-11-01 user decision superseding concealment).
-Speaking never hides this wording; only question hints fade. When manually
+Speaking hides neither this wording nor already shown question hints. When manually
 hidden, **a clearly confirmed partner model
 or an observed learner use automatically reveals its target.** Show targets
 reveals the rest; Hide targets preserves those automatic reveals. Keep verified
@@ -740,7 +808,16 @@ Use custom Radix-based selects for settings and filtering, including an explicit
 
 ### Shared application navigation
 
-Corpus, My learning/history, Loadout, saved mission, conversation and report pages share the same Logo, Practice / Corpus / Mission / My learning navigation, active-section styling and account controls. Header horizontal padding is 32 px, 20 px at 900 px and below, and 16 px at 480 px and below. Navigation moves to its own row at 900 px. Keep task-specific controls in the content toolbar and preserve landing/reader workflow navigation.
+As of 2026-11-02 the supplied `libitu 设计规范 v2.0(统一版).md` owns
+My learning and shared navigation visuals. A root-layout global bar shows the
+brand, left-aligned Practice / Mission / Corpus / My learning sections and account
+menu, with a neutral active pill. Below 720px sections move to bottom navigation.
+Feature workflow bars show Ingest / Shadow or Loadout / Conversation / Report,
+without stage numbers. Recording and connected conversation use focus chrome;
+pausing/ending restores global navigation. Keep real exit/confirmation semantics:
+never claim an unfinished recording or unconfirmed message is saved.
+Landing retains its own header. Missing section history falls back to Landing or
+Loadout; dedicated entry lists remain unimplemented.
 
 ### Responsive behavior
 
@@ -906,3 +983,19 @@ The UI describes optional Reference comparison and promotes completed learner-on
 Remove the duplicate yellow preparation progress bar and amber preparation/analysis backgrounds in Shadow; keep the video playback progress indicator. Restore existing sentence References silently without a visible Checking state or analysis spinner. While availability is unresolved, show neutral Reference copy (or the existing extension-off/setup controls), then show the actual resolved status. Directory practice progress reports learner Takes and best word matches, not Reference availability; retain the cached background lookup and upload deduplication. Audio acquisition, recording availability and analysis gates are unchanged.
 
 2026-10-17 Enable setup follow-up: show the setup spinner only during the extension handshake. Once armed and waiting for a toolbar click, stop the spinner, show “Click Libitu in Chrome’s toolbar”, and retain the setup instructions and Cancel action. The extension protocol, authorization and audio acquisition remain unchanged.
+
+### Stage 4 orb and Chat controls — 2026-11-03
+
+Voice shows a gently breathing, fluid partner orb. Its sound-driven expansion
+uses actual output playback amplitude, independent of the decorative idle motion.
+Stop amplitude response on interruption, pause or playback end; honor reduced
+motion and hidden-tab suspension. Chat exposes Pause conversation beside the
+microphone in the bottom bar, replaced by Resume conversation while paused.
+Resume preserves the transcript and does not automatically enable Chat capture.
+
+
+### Shared visual feedback (2026-11-03)
+
+Primary buttons use black pill styling; recording state stays neutral. Quick start retains its black card as a user-approved exception, with white primary action, 14px card geometry and neutral supporting colors. Reference and learner pitch traces use solid and dashed neutral strokes. Dialogs, filter panels and selection trays use 160ms opacity/position transitions with immediate reduced-motion fallback. Hidden filter panels and trays are inert. Assessment content fades on explicit selection; saved icons acknowledge successful persistence. Audio visuals retain real state and level inputs. Clerk appearance is unchanged.
+
+Report action buttons use single-line labels without supporting small text, with 15px primary and 13px secondary text. Stage 1 active caption words use line-soft warm gray backgrounds and ink-2 text, retaining corpus underlines without font-weight or spacing changes. Ingest uses the compact Reference audio control without introductory copy or expanded preparation details; necessary setup instructions and errors remain visible.

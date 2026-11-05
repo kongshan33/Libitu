@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "@/components/ui/PrefetchLink";
-import { BrandLogo } from "@/components/BrandLogo";
+import { FlowNavigation } from "@/components/FlowNavigation";
 import { ReaderLoadingShell } from "../stage-one/components/ReaderSkeleton";
 import styles from "./ContentImport.module.css";
 import { CONTENT_ID, canonicalVideoSource, learningHref, type LearningLocation } from "../navigation/learning-location";
@@ -34,11 +34,11 @@ export function ContentImport({ location }: { location: LearningLocation }) {
   const message = location.kind === "invalid" ? location.message : error;
   if (!message) return <ReaderLoadingShell />;
   return <main className="stage-page">
-    <header className="topbar"><BrandLogo className="logo" /></header>
+    <FlowNavigation title="Opening your workspace…" current={0} steps={[{ label: "Ingest" }, { label: "Shadow" }]} />
     <section className={styles.error} aria-labelledby="import-error-title">
       <h1 id="import-error-title">Unable to open this video</h1>
       <p role="alert">{message}</p>
-      <div className={styles.actions}>
+      <div className={`${styles.actions} ui-button-group`}>
         {error && <button onClick={() => { setError(null); retry(value => value + 1); }}>Retry</button>}
         <Link href="/">Choose a video</Link>
       </div>

@@ -4,6 +4,7 @@ Continuous prominence only. Boundary jitter is a sensitivity diagnostic, not
 validated confidence. Missing duration in a preview never means weak stress.
 """
 from app.schemas.signal_prosody import SignalProsody, ProminenceWord, WordBoundary
+from app.services.acoustics.display_frames import display_frames
 
 VOWELS = frozenset("AA AE AH AO AW AY EH ER EY IH IY OW OY UH UW".split())
 
@@ -103,6 +104,7 @@ def analyze_signal(measurements, boundaries: list[WordBoundary], source: str, *,
             sensitivity_range=[min(variants),max(variants)] if variants else [], uncertain=bool(reasons), reasons=reasons))
     if not boundaries:
         result.reasons.append("word_boundaries_unavailable")
+    result.display_frames = display_frames(measurements, origin)
     # Average into display bins; do not bridge missing pitch in the UI.
     for i in range(0,len(times),5):
         window = raw_pitch[i:i+5]

@@ -27,7 +27,7 @@ export function MissionRecovery({ problem, advice, draft, disabled, onRetry, onP
           <p>{target.reason}</p>
           {target.fit === "unknown" ? <p>There is not enough evidence of a natural opportunity in this scene.</p> : null}
           <div className={styles.recoveryActions}>
-            <Button variant="ghost" size="inherit" type="button" disabled={disabled || !!removeError}
+            <Button variant="ghost" size="md" type="button" disabled={disabled || !!removeError}
               aria-label={`Remove ${target.text} from this mission`} onClick={() => onAdjust(target.key, "remove")}>Remove target</Button>
           </div>
           {removeError ? <p className={styles.fieldHelp}>{removeError}</p> : null}
@@ -35,16 +35,16 @@ export function MissionRecovery({ problem, advice, draft, disabled, onRetry, onP
       })}</ul>
       <p>After changing a target, press Start mission to prepare a new scene.</p>
       <div className={styles.recoveryActions}>
-        <Button variant="secondary" size="inherit" type="button" disabled={disabled} onClick={onScene}>Describe your scene</Button>
-        <Button variant="ghost" size="inherit" type="button" disabled={disabled} onClick={onPreferences}>Change scene preferences</Button>
+        <Button variant="secondary" size="md" type="button" disabled={disabled} onClick={onScene}>Describe your scene</Button>
+        <Button variant="ghost" size="md" type="button" disabled={disabled} onClick={onPreferences}>Change scene preferences</Button>
       </div>
     </> : <>
       {problem.kind === "system" ? <>
         <p>{problem.phase === "saving" ? "Retry saving to recover the same mission with its original scene and targets." : "You can retry with the same targets. The suggestions below are optional."}</p>
         <div className={styles.recoveryActions}>
-          <Button variant="secondary" size="inherit" type="button" disabled={disabled} onClick={onRetry}>{problem.phase === "saving" ? "Retry saving mission" : "Retry preparation"}</Button>
+          <Button variant="secondary" size="md" type="button" disabled={disabled} onClick={onRetry}>{problem.phase === "saving" ? "Retry saving mission" : "Retry preparation"}</Button>
           {problem.phase === "preparing" ? <>
-            <Button variant="ghost" size="inherit" type="button" disabled={disabled} onClick={onPreferences}>Add scene preferences</Button>
+            <Button variant="ghost" size="md" type="button" disabled={disabled} onClick={onPreferences}>Add scene preferences</Button>
           </> : null}
         </div>
       </> : null}

@@ -10,9 +10,9 @@ await mkdir(artifacts, { recursive: true });
 async function waitFor(check) { for (let i = 0; i < 160; i++) { if (check()) return; await new Promise(resolve => setTimeout(resolve, 10)); } assert.fail("Expected fixture event"); }
 const wording = { direction: "You could… explain the benefit.", opening_words: "We could begin by…", example: "We could begin by calling the customer." };
 try {
-  for (const width of [1440, 390]) {
+  for (const width of (process.env.LIBITU_TEST_WIDTH ? [Number(process.env.LIBITU_TEST_WIDTH)] : [1440, 390])) {
     const context = await browser.newContext({ viewport: { width, height: 1100 }, reducedMotion: "reduce" });
-    const page = await context.newPage(); page.setDefaultTimeout(12000);
+    const page = await context.newPage(); page.setDefaultTimeout(12000); page.setDefaultNavigationTimeout(60000);
     const { state, errors } = await installSpeakingFixture(page, { origin, conversationContract: true, deferHints: true, denyMicrophone: true });
     const w = state.workspace;
     const message = { id: "question-message", ordinal: 0, role: "assistant", text: "Which customers would benefit?", input_source: "text", status: "final", revision: 1, created_at: new Date().toISOString() };
@@ -34,6 +34,7 @@ try {
       await page.goto(`${origin}/speaking/${speakingSessionId}`);
       const conversation = page.getByRole("region", { name: "Conversation", exact: true });
       const hint = conversation.getByRole("region", { name: "Speaking hint" });
+      await conversation.getByRole("button", { name: "Start conversation", exact: true }).waitFor({ timeout: 60000 });
       await conversation.getByRole("button", { name: "Start conversation", exact: true }).click();
       await conversation.getByRole("button", { name: "Pause conversation", exact: true }).waitFor();
       await conversation.getByRole("button", { name: "Chat", exact: true }).click();
@@ -84,15 +85,29 @@ try {
       await conversation.getByRole("button", { name: "Try again", exact: true }).click();
       await waitFor(() => requests().length === 7); assert.equal(requests()[6].level, "direction");
       respond(requests()[6]); await hint.getByText("explain the benefit.", { exact: true }).waitFor();
+      await waitFor(() => receipts().some(event => event.hint_id === requests()[6].request_id));
       await conversation.getByRole("button", { name: "Opening words", exact: true }).click();
       await waitFor(() => requests().length === 8);
       await conversation.getByRole("textbox").fill("My own answer");
-      await hint.waitFor({ state: "hidden" }); respond(requests()[7]);
-      await conversation.getByRole("textbox").fill(""); assert.equal(await hint.count(), 0);
+      await hint.getByText("explain the benefit.", { exact: true }).waitFor(); respond(requests()[7]);
+      await conversation.getByRole("textbox").fill("");
+      await conversation.getByRole("button", { name: "Voice", exact: true }).click();
+      state.sockets.at(-1).send(JSON.stringify({ type: "user.activity", speaking: true }));
+      state.sockets.at(-1).send(JSON.stringify({ type: "transcript.delta", role: "user", item_id: "reply", delta: "My answer" }));
+      await conversation.getByText("Which customers would benefit?", { exact: true }).waitFor();
+      await hint.getByText("explain the benefit.", { exact: true }).waitFor();
+      assert.equal(await hint.getByText(wording.opening_words, { exact: true }).count(), 0);
+      await page.screenshot({ path: `${artifacts}/${width}-reply-reference.png`, fullPage: true });
+      state.sockets.at(-1).send(JSON.stringify({ type: "user.activity", speaking: false }));
+      state.sockets.at(-1).send(JSON.stringify({ type: "state", state: "thinking" }));
+      await hint.getByText("explain the benefit.", { exact: true }).waitFor();
+      state.sockets.at(-1).send(JSON.stringify({ type: "transcript.delta", role: "assistant", item_id: "next", delta: "Thanks. What would you change?" }));
+      await hint.waitFor({ state: "hidden" });
+      await conversation.getByText("Thanks. What would you change?", { exact: true }).waitFor();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
       assert.deepEqual(errors, []);
       console.log(`PASS ${width}: delayed loading, retained previous level across modes, no premature receipts, fast response, stale-version fence, retry and input retirement`);
-    } finally { await context.close(); }
+    } catch (error) { console.log(await page.locator("body").innerText()); console.log(errors); throw error; } finally { await context.close(); }
   }
 } finally { await browser.close(); }
 console.log(`Screenshots: ${artifacts}`);

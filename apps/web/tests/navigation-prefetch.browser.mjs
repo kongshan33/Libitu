@@ -7,8 +7,8 @@ const origin = process.env.LIBITU_TEST_URL ?? "http://localhost:3001";
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const cleanups = new Set();
 try {
-  for (const width of [1440, 390]) {
-    const context = await browser.newContext({ viewport: { width, height: 1000 } });
+  for (const width of [1512, 1192, 390]) {
+    const context = await browser.newContext({ viewport: { width, height: 1506 } });
     const page = await context.newPage();
     const state = await installLoadoutFixture(page, { origin, shadow: true, initialOwner: loadoutOwner });
     const reader = `${origin}/practice/${fixtureContentId}`;
@@ -20,8 +20,8 @@ try {
     page.on("request", request => {
       if (request.headers().rsc === "1") prefetches.push(new URL(request.url()));
     });
-    await page.route(`**/practice/${fixtureContentId}/segments?*`, async route => {
-      await routeGate;
+    await page.route(`**/practice/${fixtureContentId}/**`, async route => {
+      if (route.request().headers().rsc === "1") await routeGate;
       await route.continue();
     });
     const pickerPrefetch = page.waitForRequest(request => new URL(request.url()).pathname === `/practice/${fixtureContentId}/segments` && request.headers().rsc === "1");
@@ -32,25 +32,49 @@ try {
     const frame = await page.locator(".youtube-player iframe").elementHandle();
     const publicReads = () => state.requests.filter(request => /^\/api\/(?:content|jobs|blueprints)/.test(request.path)).length;
     const initialReads = publicReads();
+    async function assertFixedFooter(selector) {
+      if (width < 1041) return;
+      const footer = page.locator(selector), before = await footer.boundingBox();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollHeight), 1506, "workspace fits below the global header");
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      assert.deepEqual(await footer.boundingBox(), before, "document scrolling cannot shift or resize the CTA");
+      assert.ok(Math.abs(before.y + before.height - 1506) < 1);
+    }
+    await assertFixedFooter(".stage-one-cta");
     await choose.focus();
     await pickerPrefetch;
     assert.ok(prefetches.some(url => url.pathname === `/practice/${fixtureContentId}/segments`), "next workspace step is prefetched before clicking");
     await choose.click();
-    await page.waitForTimeout(200);
-    assert.equal(await choose.isVisible(), true, "slow route navigation preserves the ready Reader");
+    await page.locator(".stage-one-segment-card").first().waitFor({ timeout: 1500 });
+    assert.equal(await choose.isVisible(), false, "picker opens while its RSC response is still blocked");
     assert.equal(await page.locator("[data-practice-skeleton]").count(), 0, "ready content is never replaced with a route skeleton");
     assert.equal(publicReads(), initialReads, "prefetch/navigation do not reactivate content processing");
-    release();
-    await page.locator(".stage-one-segment-card").first().waitFor();
+    await assertFixedFooter(".stage-one-picker-footer");
     assert.equal(new URL(page.url()).pathname, `/practice/${fixtureContentId}/segments`);
     assert.equal(await frame.evaluate(node => node.isConnected), true);
     await page.locator(".stage-one-segment-card").first().click();
     assert.equal(await page.locator(".stage-two-shadow").count(), 0, "prefetch from picker does not mount practice");
-    await page.getByRole("button", { name: /Begin Stage 2/ }).click();
-    await page.locator(".stage-two-shadow").waitFor();
+    const begin = page.getByRole("button", { name: /Begin Stage 2/ });
+    await begin.focus();
+    await begin.click();
+    await page.locator(".stage-two-shadow").waitFor({ timeout: 5000 });
     assert.ok(prefetches.some(url => url.pathname.endsWith("/shadow") && url.searchParams.get("sentenceId") === "sentence-v2-loadout"), "picker warms the exact Shadow route");
     assert.equal(await page.evaluate(() => window.__loadoutMicrophoneTracks.length), 0);
-    const mission = page.getByRole("link", { name: "Stage 3 - Mission", exact: true });
+    assert.equal(publicReads(), initialReads, "view changes reuse the public blueprint");
+    const shadowHref = page.url();
+    await page.goBack();
+    await page.locator(".stage-one-picker").waitFor();
+    assert.equal(await page.locator('.stage-one-segment-card[aria-pressed="true"]').count(), 1);
+    await page.goBack();
+    await choose.waitFor();
+    await page.goForward();
+    await page.locator(".stage-one-picker").waitFor();
+    await page.goForward();
+    await page.locator(".stage-two-shadow").waitFor();
+    assert.equal(page.url(), shadowHref);
+    assert.equal(await frame.evaluate(node => node.isConnected), true, "history keeps the media host alive");
+    release();
+    const mission = page.getByRole("link", { name: "Mission", exact: true });
     const missionHref = await mission.getAttribute("href");
     const matchesMission = url => url.pathname === "/loadout" && url.searchParams.get("returnTo") === new URL(missionHref, origin).searchParams.get("returnTo");
     const missionPrefetch = prefetches.some(matchesMission) ? Promise.resolve() : page.waitForRequest(request => request.headers().rsc === "1" && matchesMission(new URL(request.url())));
@@ -58,6 +82,14 @@ try {
     await missionPrefetch;
     assert.ok(prefetches.some(matchesMission), "keyboard intent prefetches the exact Mission return address");
     assert.equal(state.requests.filter(request => request.method === "POST" && request.path === "/api/speaking/sessions").length, 0);
+    await page.getByRole("link", { name: "Corpus", exact: true }).click();
+    await page.getByRole("heading", { name: "Corpus library", exact: true }).waitFor();
+    await page.goBack();
+    await page.locator(".stage-two-shadow").waitFor();
+    assert.equal(page.url(), shadowHref);
+    await page.reload();
+    await page.locator(".stage-two-shadow").waitFor();
+    assert.equal(page.url(), shadowHref, "refresh resolves the same canonical route");
     assert.deepEqual(state.errors, []);
     await context.unrouteAll({ behavior: "ignoreErrors" });
     cleanups.delete(cleanup);

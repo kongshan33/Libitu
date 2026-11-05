@@ -8,9 +8,9 @@ import { activityDate } from "./format";
 import styles from "./Profile.module.css";
 
 const metrics = [
-  { key: "shadowing_attempts", label: "Shadowing takes", color: "var(--purple-600)" },
-  { key: "speaking_turns", label: "Speaking turns", color: "var(--teal-600)" },
-  { key: "corpus_added", label: "Corpus added", color: "#986013" }
+  { key: "shadowing_attempts", label: "Shadowing takes" },
+  { key: "speaking_turns", label: "Speaking turns" },
+  { key: "corpus_added", label: "Corpus added" }
 ] as const;
 
 export function ActivityChart({ data, range, onRange, loading }: {
@@ -22,10 +22,11 @@ export function ActivityChart({ data, range, onRange, loading }: {
   const known = items.length > 0 && items.every((item) => item[metric] !== null);
   const values = items.map((item) => item[metric] ?? 0);
   const total = values.reduce((sum, value) => sum + value, 0);
-  const max = Math.max(1, ...values);
+  const max = Math.max(20, Math.ceil(Math.max(0, ...values) / 20) * 20);
   const x = (index: number) => 35 + index * 405 / Math.max(1, items.length - 1);
   const y = (value: number) => 153 - value / max * 115;
-  const points = values.map((value, index) => `${x(index)},${y(value)}`).join(" ");
+  const barWidth = Math.min(10, 360 / Math.max(1, items.length));
+  const today = data ? new Intl.DateTimeFormat("en-CA", { timeZone: data.timezone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()) : "";
   const month = data?.activity.bucket === "month";
 
   return <section className={styles.card} aria-labelledby="activity-title">
@@ -35,21 +36,24 @@ export function ActivityChart({ data, range, onRange, loading }: {
         {([["4w", "Last 4 weeks"], ["3m", "Last 3 months"], ["all", "All time"]] as const).map(([value, label]) =>
           <button type="button" key={value} aria-pressed={range === value} onClick={() => onRange(value)}>{label}</button>)}
       </div>
-      <div className={styles.metricGroup} role="group" aria-label="Activity metric">
-        {metrics.map((item) => <button type="button" key={item.key} aria-pressed={metric === item.key} onClick={() => setMetric(item.key)}>
-          <span style={{ background: item.color }} aria-hidden="true" />{item.label}
+      <div className={styles.metricGroup} role="tablist" aria-label="Activity metric">
+        {metrics.map((item) => <button type="button" key={item.key} role="tab" id={`activity-${item.key}`} aria-controls="activity-panel" tabIndex={metric === item.key ? 0 : -1} aria-selected={metric === item.key} onKeyDown={event => {
+          const index = metrics.findIndex(value => value.key === metric);
+          const next = event.key === "ArrowRight" ? (index + 1) % 3 : event.key === "ArrowLeft" ? (index + 2) % 3 : event.key === "Home" ? 0 : event.key === "End" ? 2 : null;
+          if (next !== null) { event.preventDefault(); setMetric(metrics[next].key); document.getElementById(`activity-${metrics[next].key}`)?.focus(); }
+        }} onClick={() => setMetric(item.key)}>
+          {item.label}
         </button>)}
       </div>
-      <div className={styles.chart} aria-busy={loading}>
+      <div className={styles.chart} id="activity-panel" role="tabpanel" tabIndex={0} aria-labelledby={`activity-${metric}`} aria-busy={loading}>
         {loading ? <ContentSkeleton label="Loading activity…" /> : !data ? <div className={styles.chartMessage}>Activity is unavailable.</div>
           : !known ? <div className={styles.chartMessage}>Dates aren’t available for this activity yet.</div>
             : total === 0 ? <div className={styles.chartMessage}><strong>No {selected.label.toLowerCase()} in this period</strong><span>Your saved activity will appear here.</span></div>
               : <>
-                <div className={styles.chartTotal}><strong>{total.toLocaleString("en")}</strong><span>{selected.label.toLowerCase()} in this period</span></div>
-                <svg viewBox="0 0 460 190" role="img" aria-label={`${selected.label}: ${total} in the selected period. Daily or monthly values are in the activity table below.`}>
-                  {[...new Set([0, Math.ceil(max / 2), max])].map((value) => <g key={value}><line x1="35" x2="440" y1={y(value)} y2={y(value)} stroke="var(--color-border-tertiary)" strokeDasharray="3 4" /><text x="23" y={y(value) + 4} textAnchor="end">{value}</text></g>)}
-                  <polyline points={points} fill="none" stroke={selected.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-                  {items.map((item, index) => <circle key={item.date} cx={x(index)} cy={y(values[index])} r={items.length > 35 ? 2 : 3} fill={selected.color}><title>{activityDate(item.date, month)}: {values[index]}</title></circle>)}
+                <div key={metric} data-content-enter className={styles.chartTotal}><strong>{total.toLocaleString("en")}</strong><span>{selected.label.toLowerCase()} in this period</span></div>
+                <svg key={metric} data-content-enter viewBox="0 0 460 190" role="img" aria-label={`${selected.label}: ${total} in the selected period. Daily or monthly values are in the activity table below.`}>
+                  {[...new Set([0, Math.ceil(max / 2), max])].map((value) => <g key={value}><line x1="35" x2="440" y1={y(value)} y2={y(value)} stroke={value === 0 ? "var(--line-strong)" : "var(--line)"} strokeDasharray={value === 0 ? undefined : "3 4"} /><text x="23" y={y(value) + 4} textAnchor="end">{value}</text></g>)}
+                  {items.map((item, index) => <g key={item.date}><rect x={x(index) - barWidth / 2} y={y(values[index])} width={barWidth} height={153 - y(values[index])} rx="3" fill="var(--ink-3)"><title>{activityDate(item.date, month)}: {values[index]}</title></rect>{!month && item.date === today ? <rect x={x(index) - 5} y="158" width="10" height="3" rx="1.5" fill="var(--brand)" /> : null}</g>)}
                   <text x="35" y="178">{activityDate(items[0].date, month)}</text><text x="440" y="178" textAnchor="end">{activityDate(items.at(-1)!.date, month)}</text>
                 </svg>
               </>}

@@ -70,6 +70,8 @@ class PracticeAttempt(BaseModel):
     evidence_source: Literal["browser_recording"] = "browser_recording"
     text_support: TextSupport | None = None
     recognition_feedback: RecognitionFeedback | None = None
+    analysis_state: Literal["awaiting_upload", "queued", "processing", "completed", "needs_review", "failed", "cancelled", "deleted"] | None = None
+    analysis_scope: Literal["none", "sound_only", "all_layers"] | None = None
 
 
 class AttemptPage(BaseModel):

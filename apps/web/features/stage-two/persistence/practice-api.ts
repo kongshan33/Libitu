@@ -12,6 +12,8 @@ export type PracticeAttempt = {
   evidence_source: "browser_recording";
   text_support?: TextSupport | null;
   recognition_feedback?: RecognitionFeedback | null;
+  analysis_state?: PracticeAnalysis['state'] | null;
+  analysis_scope?: PracticeAnalysis['analysis_scope'];
 };
 
 export type AttemptInput = {
@@ -37,6 +39,7 @@ export type SignalProsody = {
   version: "server-prominence-v1"; feature_version: string; aggregation_version: string;
   boundary_source: "subtitle_word" | "asr_word" | "mfa"; duration_evaluated: boolean;
   duration_sec: number; time_step_sec: number; pitch_st: (number | null)[]; prominence: (number | null)[];
+  display_frames?: { time_sec: number; pitch_st: number | null; energy_dbfs: number }[];
   words: { text: string; source_index: number | null; start_sec: number; end_sec: number;
     value: number | null; sensitivity_range: number[]; uncertain: boolean; reasons: string[] }[];
   reasons: string[]; experimental: true;

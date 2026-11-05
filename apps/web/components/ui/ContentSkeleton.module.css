@@ -16,3 +16,11 @@
 @keyframes skeleton-pulse { 50% { opacity: .5; } }
 @media (prefers-reduced-motion: reduce) { .content { animation: none; } }
 @media (max-width: 600px) { .cards .groups { grid-template-columns: minmax(0, 1fr); } .practice { padding: 16px; } }
+
+/* Page-shaped placeholders share the real content grid and card footprint. */
+.corpus .groups, .library .groups { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.corpus .group, .library .group { min-height:196px;padding:18px;border-radius:14px;background:var(--surface,#fafaf9);align-content:start;gap:18px; }
+.library .heading { margin:12px 0 32px;height:30px;max-width:260px; }
+.toolbar { height:40px;max-width:720px;background:var(--surface,#fafaf9);border-radius:999px;margin-bottom:32px; }
+.quickStart .group { min-height:180px;border-radius:14px;background:var(--ink,#0c0a09);padding:28px;align-content:center;gap:20px; }
+.quickStart .group span { background:#44403c; }

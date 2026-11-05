@@ -5,6 +5,7 @@ import { loadHistoryPages } from '../persistence/history-pages';
 
 export type QuickTake = {
   key: string; id: string | null; sentenceId: string; createdAt: string; requested: boolean;
+  durationMs?: number;
   url?: string; recordingState?: PracticeAttempt['recording_state']; analysis?: PracticeAnalysis | null;
   loaded?: boolean; error?: string;
 };
@@ -55,7 +56,7 @@ export function useQuickTakes(api: PracticeApi | undefined, content: string, rev
             const known = new Set(old.flatMap(take => take.id ? [take.id] : []));
             return [...old, ...page.items.filter(item => !known.has(item.id)).map(item => ({
               key: item.id, id: item.id, sentenceId: item.sentence_id, createdAt: item.created_at,
-              requested: true, recordingState: item.recording_state,
+              requested: true, recordingState: item.recording_state, durationMs:item.duration_ms,
             }))].sort((a,b) => b.createdAt.localeCompare(a.createdAt));
           });
         }
@@ -90,5 +91,5 @@ export function useQuickTakes(api: PracticeApi | undefined, content: string, rev
     void poll();
     return () => { abort.abort(); clearTimeout(timer); };
   }, [api, selectedKey]);
-  return {takes, add, acknowledge, refresh, history, retryHistory: () => setHistory(old => ({...old, revision: old.revision + 1}))};
+  return {takes, add, acknowledge, refresh, history, remove: (id:string) => setTakes(current => current.filter(take => take.id !== id)), retryHistory: () => setHistory(old => ({...old, revision: old.revision + 1}))};
 }

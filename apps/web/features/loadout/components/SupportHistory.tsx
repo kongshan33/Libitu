@@ -41,7 +41,7 @@ export function SupportHistory({ owner, getToken, draft, records, disabled, onAp
     && !disabled && !draft.submission;
   return <section className={styles.historyPanel} aria-label="Practice history">
     <p className={styles.fieldHelp}>Reliable independent use means 3 Missions, on 2 UTC practice dates, across 2 different practice scenarios. Repeated or linked rounds of the same scene count together. This is a practice rule, not a mastery score.</p>
-    <Button variant="secondary" size="inherit" type="button" disabled={disabled || !owner || !!draft.submission || !!value?.busy} onClick={() => void check()}>{value?.busy ? "Checking practice history…" : "Check practice history"}</Button>
+    <Button variant="secondary" size="md" type="button" disabled={disabled || !owner || !!draft.submission || !!value?.busy} onClick={() => void check()}>{value?.busy ? "Checking practice history…" : "Check practice history"}</Button>
     {value?.error ? <p className={styles.fieldHelp} role="status">{value.error} Your selected support remains available and you can still start.</p> : null}
     {result ? <><p className={styles.fieldHelp} role="status">{allowSupportAdjustment ? result.reason : result.targets.every(target => target.eligible) ? "Each target meets the independent-use practice rule." : "Some targets do not yet meet the independent-use practice rule."}</p>
       <div className={styles.historyTargets}>{result.targets.map(target => {
@@ -51,7 +51,7 @@ export function SupportHistory({ owner, getToken, draft, records, disabled, onAp
         </article>;
       })}</div>
       {result.history_truncated ? <p className={styles.fieldHelp}>Only the 100 most recent matching reports were checked. Older history may be missing.</p> : null}
-      {allowSupportAdjustment && result.status === "suggest_reduce" && suggestion ? <><p className={styles.fieldHelp}>Suggested support: {SUPPORT_OPTIONS.find(option => option.value === suggestion)?.label}. You decide whether to apply it.</p><Button variant="primary" size="inherit" type="button" disabled={!canApply} onClick={() => { if (canApply && current.current === signature) onApply(suggestion); }}>Apply suggested support</Button></> : null}
+      {allowSupportAdjustment && result.status === "suggest_reduce" && suggestion ? <><p className={styles.fieldHelp}>Suggested support: {SUPPORT_OPTIONS.find(option => option.value === suggestion)?.label}. You decide whether to apply it.</p><Button variant="primary" size="md" type="button" disabled={!canApply} onClick={() => { if (canApply && current.current === signature) onApply(suggestion); }}>Apply suggested support</Button></> : null}
     </> : null}
   </section>;
 }

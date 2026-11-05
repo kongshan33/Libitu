@@ -54,7 +54,7 @@ export function RhythmText({ sentence, guide, reference, yours, server, originMs
         <span><i className="rhythm-dot stress-0" />Unstressed</span>
       </div>
       {guide.pending ? <ContentSkeleton label="Loading dictionary stress…" rows={1} /> : guide.error
-        ? <p className="rhythm-help">Dictionary stress is unavailable. <Button variant="secondary" size="inherit" type="button" onClick={guide.retry}>Retry stress guide</Button></p> : null}
+        ? <p className="rhythm-help">Dictionary stress is unavailable. <Button variant="secondary" size="md" type="button" onClick={guide.retry}>Retry stress guide</Button></p> : null}
       <p className="rhythm-help">This helps you pronounce individual words; it does not identify which words the speaker emphasized. A dash means no single dictionary pattern is available.</p>
     </section>
     <section aria-label="Pauses in the sentence" className="rhythm-text-section">

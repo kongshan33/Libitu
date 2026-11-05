@@ -1,4 +1,17 @@
 :root {
+  /* Unified v2 palette. Legacy feature tokens remain available during migration. */
+  --ink: #0c0a09;
+  --ink-2: #44403c;
+  --ink-3: #57534e;
+  --muted: #78716c;
+  --line-strong: #d6d3d1;
+  --line: #e7e5e4;
+  --line-soft: #f0eeec;
+  --surface: #fafaf9;
+  --bg: #ffffff;
+  --video-bg: #1c1917;
+  --brand: #5a43d6;
+
   --color-background-primary: #ffffff;
   --color-background-subtle: #fafafa;
   --color-background-secondary: #f5f5f5;
@@ -72,4 +85,9 @@
   --focus-ring: 2px solid var(--purple-600);
   --focus-offset: 3px;
   --opacity-disabled: 0.5;
+  --button-height-sm: 32px;
+  --button-height-md: 40px;
+  --button-height-lg: 44px;
+  --button-gap: 8px;
+  --button-group-gap: 12px;
 }

@@ -106,3 +106,33 @@ def test_learner_only_fine_results_replace_coarse_without_comparison_scores():
     assert all(layer.state=='partial' and layer.reason=='learner_only' for layer in status.values())
     row['state']='processing'
     assert layer_availability(row,None,check)['rhythm'].reason=='preliminary'
+
+
+def test_display_frames_preserve_energy_and_unvoiced_gaps_at_20ms():
+    m = evidence()
+    for frame in m.frames[50:100]:
+        frame.f0_hz = None
+    signal = analyze_signal(m, boundaries(), 'mfa')
+    assert len(signal.display_frames) == 100
+    assert signal.display_frames[1].time_sec == pytest.approx(.02)
+    assert signal.display_frames[10].energy_dbfs == pytest.approx(
+        (m.frames[20].energy_dbfs + m.frames[21].energy_dbfs) / 2)
+    assert all(f.pitch_st is None for f in signal.display_frames[25:50])
+    assert any(f.pitch_st is not None for f in signal.display_frames[5:25])
+    # Existing saved analyses remain valid with no invented envelope.
+    from app.schemas.signal_prosody import SignalProsody
+    historical = signal.model_dump(exclude={'display_frames'})
+    assert SignalProsody.model_validate(historical).display_frames == []
+    m.quality_issues = ['clipping']
+    assert analyze_signal(m, boundaries(), 'mfa').display_frames == []
+
+
+def test_display_projection_matches_signal_and_preserves_single_missing_frame():
+    from app.services.acoustics.display_frames import display_frames
+    m = evidence()
+    m.frames[41].f0_hz = None
+    frames = display_frames(m)
+    assert frames == analyze_signal(m, boundaries(), 'mfa').display_frames
+    assert frames[20].pitch_st is None and frames[19].pitch_st is not None
+    m.frames[42].time_sec += .005
+    assert display_frames(m) == []

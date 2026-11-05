@@ -545,7 +545,8 @@ test("typing retires pending help, transmits no draft text, and late results can
   fixture.controller.setActivity(false, true);
   socket.message({ type: "snapshot", workspace: { ...snapshot, version: 3, conversation: { ...snapshot.conversation, help: { ...old, version: 2, status: "ready", direction: "You could… explain why." } } } });
   assert.equal(fixture.controller.state.workspace.conversation.help, null);
-  fixture.controller.requestHelp(); assert.equal(socket.sent.at(-1).level, "direction", "manual help remains available after clearing a draft");
+  const count = socket.sent.filter(e => e.type === "help.request").length;
+  fixture.controller.requestHelp(); assert.equal(socket.sent.filter(e => e.type === "help.request").length, count, "reply reference stays read-only until partner output");
 });
 
 test("question changes reject old content and failed help does not disconnect", async t => {
@@ -628,4 +629,45 @@ for (const change of ["version", "target", "support", "input", "speech", "discon
   if (change === "version") {
     fixture.controller.requestHelp(); assert.equal(socket.sent.at(-1).question_version, 2, "old request cannot block the new version");
   }
+});
+
+test("reply reference preserves only shown help until new partner output, while retiring requests", async t => {
+  const f = setup(); t.after(() => f.controller.dispose()); await f.controller.load();
+  const w = negotiatedWorkspace(); const socket = await f.connect(false, w);
+  f.controller.requestHelp();
+  const card = { ...f.controller.state.workspace.conversation.help, version: 2, status: "ready", direction: "You could… explain the benefit." };
+  socket.message({ type: "snapshot", workspace: { ...w, version: 2, conversation: { ...w.conversation, help: card } } });
+  f.controller.conversationHelpShown();
+  f.controller.requestHelp(); // upgrade pending: retain the actually shown previous level
+  const pending = f.controller.state.workspace.conversation.help;
+  socket.message({ type: "transcript.delta", role: "assistant", item_id: "old", delta: "Who benefits?" });
+  socket.message({ type: "user.activity", speaking: true });
+  assert.equal(f.controller.state.replyReference.help.id, card.id);
+  assert.equal(f.controller.state.replyReference.question, "Who benefits?");
+  socket.message({ type: "transcript.delta", role: "assistant", item_id: "old", delta: " Think about customers." });
+  assert.ok(f.controller.state.replyReference, "old output tail cannot clear the reference");
+  assert.equal(f.controller.state.workspace.conversation.help, null);
+  socket.message({ type: "user.activity", speaking: false });
+  socket.message({ type: "state", state: "thinking" });
+  const requests = socket.sent.filter(e => e.type === "help.request").length;
+  f.controller.requestHelp(); assert.equal(socket.sent.filter(e => e.type === "help.request").length, requests);
+  socket.message({ type: "snapshot", workspace: { ...w, version: 3, conversation: { ...w.conversation, help: { ...pending, version: 2, status: "ready", opening_words: "New words…" } } } });
+  assert.equal(f.controller.state.replyReference.help.id, card.id);
+  assert.equal(f.controller.state.workspace.conversation.help, null);
+  assert.equal(socket.sent.filter(e => e.type === "help.shown").length, 1);
+  socket.message({ type: "transcript.delta", role: "assistant", item_id: "next", delta: "Thanks. " });
+  assert.equal(f.controller.state.replyReference, null);
+});
+
+test("unseen help is not frozen and disconnect drops the reply reference", async t => {
+  const f = setup(); t.after(() => f.controller.dispose()); await f.controller.load();
+  const w = negotiatedWorkspace(); const socket = await f.connect(false,w);
+  f.controller.requestHelp();
+  const card = { ...f.controller.state.workspace.conversation.help, version: 2, status: "ready", direction: "You could… respond." };
+  socket.message({ type: "snapshot", workspace: {...w,version:2,conversation:{...w.conversation,help:card}} });
+  f.controller.setActivity(true,true);
+  assert.equal(f.controller.state.replyReference.help,null);
+  f.controller.setActivity(false,true);
+  assert.ok(f.controller.state.replyReference);
+  f.controller.pause(); assert.equal(f.controller.state.replyReference,null);
 });
