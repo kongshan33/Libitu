@@ -33,6 +33,7 @@ class CorpusSelectionPronunciation(BaseModel):
     ipa: str
     connected_speech: str
     audio_text: str
+    stress_text: str = ""
 
 
 class CorpusSelectionExample(BaseModel):
@@ -63,8 +64,8 @@ class CorpusSelectionTranslation(BaseModel):
 
 
 class CorpusSelectionSyntaxAnalysis(BaseModel):
-    sentence_type: str
-    main_clause: str
+    sentence_type: str = ""
+    main_clause: str = ""
     structure_breakdown: list[str] = Field(default_factory=list)
     logic_relations: list[str] = Field(default_factory=list)
     information_hierarchy: list[str] = Field(default_factory=list)
@@ -90,7 +91,28 @@ class CorpusSelectionAnalysis(BaseModel):
     fields: CorpusSelectionFields
     note_placeholder: str
     explanation: CorpusSelectionExplanation
-    syntax_analysis: CorpusSelectionSyntaxAnalysis
+    syntax_analysis: CorpusSelectionSyntaxAnalysis = Field(default_factory=CorpusSelectionSyntaxAnalysis)
+    schema_version: int = 1
+    syntax_state: Literal["pending", "ready"] = "ready"
+    teacher_note: str = ""
+    reusable_patterns: list[CorpusReusablePattern] = Field(default_factory=list, max_length=3)
+    collocations: list[str] = Field(default_factory=list, max_length=3)
+    pitfalls: list[str] = Field(default_factory=list, max_length=3)
+
+
+class CorpusSyntaxRequest(CorpusSelectionAnalysisRequest):
+    selection_type: Literal["phrase", "sentence"]
+    kind: Literal["chunk", "idiom", "structure"]
+
+
+class CorpusFollowupTurn(BaseModel):
+    question: str = Field(min_length=1, max_length=500)
+    answer: str = Field(max_length=6000)
+
+
+class CorpusFollowupRequest(CorpusSelectionAnalysisRequest):
+    question: str = Field(min_length=1, max_length=500)
+    history: list[CorpusFollowupTurn] = Field(default_factory=list, max_length=6)
 
 
 class CorpusItemAnalysisDetail(BaseModel):

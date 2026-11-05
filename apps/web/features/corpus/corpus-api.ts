@@ -155,7 +155,8 @@ export function createCorpusRemote(owner: string, getToken: () => Promise<string
       if (!record.serverId) throw new Error("Sync this item before editing.");
       return fromApi(await request<ApiRecord>(`/${encodeURIComponent(record.serverId)}`, signal, {
         method: "PATCH", body: JSON.stringify({ text: edit.text, meaning: edit.meaning,
-          usage_context: edit.usageNote, tags: edit.tags, slots: edit.slots })
+          usage_context: edit.usageNote, tags: edit.tags, slots: edit.slots,
+          ...(edit.analysisDetail ? { analysis_detail: { context: toApiContext(edit.analysisDetail.context), analysis: toApiCorpusSelectionAnalysis(edit.analysisDetail.analysis) } } : {}) })
       }));
     },
     remove: (id, signal) => request<void>(`/${encodeURIComponent(id)}`, signal, { method: "DELETE" })

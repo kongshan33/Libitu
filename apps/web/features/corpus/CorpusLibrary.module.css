@@ -174,3 +174,6 @@
 .tray strong { font-variant-numeric: tabular-nums; }
 @starting-style { .filterPanel:not([hidden]) { opacity: 0; transform: translateY(-4px); } .tray:not([hidden]) { opacity: 0; transform: translateY(8px); } }
 @media (prefers-reduced-motion: reduce) { .filterPanel, .tray { transition: none; transform: none; } }
+
+/* Corpus cards preview the same speaking frame as the shared detail. */
+.patternPreview { margin: 0; font: 12px/1.7 var(--font-mono); color: var(--ink-3); overflow-wrap: anywhere; }

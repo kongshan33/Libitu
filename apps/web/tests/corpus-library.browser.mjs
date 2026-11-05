@@ -84,8 +84,8 @@ try {
     await page.getByText("1 selected · 1 hidden by filters",{exact:true}).waitFor();
     await page.getByRole("searchbox",{name:"Search corpus"}).fill("");
     await page.getByRole("button",{name:"View to be fair",exact:true}).click();
-    const dialog=page.getByRole("dialog"); await dialog.getByText("Original analysis · to be fair",{exact:true}).waitFor();
-    await dialog.getByRole("button",{name:"Syntax",exact:true}).click();
+    const dialog=page.getByRole("dialog"); await dialog.getByRole("region",{name:"Original source context"}).waitFor();
+    await dialog.getByRole("tab",{name:"Syntax",exact:true}).click();
     await dialog.getByText("Discourse marker before the main clause.",{exact:true}).waitFor();
     await page.screenshot({path:join(artifacts,`detail-${viewport.width}.png`)});
     await dialog.getByRole("button",{name:"Edit item",exact:true}).click();

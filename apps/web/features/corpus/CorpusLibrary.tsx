@@ -148,12 +148,13 @@ function LibraryContent({ owner }: { owner: string | null }) {
         <div className={`${styles.items} ${view === "list" ? styles.list : ""}`}>
           {shown.map(record => <article key={record.key} className={`${styles.card} ${selectedKeys.includes(record.key) ? styles.selected : ""}`}>
             <div className={styles.cardTop}>
-              <span className={styles.kind}>{record.item.kind}</span><span className={styles.level}>{record.item.level ?? "Unassessed"}</span>
+              <span className={styles.kind}>{record.item.kind}</span><span className={styles.level}>{[record.item.level ?? "Unassessed", record.item.register].filter(Boolean).join(" · ")}</span>
               <input type="checkbox" aria-label={`Select ${expressionText(record)}`} checked={selectedKeys.includes(record.key)} disabled={adding} onChange={() => toggleSelected(record.key)} />
             </div>
             <button type="button" className={styles.cardBody} aria-label={`View ${expressionText(record)}`} onClick={() => setActive({ key: record.key, edit: false })}>
               <strong className={record.item.kind === "structure" ? styles.structure : ""}>{expressionText(record)}</strong><span>{record.item.meaning || "No meaning saved"}</span>
             </button>
+            {record.item.analysisDetail?.analysis.reusablePatterns?.[0] ? <p className={styles.patternPreview}>{record.item.analysisDetail.analysis.reusablePatterns[0].template}</p> : null}
             <p className={styles.tags}>{record.item.tags.join(" · ") || "No functional tags"}</p>
             <footer className={styles.cardFooter}>
               <span title={record.sourceTitle}>{record.sourceTitle || "Personal corpus"}</span>

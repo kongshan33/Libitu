@@ -15,7 +15,7 @@
 3. 只有出现明确的截断边界时，才把 completeness 设为 needs_expansion，例如单词被截断、结尾悬空的冠词/介词/助动词，或缺少必要支配成分而无法形成可学习含义。
 4. 补全后的 recommended_text 必须是 current_sentence 中连续出现的原文片段，禁止改写、补写或虚构。
 5. 如果选择本身完整，completeness 使用 complete；完整句子若特别适合抽象结构，可使用 structure_candidate，但 recommended_text 仍保持原选择。
-6. recommendation_reason 只说明边界判断依据，简洁作答。它只供系统在确实需要补全时展示。
+6. recommendation_reason 只说明有无截断，不分析或命名句型，如“所选内容边界完整，无需补全”。它只供系统在确实需要补全时展示。
 
 【解释任务】
 用户选中文本：selected_text
@@ -23,48 +23,28 @@
 
 对选中的内容做解释：
 1. 结合上下文理解该词语、短语或句子在当前语境下的真实含义，不要只给孤立词典释义。
-2. 如果是词语或短语：给出真实 IPA、词性或短语类型、语境义、语用作用和简单双语例句；若是习语，必要时简要说明来源或文化背景，不确定的来源不要编造。
-3. 如果是句子：拆解句意，说明表达意图、修辞手法和深层含义。
+2. 如果是词语或短语：给出真实 IPA、词性或短语类型、语境义、语用作用和简单双语例句。
+3. 如果是句子：给出整句中文意思和表达意图，不在 Explain 里做句法拆解，也不把局部比喻自动称为固定习语。
 4. 如果是专业术语：用通俗中文讲解，避免堆砌难懂术语。
 5. 简洁精炼，排版所需内容分别放入对应 JSON 字段，不要过度展开。
 6. 如果选中内容是外文：给出中文翻译、词义和语境用法。
 7. 拒绝无关发散，只围绕选中内容和局部上下文作答。
 8. 遵守内容安全规则；遇到不能解释的内容，在 meaning 中简短说明无法提供该解释，不复述有害细节。
-9. pronunciation.ipa 必须是真实 IPA，不能把英文拼写放在斜线中冒充 IPA。
-10. examples 给出 1-3 个带中文的例句，恰好一个 typical=true；similar_expressions 应包含简短中文差异说明。
+9. pronunciation.ipa 使用一致的美式宽式 IPA，不能把英文拼写放在斜线中冒充 IPA。connected_speech 默认只提示一个非重读功能词的可选弱读；不适用则给一个重音建议。不做未经音频验证的连读推断，不声称听过原音频，不把建议读法说成所有语境必须如此。
+10. examples 默认只给 1 个、最多 2 个简短双语例句（每句尽量 20 个英文词以内），恰好一个 typical=true；similar_expressions 最多 2 条。
 
-【句法分析任务】
-待分析英文文本：selected_text
-
-严格按照下面模块分析，不合并模块。若 selected_text 是短语而不是完整句子，分析其内部结构及其在 current_sentence 中的句法角色；不要假装它是完整句子。若是多句文本，先整体说明，再重点拆解关键句。
-
-1.【句法结构】
-拆解句子骨架：主句、从句类型（定语/状语/名词性从句）、非谓语动词、并列结构、特殊语序；标出核心主干（主谓宾），区分主干与修饰成分。写入 sentence_type、main_clause、structure_breakdown。
-
-2.【语法功能】
-说明关键片段在句中承担的语法角色：主语、谓语、宾语、表语、定语、状语、补语等。写入 grammar_points。
-
-3.【逻辑关系】
-梳理句内、句间的因果、转折、让步、条件、对比、递进、举例等关系；说明哪些信息是前提，哪些是推论。写入 logic_relations。
-
-4.【信息层级】
-区分核心信息与补充、限定、修饰、举例；说明信息是先主后次，还是先铺垫后主旨。写入 information_hierarchy。
-
-5.【用词分析】
-辨析重点词义、语体属性、搭配习惯和同义差异；指出抽象词、情态词、连接词的作用。写入 wording_notes。
-
-6.【句式风格与用法场景】
-说明简单句/复合句/并列复合句、长短句特点、修辞特点，以及适合或不适合的场景，例如学术论文、邮件、演讲、日常口语、新闻。分别写入 style_features 和 usage_scenarios。
-
-7.【翻译】
-提供 ① 直译（忠于句式结构）和 ② 通顺中文意译；必要处补充翻译注释。写入 translations 和 translation_notes，推荐版本标记 recommended=true。
-
-输出要求：
-- 每个数组元素只表达一个清楚要点，避免大段无分段文字。
-- 语言学概念准确，不要过度发散，只围绕给定文本。
-- reusable_patterns 额外提取 0-3 个可迁移结构，使用 [reason]、[claim]、[description] 等有语义的 slot，禁止使用 [X]、[Y]。
-- background_context 可选；只有局部上下文足以支持且确实有助于理解时才填写，并明确区分事实与推断。
-- evidence 只能放实际使用的相邻字幕原文。
+【面向表达输出】
+本次只生成 Explain，不生成 syntax_analysis；句法分析由另一次按需请求完成。
+- teacher_note：60–120 个字符（包括英文、空格和标点），两句自然中文：说明局部上下文的表达意图，再给一条可实践的记忆建议。不要假定材料来自某个视频或名人，不重复 meaning 的释义或罗列场景，不加“非常实用、常用表达”等空泛评价。
+- reusable_patterns：默认 1 个、最多 2 个可说出口的框架。短语只给包含目标的最小句式，不复制原句其他分句。保留目标短语的词汇核心，在外面添加 [team]、[area] 等 slot，不把目标挖空成另一表达。整句可替换主体/领域/动作，但保留关键表达及连接关系。slot 不超过 3 个，不用 [X]、[Y]；slots 的键不带方括号；rationale 只说明各 slot 换什么，如“把 area 换成具体领域”，不写使用场景。
+- collocations：2–3 个可直接套用的英文搭配。短语搭配必须包含完整目标短语，例如 have [目标短语]、[目标短语] in [area]；同义替换放 similar_expressions，不把它们冒充原短语的搭配。整句只取其中关键短语的搭配，不给另一个全句。不可靠则 []。
+- pronunciation.stress_text：例如 POCK-ets of GREAT-ness，用大写标出建议重读音节。这是学习读法，不声称检测了原音频。
+- 不输出 note_placeholder 和 pragmatic_function；输入框占位文案由应用提供，表达意图已放在 teacher_note，避免重复生成。
+- usage_chips 是使用场景的唯一来源，给出简短标签；其他说明不再重复罗列场景。
+- similar_expressions：每条严格使用“英文表达 — 中文差异”。整句优先比较其中一个关键短语，中文须注明替换的是原句哪一部分；也可给完整改写句。不要把短语当成整句的同义句。替换保留主语、范围、频率、否定和程度，不把有困难加强成不能做到。中文只比较含义、意象或强调点；不用“更正式/更口语/常用于某场景”等未经支持的分布判断。不把“局部存在”换成“偶尔闪现”。
+- pitfalls：本次未提供学习者的错误例句，始终返回 []，不推测错误。不把某个例句的单复数形式上升为禁止其他形式的语法规则。易错点通过追问结合具体例句展开。
+- 不默认介绍词源、词族、文化背景。
+- 中文与英文、数字之间加空格；引号内侧不要添加多余空格。
 
 允许值：
 - selection_type: phrase | sentence
@@ -74,57 +54,25 @@
 - fields.level: A1 | A2 | B1 | B2 | C1 | C2
 - fields.register: casual | neutral | professional | formal
 
-严格返回以下结构，所有说明文字使用中文，英文例句、原文和模板除外：
+字段归属示例（不是本次答案）：若选中 room for improvement，collocations 可写 leave room for improvement、room for improvement in [area]；scope for development 是近义表达，不能混入 collocations。只有两条可靠搭配就只写两条。reusable_patterns 可以是 [work] has room for improvement in [area]。
+
+严格返回以下结构。所有说明文字使用中文，英文例句、原文和模板除外：
 {
   "selection_type": "phrase",
   "completeness": "complete",
   "selected_text": "原样返回 selected_text",
   "recommended_text": "默认原样返回 selected_text，仅明确截断时返回 current_sentence 中的连续原文",
   "recommendation_reason": "简洁的边界判断依据",
-  "fields": {
-    "kind": "chunk",
-    "tags": ["discourse"],
-    "level": "B2",
-    "register": "neutral"
-  },
-  "note_placeholder": "可选：写下你的理解、联想或使用场景",
+  "fields": {"kind": "chunk", "tags": ["discourse"], "level": "B2", "register": "neutral"},
+  "teacher_note": "两句自然中文，总计 60–120 个字符",
+  "reusable_patterns": [{"template": "可复用的 [semantic slot] 结构", "slots": {"semantic slot": "中文说明"}, "rationale": "一句话说明 slot 如何替换"}],
+  "collocations": ["常见英文搭配"],
+  "pitfalls": [],
   "explanation": {
-    "pronunciation": {
-      "ipa": "/真实 IPA/",
-      "connected_speech": "读音、重音、弱读或连读提示",
-      "audio_text": "原样返回 selected_text"
-    },
-    "meaning": "结合上下文的中文释义；词语可包含词性或短语类型",
-    "pragmatic_function": "在当前表达中承担的意图、语用或修辞作用",
-    "similar_expressions": ["近似表达 — 简短差异"],
-    "examples": [
-      {"english": "例句", "chinese": "中文翻译", "typical": true}
-    ],
-    "usage_chips": ["使用场合", "语气"]
-  },
-  "syntax_analysis": {
-    "sentence_type": "句式类型；短语则写短语类型及所在句角色",
-    "main_clause": "核心主干；短语则写内部核心和所在句角色",
-    "structure_breakdown": ["句法结构要点"],
-    "logic_relations": ["逻辑关系要点"],
-    "information_hierarchy": ["信息层级要点"],
-    "style_features": ["句式风格要点"],
-    "usage_scenarios": ["适用或不适用场景"],
-    "grammar_points": ["语法功能要点"],
-    "wording_notes": ["用词分析要点"],
-    "reusable_patterns": [
-      {
-        "template": "可复用的 [semantic slot] 结构",
-        "slots": {"semantic slot": "可替换内容的中文说明"},
-        "rationale": "该结构可迁移到什么表达任务"
-      }
-    ],
-    "translations": [
-      {"label": "直译", "text": "忠于句式结构的翻译", "recommended": false},
-      {"label": "通顺意译", "text": "符合中文表达习惯的翻译", "recommended": true}
-    ],
-    "translation_notes": ["必要的非直译说明"],
-    "background_context": null,
-    "evidence": ["实际使用的相邻字幕原文"]
+    "pronunciation": {"ipa": "/真实 IPA/", "connected_speech": "重音、弱读或连读提示", "audio_text": "原样返回 selected_text", "stress_text": "带大写重读音节的英文"},
+    "meaning": "只用一句话说明中文语境义；整句只给通顺中文翻译",
+    "similar_expressions": ["英文表达 — 含义或意象侧重的差异"],
+    "examples": [{"english": "例句", "chinese": "中文翻译", "typical": true}],
+    "usage_chips": ["使用场景"]
   }
 }

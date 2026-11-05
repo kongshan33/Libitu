@@ -20,11 +20,11 @@ def generate_selection_analysis(
     payload: CorpusSelectionAnalysisRequest,
 ) -> CorpusSelectionAnalysis:
     settings = get_settings()
-    if not settings.ark_api_key:
-        raise AnalysisProviderError("Doubao is not configured.", code="analysis_not_configured")
+    if not settings.corpus_api_key:
+        raise AnalysisProviderError("Corpus model is not configured.", code="analysis_not_configured")
 
     request_payload = {
-        "model": settings.ark_model,
+        "model": settings.corpus_model,
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {
@@ -35,7 +35,7 @@ def generate_selection_analysis(
         "response_format": {"type": "json_object"},
         "thinking": {"type": "disabled"},
         "temperature": 0.1,
-        "max_tokens": min(settings.ark_max_output_tokens, 8_000),
+        "max_tokens": min(settings.ark_max_output_tokens, 4_000),
         "stream": False,
     }
 
@@ -44,7 +44,7 @@ def generate_selection_analysis(
         try:
             response = _selection_client().post(
                 "/chat/completions",
-                headers={"Authorization": f"Bearer {settings.ark_api_key}"},
+                headers={"Authorization": f"Bearer {settings.corpus_api_key}"},
                 json=request_payload,
             )
             response.raise_for_status()
@@ -76,7 +76,7 @@ def _selection_user_prompt(payload: CorpusSelectionAnalysisRequest) -> str:
         "timestamp": payload.timestamp,
     }
     return (
-        "用户选中文本与局部上下文如下。请完成解释和句法分析任务：\n"
+        "用户选中文本与局部上下文如下。请只完成 Explain 解释任务，不生成句法分析：\n"
         + json.dumps(context, ensure_ascii=False, separators=(",", ":"))
     )
 
@@ -86,7 +86,7 @@ def _parse_selection_response(payload: dict) -> CorpusSelectionAnalysis:
     finish_reason = choice.get("finish_reason")
     if finish_reason != "stop":
         raise AnalysisProviderError(
-            "Doubao did not complete the selection analysis.",
+            "Corpus model did not complete the selection analysis.",
             code="selection_analysis_incomplete",
             retryable=finish_reason in {"length", "insufficient_system_resource"},
         )
@@ -94,6 +94,16 @@ def _parse_selection_response(payload: dict) -> CorpusSelectionAnalysis:
     result = json.loads(content)
     if not isinstance(result, dict):
         raise TypeError("Selection analysis must be a JSON object.")
+    # These are UI-owned copy / a retired duplicate, never model teaching content.
+    result["note_placeholder"] = "可选：写下你的理解、联想或使用场景"
+    # No learner error is supplied on this route. Do not turn speculative
+    # usage warnings into categorical grammar rules; discuss those on follow-up.
+    result["pitfalls"] = []
+    if isinstance(result.get("explanation"), dict):
+        result["explanation"]["pragmatic_function"] = ""
+    result["schema_version"] = 2
+    result["syntax_state"] = "pending"
+    result.pop("syntax_analysis", None)
     result["analysis_source"] = "ai"
     result["provider_notice"] = None
     return CorpusSelectionAnalysis.model_validate(result)
@@ -104,25 +114,25 @@ def _selection_provider_error(error: Exception | None) -> AnalysisProviderError:
         return error
     if isinstance(error, httpx.TimeoutException):
         return AnalysisProviderError(
-            "Doubao timed out while analyzing the selection.",
+            "Corpus model timed out while analyzing the selection.",
             code="selection_analysis_timeout",
             retryable=True,
         )
     if isinstance(error, httpx.HTTPStatusError):
         status = error.response.status_code
         return AnalysisProviderError(
-            f"Doubao rejected the selection analysis request (HTTP {status}).",
+            f"Corpus model rejected the selection analysis request (HTTP {status}).",
             code="selection_analysis_rate_limited" if status == 429 else "selection_analysis_rejected",
             retryable=status == 429 or status >= 500,
         )
     if isinstance(error, httpx.TransportError):
         return AnalysisProviderError(
-            "Doubao could not be reached for selection analysis.",
+            "Corpus model could not be reached for selection analysis.",
             code="selection_analysis_unreachable",
             retryable=True,
         )
     return AnalysisProviderError(
-        "Doubao returned an invalid selection analysis.",
+        "Corpus model returned an invalid selection analysis.",
         code="selection_analysis_invalid",
         retryable=True,
     )
@@ -151,7 +161,7 @@ def _is_retryable(error: Exception) -> bool:
 def _selection_client() -> httpx.Client:
     settings = get_settings()
     return httpx.Client(
-        base_url=settings.ark_base_url.rstrip("/"),
+        base_url=settings.corpus_base_url.rstrip("/"),
         timeout=httpx.Timeout(settings.ark_timeout_seconds, connect=10.0),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
     )

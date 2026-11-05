@@ -1,3 +1,4 @@
+import { installLoadoutFixture } from "./helpers/loadout-fixture.mjs";
 import { contentContextFixture } from "./helpers/content-context-fixture.mjs";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -37,7 +38,7 @@ const preview = {
   corpus_items: [item], transcript_lines: previewTranscriptLines
 };
 const job = {
-  id: "render-test", content_id: "render-content", status: "processing", analysis_version: "mvp-v6",
+  id: "render-test", content_id: "c011ec70-0000-4000-8000-000000000001", status: "processing", analysis_version: "mvp-v6",
   processing_stage: "analyzing", blueprint_id: null, error_message: null, analysis_preview: preview
 };
 const blueprint = {
@@ -51,7 +52,7 @@ const blueprint = {
 };
 
 const selectionAnalysis = (text, index) => ({
-  analysis_source: "ai", selection_type: "phrase", completeness: "complete",
+  schema_version: 2, syntax_state: "pending", analysis_source: "ai", selection_type: "phrase", completeness: "complete",
   selected_text: text, recommended_text: text, recommendation_reason: "",
   fields: { kind: "chunk", tags: ["discourse"], level: "B1", register: "neutral" },
   note_placeholder: "Optional note",
@@ -93,7 +94,7 @@ async function selectText(page, text) {
     window.getSelection().addRange(range);
     element.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
   }, text);
-  await page.locator(".selection-original").filter({ hasText: text }).waitFor();
+  await page.getByRole("dialog", { name: "Corpus selection analysis" }).getByRole("heading", { name: text, exact: true }).waitFor();
 }
 
 async function verifyManualHighlight(page) {
@@ -131,8 +132,11 @@ try {
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     const context = await browser.newContext({ viewport });
     const page = await context.newPage();
+    page.setDefaultTimeout(20000);
+    await installLoadoutFixture(page, { origin, records: [] });
     const counts = { jobs: 0, blueprints: 0 };
     let selectionCount = 0;
+    let syntaxCount = 0;
     let delayedSelectionRoute;
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
@@ -141,6 +145,10 @@ try {
       const headers = { "access-control-allow-origin": "*", "access-control-allow-headers": "content-type" };
       if (url.pathname.startsWith("/api/")) {
         if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers });
+        if (url.pathname === "/api/corpus/analyze-syntax") {
+          syntaxCount += 1;
+          return route.fulfill({ json: selectionAnalysis(route.request().postDataJSON().selected_text, 0).syntax_analysis, headers });
+        }
         if (url.pathname === "/api/corpus/analyze-selection") {
           selectionCount += 1;
           if (selectionCount === 1 && !process.env.LIBITU_TEST_SAVED_HIGHLIGHTS_ONLY) { delayedSelectionRoute = route; return; }
@@ -151,14 +159,14 @@ try {
           counts.jobs += 1;
           return route.fulfill({ json: job, headers });
         }
-        if (url.pathname === "/api/blueprints/render-content") {
+        if (url.pathname === "/api/blueprints/c011ec70-0000-4000-8000-000000000001") {
           counts.blueprints += 1;
           return route.fulfill({ json: blueprint, headers });
         }
         throw new Error(`Unexpected API call: ${url.pathname}`);
       }
       if (url.origin === origin) return route.continue();
-      if (url.hostname.endsWith(".clerk.accounts.dev")) return route.continue();
+      if (url.hostname.endsWith(".clerk.accounts.dev")) return route.fallback();
       // Use anonymous Clerk initialization; video and analysis remain mocked.
       return route.fulfill({ status: 200, contentType: "text/plain", body: "" });
     });
@@ -386,8 +394,9 @@ try {
     await page.getByRole("button", { name: "Open full analysis for doubled down on", exact: true }).click();
     await page.getByRole("dialog", { name: "doubled down on" }).waitFor();
     await page.getByText("Selection result 5", { exact: true }).waitFor();
-    assert.equal(await page.locator(".context-current mark").textContent(), "doubled down on");
-    assert.equal(await page.locator(".context-neighbor").filter({ hasText: "changing direction" }).count(), 1);
+    assert.equal(await page.getByRole("region", { name: "Original source context" }).locator("mark").textContent(), "doubled down on");
+    assert.equal(await page.getByRole("region", { name: "Original source context" }).locator("p").filter({ hasText: "changing direction" }).count(), 1);
+    assert.equal(syntaxCount, 0, "Explain does not request Syntax");
     await page.getByRole("tab", { name: "Syntax", exact: true }).click();
     await page.getByText("Phrase", { exact: true }).waitFor();
     assert.equal(await page.locator(".corpus-detail-dialog").evaluate((element) => {
@@ -399,6 +408,7 @@ try {
     await page.getByRole("button", { name: "Open full analysis for doubled down on", exact: true }).click();
     await page.getByText("Selection result 5", { exact: true }).waitFor();
     assert.equal(selectionCount, 5, "reopening a candidate uses the session cache");
+    assert.equal(syntaxCount, 1, "Syntax is cached independently");
     await page.keyboard.press("Escape");
     await page.getByRole("button", { name: "Save to corpus", exact: true }).click();
     assert.equal(await page.getByRole("dialog").count(), 0, "the save control does not open corpus detail");

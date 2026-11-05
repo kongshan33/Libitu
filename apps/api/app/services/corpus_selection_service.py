@@ -62,6 +62,9 @@ def _normalize_evidenced_analysis(
             "selected_text": selected,
             "recommended_text": recommended,
             "completeness": completeness,
+            "recommendation_reason": (
+                analysis.recommendation_reason if expanded else "所选内容边界完整，无需补全。"
+            ),
             "explanation": explanation,
             "syntax_analysis": syntax_analysis,
         }
@@ -104,6 +107,8 @@ def _unavailable_analysis(
     ]
     notice = "AI 分析暂时不可用；当前仅保留你的原始选择，不会猜测含义或擅自补全边界。"
     return CorpusSelectionAnalysis(
+        schema_version=2,
+        syntax_state="pending",
         analysis_source="fallback",
         provider_notice=f"{notice} {provider_message}",
         selection_type="sentence" if selected.endswith((".", "?", "!")) else "phrase",
