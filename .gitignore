@@ -13,6 +13,14 @@ build/
 .cache/
 .parcel-cache/
 
+# Local assistant and browser session artifacts
+/.hatch-pet-runs/
+/.playwright-cli/
+/.workbuddy-ai/
+
+# Third-party reference material kept outside the project seed
+/design/seed/Glossika*
+
 # Logs
 *.log
 npm-debug.log*
