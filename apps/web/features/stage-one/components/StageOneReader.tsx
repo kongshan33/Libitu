@@ -42,6 +42,9 @@ import {
 } from "../api/stage-one-api";
 import { type YouTubePlayerHandle } from "./YouTubePlayer";
 import { CorpusDetailViews, CorpusSourceContext } from "../../corpus/CorpusDetailViews";
+import { CorpusSavedNote } from "../../corpus/CorpusSavedNote";
+import { corpusNotePreview, withCorpusKind } from "../../corpus/corpus-analysis";
+import { useCorpusDialog } from "../../corpus/useCorpusDialog";
 import detailStyles from "../../corpus/CorpusDetail.module.css";
 import { expressionText } from "../../loadout/draft";
 import { useSavedCorpus } from "../../corpus/useSavedCorpus";
@@ -355,19 +358,20 @@ export function StageOneReader() {
   }
 
   function updateSelectionField<K extends keyof CorpusSelectionAnalysis["fields"]>(field: K, value: CorpusSelectionAnalysis["fields"][K]) {
-    setSelectionCard((current) => current
-      ? { ...current, fieldDraft: { ...current.fieldDraft, [field]: value } }
-      : current
-    );
+    setSelectionCard(current => {
+      if (!current) return current;
+      const fieldDraft = { ...current.fieldDraft, [field]: value };
+      return { ...current, fieldDraft, analysis: { ...withCorpusKind(current.analysis, fieldDraft.kind), fields: fieldDraft } };
+    });
   }
 
   async function saveSelectionItem(kindOverride?: CorpusKind, textOverride?: string, slots?: Record<string, string>) {
     if (!selectionCard || !corpus.ready || corpus.busy) return;
     const kind = kindOverride ?? selectionCard.fieldDraft.kind;
-    const text = textOverride ?? selectionCard.analysis.recommendedText;
+    const text = textOverride ?? (selectionCard.analysis.learningText || selectionCard.analysis.recommendedText);
     const id = `manual-${Date.now()}-${Math.round(Math.random() * 1000)}`;
     const savedAnalysis = {
-      ...selectionCard.analysis,
+      ...withCorpusKind(selectionCard.analysis, kind),
       fields: { ...selectionCard.fieldDraft, kind }
     };
     const item: CorpusItem = {
@@ -377,7 +381,7 @@ export function StageOneReader() {
       tags: selectionCard.fieldDraft.tags,
       meta: `${selectionCard.context.timestamp ?? "--:--"} - ${selectionCard.fieldDraft.level}`,
       saved: true,
-      meaning: selectionCard.analysis.explanation.meaning,
+      meaning: selectionCard.analysis.explanation.meaningSummary || selectionCard.analysis.explanation.meaning,
       usageNote: selectionCard.note,
       sourceText: selectionCard.context.selectedText,
       level: selectionCard.fieldDraft.level,
@@ -451,10 +455,10 @@ export function StageOneReader() {
 
   async function persistDetail(analysis: CorpusSelectionAnalysis, note?: string): Promise<boolean> {
     if (!corpusDetail) return false;
-    const detail = { context: corpusDetail.context, analysis };
-    detailCacheRef.current.set(corpusDetail.key, detail);
     const record = corpus.records.find(value => value.key === corpusDetail.key) ?? corpusDetail.record;
     const item = record?.item ?? corpusDetail.item;
+    const detail = { context: corpusDetail.context, analysis: withCorpusKind(analysis, item.kind) };
+    detailCacheRef.current.set(corpusDetail.key, detail);
     const usageNote = note ? [item.usageNote, note].filter(Boolean).join("\n\n") : item.usageNote ?? "";
     if (usageNote.length > 4000) return false;
     let ok = true;
@@ -464,7 +468,7 @@ export function StageOneReader() {
     } else if (note) {
       ok = await saveCorpusItem({ ...item, usageNote, analysisDetail: detail });
     }
-    setCorpusDetail(current => current?.id === corpusDetail.id ? { ...current, detail, item: { ...current.item, analysisDetail: detail, usageNote } } : current);
+    setCorpusDetail(current => current?.id === corpusDetail.id ? { ...current, detail, item: { ...current.item, analysisDetail: detail, ...(ok ? { usageNote } : {}) } } : current);
     return ok;
   }
 
@@ -700,6 +704,7 @@ export function StageOneReader() {
                 <SelectionAnalysisCard
                   key={selectionCard.id}
                   state={selectionCard}
+                  sourceTitle={displayTitle}
                   saveDisabled={!corpus.ready || corpus.busy}
                   onClose={closeSelectionCard}
                   onTogglePin={() => setSelectionCard((current) => current ? { ...current, pinned: !current.pinned } : current)}
@@ -707,7 +712,9 @@ export function StageOneReader() {
                   onNoteChange={(note) => setSelectionCard((current) => current ? { ...current, note } : current)}
                   onSave={saveSelectionItem}
                   onSeek={seekToMoment}
-                  onAnalysis={(analysis) => setSelectionCard((current) => current ? { ...current, analysis } : current)}
+                  onAnalysis={(analysis) => setSelectionCard(current => current?.id === selectionCard.id
+                    ? { ...current, analysis: { ...withCorpusKind(analysis, current.fieldDraft.kind), fields: current.fieldDraft } }
+                    : current)}
                 />
               ) : null}
             </>
@@ -773,7 +780,7 @@ export function StageOneReader() {
                       onClick={() => void openCorpusDetail(key, item, record)}
                     >
                       <span className={item.kind === "structure" ? "structure-text" : "corpus-text"}>{item.text}</span>
-                      {item.usageNote ? <span className="corpus-note">{item.usageNote}</span> : null}
+                      {item.usageNote ? <span className="corpus-note">{corpusNotePreview(item.usageNote)}</span> : null}
                       <span className="corpus-tags">
                         {item.tags.map((tag) => (
                           <span className={`tag ${tagClass[tag]}`} key={tag}>
@@ -825,6 +832,7 @@ export function StageOneReader() {
         <CorpusDetailDialog
           key={corpusDetail.id}
           state={corpusDetail}
+          sourceTitle={displayTitle}
           busy={corpus.busy}
           onAnalysis={(analysis) => persistDetail(analysis)}
           onSaveNote={(note) => persistDetail(corpusDetail.detail!.analysis, note)}
@@ -1193,6 +1201,7 @@ function buildLoadingSelectionAnalysis(context: CorpusSelectionContext): CorpusS
 
 type CorpusDetailDialogProps = {
   state: CorpusDetailState;
+  sourceTitle?: string;
   busy: boolean;
   onClose(): void;
   onRetry(): void;
@@ -1201,27 +1210,24 @@ type CorpusDetailDialogProps = {
   onSaveNote(note: string): Promise<boolean>;
 };
 
-function CorpusDetailDialog({ state, busy, onClose, onRetry, onSeek, onAnalysis, onSaveNote }: CorpusDetailDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const analysis = state.detail?.analysis;
-  useEffect(() => {
-    const dialog = dialogRef.current; dialog?.showModal();
-    return () => { dialog?.close(); };
-  }, []);
-  return <dialog ref={dialogRef} className={`corpus-detail-dialog ${detailStyles.dialog}`} aria-labelledby="corpus-detail-title"
-    onCancel={event => { event.preventDefault(); onClose(); }}>
+function CorpusDetailDialog({ state, sourceTitle, busy, onClose, onRetry, onSeek, onAnalysis, onSaveNote }: CorpusDetailDialogProps) {
+  const dialog = useCorpusDialog();
+  const analysis = useMemo(() => state.detail ? withCorpusKind(state.detail.analysis, state.item.kind) : undefined, [state.detail, state.item.kind]);
+  return <dialog ref={dialog.ref} {...dialog.lightDismiss} className={`corpus-detail-dialog ${detailStyles.dialog}`} aria-labelledby="corpus-detail-title"
+    onClose={event => { if (!event.currentTarget.open) onClose(); }}>
     <div className={detailStyles.shell}>
       <header className={detailStyles.header}><div><span className={detailStyles.eyebrow}>Corpus detail</span>
-        <h1 id="corpus-detail-title">{analysis?.recommendedText ?? corpusSelectedText(state.item)}</h1>
+        <h2 id="corpus-detail-title">{state.record ? expressionText({ ...state.record, item: { ...state.record.item, analysisDetail: state.detail ?? state.record.item.analysisDetail } }) : analysis?.learningText || analysis?.recommendedText || corpusSelectedText(state.item)}</h2>
         <p className={detailStyles.meta}>{[state.item.kind, analysis?.fields.level ?? state.item.level, analysis?.fields.register ?? state.item.register, ...(analysis?.fields.tags ?? state.item.tags)].filter(Boolean).join(" · ")}</p>
-      </div><Button variant="ghost" size="sm" shape="circle" aria-label="Close corpus detail" onClick={onClose}><X size={18} /></Button></header>
+      </div><Button variant="ghost" size="sm" shape="circle" aria-label="Close corpus detail" onClick={dialog.close}><X size={18} /></Button></header>
       <div className={detailStyles.scroll}>
-        <CorpusSourceContext context={state.context} kind={state.item.kind} title={state.record?.sourceTitle} onSeek={onSeek} />
+        <CorpusSourceContext context={state.context} kind={state.item.kind} title={state.record?.sourceTitle || sourceTitle} onSeek={onSeek} />
         {state.status === "loading" ? <div className={detailStyles.panel}><ContentSkeleton label="Preparing explanation…" rows={3} /></div>
           : state.status === "error" || !analysis ? <p className="ui-retry-notice" role="alert">{state.error ?? "Analysis could not be loaded."} <Button variant="secondary" size="sm" onClick={onRetry}>Retry</Button></p>
           : <>{analysis.providerNotice ? <p className={detailStyles.notice} role="status">{analysis.providerNotice}</p> : null}
             <CorpusDetailViews analysis={analysis} context={state.context} onAnalysis={onAnalysis} onSaveNote={onSaveNote} disabled={busy} />
           </>}
+        <CorpusSavedNote note={state.item.usageNote} />
       </div>
     </div>
   </dialog>;
@@ -1229,6 +1235,7 @@ function CorpusDetailDialog({ state, busy, onClose, onRetry, onSeek, onAnalysis,
 
 type SelectionAnalysisCardProps = {
   state: SelectionCardState;
+  sourceTitle?: string;
   saveDisabled: boolean;
   onClose: () => void;
   onTogglePin: () => void;
@@ -1239,7 +1246,7 @@ type SelectionAnalysisCardProps = {
   onAnalysis: (analysis: CorpusSelectionAnalysis) => void;
 };
 
-function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFieldChange, onNoteChange, onSave, onSeek, onAnalysis }: SelectionAnalysisCardProps) {
+function SelectionAnalysisCard({ state, sourceTitle, saveDisabled, onClose, onTogglePin, onFieldChange, onNoteChange, onSave, onSeek, onAnalysis }: SelectionAnalysisCardProps) {
   const { analysis, fieldDraft } = state;
   const isLoading = state.status === "loading";
   const cardRef = useRef<HTMLElement>(null);
@@ -1291,7 +1298,7 @@ function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFi
           <header className={detailStyles.header}>
             <div>
               <span className={detailStyles.eyebrow}>Add to corpus</span>
-              <h2>{analysis.selectedText}</h2>
+              <h2>{analysis.learningText || analysis.recommendedText}</h2>
               {!isLoading ? <p className={detailStyles.meta}>{[fieldDraft.kind, fieldDraft.level, fieldDraft.register, ...fieldDraft.tags].join(" · ")}</p> : null}
             </div>
             <div className={detailStyles.headerActions}>
@@ -1311,7 +1318,7 @@ function SelectionAnalysisCard({ state, saveDisabled, onClose, onTogglePin, onFi
           </header>
 
           <div className={detailStyles.scroll}>
-            <CorpusSourceContext context={state.context} kind={fieldDraft.kind} onSeek={onSeek} />
+            <CorpusSourceContext context={state.context} kind={fieldDraft.kind} title={sourceTitle} onSeek={onSeek} />
 
             {analysis.completeness === "needs_expansion" ? (
               <section className={detailStyles.recommendation} aria-label="Suggested completion">

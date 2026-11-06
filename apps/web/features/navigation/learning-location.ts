@@ -70,7 +70,7 @@ export function parseLearningLocation(input: URL | HomeSearchParams): LearningLo
   const step = params.get("step") || undefined;
   if ((segmentId && !IDENTIFIER.test(segmentId)) || (sentenceId && !IDENTIFIER.test(sentenceId))
     || (step && (kind !== "segments" || step !== "prepare")) || (sentenceId && kind !== "shadow")
-    || (kind === "reader" && segmentId) || ((kind === "shadow" || step) && !segmentId)) return invalid("The learning link has an invalid practice selection.");
+    || (kind === "reader" && segmentId) || ((kind === "shadow" && !sentenceId || step) && !segmentId)) return invalid("The learning link has an invalid practice selection.");
   return { kind, source, segmentId, sentenceId, step: step as "prepare" | undefined };
 }
 

@@ -71,3 +71,31 @@ test("recording a video authenticates its owner and accepts a no-content acknowl
   assert.equal(fetch.mock.calls[0].arguments[1].method, "PUT");
   assert.match(fetch.mock.calls[0].arguments[0], /\/profile\/videos\/video-id$/);
 });
+
+test("Shadow history deep links retain the sentence for workspace segment resolution", async () => {
+  const { parseLearningLocation } = await import("../features/navigation/learning-location.ts");
+  const item = { kind: "shadowing", content_id: "a0000000-0000-4000-8000-000000000001", sentence_id: "sentence-2" };
+  const href = historyHref(item);
+  assert.equal(href, `/practice/${item.content_id}/shadow?sentenceId=sentence-2`);
+  assert.equal(historyAction(item), "Open Shadow");
+  const location = parseLearningLocation(new URL(href, "https://libitu.test"));
+  assert.equal(location.kind, "shadow");
+  assert.equal(location.sentenceId, "sentence-2");
+  assert.equal(location.segmentId, undefined);
+  assert.equal(parseLearningLocation(new URL(`/practice/${item.content_id}/shadow`, "https://libitu.test")).kind, "invalid");
+  assert.equal(historyHref({ ...item, content_id: "../bad" }), null);
+  assert.equal(historyAction({ ...item, sentence_id: "../bad" }), "View source");
+});
+
+test("historical sentences resolve across subtitle IDs only when text is unique", async () => {
+  const { resolveHistoricalSentence } = await import("../features/learning-workspace/historical-sentence.ts");
+  const row = { id: "current", parts: ["The recorded sentence."], startMs: 1000, endMs: 2000,
+    segmentationVersion: "sentence-v3", sourceTokenStart: 0, sourceTokenEnd: 3 };
+  const blueprint = { contentId: "content", segments: [{ id: "segment", startMs: 0, endMs: 5000 }], transcript: [row] };
+  assert.equal(resolveHistoricalSentence(blueprint, "current", null).segmentId, "segment");
+  assert.equal(resolveHistoricalSentence(blueprint, "old", " The recorded  sentence. ").id, "current");
+  assert.equal(resolveHistoricalSentence(blueprint, "old", "Missing."), null);
+  blueprint.transcript.push({ ...row, id: "duplicate", startMs: 3000, endMs: 4000 });
+  assert.equal(resolveHistoricalSentence(blueprint, "old", "The recorded sentence."), null);
+  assert.equal(resolveHistoricalSentence(blueprint, "current", "The recorded sentence.").id, "current");
+});

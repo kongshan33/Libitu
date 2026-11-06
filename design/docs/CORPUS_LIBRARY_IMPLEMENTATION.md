@@ -1,5 +1,9 @@
 # Corpus library — first usable increment
 
+## Corpus scenario groups and neutral options — 2026-11-06
+
+Library Scenario options and matching share a bounded English taxonomy: Work, Everyday, Discussions, Presentations, Interviews, Storytelling and Writing. Only groups present in the collection appear; Other keeps records without a recognized setting reachable. Known Chinese/English aliases merge, while register/function labels alone do not imply a setting. Saved metadata is unchanged. The Source group is collapsed by default. Option groups use the reference page's measured #EDEDED background and white selected states; text uses neutral #616161, and forced-colors selection retains an outline.
+
 ## Corpus detail DeepSeek comparison — 2026-11-05
 
 Corpus detail now supports a scoped `CORPUS_ANALYSIS_PROVIDER` switch. The current local API uses the official DeepSeek `deepseek-flash` model with the existing server-side credential; repository defaults retain Ark for compatibility. Explain, lazy Syntax and streamed follow-up share the selected provider. Other text/voice tasks keep their own configuration. Two same-prompt live rounds (12 requests) were substantially faster and retained rewrite difficulty in both sentence follow-ups. Grammar terminology, spatial-versus-temporal translation and template adherence still had errors; this is sampled improvement, not broad teaching acceptance. 53 focused API tests pass, including provider/credential isolation. See [comparison, complete outputs and timings](../benchmarks/corpus-detail-20261105/DEEPSEEK_COMPARISON.md). Existing saved analyses refresh only on the existing explicit action.
@@ -25,8 +29,11 @@ kind/tag metadata and a purple inset selection outline; buttons are black or
 outlined pills. Detail/edit dialogs share the palette, typography and no-shadow
 presentation. Existing account, save/delete and original-analysis behavior stays.
 
-- Each filter popover supports multi-selection, its own Clear, Escape with focus
-  return, outside-click dismissal and responsive positioning. Only one is open.
+- One Filters popover contains all six multi-select facets. Each Any option clears
+  its dimension; Clear all filters preserves search. Native popover Escape/focus
+  return and outside-click dismissal have a manual fallback; placement is clamped
+  to the viewport. Gray option groups use white selected states, and long groups
+  scroll within the bounded panel. Narrow/coarse targets are at least 44px.
 - Corpus tabs support arrow/Home/End keys. Clear all resets search/facets within
   the active tab. High value still requires a real learning-value score >=4/5.
 - Display starts with 15 matching items, and Load more adds 15. Search/filter/sort
@@ -40,7 +47,7 @@ presentation. Existing account, save/delete and original-analysis behavior stays
 
 - Shared cross-source collection through `useSavedCorpus`, with existing browser-local guest saves, account-bound import outboxes and authenticated FastAPI persistence.
 - Search over expression, meaning, note, tags and source title. Multi-select type/tag/level/scenario/register/source facets use OR within a dimension and AND between dimensions. Defaults include all difficulties and unknown metadata.
-- Real total/type/source counts, current-result count, recency/learning-value/transferability/alphabetical sorting, grid/list layouts and six responsive filter popovers. Unknown creation dates sort after known dates with stable legacy order. Unknown scores are not zero; high value includes only scores at least 4/5.
+- Real total/type/source counts, current-result count, recency/learning-value/transferability/alphabetical sorting, grid/list layouts and one responsive grouped filter popover. Unknown creation dates sort after known dates with stable legacy order. Unknown scores are not zero; high value includes only scores at least 4/5.
 - Selection uses the stable saved key, survives filters/sorting, and reports selected items hidden by filters. Account changes remount the management workspace and clear open dialogs and selection.
 - Card bodies open native modal details; checkboxes and edit buttons are independent. Full original analysis reuses the Stage 1 explanation/syntax panels. Cached detail is reused. Legacy items with stored source text can hydrate their original analysis through the existing API. Items lacking evidence remain browsable/editable without inventing source context or analysis.
 - Edit expression/template, meaning, usage note, functional tags and structure slots. Guest edits survive reload; account edits call the existing owner-scoped PATCH and require a confirmed cloud ID. The saved identity, original evidence/analysis and creation date remain unchanged. Analysis is explicitly labelled as original; editing an expression does not silently reanalyze it. Historical speaking snapshots remain unchanged.

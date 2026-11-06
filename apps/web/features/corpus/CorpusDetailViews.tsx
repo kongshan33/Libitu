@@ -1,7 +1,7 @@
 "use client";
 import { useContentMotion } from "@/components/ui/use-content-motion";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { CorpusItem, CorpusSelectionAnalysis, CorpusSelectionContext } from "@libitu/types/stage-one";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,15 +21,23 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
   const id = useId();
   const [tab, setTab] = useState<"explain" | "syntax">("explain");
   const panelRef = useContentMotion(tab);
-  const [syntax, setSyntax] = useState<CorpusSelectionAnalysis | null>(null);
+  const [local, setLocal] = useState<{ input: CorpusSelectionAnalysis; value: CorpusSelectionAnalysis } | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState("");
   const [unsaved, setUnsaved] = useState(false);
   const request = useRef<AbortController | null>(null);
-  useEffect(() => () => request.current?.abort(), []);
-  const current = syntax ?? analysis;
+  const acceptAnalysis = useRef(onAnalysis);
+  useLayoutEffect(() => { acceptAnalysis.current = onAnalysis; }, [onAnalysis]);
+  // Ignore a local result as soon as its owning input changes. Keep the view
+  // mounted so switching kind does not discard a question or the active tab.
+  const current = local?.input === analysis ? local.value : analysis;
+  const requestKey = JSON.stringify([context, analysis.recommendedText, analysis.selectionType, analysis.fields.kind]);
+  useLayoutEffect(() => {
+    setPending(false); setError(""); setRefreshing(false); setRefreshError(""); setUnsaved(false);
+    return () => { request.current?.abort(); request.current = null; };
+  }, [requestKey]);
   async function refreshExplain() {
     if (request.current || refreshing) return;
     const controller = new AbortController(); request.current = controller;
@@ -38,8 +46,8 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
       const result = await analyzeCorpusSelection(context, controller.signal);
       if (controller.signal.aborted) return;
       if (result.analysisSource !== "ai") { setRefreshError("Explanation could not be refreshed. Please retry."); return; }
-      setSyntax(result); setTab("explain"); setError("");
-      const saved = await onAnalysis?.(result);
+      setLocal({ input: analysis, value: result }); setTab("explain"); setError("");
+      const saved = await acceptAnalysis.current?.(result);
       if (!controller.signal.aborted) setUnsaved(saved === false);
     } catch {
       if (!controller.signal.aborted) setRefreshError("Explanation could not be saved. Please retry.");
@@ -47,7 +55,7 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
       if (!controller.signal.aborted) { request.current = null; setRefreshing(false); }
     }
   }
-  async function loadSyntax() {
+  const loadSyntax = useCallback(async () => {
     if (refreshing) return;
     setTab("syntax");
     if (request.current || (current.syntaxState === "ready" || (!current.syntaxState && current.analysisSource === "ai"))) return;
@@ -56,15 +64,18 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
     try {
       const result = await analyzeCorpusSyntax(context, current, controller.signal);
       if (controller.signal.aborted) return;
-      setSyntax(result);
-      const saved = await onAnalysis?.(result);
+      setLocal({ input: analysis, value: result });
+      const saved = await acceptAnalysis.current?.(result);
       if (!controller.signal.aborted) setUnsaved(saved === false);
     } catch {
       if (!controller.signal.aborted) setError("Syntax could not be loaded. Please retry.");
     } finally {
       if (!controller.signal.aborted) { request.current = null; setPending(false); }
     }
-  }
+  }, [analysis, context, current, refreshing]);
+  useEffect(() => {
+    if (tab === "syntax" && !error) void loadSyntax();
+  }, [tab, error, loadSyntax]);
   return <div className={styles.views}>
     <div className={styles.tabs} role="tablist" aria-label="Analysis views" onKeyDown={event => {
       const tabs = ["explain", "syntax"] as const;
@@ -78,12 +89,13 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
     </div>
     <div ref={panelRef} id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${tab}`} className={styles.panel}>
       <div hidden={tab !== "explain"}>
-        {(current.schemaVersion ?? 1) < 2 || current.analysisSource === "fallback" ? <Button variant="secondary" size="sm" disabled={disabled || pending} loading={refreshing} loadingLabel="Refreshing…" onClick={() => void refreshExplain()}>Refresh explanation</Button> : null}
+        {(current.schemaVersion ?? 1) < 3 || current.analysisSource === "fallback" ? <Button variant="secondary" size="sm" disabled={disabled || pending} loading={refreshing} loadingLabel="Refreshing…" onClick={() => void refreshExplain()}>Refresh explanation</Button> : null}
         {refreshError ? <p role="alert">{refreshError}</p> : null}
         <ExplainPanel analysis={current} isLoading={false} onSavePattern={onSavePattern} saveDisabled={disabled} active={tab === "explain"} />
-        <CorpusFollowup context={context} comparison={current.explanation.similarExpressions[0]?.split(/\s*[—–]\s*/)[0]} onSaveNote={onSaveNote} disabled={disabled} noteIsDraft={noteIsDraft} />
+        <CorpusFollowup context={context} suggestions={current.askSuggestions} comparison={current.explanation.similarExpressions[0]?.split(/\s*[—–]\s*/)[0]} onSaveNote={onSaveNote} disabled={disabled} noteIsDraft={noteIsDraft} />
       </div>
-      {tab === "syntax" ? pending ? <ContentSkeleton label="Loading syntax…" rows={3} /> : error ? <p className="ui-retry-notice" role="alert">{error} <Button variant="secondary" size="sm" onClick={() => void loadSyntax()}>Retry syntax</Button></p> : <>
+      {tab === "syntax" ? <p className={styles.meta}>Generated when you open this tab.</p> : null}
+      {tab === "syntax" ? pending || (current.syntaxState === "pending" && !error) ? <ContentSkeleton label="Loading syntax…" rows={3} /> : error ? <p className="ui-retry-notice" role="alert">{error} <Button variant="secondary" size="sm" onClick={() => void loadSyntax()}>Retry syntax</Button></p> : <>
         <SyntaxPanel analysis={current} isLoading={false} saveDisabled />
       </> : null}
         {unsaved ? <p className="ui-retry-notice" role="status">Analysis is available for this visit, but could not be saved. <Button variant="secondary" size="sm" disabled={disabled} onClick={async () => { setUnsaved(await onAnalysis?.(current) === false); }}>Retry saving analysis</Button></p> : null}

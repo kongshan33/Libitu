@@ -2,7 +2,7 @@
 .page svg, .dialog svg { flex-shrink: 0; stroke-width: 1.5; }
 .page button, .dialog button { font: inherit; cursor: pointer; }
 .page button:disabled, .dialog button:disabled { cursor: not-allowed; }
-.page :is(button, a, input, [tabindex]):focus-visible, .dialog :focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.page :is(button, a, input, summary, [tabindex]):focus-visible, .dialog :focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
 .shell { max-width: 1440px; margin: 0 auto; padding: 32px 32px 64px; }
 .withSelection { padding-bottom: 180px; }
 .heading { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 24px; }
@@ -17,34 +17,56 @@
 .tabs button { border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); padding: 10px 0; font-size: 14px; line-height: 1.5; }
 .tabs button[aria-selected=true], .tabs button[aria-pressed=true] { color: var(--ink); font-weight: 500; border-bottom-color: var(--brand); }
 .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-top: 20px; }
-.search { display: flex; align-items: center; flex: 1 1 220px; gap: 10px; min-width: 0; max-width: 320px; height: 40px; padding: 0 16px; border-radius: 999px; background: var(--surface); color: var(--muted); }
-.search:focus-within { outline: 2px solid var(--brand); outline-offset: 2px; }
+.search { display: flex; align-items: center; flex: 1 1 300px; gap: 12px; min-width: 0; height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--muted); }
 .search input { flex: 1; min-width: 0; width: 100%; border: 0; outline: none; background: transparent; color: var(--ink); padding: 0; font: inherit; }
 .search input::placeholder { color: var(--muted); opacity: 1; }
 .search input:focus-visible { outline: none; }
-.filters { display: contents; }
-.filterAnchor { position: relative; }
-.filterPill { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--line-soft); color: var(--ink-2); white-space: nowrap; transition: background 160ms ease-out, color 160ms ease-out; }
-.filterPill:hover, .filterPill[aria-expanded=true] { background: var(--line); }
-.filterPill[data-selected] { background: var(--ink); color: var(--bg); }
-.filterPill svg { transition: transform 160ms ease-out; }
-.filterPill[aria-expanded=true] svg { transform: rotate(180deg); }
-.filterPanel { position: absolute; top: calc(100% + 8px); left: var(--popover-shift, 0); z-index: 25; width: min(320px, calc(100vw - 32px)); max-height: var(--popover-height, 360px); overflow-y: auto; overscroll-behavior: contain; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
-.filterPanel[data-side=top] { top: auto; bottom: calc(100% + 8px); }
-.filterOptions { display: flex; flex-wrap: wrap; gap: 8px; }
-.filterOptions button { max-width: 100%; padding: 7px 14px; border: 0; border-radius: 999px; background: var(--line-soft); color: var(--ink-2); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
-.filterOptions button:hover { background: var(--line); }
-.filterOptions button[aria-pressed=true] { background: var(--ink); color: var(--bg); }
-.sourceOptions { display: grid; gap: 2px; }
-.sourceOptions button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; border: 0; border-radius: 8px; padding: 8px; background: transparent; text-align: left; color: var(--ink-2); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
-.sourceOptions button:hover, .sourceOptions button[aria-pressed=true] { background: var(--line-soft); color: var(--ink); }
-.sourceOptions button[aria-pressed=true] { font-weight: 500; }
-.sourceCount { flex-shrink: 0; font: 12px var(--font-mono); color: var(--muted); }
-.filterActions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+.filters { flex: none; }
+.filterPill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink-2); white-space: nowrap; transition: background 160ms ease-out, border-color 160ms ease-out; }
+.filterPill:hover, .filterPill[aria-expanded=true] { background: var(--surface); border-color: var(--line-strong); }
+.filterPill[data-selected] { color: var(--ink); border-color: var(--ink); }
+.filterCount { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 6px; background: var(--ink); color: var(--bg); font-size: 12px; font-variant-numeric: tabular-nums; }
+.filterPanel { --filter-option-bg: #ededed; --filter-option-hover: #f5f5f5; --filter-option-selected: #fff; --filter-option-text: #616161; display: none; position: fixed; inset: var(--popover-top, 80px) auto var(--popover-bottom, auto) var(--popover-left, 16px); z-index: 30; width: var(--popover-width, min(600px, calc(100vw - 32px))); max-height: min(640px, var(--popover-height, calc(100dvh - 100px))); margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--bg); color: var(--ink); font-size: 14px; }
+.filterPanel:is(:popover-open, [data-open=true]) { display: flex; flex-direction: column; }
+.filterHeader { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 20px 8px; flex-shrink: 0; }
+.filterHeader h2 { margin: 0; font-size: 15px; font-weight: 500; }
+.filterClose { display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); }
+.filterClose:hover { background: var(--surface); color: var(--ink); }
+.filterBody { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 8px 20px 16px; }
+.filterRow { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: start; gap: 16px; }
+.filterRow + .filterRow { margin-top: 16px; }
+.filterLabel { padding-top: 10px; line-height: 20px; font-size: 13px; color: var(--ink-2); }
+.filterOptions { display: flex; flex-wrap: wrap; justify-self: end; gap: 4px; max-width: 100%; padding: 4px; border-radius: 10px; background: var(--filter-option-bg); }
+.filterOptions[data-scrollable] { max-height: 144px; overflow-y: auto; overscroll-behavior: contain; }
+.filterOptions button { min-height: 32px; max-width: 100%; padding: 6px 10px; border: 0; border-radius: 7px; background: transparent; color: var(--filter-option-text); font-size: 13px; line-height: 20px; overflow-wrap: anywhere; transition: color 160ms ease-out, background 160ms ease-out; }
+.filterOptions button:hover { color: #111; background: var(--filter-option-hover); }
+.filterOptions button[aria-pressed=true] { background: var(--filter-option-selected); color: #111; font-weight: 500; }
+.sourceDisclosure { grid-column: 1 / -1; min-width: 0; }
+.sourceDisclosure summary { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 16px; min-height: 40px; cursor: pointer; list-style: none; border-radius: 8px; }
+.sourceDisclosure summary::-webkit-details-marker { display: none; }
+.sourceDisclosure summary .filterLabel { padding: 0; }
+.sourceSummary { display: flex; align-items: center; justify-content: flex-end; gap: 8px; color: var(--filter-option-text); font-size: 13px; }
+.sourceDisclosure summary:hover .sourceSummary { color: var(--ink); }
+.sourceDisclosure[open] summary svg { transform: rotate(180deg); }
+.sourceDisclosure .sourceOptions { margin: 8px 0 0 128px; }
+.sourceOptions { display: grid; gap: 4px; max-height: 168px; overflow-y: auto; overscroll-behavior: contain; padding: 4px; border-radius: 10px; background: var(--filter-option-bg); }
+.sourceOptions button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 32px; border: 0; border-radius: 7px; padding: 6px 10px; background: transparent; text-align: left; color: var(--filter-option-text); font-size: 13px; line-height: 20px; overflow-wrap: anywhere; }
+.sourceOptions button > span:first-of-type { flex: 1; }
+.sourceOptions button svg { opacity: 0; flex: none; }
+.sourceOptions button:hover { background: var(--filter-option-hover); color: #111; }
+.sourceOptions button[aria-pressed=true] { background: var(--filter-option-selected); color: #111; font-weight: 500; }
+.sourceOptions button[aria-pressed=true] svg { opacity: 1; }
+.sourceCount { flex-shrink: 0; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.filterActions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--line-soft); flex-shrink: 0; }
+.filterReset, .filterDone { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 32px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink-2); font-size: 13px; line-height: 20px; }
+.filterReset:hover:not(:disabled) { background: var(--surface); }
+.filterReset:disabled { color: var(--muted); opacity: .5; }
+.filterDone { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+.filterDone:hover { background: var(--ink-2); }
 .textButton { padding: 8px 10px; background: transparent; border: 0; border-radius: 999px; color: var(--ink-2); white-space: nowrap; }
 .textButton:hover { color: var(--ink); background: var(--surface); }
 .viewControls { display: flex; align-items: center; gap: 8px; margin-left: auto; min-width: 0; }
-.sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { height: 40px; min-width: 0; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--bg); box-shadow: none; color: var(--ink-2); font-size: 14px; }
+.sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { height: 40px; min-width: 0; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--bg); box-shadow: none; color: var(--ink-2); font-size: 14px; }
 .sort:global(.ui-select-trigger)[data-state=open], .sort:global(.ui-select-trigger):hover { border-color: var(--line-strong); background: var(--surface); }
 .sortMenu:global(.ui-select-content) { color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
 .sortMenu :global(.ui-select-item) { color: var(--ink-3); font-size: 14px; }
@@ -148,7 +170,16 @@
   .search { flex-basis: 100%; max-width: none; height: 44px; }
   .filterPill { height: 44px; font-size: 13px; padding: 0 12px; }
   .filterOptions button, .sourceOptions button, .textButton { min-height: 44px; }
-  .viewControls { flex: 1 1 100%; margin-left: 0; justify-content: space-between; }
+  .viewControls { flex: 1; margin-left: auto; justify-content: flex-end; gap: 4px; }
+  .filterRow { grid-template-columns: 1fr; gap: 8px; }
+  .filterLabel { padding: 0; }
+  .filterOptions { justify-self: start; }
+  .filterHeader { padding: 12px 16px 4px; }
+  .filterBody { padding: 8px 16px 16px; }
+  .filterActions { padding: 12px 16px; }
+  .filterClose, .filterReset, .filterDone { min-height: 44px; }
+  .filterClose { width: 44px; }
+  .sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { padding: 0 10px; font-size: 13px; }
   .sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { height: 44px; }
   .viewToggle button { width: 44px; height: 44px; }
   .cardTop input { width: 20px; height: 20px; }
@@ -167,12 +198,11 @@
 }
 
 /* Persistent hidden panels support exit transitions without retaining focus targets. */
-.filterPanel, .tray { opacity: 1; transform: none; transition: opacity 160ms ease-out, transform 160ms ease-out, display 160ms allow-discrete; }
-.filterPanel[hidden], .tray[hidden] { display: none; opacity: 0; pointer-events: none; }
-.filterPanel[hidden] { transform: translateY(-4px); }
+.tray { opacity: 1; transform: none; transition: opacity 160ms ease-out, transform 160ms ease-out, display 160ms allow-discrete; }
+.tray[hidden] { display: none; opacity: 0; pointer-events: none; }
 .tray[hidden] { transform: translateY(8px); }
 .tray strong { font-variant-numeric: tabular-nums; }
-@starting-style { .filterPanel:not([hidden]) { opacity: 0; transform: translateY(-4px); } .tray:not([hidden]) { opacity: 0; transform: translateY(8px); } }
+@starting-style { .tray:not([hidden]) { opacity: 0; transform: translateY(8px); } }
 @media (prefers-reduced-motion: reduce) { .filterPanel, .tray { transition: none; transform: none; } }
 
 /* Corpus cards preview the same speaking frame as the shared detail. */
@@ -190,3 +220,28 @@
 .list .cardTop { min-width:0;flex-wrap:wrap;row-gap:8px; }
 .list .level { order:3;flex-basis:100%;overflow-wrap:anywhere; }
 .list .selectionControl { margin-left:auto; }
+
+.deleteDialog { width: min(480px, calc(100vw - 32px)); }
+.dialog:modal { overscroll-behavior: contain; }
+.dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+.deleteDialog h2 { margin: 0; font-size: 20px; font-weight: 500; }
+.deleteDialog .actions { margin-bottom: 0; }
+
+.resultMeta { flex-wrap: wrap; align-items: center; }
+.resultSelection { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px 12px; margin-left: auto; }
+
+/* The top-layer panel enters quietly; reduced motion remains immediate. */
+@keyframes filter-enter { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.filterPanel:is(:popover-open, [data-open=true]) { animation: filter-enter 160ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .filterPanel:is(:popover-open, [data-open=true]) { animation: none; } }
+@media (pointer: coarse) { .filterClose, .filterReset, .filterDone { min-height: 44px; } .filterClose { width: 44px; } }
+
+@media (forced-colors: active) {
+  .filterOptions button[aria-pressed=true], .sourceOptions button[aria-pressed=true] { outline: 1px solid Highlight; outline-offset: -1px; }
+}
+
+@media (max-width: 719px) {
+  .sourceDisclosure summary { grid-template-columns: 1fr auto; min-height: 44px; }
+  .sourceDisclosure .sourceOptions { margin-left: 0; }
+}
+@media (pointer: coarse) { .sourceDisclosure summary { min-height: 44px; } }

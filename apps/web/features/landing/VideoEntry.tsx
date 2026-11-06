@@ -48,7 +48,7 @@ export function VideoEntry() {
 
   return <form className={styles.entryForm} onSubmit={submit} noValidate aria-busy={pending}>
     <label className={styles.srOnly} htmlFor="video-url">YouTube video link</label>
-    <div className={styles.entryRow}>
+    <div className={styles.entryRow} data-input-group>
       <div className={`ui-field-surface ${styles.inputWrap}`} data-field-surface>
         <Link2 size={19} aria-hidden="true" />
         <Input appearance="bare" ref={input} id="video-url" name="videoUrl" type="url" inputMode="url" autoComplete="off"

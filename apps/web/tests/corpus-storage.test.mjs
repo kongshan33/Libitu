@@ -215,7 +215,11 @@ test("authenticated API preserves learning metadata and uses the captured accoun
   const token = `header.${Buffer.from(JSON.stringify({ sub: "user-a" })).toString("base64url")}.signature`;
   const original = { ...record(), item: {
     ...record().item, sourceText: "doubled down on", register: "professional", slots: { OBJECT: "plan" },
-    analysisDetail: { context: context("doubled down on"), analysis: analysis("doubled down on") }
+    analysisDetail: { context: context("doubled down on"), analysis: {
+      ...analysis("doubled down on"), schemaVersion: 3, learningText: "double down on", askSuggestions: ["如何迁移？", "写一段对话", "比较近义表达"],
+      explanation: { ...analysis().explanation, meaningSummary: "加倍投入" },
+      syntaxAnalysis: { ...analysis().syntaxAnalysis, sectionSummaries: { structure: "动词短语" } }
+    } }
   } };
   const requests = [];
   t.mock.method(globalThis, "fetch", async (_url, options) => {
@@ -232,6 +236,10 @@ test("authenticated API preserves learning metadata and uses the captured accoun
   assert.deepEqual(saved.item.slots, original.item.slots);
   assert.equal(saved.item.analysisDetail.context.currentSentence, original.item.analysisDetail.context.currentSentence);
   assert.equal(saved.item.analysisDetail.analysis.explanation.meaning, original.item.analysisDetail.analysis.explanation.meaning);
+  assert.equal(saved.item.analysisDetail.analysis.learningText, "double down on");
+  assert.deepEqual(saved.item.analysisDetail.analysis.askSuggestions, original.item.analysisDetail.analysis.askSuggestions);
+  assert.equal(saved.item.analysisDetail.analysis.explanation.meaningSummary, "加倍投入");
+  assert.deepEqual(saved.item.analysisDetail.analysis.syntaxAnalysis.sectionSummaries, { structure: "动词短语" });
   const payload = JSON.parse(requests[0].body);
   assert.equal(payload.analysis_detail.context.selected_text, "doubled down on");
   assert.equal(payload.analysis_detail.analysis.explanation.pragmatic_function, "Signals stronger commitment.");
@@ -257,4 +265,36 @@ test("legacy cloud identity survives text edits even without an import key", asy
   const withSnapshot = (await api.list(signal))[0];
   await api.update(withSnapshot, { text: "another edit", meaning: "", usageNote: "", tags: [], slots: {} }, signal);
   assert.equal((await api.list(signal))[0].key, withSnapshot.key);
+});
+
+test("batch removal retains failed and unattempted records and can retry", async () => {
+  const f = fixture(), store = f.open();
+  const rows = [record("one"), record("two"), record("three")].map((row, index) => ({ ...row, serverId: `id-${index}` }));
+  const cloud = remote(rows);
+  let fail = true;
+  cloud.remove = async id => {
+    if (id === "id-1" && fail) throw new Error("Temporary failure");
+    const row = [...cloud.rows.values()].find(row => row.serverId === id);
+    if (row) cloud.rows.delete(row.key);
+  };
+  await store.open("owner", cloud);
+  assert.deepEqual(await store.removeMany(rows), [rows[0].key]);
+  assert.deepEqual(store.state.records.map(row => row.key), rows.slice(1).map(row => row.key));
+  assert.match(store.state.error, /Temporary/);
+  fail = false;
+  assert.deepEqual(await store.removeMany(store.state.records), rows.slice(1).map(row => row.key));
+  assert.equal(store.state.records.length, 0);
+});
+
+test("batch removal stops when the account changes", async () => {
+  const f = fixture(), store = f.open();
+  const rows = [record("one"), record("two")].map((row, index) => ({ ...row, serverId: `id-${index}` }));
+  const cloud = remote(rows);
+  let calls = 0;
+  cloud.remove = async () => { calls++; await store.open("new-owner", remote([])); };
+  await store.open("owner", cloud);
+  await store.removeMany(rows);
+  assert.equal(calls, 1);
+  assert.equal(store.state.owner, "new-owner");
+  assert.deepEqual(store.state.records, []);
 });

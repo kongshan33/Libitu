@@ -1,5 +1,13 @@
 # Build the Libitu MVP experience
 
+## Neutral interface palette — 2026-11-06
+
+Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.
+
+## Corpus kind and saved notes — 2026-11-06
+
+Manual kind changes in Add to corpus invalidate and cancel the previous Syntax. Regenerate immediately if Syntax is open, otherwise wait for its next activation. Preserve Explain, the active tab and question/note drafts. Reader and Corpus library use the saved kind, including pending analyses saved before generation finishes. Reader thumbnails show a bounded plain-text note preview of at most two lines; both detail surfaces show the complete saved note with the same restricted Markdown as follow-up answers. Failed saves retain retryable answer state without presenting the answer as a persisted note.
+
 ## Corpus pronunciation — 2026-11-05
 
 Corpus detail, Add to corpus and Corpus library share 16px section padding and a Play action beside the Pronunciation heading. Play generates an OpenAI AI voice reading only after a click, with visible loading/retry/stop states. Replay within the open card reuses its audio; switching to Syntax or closing stops playback. Text wraps below the heading without displacing Play.
@@ -97,6 +105,8 @@ The user-approved Corpus library artboard and unified v2 visual reference now
 apply to `/corpus`: a full-width 1440px shell, top search/filter/sort toolbar,
 neutral borderless cards, underline tabs and black primary actions. Retain real
 collection metadata, the existing High value rule and private management flows.
+As of 2026-11-06, a single Filters popover groups all six facets with gray option groups and white selected states, following the supplied Voice Library reference. Selections apply immediately, Any clears a facet, and Clear all filters preserves search. Scenario aliases share a bounded English filter taxonomy, with unmatched metadata under Other and no rewrite of saved evidence. Source options expand on demand. Option backgrounds are neutral #EDEDED with white selected states. The panel is viewport-clamped and scrollable; search retains a single black focus boundary.
+
 Display 15 filtered records initially with Load more increments of 15; filtering
 and sorting still run over the full loaded collection. See
 [the library contract](CORPUS_LIBRARY_IMPLEMENTATION.md) for behavior and scope.
@@ -170,7 +180,7 @@ Server analysis and recording retention remain separate preferences. Temporary r
 
 ## Shared visual identity
 
-Existing web brand links share the landing `libitu.` wordmark, including its light-purple dot. Header-specific size and tagline placement remain intact. Shared warm-neutral surfaces, radius tiers and restrained elevation support the existing dense workspaces. Purple primary actions and learning/status semantic colors remain; retain current layout, spacing, responsive breakpoints and font stack in the first consistency pass. Interactive controls expose visible keyboard focus and respect reduced-motion preferences. `DESIGN.md` supplies reference treatments within these boundaries.
+Existing web brand links share the landing `libitu.` wordmark, including its light-purple dot. Header-specific size and tagline placement remain intact. Shared neutral surfaces, radius tiers and restrained elevation support the existing dense workspaces. Purple primary actions and learning/status semantic colors remain; retain current layout, spacing, responsive breakpoints and font stack in the first consistency pass. Interactive controls expose visible keyboard focus and respect reduced-motion preferences. `DESIGN.md` supplies reference treatments within these boundaries.
 
 ## Product goal
 
@@ -545,7 +555,7 @@ The corpus is the shared bridge between input and output. A corpus item remains 
 
 `/corpus` lists the shared saved collection across sources. Card bodies open source-backed details; independent checkboxes keep selection by stable saved key across filtering/sorting. Filters combine alternatives within one dimension and intersect across dimensions. Support type, functional tags, CEFR level, scenario, register and source, plus text search, newest/value/transferability/alphabetical ordering and grid/list views. Default difficulty is unrestricted. Unknown dates and scores stay unknown; high value means an existing learning-value score of at least 4/5.
 
-Editing updates expression/template, meaning, note, tags and structure slots while retaining original source context/analysis as labelled evidence. Delete requires a local confirmation and does not change old session snapshots. Batch Loadout handoff atomically merges into current account-bound settings and refuses over-capacity or unavailable selections without truncating them. Decks, usage counts, review scheduling and metadata editing remain separate.
+Editing updates expression/template, meaning, note, tags and structure slots while retaining original source context/analysis as labelled evidence. Delete is available beside Edit item in the detail footer and in the selection tray for multiple items. A native confirmation names the item count and any selections hidden by filters; focus starts on Keep items. Successful deletions update Stage 1 Saved across mounted views/tabs. Failed items remain selected for retry. Delete does not change source content or old session snapshots and has no undo. Batch Loadout handoff atomically merges into current account-bound settings and refuses over-capacity or unavailable selections without truncating them. Decks, usage counts, review scheduling and metadata editing remain separate.
 
 ### Corpus actions
 
@@ -795,11 +805,13 @@ Libitu is a focused learning tool. It should feel quiet, precise, and suitable f
 | Role | Token or value |
 |---|---|
 | Primary background | `#ffffff` |
-| Secondary background | `#f5f2ef` |
+| Secondary background | `--surface`: `#fafafa` |
+| Soft surface | `--line-soft`: `#ededed` |
 | Page background | `#ffffff` (including outer gutters) |
-| Primary text | `#1a1a1a` |
-| Secondary text | `#5f5e5a` |
-| Border | `rgb(78 50 23 / 12%)` |
+| Primary text | `--ink`: `#0c0c0c` |
+| Secondary text | `--ink-3`: `#525252` |
+| Muted text | `--muted`: `#6b6b6b` |
+| Border | `--line-strong`: `#d4d4d4` |
 | Active | Purple ramp |
 | Success and structures | Teal ramp |
 | Chunks and hints | Amber ramp |
@@ -809,7 +821,7 @@ The implementation source is `packages/ui/src/tokens.css`. Update the token file
 
 ### Typography and fields
 
-The web UI loads locally bundled Inter normal and italic variable fonts with swap display and an adjusted fallback. Preserve existing monospace learning text and layout geometry. Text fields and native/Radix selects share white surfaces, warm borders, purple focus, red invalid borders, placeholder and disabled states. Generic selection uses shared purple tokens; learning/status palettes stay independent. See [the visual system](VISUAL_SYSTEM.md).
+The web UI loads locally bundled Inter normal and italic variable fonts with swap display and an adjusted fallback. Preserve existing monospace learning text and layout geometry. Text fields and native/Radix selects share white surfaces, neutral borders, a single black focus boundary, red invalid borders, placeholder and disabled states. Generic selection uses shared purple tokens; learning/status palettes stay independent. See [the visual system](VISUAL_SYSTEM.md).
 
 ### Shared action buttons
 
@@ -1022,3 +1034,7 @@ Resume preserves the transcript and does not automatically enable Chat capture.
 Primary buttons use black pill styling; recording state stays neutral. Quick start retains its black card as a user-approved exception, with white primary action, 14px card geometry and neutral supporting colors. Reference and learner pitch traces use solid and dashed neutral strokes. Dialogs, filter panels and selection trays use 160ms opacity/position transitions with immediate reduced-motion fallback. Hidden filter panels and trays are inert. Assessment content fades on explicit selection; saved icons acknowledge successful persistence. Audio visuals retain real state and level inputs. Clerk appearance is unchanged.
 
 Report action buttons use single-line labels without supporting small text, with 15px primary and 13px secondary text. Stage 1 active caption words use line-soft warm gray backgrounds and ink-2 text, retaining corpus underlines without font-weight or spacing changes. Ingest uses the compact Reference audio control without introductory copy or expanded preparation details; necessary setup instructions and errors remain visible.
+
+2026-11-06 Corpus selection: Select all filtered results includes every matching record, including unloaded pages. Deselect filtered results removes only matching selections; hidden selections remain. Disable selection while search results are settling or corpus operations are pending. Existing delete confirmation and Stage 1 Saved synchronization apply.
+
+2026-11-06 Corpus Loadout limit: the selection tray states a maximum of five total items including existing selections. More than five currently selected items disables Add to Loadout with an associated explanation; batch deletion stays unrestricted. Existing atomic merge validation still rejects a combined selection over five without truncation.

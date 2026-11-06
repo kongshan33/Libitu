@@ -1,23 +1,23 @@
 /* Compatibility styles for the saved-session page. */
-.page { --selection-background: #f5f5ff; --selection-border: #4f46e5; min-height: 100vh; padding: 32px 16px 56px; background: #fafafa; color: var(--color-text-primary, #252520); font-size: 14px; }
+.page { --selection-background: #f5f5ff; --selection-border: #4f46e5; min-height: 100vh; padding: 32px 16px 56px; background: #fafafa; color: var(--color-text-primary); font-size: 14px; }
 .shell { width: 100%; margin: 0; }
-.back { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; color: var(--color-text-secondary, #66645f); text-decoration: none; font-size: 12px; }
+.back { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; color: var(--color-text-secondary); text-decoration: none; font-size: 12px; }
 .back:hover { color: #534ab7; }
 .sessionMain h1 { margin: 8px 0 10px; font-size: 34px; font-weight: 650; letter-spacing: -.8px; }
 .sectionIntro { color: #5b6270; font-size: 14px; line-height: 1.65; margin: 8px 0 18px; }
 .section { border: 0; padding: 0; margin: 30px 0; min-width: 0; scroll-margin-top: 24px; }
 .section legend { padding: 0 8px 0 0; }
-.section legend, .section h2 { color: var(--color-text-primary, #252520); font-size: 16px; font-weight: 500; margin: 0 0 15px; }
+.section legend, .section h2 { color: var(--color-text-primary); font-size: 16px; font-weight: 500; margin: 0 0 15px; }
 .fieldHelp { color: #5b6270; font-weight: 400; font-size: 12px; line-height: 1.65; }
-.logicFlow { font-family: var(--font-mono, monospace); font-size: 10px; line-height: 1.75; color: #6556a7; margin-top: 3px; overflow-wrap: anywhere; }
-.structureText { font-family: var(--font-mono, monospace); font-size: 12px; line-height: 1.6; color: #493b98; overflow-wrap: anywhere; }
+.logicFlow { font-family: var(--font-ui); font-size: 10px; line-height: 1.75; color: #6556a7; margin-top: 3px; overflow-wrap: anywhere; }
+.structureText { font-family: var(--font-ui); font-size: 12px; line-height: 1.6; color: #493b98; overflow-wrap: anywhere; }
 .tags { display: flex; flex-wrap: wrap; gap: 4px; }
-.tags span, .kindTag { display: inline-flex; width: fit-content; border-radius: var(--radius-xl); background: var(--gray-50); color: #615a4c; font-size: 9px; line-height: 1.4; padding: 3px 7px; }
+.tags span, .kindTag { display: inline-flex; width: fit-content; border-radius: var(--radius-xl); background: var(--gray-50); color: var(--ink-3); font-size: 9px; line-height: 1.4; padding: 3px 7px; }
 .tags .kindTag, .kindTag { background: #e4f3ed; color: #21644e; }
-.source { color: var(--color-text-secondary, #66645f); font-size: 10px; line-height: 1.5; margin-top: 3px; overflow-wrap: anywhere; }
-.emptyLibrary { border: 1px dashed var(--color-border-secondary, #cccac5); border-radius: var(--radius-lg); text-align: center; padding: 28px 18px; margin: 20px 0; }
+.source { color: var(--color-text-secondary); font-size: 10px; line-height: 1.5; margin-top: 3px; overflow-wrap: anywhere; }
+.emptyLibrary { border: 1px dashed var(--color-border-secondary); border-radius: var(--radius-lg); text-align: center; padding: 28px 18px; margin: 20px 0; }
 .emptyLibrary h3 { font-size: 15px; font-weight: 500; margin: 0 0 10px; }
-.emptyLibrary p { color: var(--color-text-secondary, #66645f); font-size: 12px; line-height: 1.7; }
+.emptyLibrary p { color: var(--color-text-secondary); font-size: 12px; line-height: 1.7; }
 .emptyLibrary a { display: inline-flex; align-items: center; gap: 6px; color: #534ab7; font-size: 12px; margin-top: 10px; min-height: 36px; }
 .startButton { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; border-width: 1px; border-style: solid; padding: 12px; font: inherit; font-size: 13px; }
 .startButton:hover:not(:disabled) { background: #303035; }
@@ -33,12 +33,12 @@
 .preparationBanner h2 { font-size: 14px; color: #4d4076; margin: 0 0 8px; }
 .preparationBanner p { font-size: 12px; line-height: 1.7; color: #70657e; margin: 0; }
 .savedItems { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.savedItem { min-width: 0; padding: 17px; border: 1px solid #e0ddd5; border-radius: var(--radius-md); }
+.savedItem { min-width: 0; padding: 17px; border: 1px solid var(--line); border-radius: var(--radius-md); }
 .savedItem h3 { font-size: 15px; font-weight: 500; line-height: 1.6; margin: 10px 0 8px; overflow-wrap: anywhere; }
 .savedItem p { font-size: 12px; line-height: 1.6; color: #6e6775; }
 .patternSlots { margin: 12px 0; font-size: 11px; color: #655a76; }
 .patternSlots div { display: flex; gap: 8px; margin-top: 7px; }
-.patternSlots dt { font-family: var(--font-mono, monospace); font-weight: 500; }
+.patternSlots dt { font-family: var(--font-ui); font-weight: 500; }
 .patternSlots dd { margin: 0; }
 .page :global(.ui-button) { border-radius: 999px; }
 .page :global(.ui-button[data-variant="primary"]), .page .startButton { background: #111; color: #fff; border-color: #111; box-shadow: none; }
@@ -46,11 +46,8 @@
 @media (max-width: 800px) { .page { padding: 24px 16px 40px; } .page button, .back { min-height: 44px; } }
 @media (max-width: 480px) { .page { padding: 20px 12px 32px; } .sessionMain { padding: 20px 16px; } .sessionMain h1 { font-size: 25px; } .savedItems { grid-template-columns: minmax(0, 1fr); } .sessionSettings { flex-wrap: wrap; gap: 20px; } }
 
-/* Stage 3 uses the supplied prototype structure and design v1.0 tokens. */
+/* Stage 3 keeps the supplied prototype structure and inherits shared neutral tokens. */
 .reference {
-  --ink: #0c0a09; --ink-2: #44403c; --ink-3: #57534e; --muted: #78716c;
-  --line-strong: #d6d3d1; --line: #e7e5e4; --line-soft: #f0eeec;
-  --surface: #fafaf9; --bg: #fff; --brand: #5a43d6;
   --selection-background: #fff; --selection-border: var(--brand);
   --focus-ring: 2px solid var(--brand); --focus-offset: 2px;
   color: var(--ink); background: var(--bg); letter-spacing: normal;
@@ -147,7 +144,7 @@
 .logicTitle { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 500; }
 .logicTitle svg { flex-shrink: 0; }
 .logicDescription { color: var(--ink-3); font-size: 13px; line-height: 1.5; }
-.reference .logicFlow { margin: 0; color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.reference .logicFlow { margin: 0; color: var(--muted); font-family: var(--font-ui); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .generateButton { align-self: flex-start; min-height: 40px; }
 .sceneList { display: grid; gap: 14px; }
 .sceneCard { min-width: 0; padding: 18px; border: 1.5px solid transparent; border-radius: 14px; background: var(--bg); overflow-wrap: anywhere; }
@@ -180,7 +177,7 @@
 .previewLogic { display: flex; flex-direction: column; gap: 6px; }
 .logicPreview { display: flex; flex-direction: column; gap: 5px; padding: 10px 12px; border-radius: 10px; background: var(--bg); }
 .logicPreview strong { font-size: 14px; font-weight: 500; }
-.logicPreview span { color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5; }
+.logicPreview span { color: var(--muted); font-family: var(--font-ui); font-size: 12px; line-height: 1.5; }
 .goalPreview, .preparationNote, .validation, .readiness { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 .startArea { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
 .reference .startButton[data-variant][data-size][data-shape] { width: 100%;     }

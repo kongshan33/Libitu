@@ -1,6 +1,7 @@
 import { CONTENT_ID, learningHref } from "../navigation/learning-location.ts";
 import type { SavedCorpusRecord } from "./corpus-storage.ts";
 import { expressionText } from "../loadout/draft.ts";
+import { scenarioGroups } from "./scenario-filters.ts";
 
 export type LibraryFilters = { query: string; kind: string[]; tags: string[]; level: string[]; register: string[]; scenario: string[]; source: string[]; highValue: boolean };
 export type LibrarySort = "recent" | "value" | "transfer" | "alphabetical";
@@ -15,7 +16,7 @@ export function libraryItems(records: SavedCorpusRecord[], filters: LibraryFilte
     return (!query || [expressionText(record), item.meaning, item.usageNote, ...item.tags, record.sourceTitle].join(" ").toLocaleLowerCase().includes(query))
       && matches(filters.kind, [item.kind]) && matches(filters.tags, item.tags)
       && matches(filters.level, [item.level ?? "unknown"]) && matches(filters.register, [item.register ?? "unknown"])
-      && matches(filters.scenario, item.scenarioTags?.length ? item.scenarioTags : ["unknown"])
+      && matches(filters.scenario, scenarioGroups(item.scenarioTags))
       && matches(filters.source, [sourceKey(record)]) && (!filters.highValue || (item.learningValueScore ?? 0) >= 4);
   });
   return filtered.sort((a, b) => {

@@ -1,5 +1,61 @@
 # Track Libitu decisions
 
+## Neutral interface palette — 2026-11-06
+
+Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.
+
+## Corpus scenario groups and neutral options — 2026-11-06
+
+Library Scenario options and matching share a bounded English taxonomy: Work, Everyday, Discussions, Presentations, Interviews, Storytelling and Writing. Only groups present in the collection appear; Other keeps records without a recognized setting reachable. Known Chinese/English aliases merge, while register/function labels alone do not imply a setting. Saved metadata is unchanged. The Source group is collapsed by default. Option groups use the reference page's measured #EDEDED background and white selected states; text uses neutral #616161, and forced-colors selection retains an outline.
+
+## Unified Corpus filter panel — 2026-11-06
+
+Corpus library now groups the six existing facets into one Filters popover, following the supplied ElevenLabs Voice Library reference: neutral rounded controls, left-hand labels, gray option groups and white selected options. Selections apply immediately; Any clears one dimension, Clear all filters clears facets while preserving search, and the toolbar Clear all resets search/facets within the active tab. The trigger counts selected values. Multi-select OR/AND rules, sorting, selection and pagination remain unchanged. The panel uses native nonmodal popover dismissal with a manual fallback, viewport-clamped positioning, bounded scrolling, 44px narrow/coarse controls and reduced-motion support.
+
+## Single input focus boundary — 2026-11-06
+
+Text inputs, textareas and native selects use one inset black focus boundary without a shadow or layout shift. Composite Corpus search, follow-up prompts and Landing URL entry delegate focus paint to their outer group, suppressing the inner outline. Checkbox/radio/range/file controls and button focus behavior remain unchanged.
+
+## Unified interface typeface — 2026-11-06
+
+Replace the Geist Mono/system monospace stack with the existing locally bundled Inter UI typeface across metadata, corpus patterns, timestamps and analysis labels. Keep the legacy font token as an alias and remove direct feature-level monospace overrides. Font sizes, weights and content remain unchanged.
+
+## Corpus deletion — 2026-11-06
+
+Library selection supports confirmed batch deletion, including counts of selected items hidden by filters. Detail exposes Delete beside Edit item in the bottom action group with the same native confirmation. Successful removals notify mounted corpus consumers and other tabs to refresh Stage 1 Saved; failures retain remaining selections. Account changes stop the batch. Deletion affects personal corpus only, preserves source and old practice snapshots, and does not offer undo.
+
+## Resolve historical Shadow sentences — 2026-11-06
+
+Historical attempts carry sentence identity without segment identity. Resolve the sentence using the same buildSentenceUnits logic as Shadow, then replace the URL with the canonical segment/sentence selection. Do not guess a different sentence when the current blueprint no longer contains it.
+
+## Corpus kind changes invalidate Syntax — 2026-11-06
+
+Treat the current draft/saved kind as authoritative for Syntax routing. A kind change clears all old Syntax fields and summaries, aborts its request, and regenerates only while Syntax is visible. Keep the analysis view mounted to preserve the selected tab, Explain and follow-up drafts/history. Late results cannot overwrite the new kind; completion uses the latest persistence callback to retain newer saved fields/notes. Saving while pending stores an empty pending Syntax for later generation in Reader or Library.
+
+Keep saved follow-up text in the existing usage note. Bound Reader thumbnail previews to 140 plain-text characters and two visible lines; show the full note in the shared Reader/Library My note section using the existing restricted Markdown renderer. Save failures must not display an unsaved answer as a durable note. No new schema, provider integration or migration.
+
+## Corpus source evidence and learning expressions — 2026-11-06
+
+Keep user-confirmed 16px section spacing and Use it before Meaning when applying design section 9.16. Store original selected/recommended text separately from normalized learning_text: remove context-specific inflections from phrases, preserve lexicalized forms and full-sentence wording. Learning title/IPA/stress/TTS share that target; Syntax analyzes the original inflection. Retain custom names and saved templates. Extend the existing v3 contract instead of adopting incompatible nested prompt drafts; retain existing field names for reusable patterns and stress text.
+
+Generated follow-up suggestions select/toggle input, explicit Send triggers the request. Phrase Syntax has three analysis blocks plus translations; scenarios remain only in Explain. No speculative Pitfalls. Native modal close precedes React unmount to return focus; Add to corpus stays non-modal and pinnable. Omit unsupported comparisons/over-strong translations, narrowly recover one redundant JSON closing brace, and use the pinned dictionary only for provable regular IPA suffix corrections. The [real comparison](design/benchmarks/corpus-detail-20261106/COMPARISON.md) records latency costs and remaining model-quality limits.
+
+## Extension store preparation — 2026-11-06
+
+[CHROMEWEBSTORE.md](CHROMEWEBSTORE.md) now records every manifest permission, data flows/retention, listing and privacy drafts, and pending publisher/email/domain (owner specified 待定). [Acceptance](design/docs/extension-release/ACCEPTANCE.md) records 124 passing unit tests, extension lint/build, and real unpacked Chrome entry/fresh-caption/no-capture workspace fixture passes. Native toolbar → tabCapture → PCM passed on retry: actual native UI clicks produced a 0.4-second WAV with RMS 0.106066, retained ownership across same-content paths and released offscreen/capture on reload. Earlier shortcut/UI failures are historical; synthetic identity/test-tone coverage does not prove live YouTube or production behavior. The harness offers manual native-action mode without injecting shortcut commands, waits for native Enable audio before arming, accepts enabled followed by coverage, and waits for a fully covered extraction interval. No store submission or production readiness claim. Integrated Web server analysis is separate from extension capture and defaults on unless disabled; its uploads and 30-day reference expiry must be disclosed.
+
+## Activity metric rendering — 2026-11-06
+
+Animate the existing activity panel on metric changes instead of remounting its total and SVG with the same key. Keep exactly one active summary and chart, preserving keyboard focus, reduced motion and the existing date-range loading behavior.
+
+## Extension bridge context invalidation — 2026-11-05
+
+Buffered bridge runtime invalidation follow-up: wrap runtime sends in an async boundary so both synchronous context-invalidated exceptions and rejected promises follow the existing terminal connection-lost path. Do not silently reconnect or reacquire audio authorization; extension reload still requires refreshing the owning page.
+
+## 2026-11-05: Bound extension handoff retention and permit language retries
+
+Cache only concurrent language checks, not settled results, so explicit launch retries can recover from transient metadata absence without relaxing English-only validation. Use `chrome.alarms` (one minute, compatible with Chrome 116) plus startup/access cleanup for 15-minute caption handoffs. Deletion may be delayed by device sleep; TTL reads fail closed. Serialize handoff cleanup/writes, retain at most 16 records and 4 MiB of UTF-8 serialized keys/values, evict oldest first, and reject oversized individual payloads. Closing an import tab deletes its record; closing the source preserves a ready handoff with an import tab but removes an unfinished launch. Audio capture permissions and retention are unchanged.
+
 ## Neutral retry notices — 2026-11-05
 
 Recoverable-error panels share a neutral surface, gray border and dark gray copy across Loadout, Corpus, learning history, reports and practice. Use 16px padding and vertical margins, 12px action gaps and shared button geometry. Error/alert semantics and retry handlers are preserved; destructive confirmations keep their existing treatment. Audio-save failures use the same neutral palette.
@@ -1456,3 +1512,9 @@ The UI describes optional Reference comparison and promotes completed learner-on
 Remove the duplicate yellow preparation progress bar and amber preparation/analysis backgrounds in Shadow; keep the video playback progress indicator. Restore existing sentence References silently without a visible Checking state or analysis spinner. While availability is unresolved, show neutral Reference copy (or the existing extension-off/setup controls), then show the actual resolved status. Directory practice progress reports learner Takes and best word matches, not Reference availability; retain the cached background lookup and upload deduplication. Audio acquisition, recording availability and analysis gates are unchanged.
 
 2026-10-17 Enable setup follow-up: show the setup spinner only during the extension handshake. Once armed and waiting for a toolbar click, stop the spinner, show “Click Libitu in Chrome’s toolbar”, and retain the setup instructions and Cancel action. The extension protocol, authorization and audio acquisition remain unchanged.
+
+2026-11-06 Shadow history compatibility: if subtitle regeneration changed a sentence ID, recover only a unique whitespace-normalized exact match to the recorded sentence text. Ambiguous or missing matches open the segment picker. Canonical navigation drops the recovery text.
+
+2026-11-06 Corpus selection: Select all filtered results includes every matching record, including unloaded pages. Deselect filtered results removes only matching selections; hidden selections remain. Disable selection while search results are settling or corpus operations are pending. Existing delete confirmation and Stage 1 Saved synchronization apply.
+
+2026-11-06 Corpus Loadout limit: the selection tray states a maximum of five total items including existing selections. More than five currently selected items disables Add to Loadout with an associated explanation; batch deletion stays unrestricted. Existing atomic merge validation still rejects a combined selection over five without truncation.

@@ -33,6 +33,8 @@ if (manifest.manifest_version !== 3) {
   errors.push("manifest_version must be 3.");
 }
 
+if (!manifest.permissions?.includes("alarms")) errors.push("alarms permission is required for expired caption handoff cleanup.");
+
 if (!manifest.permissions?.includes("scripting")) {
   errors.push("scripting permission is required to recover missing content-script receivers.");
 }

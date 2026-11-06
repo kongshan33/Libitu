@@ -3,6 +3,7 @@ import test from "node:test";
 import { libraryItems, emptyFilters, sourceHref } from "../features/corpus/library.ts";
 import { addCorpusToDraft, emptyDraft, saveDraft, readDraftEnvelope, LOADOUT_STORAGE_KEY } from "../features/loadout/draft.ts";
 import { CorpusStorage } from "../features/corpus/corpus-storage.ts";
+import { scenarioGroups, scenarioOptions } from "../features/corpus/scenario-filters.ts";
 const rows = [
   { key: "a", sourceTitle: "Talk A", sourceUrl: "https://example.com", createdAt: "2026-01-01", item: { id: "a", kind: "chunk", text: "To be fair", meaning: "concede", tags: ["hedging"], level: "B1", register: "neutral", scenarioTags: ["workplace"], learningValueScore: 5, meta: "" } },
   { key: "b", sourceTitle: "Talk B", sourceUrl: "https://example.org", createdAt: "2026-02-01", item: { id: "b", kind: "idiom", text: "raise the bar", tags: ["framing"], level: "B2", learningValueScore: 3, meta: "" } },
@@ -16,6 +17,34 @@ test("library combines OR facets with AND dimensions and preserves identities af
   assert.deepEqual(libraryItems(rows, { ...emptyFilters, level: ["unknown"] }, "recent").map(r => r.key), ["c"]);
   assert.deepEqual(libraryItems(rows, emptyFilters, "recent").map(r => r.key), ["b", "a", "c"]);
   assert.equal(sourceHref({ ...rows[0], sourceUrl: "javascript:alert(1)" }), null);
+});
+test("scenario facets merge legacy languages and aliases without changing saved metadata", () => {
+  const scenarios = [
+    ["商务访谈", "interviews", "正式/中性"],
+    [" DAILY_LIFE ", "small-talk", "日常口语"],
+    ["negotiation", "解释说明", "正式讨论"],
+    ["workplace", "presentation", "商业演讲"],
+    ["正式", "中性偏正式", "描述性"],
+    [],
+    ["an unseen future label"],
+    ["email", "书面沟通"],
+  ];
+  const records = scenarios.map((scenarioTags, index) => ({ ...rows[0], key: String(index), item: { ...rows[0].item, scenarioTags, level: index === 2 ? "B2" : "B1" } }));
+  const before = JSON.stringify(records);
+  assert.deepEqual(scenarioGroups(scenarios[0]), ["interview"]);
+  assert.deepEqual(scenarioGroups(scenarios[1]), ["daily_life"]);
+  assert.deepEqual(scenarioGroups(scenarios[2]), ["discussion"]);
+  assert.deepEqual(scenarioGroups(scenarios[3]), ["workplace", "presentation"]);
+  assert.deepEqual(libraryItems(records, { ...emptyFilters, scenario: ["interview", "discussion"] }, "recent").map(r => r.key), ["0", "2"]);
+  assert.deepEqual(libraryItems(records, { ...emptyFilters, scenario: ["interview", "discussion"], level: ["B2"] }, "recent").map(r => r.key), ["2"]);
+  assert.deepEqual(libraryItems(records, { ...emptyFilters, scenario: ["unknown"] }, "recent").map(r => r.key), ["4", "5", "6"]);
+  assert.deepEqual(libraryItems(records, { ...emptyFilters, scenario: ["writing"] }, "recent").map(r => r.key), ["7"]);
+  assert.equal(JSON.stringify(records), before);
+  const available = new Set(records.flatMap(record => scenarioGroups(record.item.scenarioTags)));
+  const labels = scenarioOptions.filter(option => available.has(option.value)).map(option => option.label);
+  assert.equal(new Set(labels).size, labels.length);
+  assert.ok(labels.every(label => /^[A-Za-z ]+$/.test(label)));
+  assert.ok(labels.length <= 8);
 });
 test("guest edits survive reload with stable key, source evidence, and creation time", async () => {
   const storage = memory(); const store = new CorpusStorage(() => storage);

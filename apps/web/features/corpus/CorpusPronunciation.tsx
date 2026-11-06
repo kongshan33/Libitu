@@ -75,7 +75,7 @@ export function CorpusPronunciation({ pronunciation, disabled, active }: {
   }
 
   return <section>
-    <div className={styles.pronunciationHeading}><h2>Pronunciation</h2>
+    <div className={styles.pronunciationHeading}><h3>Pronunciation</h3>
       <Button variant="secondary" size="sm" disabled={disabled} loading={status === "loading"} loadingLabel="Loading"
         aria-describedby={descriptionId} onClick={() => void play()}>
         {status === "playing" ? <Square size={14} aria-hidden="true" /> : <Volume2 size={14} aria-hidden="true" />}

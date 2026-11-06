@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { Check, ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import type { SavedCorpusRecord } from "./corpus-storage";
 import { sourceKey, type LibraryFilters } from "./library";
+import { scenarioGroups, scenarioOptions } from "./scenario-filters";
 import styles from "./CorpusLibrary.module.css";
 
 type FacetKey = "kind" | "tags" | "level" | "scenario" | "register" | "source";
@@ -15,8 +16,9 @@ export function CorpusFilters({ records, filters, onChange }: {
   filters: LibraryFilters;
   onChange(change: Partial<LibraryFilters>): void;
 }) {
-  const [open, setOpen] = useState<FacetKey | null>(null);
-  const anchors = useRef<Partial<Record<FacetKey, HTMLDivElement | null>>>({});
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const facets = useMemo(() => {
     const tags = new Set<string>();
@@ -24,7 +26,7 @@ export function CorpusFilters({ records, filters, onChange }: {
     const sources = new Map<string, Option>();
     for (const record of records) {
       record.item.tags.forEach(tag => tags.add(tag));
-      record.item.scenarioTags?.forEach(scenario => scenarios.add(scenario));
+      scenarioGroups(record.item.scenarioTags).forEach(scenario => scenarios.add(scenario));
       const value = sourceKey(record);
       const source = sources.get(value);
       sources.set(value, { value, label: record.sourceTitle || "Personal corpus", count: (source?.count ?? 0) + 1 });
@@ -33,79 +35,131 @@ export function CorpusFilters({ records, filters, onChange }: {
       { key: "kind", title: "Type", options: ["chunk", "idiom", "structure"].map(option) },
       { key: "tags", title: "Functional tags", options: [...tags].sort().map(option) },
       { key: "level", title: "Difficulty", options: ["A1", "A2", "B1", "B2", "C1", "C2", "unknown"].map(option) },
-      { key: "scenario", title: "Scenario", options: [...scenarios].sort().concat("unknown").map(option) },
+      { key: "scenario", title: "Scenario", options: scenarioOptions.filter(({ value }) => scenarios.has(value)) },
       { key: "register", title: "Register", options: ["professional", "neutral", "casual", "formal", "unknown"].map(option) },
       { key: "source", title: "Source", options: [...sources.values()] }
     ] satisfies { key: FacetKey; title: string; options: Option[] }[];
   }, [records]);
 
-  useEffect(() => {
-    if (!open) return;
-    const anchor = anchors.current[open];
+  const selectedCount = facets.reduce((count, { key }) => count + filters[key].length, 0);
+
+  function positionPanel() {
+    const anchor = trigger.current;
     const popup = panel.current;
     if (!anchor || !popup) return;
-    const position = () => {
-      const rect = anchor.getBoundingClientRect();
-      const width = Math.min(320, window.innerWidth - 32);
-      // The filter group uses display: contents; anchor to this pill instead.
-      const left = Math.max(16, Math.min(rect.left, window.innerWidth - 16 - width));
-      popup.style.setProperty("--popover-shift", `${left - rect.left}px`);
-      const below = window.innerHeight - rect.bottom - 24;
-      const above = below < 180 && rect.top - 24 > below;
-      popup.dataset.side = above ? "top" : "bottom";
-      popup.style.setProperty("--popover-height", `${Math.min(360, Math.max(0, above ? rect.top - 24 : below))}px`);
-    };
-    position();
-    const resize = new ResizeObserver(position);
-    resize.observe(anchor);
-    popup.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
+    const rect = anchor.getBoundingClientRect();
+    const viewport = window.visualViewport;
+    const width = viewport?.width ?? window.innerWidth;
+    const height = viewport?.height ?? window.innerHeight;
+    const offsetX = viewport?.offsetLeft ?? 0;
+    const offsetY = viewport?.offsetTop ?? 0;
+    const panelWidth = Math.min(600, width - 32);
+    const below = height + offsetY - rect.bottom - 16;
+    const above = rect.top - offsetY - 16;
+    const useAbove = below < 360 && above > below;
+    popup.style.setProperty("--popover-width", `${panelWidth}px`);
+    popup.style.setProperty("--popover-left", `${Math.max(offsetX + 16, Math.min(rect.left, offsetX + width - panelWidth - 16))}px`);
+    popup.style.setProperty("--popover-top", useAbove ? "auto" : `${rect.bottom + 8}px`);
+    popup.style.setProperty("--popover-bottom", useAbove ? `${window.innerHeight - rect.top + 8}px` : "auto");
+    popup.style.setProperty("--popover-height", `${Math.max(0, (useAbove ? above : below) - 8)}px`);
+  }
+
+  function closePanel(restoreFocus = false) {
+    if (panel.current && "popover" in HTMLElement.prototype && panel.current.matches(":popover-open")) panel.current.hidePopover();
+    setOpen(false);
+    if (restoreFocus) trigger.current?.focus({ preventScroll: true });
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    const popup = panel.current;
+    positionPanel();
+    popup?.querySelector<HTMLButtonElement>("[aria-pressed=true]")?.focus({ preventScroll: true });
+    // Native popovers own Escape and light dismissal. Also close when keyboard
+    // focus leaves the filter controls, preserving the previous nonmodal flow.
+    const native = "popover" in HTMLElement.prototype;
     const outside = (event: Event) => {
-      if (event.target instanceof Node && !anchor.contains(event.target)) setOpen(null);
+      if (event.target instanceof Node && !popup?.contains(event.target) && !trigger.current?.contains(event.target)) {
+        if (native && popup?.matches(":popover-open")) popup.hidePopover();
+        setOpen(false);
+      }
     };
     const escape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       event.preventDefault();
-      anchor.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
-      setOpen(null);
+      setOpen(false);
+      trigger.current?.focus({ preventScroll: true });
     };
     document.addEventListener("pointerdown", outside);
     document.addEventListener("focusin", outside);
-    document.addEventListener("keydown", escape);
-    window.addEventListener("resize", position);
-    window.addEventListener("scroll", position, true);
+    if (!native) document.addEventListener("keydown", escape);
+    const resize = new ResizeObserver(positionPanel);
+    if (trigger.current) resize.observe(trigger.current);
+    window.addEventListener("resize", positionPanel);
+    window.addEventListener("scroll", positionPanel, true);
+    window.visualViewport?.addEventListener("resize", positionPanel);
+    window.visualViewport?.addEventListener("scroll", positionPanel);
     return () => {
       document.removeEventListener("pointerdown", outside);
       document.removeEventListener("focusin", outside);
       document.removeEventListener("keydown", escape);
-      window.removeEventListener("resize", position);
-      window.removeEventListener("scroll", position, true);
       resize.disconnect();
+      window.removeEventListener("resize", positionPanel);
+      window.removeEventListener("scroll", positionPanel, true);
+      window.visualViewport?.removeEventListener("resize", positionPanel);
+      window.visualViewport?.removeEventListener("scroll", positionPanel);
     };
   }, [open]);
 
-  return <div className={styles.filters} role="group" aria-label="Corpus filters">
-    {facets.map(({ key, title, options }) => <div key={key} className={styles.filterAnchor} ref={node => { anchors.current[key] = node; }}>
-      <button className={styles.filterPill} type="button" aria-expanded={open === key} aria-haspopup="dialog"
-        aria-controls={`corpus-filter-${key}`} data-selected={filters[key].length > 0 || undefined}
-        onClick={() => setOpen(current => current === key ? null : key)}>
-        {title}{filters[key].length ? ` · ${filters[key].length}` : ""}<ChevronDown size={16} aria-hidden="true" />
-      </button>
-      <div hidden={open !== key} inert={open !== key} ref={open === key ? panel : undefined} id={`corpus-filter-${key}`} className={styles.filterPanel} role="dialog" aria-label={`${title} filters`}>
-        <div className={key === "source" ? styles.sourceOptions : styles.filterOptions}>
-          {options.map(({ value, label, count }) => <button key={value} type="button" aria-pressed={filters[key].includes(value)}
-            onClick={() => onChange({ [key]: filters[key].includes(value) ? filters[key].filter(item => item !== value) : [...filters[key], value] })}>
-            <span>{label}</span>{count !== undefined ? <span className={styles.sourceCount}>{count}</span> : null}
-          </button>)}
-        </div>
-        {!options.length ? <p className={styles.help}>No {title.toLowerCase()} saved yet.</p> : null}
-        <div className={styles.filterActions}>
-          {filters[key].length ? <button type="button" className={styles.textButton} onClick={() => onChange({ [key]: [] })}>Clear</button> : null}
-          <button type="button" className={styles.textButton} onClick={() => {
-            anchors.current[key]?.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
-            setOpen(null);
-          }}>Done</button>
-        </div>
+  function renderOptions(key: FacetKey, options: readonly Option[]) {
+    return (
+      <div className={key === "source" ? styles.sourceOptions : styles.filterOptions} data-scrollable={key === "tags" || undefined}>
+        {options.map(({ value, label, count }) => <button key={value} type="button" aria-pressed={filters[key].includes(value)}
+          onClick={() => onChange({ [key]: filters[key].includes(value) ? filters[key].filter(item => item !== value) : [...filters[key], value] })}>
+          {key === "source" ? <Check size={14} aria-hidden="true" /> : null}
+          <span>{label}</span>{count !== undefined ? <span className={styles.sourceCount}>{count}</span> : null}
+        </button>)}
+        <button type="button" aria-pressed={filters[key].length === 0} onClick={() => onChange({ [key]: [] })}>
+          {key === "source" ? <Check size={14} aria-hidden="true" /> : null}<span>Any</span>
+        </button>
       </div>
-    </div>)}
+    );
+  }
+
+  return <div className={styles.filters}>
+    <button ref={trigger} className={styles.filterPill} type="button" aria-label="Filters"
+      aria-expanded={open} aria-haspopup="dialog" aria-controls={panelId} popoverTarget={panelId}
+      data-selected={selectedCount > 0 || undefined} onClick={() => {
+        positionPanel();
+        if (!("popover" in HTMLElement.prototype)) setOpen(current => !current);
+      }}>
+      <SlidersHorizontal size={16} aria-hidden="true" />
+      Filters{selectedCount > 0 ? <span className={styles.filterCount}>{selectedCount}</span> : null}
+    </button>
+    <div ref={panel} id={panelId} popover="auto" className={styles.filterPanel}
+      data-open={open || undefined} role="dialog" aria-label="Corpus filters"
+      onToggle={event => setOpen(event.newState === "open")}>
+      <div className={styles.filterHeader}>
+        <h2>Filters</h2>
+        <button type="button" className={styles.filterClose} aria-label="Close filters" onClick={() => closePanel(true)}><X size={18} aria-hidden="true" /></button>
+      </div>
+      <div className={styles.filterBody}>
+        {facets.map(({ key, title, options }) => <div key={key} className={styles.filterRow} role="group" aria-label={title}>
+          {key === "source" ? <details className={styles.sourceDisclosure}>
+            <summary><span className={styles.filterLabel}>{title}</span><span className={styles.sourceSummary}>
+              {filters.source.length ? `${filters.source.length} selected` : "Any"}<ChevronDown size={14} aria-hidden="true" />
+            </span></summary>
+            {renderOptions(key, options)}
+          </details> : <><span className={styles.filterLabel}>{title}</span>{renderOptions(key, options)}</>}
+        </div>)}
+      </div>
+      <div className={styles.filterActions}>
+        <button type="button" className={styles.filterReset} disabled={!selectedCount}
+          onClick={() => onChange({ kind: [], tags: [], level: [], scenario: [], register: [], source: [] })}>
+          <X size={14} aria-hidden="true" />Clear all filters
+        </button>
+        <button type="button" className={styles.filterDone} onClick={() => closePanel(true)}>Done</button>
+      </div>
+    </div>
   </div>;
 }

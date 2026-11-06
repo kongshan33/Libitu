@@ -198,6 +198,8 @@ export type ApiCorpusSelectionAnalysis = {
   schema_version?: number;
   syntax_state?: "pending" | "ready";
   teacher_note?: string;
+  learning_text?: string;
+  ask_suggestions?: string[];
   reusable_patterns?: CorpusSelectionAnalysis["reusablePatterns"];
   collocations?: string[];
   pitfalls?: string[];
@@ -216,6 +218,7 @@ export type ApiCorpusSelectionAnalysis = {
   };
   note_placeholder: string;
   explanation: {
+    meaning_summary?: string;
     pronunciation: {
       ipa: string;
       connected_speech: string;
@@ -233,6 +236,7 @@ export type ApiCorpusSelectionAnalysis = {
     usage_chips: string[];
   };
   syntax_analysis: {
+    section_summaries?: CorpusSelectionAnalysis["syntaxAnalysis"]["sectionSummaries"];
     sentence_type: string;
     main_clause: string;
     structure_breakdown: string[];
@@ -792,6 +796,8 @@ export function toCorpusSelectionAnalysis(analysis: ApiCorpusSelectionAnalysis):
     schemaVersion: analysis.schema_version ?? 1,
     syntaxState: analysis.syntax_state ?? (analysis.analysis_source === "ai" ? "ready" : "pending"),
     teacherNote: analysis.teacher_note,
+    learningText: analysis.learning_text,
+    askSuggestions: analysis.ask_suggestions,
     reusablePatterns: analysis.reusable_patterns,
     collocations: analysis.collocations,
     pitfalls: analysis.pitfalls,
@@ -810,6 +816,7 @@ export function toCorpusSelectionAnalysis(analysis: ApiCorpusSelectionAnalysis):
     },
     notePlaceholder: analysis.note_placeholder,
     explanation: {
+      meaningSummary: analysis.explanation.meaning_summary,
       pronunciation: {
         ipa: analysis.explanation.pronunciation.ipa,
         connectedSpeech: analysis.explanation.pronunciation.connected_speech,
@@ -827,6 +834,7 @@ export function toCorpusSelectionAnalysis(analysis: ApiCorpusSelectionAnalysis):
       usageChips: analysis.explanation.usage_chips
     },
     syntaxAnalysis: {
+      sectionSummaries: analysis.syntax_analysis.section_summaries,
       sentenceType: analysis.syntax_analysis.sentence_type,
       mainClause: analysis.syntax_analysis.main_clause,
       structureBreakdown: analysis.syntax_analysis.structure_breakdown,
@@ -853,6 +861,8 @@ export function toApiCorpusSelectionAnalysis(analysis: CorpusSelectionAnalysis):
     schema_version: analysis.schemaVersion,
     syntax_state: analysis.syntaxState,
     teacher_note: analysis.teacherNote,
+    learning_text: analysis.learningText,
+    ask_suggestions: analysis.askSuggestions,
     reusable_patterns: analysis.reusablePatterns,
     collocations: analysis.collocations,
     pitfalls: analysis.pitfalls,
@@ -866,6 +876,7 @@ export function toApiCorpusSelectionAnalysis(analysis: CorpusSelectionAnalysis):
     fields: analysis.fields,
     note_placeholder: analysis.notePlaceholder,
     explanation: {
+      meaning_summary: analysis.explanation.meaningSummary,
       pronunciation: {
         ipa: analysis.explanation.pronunciation.ipa,
         connected_speech: analysis.explanation.pronunciation.connectedSpeech,
@@ -879,6 +890,7 @@ export function toApiCorpusSelectionAnalysis(analysis: CorpusSelectionAnalysis):
       usage_chips: analysis.explanation.usageChips
     },
     syntax_analysis: {
+      section_summaries: analysis.syntaxAnalysis.sectionSummaries,
       sentence_type: analysis.syntaxAnalysis.sentenceType,
       main_clause: analysis.syntaxAnalysis.mainClause,
       structure_breakdown: analysis.syntaxAnalysis.structureBreakdown,
@@ -905,34 +917,34 @@ function fallbackSelectionAnalysis(input: AnalyzeCorpusSelectionInput): CorpusSe
     schemaVersion: 2,
     syntaxState: "pending",
     analysisSource: "fallback",
-    providerNotice: "AI 分析暂时不可用；当前仅保留你的原始选择，不会猜测含义或擅自补全边界。",
+    providerNotice: "AI analysis is temporarily unavailable. Your original selection is preserved without inferring its meaning or expanding it.",
     selectionType: isSentence ? "sentence" : "phrase",
     completeness: "complete",
     selectedText,
     recommendedText: selectedText,
-    recommendationReason: "AI 未完成边界判断，因此默认按你实际选中的内容保存。",
+    recommendationReason: "Selection boundaries have not been checked. Your selection will be saved exactly as selected.",
     fields: {
       kind: "chunk",
       tags: ["discourse"],
       level: "B1",
       register: "neutral"
     },
-    notePlaceholder: "可选：写下你的理解、联想或使用场景",
+    notePlaceholder: "Optional: add your understanding, associations, or a situation where you could use this.",
     explanation: {
       pronunciation: {
-        ipa: "待 AI 分析",
-        connectedSpeech: "AI 可用后会结合上下文分析重音、弱读和连读。",
+        ipa: "Analysis unavailable",
+        connectedSpeech: "Contextual analysis of stress, weak forms, and linking is currently unavailable.",
         audioText: selectedText
       },
-      meaning: "AI 暂时不可用，无法可靠解释这段选择在当前上下文中的具体含义。",
-      pragmaticFunction: "AI 暂时不可用，无法可靠判断它在这段对话中的语用作用。",
+      meaning: "AI analysis is temporarily unavailable. The meaning of this selection in context has not been determined.",
+      pragmaticFunction: "AI analysis is temporarily unavailable. The role of this selection in the conversation has not been determined.",
       similarExpressions: [],
       examples: [],
-      usageChips: ["等待 AI 分析"]
+      usageChips: ["Analysis unavailable"]
     },
     syntaxAnalysis: {
-      sentenceType: "待 AI 判断",
-      mainClause: "待 AI 分析",
+      sentenceType: "Not assessed",
+      mainClause: "Analysis unavailable",
       structureBreakdown: [],
       logicRelations: [],
       informationHierarchy: [],
@@ -941,7 +953,7 @@ function fallbackSelectionAnalysis(input: AnalyzeCorpusSelectionInput): CorpusSe
       grammarPoints: [],
       wordingNotes: [],
       reusablePatterns: [],
-      translations: [{ label: "待分析", text: "AI 暂时不可用，未生成翻译。", recommended: true }],
+      translations: [{ label: "Not analyzed", text: "AI analysis is temporarily unavailable. No translation has been generated.", recommended: true }],
       translationNotes: [],
       evidence: [input.contextBefore, input.currentSentence, input.contextAfter].filter((value): value is string => Boolean(value))
     }
@@ -975,7 +987,7 @@ export function corpusContextPayload(input: AnalyzeCorpusSelectionInput) {
 
 export async function analyzeCorpusSyntax(context: AnalyzeCorpusSelectionInput, analysis: CorpusSelectionAnalysis, signal: AbortSignal) {
   const syntax = await request<ApiCorpusSelectionAnalysis["syntax_analysis"]>("/api/corpus/analyze-syntax", {
-    method: "POST", signal, body: JSON.stringify({ ...corpusContextPayload(context), selection_type: analysis.selectionType, kind: analysis.fields.kind })
+    method: "POST", signal, body: JSON.stringify({ ...corpusContextPayload(context), selected_text: analysis.recommendedText, selection_type: analysis.selectionType, kind: analysis.fields.kind })
   }, 60_000);
   return toCorpusSelectionAnalysis({ ...toApiCorpusSelectionAnalysis(analysis), syntax_analysis: syntax, syntax_state: "ready" });
 }

@@ -49,3 +49,24 @@ textarea.ui-field[data-field][data-shape]:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .ui-field[data-field][data-shape], .ui-field-surface[data-field-surface] { transition: none; }
 }
+
+/* One focus boundary per text field, including composite search/prompt fields.
+   An inset outline preserves the existing dimensions, including borderless fields. */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="hidden"]):not([type="color"]), textarea, select):focus {
+  outline: 1px solid var(--ink) !important;
+  outline-offset: -1px !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+[data-input-group]:has(:is(input, textarea):focus) {
+  outline: 1px solid var(--ink) !important;
+  outline-offset: -1px !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+[data-input-group] :is(input, textarea):focus,
+[data-input-group] .ui-field-surface:focus-within {
+  outline: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}

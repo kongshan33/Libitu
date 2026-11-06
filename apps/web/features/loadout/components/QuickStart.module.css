@@ -120,7 +120,7 @@
 .hero { background: var(--ink); color: var(--bg); }
 .heroHeading h2, .stage, .chain, .scene, .emptyPicks p { color: var(--line); }
 .heroHeading > span, .reason, .scene > span, .preferenceSummary, .preferenceLabel, .preferenceHelp { color: var(--line-strong); }
-.pick, .logic, .preferences { background: #1c1917; }
+.pick, .logic, .preferences { background: var(--video-bg); }
 .pick strong, .logic strong { color: var(--bg); }
 .heroStart { background: var(--bg); color: var(--ink); }
 .heroStart:hover:not(:disabled) { background: var(--line); }

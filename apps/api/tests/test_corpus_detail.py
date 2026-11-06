@@ -31,7 +31,7 @@ def test_explain_drops_unrequested_syntax_but_legacy_records_remain_readable():
     old = selection_analysis_result("to be fair").model_dump(by_alias=True)
     assert CorpusSelectionAnalysis.model_validate(old).syntax_state == "ready"
     result = ark_selection._parse_selection_response({"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(old)}}]})
-    assert result.schema_version == 2 and result.syntax_state == "pending"
+    assert result.schema_version == 3 and result.syntax_state == "pending"
     assert result.syntax_analysis.main_clause == ""
     assert "本次只生成 Explain" in ark_selection.SYSTEM_PROMPT
 
@@ -48,7 +48,7 @@ def test_syntax_mode_is_enforced(monkeypatch, kind, selection_type, full):
         result = response.json()
         assert result["sentence_type"] == (syntax["sentence_type"] if full else "名词短语")
         assert bool(result["information_hierarchy"]) == full
-        assert bool(result["translations"]) == full
+        assert result["translations"][0]["text"] == "公平地说"
         assert bool(result["grammar_points"]) == full
         assert result["usage_scenarios"] == []
         assert result["evidence"] == [CONTEXT["current_sentence"]]
@@ -177,3 +177,51 @@ def test_missing_deepseek_key_does_not_fall_back_to_ark(monkeypatch):
         ark_selection.generate_selection_analysis(CorpusSelectionAnalysisRequest(**CONTEXT))
     with pytest.raises(detail.AnalysisProviderError, match='not configured'):
         detail._request('system', detail.CorpusFollowupRequest(**CONTEXT, question='Explain'), stream=True)
+
+
+@pytest.mark.parametrize("selected,learning", [
+    ("drifted away from", "drift away from"),
+    ("pockets of greatness", "pocket of greatness"),
+    ("made ends meet", "make ends meet"),
+])
+def test_learning_form_preserves_original_evidence_and_drives_audio(selected, learning):
+    payload = CorpusSelectionAnalysisRequest(selected_text=selected, current_sentence=f"They {selected}.")
+    output = selection_analysis_result(selected).model_dump(by_alias=True)
+    output.update(learning_text=learning, ask_suggestions=["换个领域怎么用？", "用它写一段具体对话", "能比较一下近义表达吗？"])
+    output["explanation"]["meaning_summary"] = "一句简短释义"
+    output["explanation"]["similar_expressions"] = [f"{selected} — 原样重复", "unsupported alternative — 更显正式", "opposite — 与原意相反", "another expression — 不同侧重"]
+    parsed = ark_selection._parse_selection_response({"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(output)}}]})
+    result = _normalize_evidenced_analysis(payload, parsed)
+    assert result.selected_text == result.recommended_text == selected
+    assert result.learning_text == result.explanation.pronunciation.audio_text == learning
+    assert result.syntax_analysis.evidence == [payload.current_sentence]
+    assert result.explanation.meaning_summary == "一句简短释义"
+    assert len(result.ask_suggestions) == 3
+    assert result.explanation.similar_expressions == ["another expression — 不同侧重"]
+
+
+def test_sentence_keeps_inflection_even_if_provider_sends_lemma():
+    selected = "She made ends meet."
+    payload = CorpusSelectionAnalysisRequest(selected_text=selected, current_sentence=selected)
+    analysis = selection_analysis_result(selected).model_copy(update={"selection_type": "sentence", "learning_text": "make ends meet"})
+    result = _normalize_evidenced_analysis(payload, analysis)
+    assert result.learning_text == result.explanation.pronunciation.audio_text == selected
+
+
+def test_redundant_closing_brace_is_the_only_json_repair():
+    assert ark_selection._selection_json('{"value": "}"}}') == {"value": "}"}
+    for content in ['{"value": 1}{}', '{"value": 1} explanation', '{"value": 1', '{"value": 1}}}']:
+        with pytest.raises(json.JSONDecodeError):
+            ark_selection._selection_json(content)
+
+
+@pytest.mark.parametrize("selected,expected", [("She struggles to explain it.", 1), ("She cannot explain it.", 2)])
+def test_syntax_omits_paraphrase_that_turns_difficulty_into_inability(monkeypatch, selected, expected):
+    output = {"sentence_type": "简单句", "main_clause": selected, "translations": [
+        {"label": "直译", "text": "她解释起来有困难。"}, {"label": "意译", "text": "她说不清。"}]}
+    _, client = provider(monkeypatch, httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(output)}}]}))
+    try:
+        result = detail.generate_corpus_syntax(detail.CorpusSyntaxRequest(selected_text=selected, current_sentence=selected, selection_type="sentence", kind="structure"))
+        assert len(result.translations) == expected
+    finally:
+        client.close()
