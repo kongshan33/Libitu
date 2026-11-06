@@ -2,7 +2,7 @@
 
 ## Result
 
-**Native toolbar → tabCapture → non-silent PCM/WAV extraction and reload cleanup passed on retry.** This is a real Chrome capture of a synthetic test tone, not live YouTube or production qualification. No store upload or production deployment occurred. Publisher name, public email and domain are pending at the owner's request. See [store preparation](../../../CHROMEWEBSTORE.md).
+**Native toolbar → tabCapture → non-silent PCM/WAV extraction and reload cleanup passed on retry.** This is a real Chrome capture of a synthetic test tone, not live YouTube or production qualification. No store upload or production deployment occurred. Publisher name, public email and domain are pending at the owner's request. See [store preparation](../../../apps/extension/CHROMEWEBSTORE.md).
 
 Environment: macOS, Node 22.15.0, Playwright 1.61.1, Chrome for Testing 147.0.7727.15, isolated temporary profiles. Test content/identity responses are fixtures; extension loading, isolated bridges, document IDs and Chrome APIs are real. No microphone, paid model or real YouTube media was used.
 

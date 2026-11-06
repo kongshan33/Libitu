@@ -4,6 +4,8 @@ Last updated: 2026-11-06 (Asia/Shanghai). Manifest version: 0.2.0; protocol: v4;
 
 **Status: draft, not submitted and not ready for public distribution.** Publisher name, public contact email and production domain are **待定**, as specified by the owner. This document describes the current working tree, including the new alarms permission, handoff cleanup and sized icons. No store registration, agreement acceptance, payment or publication has been performed.
 
+Source-code paths in backticks below are relative to the repository root. This file belongs to the extension workspace beside `manifest.json`.
+
 ## Store listing draft
 
 - Name: **Libitu** (matches manifest).
@@ -111,7 +113,7 @@ Publisher: 待定. Privacy contact: 待定. Public policy URL: 待定. Policy ch
 
 ## Browser acceptance and release gates
 
-See [acceptance report](design/docs/extension-release/ACCEPTANCE.md) for commands, scope and evidence.
+See [acceptance report](../../design/docs/extension-release/ACCEPTANCE.md) for commands, scope and evidence.
 
 - [x] Real unpacked Chrome: English-gated entry, SPA navigation, caption handoff and canonical tab reuse with fixtures.
 - [x] Real unpacked Chrome: v4 bridge, original import sender URL, same-content navigation, old-version rejection, reload cleanup, rearm/close without capture.
