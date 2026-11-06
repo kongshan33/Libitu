@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { acknowledgeSubmission, adoptDeviceDraft, DraftConflictError, draftSignature, emptyDraft, LOADOUT_STORAGE_KEY, openDraft, prepareSubmission, readDraftEnvelope, resolveSelection, saveDraft, selectionError, toggleSelection } from "../features/loadout/draft.ts";
+import { acknowledgeSubmission, adoptDeviceDraft, DraftConflictError, draftSignature, emptyDraft, expressionText, LOADOUT_STORAGE_KEY, openDraft, prepareSubmission, readDraftEnvelope, resolveSelection, saveDraft, selectionError, toggleSelection } from "../features/loadout/draft.ts";
 import { safeReturnPath } from "../features/loadout/navigation.ts";
 import { createSpeakingApi, getSpeakingOptions, SpeakingApiError } from "../features/loadout/api/speaking-api.ts";
 
@@ -14,6 +14,17 @@ function record(key, kind = "chunk", serverId = `server-${key}`) {
 }
 function goalDraft(goal = "Agree on a project deadline") { return { ...emptyDraft(), goal }; }
 function token(owner) { return `e30.${btoa(JSON.stringify({ sub: owner }))}.signature`; }
+
+test("learning names normalize extracted text while preserving edits and templates", () => {
+  const row = record("drifted away from");
+  assert.equal(expressionText(row), "drifted away from");
+  row.item.analysisDetail = { analysis: { selectedText: "drifted away from", recommendedText: "drifted away from", learningText: "drift away from" } };
+  assert.equal(expressionText(row), "drift away from");
+  row.item.text = "my custom expression";
+  assert.equal(expressionText(row), "my custom expression");
+  row.item.kind = "structure"; row.item.text = "[team] has drifted away from [goal]";
+  assert.equal(expressionText(row), row.item.text);
+});
 
 test("chunks and idioms share five slots; structures have three independent slots", () => {
   const expressions = Array.from({ length: 6 }, (_, index) => record(`expression-${index}`, index % 2 ? "idiom" : "chunk"));

@@ -2,6 +2,7 @@ import re
 
 from app.integrations.ark_analysis import AnalysisProviderError
 from app.integrations.ark_selection import generate_selection_analysis
+from app.services.corpus_pronunciation import normalize_inflected_ipa
 from app.schemas.corpus import (
     CorpusReusablePattern,
     CorpusSelectionAnalysis,
@@ -47,10 +48,22 @@ def _normalize_evidenced_analysis(
         )
         if value
     ]
+    learning = (_normalize_space(analysis.learning_text) or recommended) if analysis.selection_type == "phrase" else recommended
+    source_key = f" {_comparison_key(sentence)} "
+    similar_expressions = []
+    for expression in analysis.explanation.similar_expressions:
+        label = re.split(r"\s*[—–]\s*", expression, maxsplit=1)[0]
+        key = _comparison_key(label)
+        # No register evidence is supplied. Omit unsupported rankings rather
+        # than silently rewriting the model's comparison into a different claim.
+        unsupported_comparison = re.search(r"更[^，。；—–]{0,4}(?:正式|口语|书面)|常用于|相反|反义", expression)
+        if key and key != _comparison_key(learning) and f" {key} " not in source_key and not unsupported_comparison:
+            similar_expressions.append(expression)
     explanation = analysis.explanation.model_copy(
         update={
+            "similar_expressions": similar_expressions[:2],
             "pronunciation": analysis.explanation.pronunciation.model_copy(
-                update={"audio_text": selected}
+                update={"audio_text": learning, "ipa": normalize_inflected_ipa(recommended, learning, analysis.explanation.pronunciation.ipa)}
             )
         }
     )
@@ -61,6 +74,7 @@ def _normalize_evidenced_analysis(
             "provider_notice": None,
             "selected_text": selected,
             "recommended_text": recommended,
+            "learning_text": learning,
             "completeness": completeness,
             "recommendation_reason": (
                 analysis.recommendation_reason if expanded else "所选内容边界完整，无需补全。"
@@ -107,7 +121,7 @@ def _unavailable_analysis(
     ]
     notice = "AI 分析暂时不可用；当前仅保留你的原始选择，不会猜测含义或擅自补全边界。"
     return CorpusSelectionAnalysis(
-        schema_version=2,
+        schema_version=3,
         syntax_state="pending",
         analysis_source="fallback",
         provider_notice=f"{notice} {provider_message}",

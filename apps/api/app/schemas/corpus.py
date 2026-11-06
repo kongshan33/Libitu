@@ -53,6 +53,7 @@ class CorpusSelectionExample(BaseModel):
 
 class CorpusSelectionExplanation(BaseModel):
     pronunciation: CorpusSelectionPronunciation
+    meaning_summary: str = ""
     meaning: str
     pragmatic_function: str
     similar_expressions: list[str] = Field(default_factory=list)
@@ -72,7 +73,17 @@ class CorpusSelectionTranslation(BaseModel):
     recommended: bool = False
 
 
+class CorpusSyntaxSummaries(BaseModel):
+    structure: str = ""
+    grammar: str = ""
+    logic: str = ""
+    information: str = ""
+    wording: str = ""
+    style: str = ""
+
+
 class CorpusSelectionSyntaxAnalysis(BaseModel):
+    section_summaries: CorpusSyntaxSummaries = Field(default_factory=CorpusSyntaxSummaries)
     sentence_type: str = ""
     main_clause: str = ""
     structure_breakdown: list[str] = Field(default_factory=list)
@@ -96,6 +107,8 @@ class CorpusSelectionAnalysis(BaseModel):
     completeness: str = Field(pattern="^(complete|needs_expansion|structure_candidate)$")
     selected_text: str
     recommended_text: str
+    learning_text: str = Field(default="", max_length=800)
+    ask_suggestions: list[str] = Field(default_factory=list, max_length=3)
     recommendation_reason: str
     fields: CorpusSelectionFields
     note_placeholder: str

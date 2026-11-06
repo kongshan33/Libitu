@@ -195,6 +195,8 @@ export type CorpusSelectionAnalysis = {
   schemaVersion?: number;
   syntaxState?: "pending" | "ready";
   teacherNote?: string;
+  learningText?: string;
+  askSuggestions?: string[];
   reusablePatterns?: Array<{ template: string; slots: Record<string, string>; rationale: string }>;
   collocations?: string[];
   pitfalls?: string[];
@@ -213,6 +215,7 @@ export type CorpusSelectionAnalysis = {
   };
   notePlaceholder: string;
   explanation: {
+    meaningSummary?: string;
     pronunciation: {
       ipa: string;
       connectedSpeech: string;
@@ -230,6 +233,7 @@ export type CorpusSelectionAnalysis = {
     usageChips: string[];
   };
   syntaxAnalysis: {
+    sectionSummaries?: Partial<Record<"structure" | "grammar" | "logic" | "information" | "wording" | "style", string>>;
     sentenceType: string;
     mainClause: string;
     structureBreakdown: string[];

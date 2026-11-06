@@ -6,6 +6,8 @@ import { createCorpusRemote } from "./corpus-api";
 import type { CorpusSelectionAnalysis, CorpusSelectionContext } from "@libitu/types/stage-one";
 import { CORPUS_STORAGE_KEY, CorpusStorage, type SavedCorpusRecord, type CorpusEdit } from "./corpus-storage";
 
+const CORPUS_CHANGED = "libitu:corpus:changed";
+
 export function useSavedCorpus() {
   const { isLoaded, userId, getToken } = useAuth();
   const [storage] = useState(() => new CorpusStorage(() => window.localStorage));
@@ -20,17 +22,35 @@ export function useSavedCorpus() {
     // Avoid duplicate imports during development's setup/cleanup probe.
     let disposed = false;
     Promise.resolve().then(() => { if (!disposed) void open(); });
-    const changed = (event: StorageEvent) => {
-      if (event.key === CORPUS_STORAGE_KEY && !storage.state.busy) void open();
+    let pending = false;
+    const refresh = () => {
+      if (storage.state.busy) pending = true;
+      else void open();
     };
+    const unsubscribe = storage.subscribe(state => {
+      if (pending && !state.busy) { pending = false; queueMicrotask(() => { if (!disposed) refresh(); }); }
+    });
+    const localChanged = (event: Event) => {
+      if ((event as CustomEvent).detail !== storage) refresh();
+    };
+    const changed = (event: StorageEvent) => {
+      if (event.key === CORPUS_STORAGE_KEY || event.key === CORPUS_CHANGED) refresh();
+    };
+    window.addEventListener(CORPUS_CHANGED, localChanged);
     window.addEventListener("storage", changed);
     return () => {
       disposed = true;
+      unsubscribe();
+      window.removeEventListener(CORPUS_CHANGED, localChanged);
       storage.close();
       window.removeEventListener("storage", changed);
     };
   }, [storage, owner, isLoaded, getToken, retry]);
 
+  function notifyRemoved() {
+    window.dispatchEvent(new CustomEvent(CORPUS_CHANGED, { detail: storage }));
+    try { window.localStorage.setItem(CORPUS_CHANGED, crypto.randomUUID()); } catch { /* Same-page sync remains available. */ }
+  }
   const current = isLoaded && state.owner === owner;
   return {
     records: current ? state.records : [],
@@ -45,7 +65,16 @@ export function useSavedCorpus() {
       context: CorpusSelectionContext,
       analyze: () => Promise<CorpusSelectionAnalysis>,
     ) => current ? storage.hydrate(record, context, analyze) : Promise.resolve(null),
-    remove: (record: SavedCorpusRecord) => current ? storage.remove(record) : Promise.resolve(false),
+    remove: async (record: SavedCorpusRecord) => {
+      const removed = current && await storage.remove(record);
+      if (removed) notifyRemoved();
+      return removed;
+    },
+    removeMany: async (records: SavedCorpusRecord[]) => {
+      const removed = current ? await storage.removeMany(records) : [];
+      if (removed.length) notifyRemoved();
+      return removed;
+    },
     retry: () => setRetry((value) => value + 1)
   };
 }

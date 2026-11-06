@@ -235,6 +235,16 @@ export class CorpusStorage {
     } catch (error) { this.fail(error, signal); return false; }
   }
 
+  async removeMany(records: SavedCorpusRecord[]): Promise<string[]> {
+    const signal = this.controller.signal;
+    const removed: string[] = [];
+    for (const record of records) {
+      if (signal.aborted || !await this.remove(record)) break;
+      removed.push(record.key);
+    }
+    return removed;
+  }
+
   async remove(record: SavedCorpusRecord): Promise<boolean> {
     if (!this.state.ready || this.state.busy) return false;
     const { owner } = this.state;

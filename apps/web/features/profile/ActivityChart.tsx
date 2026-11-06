@@ -1,6 +1,7 @@
 "use client";
 
 import { useDelayedPending } from "@/components/ui/use-delayed-pending";
+import { useContentMotion } from "@/components/ui/use-content-motion";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 import { useState } from "react";
@@ -19,6 +20,7 @@ export function ActivityChart({ data, range, onRange, loading }: {
 }) {
   const showPending = useDelayedPending(loading);
   const [metric, setMetric] = useState<keyof Omit<ActivityPoint, "date">>("shadowing_attempts");
+  const chartRef = useContentMotion(metric);
   const selected = metrics.find((item) => item.key === metric)!;
   const items = data?.activity.items ?? [];
   const known = items.length > 0 && items.every((item) => item[metric] !== null);
@@ -47,13 +49,13 @@ export function ActivityChart({ data, range, onRange, loading }: {
           {item.label}
         </button>)}
       </div>
-      <div className={styles.chart} id="activity-panel" role="tabpanel" tabIndex={0} aria-labelledby={`activity-${metric}`} aria-busy={loading}>
+      <div ref={chartRef} className={styles.chart} id="activity-panel" role="tabpanel" tabIndex={0} aria-labelledby={`activity-${metric}`} aria-busy={loading}>
         {loading && !data ? <ContentSkeleton label="Loading activity…" /> : !data ? <div className={styles.chartMessage}>Activity is unavailable.</div>
           : !known ? <div className={styles.chartMessage}>Dates aren’t available for this activity yet.</div>
             : total === 0 ? <div className={styles.chartMessage}><strong>No {selected.label.toLowerCase()} in this period</strong><span>Your saved activity will appear here.</span></div>
               : <>
-                <div key={metric} data-content-enter className={styles.chartTotal}><strong>{total.toLocaleString("en")}</strong><span>{selected.label.toLowerCase()} in this period</span></div>
-                <svg key={metric} data-content-enter viewBox="0 0 460 190" role="img" aria-label={`${selected.label}: ${total} in the selected period. Daily or monthly values are in the activity table below.`}>
+                <div className={styles.chartTotal}><strong>{total.toLocaleString("en")}</strong><span>{selected.label.toLowerCase()} in this period</span></div>
+                <svg viewBox="0 0 460 190" role="img" aria-label={`${selected.label}: ${total} in the selected period. Daily or monthly values are in the activity table below.`}>
                   {[...new Set([0, Math.ceil(max / 2), max])].map((value) => <g key={value}><line x1="35" x2="440" y1={y(value)} y2={y(value)} stroke={value === 0 ? "var(--line-strong)" : "var(--line)"} strokeDasharray={value === 0 ? undefined : "3 4"} /><text x="23" y={y(value) + 4} textAnchor="end">{value}</text></g>)}
                   {items.map((item, index) => <g key={item.date}><rect x={x(index) - barWidth / 2} y={y(values[index])} width={barWidth} height={153 - y(values[index])} rx="3" fill="var(--ink-3)"><title>{activityDate(item.date, month)}: {values[index]}</title></rect>{!month && item.date === today ? <rect x={x(index) - 5} y="158" width="10" height="3" rx="1.5" fill="var(--brand)" /> : null}</g>)}
                   <text x="35" y="178">{activityDate(items[0].date, month)}</text><text x="440" y="178" textAnchor="end">{activityDate(items.at(-1)!.date, month)}</text>

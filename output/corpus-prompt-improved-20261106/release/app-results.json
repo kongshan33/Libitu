@@ -1,0 +1,1318 @@
+[
+  {
+    "case": "pockets",
+    "round": 1,
+    "stage": "explain",
+    "provider_seconds": 3.306,
+    "normalization_ms": 964.979,
+    "json_recovered": true,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "pockets of greatness",
+      "recommended_text": "pockets of greatness",
+      "learning_text": "pocket of greatness",
+      "ask_suggestions": [
+        "这个短语能形容个人吗？",
+        "用它写一段具体对话",
+        "它和 bright spots 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "framing",
+          "contrast"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ˈpɑkɪt əv ˈɡreɪtnəs/",
+          "connected_speech": "of 常弱读为 /əv/，重音落在 POCK-et 和 GREAT-ness 上",
+          "audio_text": "pocket of greatness",
+          "stress_text": "POCK-et of GREAT-ness"
+        },
+        "meaning_summary": "局部存在的出色之处，整体并不稳定",
+        "meaning": "pockets 强调亮点成块分布在某些范围，并不等于整体优秀。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "bright spots — 侧重个别亮点，不强调成块分布的范围感",
+          "islands of excellence — 用“孤岛”意象强调亮点与周围脱节"
+        ],
+        "examples": [
+          {
+            "english": "The small studio has pockets of greatness in animation, though its schedules often slip.",
+            "chinese": "这家小工作室在动画方面有局部亮点，不过进度常常拖延。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "团队评估",
+          "优缺点分析",
+          "绩效反馈"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "We need to take an honest look at how the team is performing.",
+          "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "Our next step is to make those strengths part of our everyday process."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这里先承认团队有亮点，再用 but 转折指出整体不稳定。记忆时把 pocket 想成“局部小块”，亮点是成块分布而非整体。",
+      "reusable_patterns": [
+        {
+          "template": "[team] has pockets of greatness in [area]",
+          "slots": {
+            "team": "换成具体团队或组织",
+            "area": "换成具体领域"
+          },
+          "rationale": "team 换成具体团队，area 换成具体领域，保留 pockets of greatness 的局部亮点含义。"
+        }
+      ],
+      "collocations": [
+        "have pockets of greatness",
+        "pockets of greatness in [area]",
+        "pockets of greatness across [area]"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "pockets",
+    "round": 1,
+    "stage": "syntax",
+    "provider_seconds": 2.06,
+    "normalization_ms": 48.94,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "复数名词短语，of 短语作后置修饰",
+        "grammar": "",
+        "logic": "转折：局部优点与持续交付困难对比",
+        "information": "",
+        "wording": "",
+        "style": ""
+      },
+      "sentence_type": "名词短语",
+      "main_clause": "作 has 的宾语，表示团队具备的局部优点。",
+      "structure_breakdown": [
+        "pockets of greatness — 中心词 pockets 为复数，of greatness 作后置修饰，说明 pockets 的内容。"
+      ],
+      "logic_relations": [
+        "but — 前一分句承认局部优点，后一分句指出持续交付上的困难。"
+      ],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "局部的高水平表现",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "若干亮点",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    }
+  },
+  {
+    "case": "drifted",
+    "round": 1,
+    "stage": "explain",
+    "provider_seconds": 4.121,
+    "normalization_ms": 0.235,
+    "json_recovered": false,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "drifted away from",
+      "recommended_text": "drifted away from",
+      "learning_text": "drift away from",
+      "ask_suggestions": [
+        "drift away from 还能接什么宾语？",
+        "用它写一段具体对话",
+        "它和 lose sight of 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "idiom"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/drɪft əˈweɪ frəm/",
+          "connected_speech": "from 常弱读为 /frəm/，重音落在 drift 和 away 上",
+          "audio_text": "drift away from",
+          "stress_text": "DRIFT a-WAY from"
+        },
+        "meaning_summary": "逐渐偏离（原定使命）",
+        "meaning": "强调偏离是慢慢发生的，不是一次性的决定。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "lose sight of — 侧重忘记或忽视目标，而非逐渐拉开距离",
+          "stray from — 侧重走偏、偏离正轨，动作感更强"
+        ],
+        "examples": [
+          {
+            "english": "The club slowly drifted away from its founding values.",
+            "chinese": "这个俱乐部慢慢偏离了它创立时的价值观。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "描述目标偏离",
+          "组织或团队变化"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "We started this project to make everyday tasks easier.",
+          "The team has drifted away from its original mission, but it is working hard to regain its focus.",
+          "Next month we will simplify the product and focus on our core users."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这里用“逐渐偏离”说明团队与最初使命之间出现了距离，语气偏客观。记忆时可想象船慢慢漂离岸边，把 drift 和“渐远”连在一起。",
+      "reusable_patterns": [
+        {
+          "template": "[team] has drifted away from [goal]",
+          "slots": {
+            "team": "换成具体团队或组织",
+            "goal": "换成具体目标或原则"
+          },
+          "rationale": "team 换成具体主体，goal 换成被偏离的目标。"
+        }
+      ],
+      "collocations": [
+        "drift away from the mission",
+        "drift away from the original plan",
+        "gradually drift away from [goal]"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "drifted",
+    "round": 1,
+    "stage": "syntax",
+    "provider_seconds": 1.831,
+    "normalization_ms": 0.674,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "动词短语，作分句谓语",
+        "grammar": "",
+        "logic": "but 引出转折",
+        "information": "",
+        "wording": "",
+        "style": ""
+      },
+      "sentence_type": "动词短语",
+      "main_clause": "在 current_sentence 中作并列分句的谓语，主语是 The team",
+      "structure_breakdown": [
+        "drifted — 过去分词，与 has 构成现在完成时",
+        "away from — 副词 away 加介词 from，引出偏离的对象 its original mission"
+      ],
+      "logic_relations": [
+        "but — 前一分句说团队偏离了使命，后一分句说团队正努力重新聚焦，形成转折"
+      ],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "偏离了",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "背离了",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We started this project to make everyday tasks easier.",
+        "The team has drifted away from its original mission, but it is working hard to regain its focus.",
+        "Next month we will simplify the product and focus on our core users."
+      ]
+    }
+  },
+  {
+    "case": "team_sentence",
+    "round": 1,
+    "stage": "explain",
+    "provider_seconds": 4.418,
+    "normalization_ms": 0.211,
+    "json_recovered": false,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "sentence",
+      "completeness": "complete",
+      "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "learning_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "ask_suggestions": [
+        "这个句子怎么迁移到其他团队？",
+        "用它写一段具体对话",
+        "它和局部出色有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "structure",
+        "tags": [
+          "contrast",
+          "summarising"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn, bʌt ɪt stɪl ˈstrʌɡəlz tə dɪˈlɪvər kənˈsɪstəntli/",
+          "connected_speech": "has 可弱读为 /həz/；but it 中 t 可轻读。",
+          "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "stress_text": "The TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIV-er con-SIS-tent-ly."
+        },
+        "meaning_summary": "团队在设计上有局部亮点，但持续交付仍困难。",
+        "meaning": "“pockets of greatness” 指在整体表现中存在的局部优秀之处，并非整体优秀。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "has areas of excellence — 强调存在优秀领域，而非零散亮点。",
+          "is inconsistent in delivering — 侧重交付不稳定，不保留“局部亮点”的肯定。"
+        ],
+        "examples": [
+          {
+            "english": "The marketing department has pockets of greatness in creativity, but it still struggles to meet deadlines consistently.",
+            "chinese": "市场部在创意上有局部亮点，但仍难以持续按时完成任务。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "团队评估",
+          "绩效反馈",
+          "客观总结"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "We need to take an honest look at how the team is performing.",
+          "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "Our next step is to make those strengths part of our everyday process."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这句话先肯定团队在设计中存在局部亮点，再指出持续交付的困难，语气客观平衡。记忆时可抓住“pockets of greatness”与“struggles to deliver consistently”的对比结构。",
+      "reusable_patterns": [
+        {
+          "template": "[team] has pockets of greatness in [area], but it still struggles to [action] consistently.",
+          "slots": {
+            "team": "具体团队或组织",
+            "area": "具体领域",
+            "action": "具体动作"
+          },
+          "rationale": "把 team 换成具体团队，area 换成领域，action 换成动作，保留对比框架。"
+        }
+      ],
+      "collocations": [
+        "pockets of greatness in design",
+        "struggles to deliver consistently"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "team_sentence",
+    "round": 1,
+    "stage": "syntax",
+    "provider_seconds": 3.01,
+    "normalization_ms": 1.342,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "but 连接两个独立分句的并列句",
+        "grammar": "has 为实义动词一般现在时",
+        "logic": "先肯定局部优势，再转折指出交付困难",
+        "information": "优势为铺垫，交付困难为核心",
+        "wording": "pockets of greatness 为局部卓越的比喻",
+        "style": "先扬后抑的并列对比"
+      },
+      "sentence_type": "并列句",
+      "main_clause": "The team has pockets of greatness, but it still struggles to deliver consistently.",
+      "structure_breakdown": [
+        "The team has pockets of greatness in design — 第一个独立分句，主谓宾结构，in design 限定范围",
+        "but it still struggles to deliver consistently — 第二个独立分句，but 连接，it 指代 the team",
+        "to deliver consistently — 不定式补足成分，说明 struggles 的具体动作内容"
+      ],
+      "logic_relations": [
+        "but — 前一分句肯定局部优势，后一分句转折指出整体交付仍有困难"
+      ],
+      "information_hierarchy": [
+        "先承认设计上的局部优势 — 让步性信息，为转折铺垫",
+        "再指出持续交付的困难 — 转折后的核心问题"
+      ],
+      "style_features": [
+        "两个独立分句由 but 并列，形成先扬后抑的对比",
+        "局部优势与整体困难并置，结构对称"
+      ],
+      "usage_scenarios": [],
+      "grammar_points": [
+        "has pockets of greatness — has 后直接接名词短语，是实义动词一般现在时，不是现在完成时",
+        "it — 代词回指前一分句主语 the team，保持单数一致"
+      ],
+      "wording_notes": [
+        "pockets of greatness — 比喻局部存在的卓越表现，中心词是 pockets",
+        "struggles to deliver — 表示有困难，未说完全不能交付"
+      ],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "这个团队在设计上有局部的卓越表现，但它仍然难以持续交付。",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "这个团队在设计上有一些亮点，但整体交付仍不稳定。",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [
+        "struggles to deliver 译为“难以持续交付”，保留有困难的程度，不译成“无法交付”。"
+      ],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    }
+  },
+  {
+    "case": "heldout_sentence",
+    "round": 1,
+    "stage": "explain",
+    "provider_seconds": 4.843,
+    "normalization_ms": 0.201,
+    "json_recovered": false,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "sentence",
+      "completeness": "complete",
+      "selected_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "recommended_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "learning_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "ask_suggestions": [
+        "这个句型怎么换领域用？",
+        "用它写一段具体对话",
+        "它和 although 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "structure",
+        "tags": [
+          "contrast"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ðə nu ˈænəlɪst hoʊps tu ɪmˈpruv ðə ˈfɔrkæst, bʌt ʃi stɪl ˈstrʌɡəlz tu ɪkˈspleɪn hɜr əˈsʌmpʃənz/",
+          "connected_speech": "but 在句中通常弱读，可读得轻而短，重音落在 hopes、improve、still、struggles 等实词上。",
+          "audio_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+          "stress_text": "The NEW AN-a-lyst HOPES to im-PROVE the FORE-cast, but she STILL STRUG-gles to ex-PLAIN her as-SUMP-tions."
+        },
+        "meaning_summary": "新分析师想改进预测，但仍难以解释自己的假设。",
+        "meaning": "but 引出的是意愿与当前能力之间的对比，still 强调这种困难持续存在。",
+        "pragmatic_function": "",
+        "similar_expressions": [],
+        "examples": [
+          {
+            "english": "The junior designer hopes to simplify the layout, but he still struggles to justify his choices.",
+            "chinese": "这位初级设计师希望简化布局，但仍难以证明自己的选择合理。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "工作反馈",
+          "能力与意愿对比",
+          "转折表达"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "The report needs clearer reasoning and more accurate estimates.",
+          "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+          "Her manager will review the draft with her tomorrow."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这句话用 but 把“想改进”和“仍难解释”并置，突出意愿与能力之间的落差。记忆时抓住 hopes to 与 still struggles to 的对照。",
+      "reusable_patterns": [
+        {
+          "template": "[person] hopes to [goal], but [pronoun] still struggles to [action].",
+          "slots": {
+            "person": "把 person 换成具体的人",
+            "goal": "把 goal 换成想达成的目标",
+            "pronoun": "把 pronoun 换成与 person 一致的代词",
+            "action": "把 action 换成仍感困难的动作"
+          },
+          "rationale": "分别替换人物、目标、代词和困难动作，保留 but 连接的转折对照。"
+        }
+      ],
+      "collocations": [
+        "struggle to explain",
+        "improve the forecast",
+        "explain assumptions"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "heldout_sentence",
+    "round": 1,
+    "stage": "syntax",
+    "provider_seconds": 3.448,
+    "normalization_ms": 0.758,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "but 连接的并列句，两个独立分句",
+        "grammar": "实义动词一般现在时，后接不定式补足成分",
+        "logic": "转折：希望改进与仍难解释形成对照",
+        "information": "先意图后困难",
+        "wording": "hopes 表意愿，struggles 表有困难",
+        "style": "两分句平行对称"
+      },
+      "sentence_type": "并列句",
+      "main_clause": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "structure_breakdown": [
+        "The new analyst hopes to improve the forecast — 第一个独立分句，主语 The new analyst，谓语 hopes，to improve the forecast 为不定式补足成分",
+        "but she still struggles to explain her assumptions — 第二个独立分句，主语 she，谓语 struggles，to explain her assumptions 为不定式补足成分",
+        "but — 并列连词，连接两个独立分句"
+      ],
+      "logic_relations": [
+        "but — 前句说希望改进预测，后句说仍难以解释假设，构成转折",
+        "still — 强调困难在转折后依然存在"
+      ],
+      "information_hierarchy": [
+        "前半句 — 给出分析师的积极意图",
+        "后半句 — 转折指出她仍存在的困难"
+      ],
+      "style_features": [
+        "but 连接两个结构平行的分句，形成前后对照",
+        "两个分句均以不定式补足成分收尾，节奏对称"
+      ],
+      "usage_scenarios": [],
+      "grammar_points": [
+        "hopes / struggles — 实义动词一般现在时，第三人称单数加 -s，不是情态动词",
+        "to improve / to explain — 动词后的不定式补充具体动作内容，不是目的状语"
+      ],
+      "wording_notes": [
+        "hopes to improve — 表示尚未实现的意愿，不等于已经改进",
+        "struggles to explain — 表示有困难，不能加强为无法解释"
+      ],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "这位新分析师希望改进预测，但她仍然难以解释自己的假设。",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "新来的分析师想改进预测，却仍难以说清自己的假设依据。",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "The report needs clearer reasoning and more accurate estimates.",
+        "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+        "Her manager will review the draft with her tomorrow."
+      ]
+    }
+  },
+  {
+    "case": "pockets",
+    "round": 2,
+    "stage": "explain",
+    "provider_seconds": 3.468,
+    "normalization_ms": 0.222,
+    "json_recovered": true,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "pockets of greatness",
+      "recommended_text": "pockets of greatness",
+      "learning_text": "pocket of greatness",
+      "ask_suggestions": [
+        "这个短语还能形容哪些领域？",
+        "用它写一段具体对话",
+        "它和 bright spots 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "framing",
+          "contrast"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ˈpɑkɪt əv ˈɡreɪtnəs/",
+          "connected_speech": "of 常弱读为 /əv/，重音落在 POCK-et 和 GREAT-ness 上",
+          "audio_text": "pocket of greatness",
+          "stress_text": "POCK-et of GREAT-ness"
+        },
+        "meaning_summary": "局部亮点：团队在某些方面表现出色，但整体并不稳定",
+        "meaning": "pockets 强调亮点只集中在有限范围，并不代表整体水平。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "bright spots — 侧重“亮点”本身，不强调成片集中的范围感",
+          "islands of excellence — 用“孤岛”意象强调亮点与周围整体相隔绝"
+        ],
+        "examples": [
+          {
+            "english": "The small studio has pockets of greatness in animation, but its schedules often slip.",
+            "chinese": "这家小工作室在动画方面有局部亮点，但进度常常拖延。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "团队评估",
+          "优缺点分析",
+          "绩效反馈"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "We need to take an honest look at how the team is performing.",
+          "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "Our next step is to make those strengths part of our everyday process."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这里先承认团队在局部有亮点，再用 but 转折指出整体交付不稳。记忆时可把 pocket 想成“一小块区域”，亮点只集中在局部。",
+      "reusable_patterns": [
+        {
+          "template": "[team] has pockets of greatness in [area]",
+          "slots": {
+            "team": "换成具体团队或组织",
+            "area": "换成具体领域"
+          },
+          "rationale": "team 换成具体团队，area 换成具体领域，保留 pockets of greatness 的核心表达。"
+        }
+      ],
+      "collocations": [
+        "pockets of greatness in [area]",
+        "have pockets of greatness",
+        "pockets of greatness across [area]"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "pockets",
+    "round": 2,
+    "stage": "syntax",
+    "provider_seconds": 2.196,
+    "normalization_ms": 0.749,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "of 前为中心名词，of 后为介词宾语",
+        "grammar": "",
+        "logic": "与 but 后的持续交付困难形成对比",
+        "information": "",
+        "wording": "",
+        "style": ""
+      },
+      "sentence_type": "名词短语",
+      "main_clause": "作 has 的宾语，表示团队在设计方面存在局部优势。",
+      "structure_breakdown": [
+        "pockets — 中心名词，复数形式，此处为比喻用法，指分散的局部区域",
+        "of greatness — 介词短语作后置修饰，说明 pockets 的内容"
+      ],
+      "logic_relations": [
+        "but — 转折：局部优势与难以持续交付形成对比"
+      ],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "局部的卓越表现",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "若干亮点",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    }
+  },
+  {
+    "case": "drifted",
+    "round": 2,
+    "stage": "explain",
+    "provider_seconds": 3.051,
+    "normalization_ms": 0.203,
+    "json_recovered": false,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "drifted away from",
+      "recommended_text": "drifted away from",
+      "learning_text": "drift away from",
+      "ask_suggestions": [
+        "这个短语能用于个人目标吗？",
+        "用它写一段具体对话",
+        "它和 lose sight of 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "discourse"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/drɪft əˈweɪ frəm/",
+          "connected_speech": "from 常弱读为 /frəm/，重音落在 drift 和 way 上。",
+          "audio_text": "drift away from",
+          "stress_text": "DRIFT a-WAY from"
+        },
+        "meaning_summary": "逐渐偏离（最初使命）",
+        "meaning": "强调偏离是缓慢、不知不觉发生的，而非突然决定。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "lose sight of — 强调忘记或忽视目标，而非逐渐偏离",
+          "stray from — 强调走偏或偏离正轨，不一定有渐进过程"
+        ],
+        "examples": [
+          {
+            "english": "The club has drifted away from its original purpose of community service.",
+            "chinese": "这个俱乐部已逐渐偏离了其社区服务的最初宗旨。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "团队管理",
+          "个人目标",
+          "项目复盘"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "We started this project to make everyday tasks easier.",
+          "The team has drifted away from its original mission, but it is working hard to regain its focus.",
+          "Next month we will simplify the product and focus on our core users."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这里用“漂离”的意象说明团队已逐渐偏离最初使命，而非突然改变。记忆时可联想船只慢慢漂离岸边，强调渐进过程。",
+      "reusable_patterns": [
+        {
+          "template": "[subject] has drifted away from [original goal]",
+          "slots": {
+            "subject": "换成具体的人或组织",
+            "original goal": "换成具体的目标或原则"
+          },
+          "rationale": "把 subject 换成具体主体，original goal 换成具体目标。"
+        }
+      ],
+      "collocations": [
+        "drift away from the mission",
+        "drift away from the original plan",
+        "gradually drift away from"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "drifted",
+    "round": 2,
+    "stage": "syntax",
+    "provider_seconds": 2.299,
+    "normalization_ms": 0.771,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "过去分词加 away from 构成的动词短语",
+        "grammar": "",
+        "logic": "与 but 后分句形成转折",
+        "information": "",
+        "wording": "",
+        "style": ""
+      },
+      "sentence_type": "动词短语",
+      "main_clause": "在 current_sentence 中作并列分句的谓语，与 has 构成现在完成时",
+      "structure_breakdown": [
+        "drifted — 过去分词，与 has 构成现在完成时",
+        "away from — 介词性副词加介词，引出偏离的对象"
+      ],
+      "logic_relations": [
+        "but — 前一分句说偏离使命，后一分句说正努力重拾重心"
+      ],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "从……漂离",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "偏离",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We started this project to make everyday tasks easier.",
+        "The team has drifted away from its original mission, but it is working hard to regain its focus.",
+        "Next month we will simplify the product and focus on our core users."
+      ]
+    }
+  },
+  {
+    "case": "team_sentence",
+    "round": 2,
+    "stage": "explain",
+    "provider_seconds": 4.837,
+    "normalization_ms": 0.211,
+    "json_recovered": false,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "sentence",
+      "completeness": "complete",
+      "selected_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "recommended_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "learning_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+      "ask_suggestions": [
+        "这个短语能用来描述其他领域吗？",
+        "用它写一段具体对话",
+        "它和 has strengths in 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "structure",
+        "tags": [
+          "contrast",
+          "summarising"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ðə tiːm hæz ˈpɑːkɪts əv ˈɡreɪtnəs ɪn dɪˈzaɪn, bʌt ɪt stɪl ˈstrʌɡəlz tə dɪˈlɪvər kənˈsɪstəntli/",
+          "connected_speech": "has 可弱读为 /həz/；重音落在 POCK-ets、GREAT-ness、de-SIGN、STRUG-gles、con-SIS-tent-ly 上。",
+          "audio_text": "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "stress_text": "The TEAM has POCK-ets of GREAT-ness in de-SIGN, but it still STRUG-gles to de-LIV-er con-SIS-tent-ly."
+        },
+        "meaning_summary": "团队在设计上有局部亮点，但持续交付仍困难。",
+        "meaning": "pockets of 强调亮点只存在于局部范围，并非整体优秀；but 引出整体交付能力不足的对比。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "has strengths in design — 替换原句“pockets of greatness in design”部分，只说明设计方面有优势，不强调亮点零散分布。"
+        ],
+        "examples": [
+          {
+            "english": "The startup has pockets of excellence in marketing, but it still struggles to scale quickly.",
+            "chinese": "这家初创公司在营销上有局部亮点，但仍难以快速扩张。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "团队评估",
+          "绩效反馈",
+          "客观分析"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "We need to take an honest look at how the team is performing.",
+          "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+          "Our next step is to make those strengths part of our everyday process."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这句话先肯定团队在设计中存在局部亮点，再用 but 转折指出持续交付的困难，意图是客观评估。记忆时抓住“pockets of + 优点”与“struggles to + 动作”的对比框架。",
+      "reusable_patterns": [
+        {
+          "template": "[team] has pockets of greatness in [area], but it still struggles to [action] consistently.",
+          "slots": {
+            "team": "把 team 换成具体团队或组织",
+            "area": "把 area 换成具体领域",
+            "action": "把 action 换成具体动作"
+          },
+          "rationale": "替换团队、领域和动作，保留“局部亮点但持续困难”的对比结构。"
+        }
+      ],
+      "collocations": [
+        "pockets of greatness in design",
+        "struggles to deliver consistently"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "team_sentence",
+    "round": 2,
+    "stage": "syntax",
+    "provider_seconds": 3.163,
+    "normalization_ms": 0.971,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "but 连接的并列句，两个独立分句",
+        "grammar": "has 为实义动词一般现在时",
+        "logic": "先肯定局部优势，再转折指出交付困难",
+        "information": "",
+        "wording": "",
+        "style": "先扬后抑的对比"
+      },
+      "sentence_type": "并列句",
+      "main_clause": "The team has pockets of greatness, but it still struggles to deliver consistently",
+      "structure_breakdown": [
+        "The team has pockets of greatness in design — 第一个独立分句，主谓宾结构，in design 限定范围",
+        "but it still struggles to deliver consistently — 第二个独立分句，it 指代 the team，to deliver 为不定式补足成分",
+        "pockets of greatness — 名词短语作宾语，中心词 pockets，of greatness 作后置修饰"
+      ],
+      "logic_relations": [
+        "but — 前后分句构成转折：设计上有局部优势，但交付仍不稳定"
+      ],
+      "information_hierarchy": [
+        "先肯定设计上的局部优势 — 让步性信息",
+        "再指出交付不稳定 — 转折后的核心问题"
+      ],
+      "style_features": [
+        "两个独立分句由 but 并列，形成先扬后抑的对比",
+        "pockets of greatness 为名词比喻，非固定习语"
+      ],
+      "usage_scenarios": [],
+      "grammar_points": [
+        "has + 名词短语 — 实义动词一般现在时，非现在完成时",
+        "it — 代词回指前一分句主语 the team"
+      ],
+      "wording_notes": [
+        "pockets of — 表示局部、零散分布，非整体性",
+        "struggles to — 表示有困难，未否定其能力"
+      ],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "这个团队在设计上有局部的卓越表现，但它仍然难以稳定地交付。",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "这个团队在设计上有一些亮点，但在稳定交付方面仍有困难。",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "We need to take an honest look at how the team is performing.",
+        "The team has pockets of greatness in design, but it still struggles to deliver consistently.",
+        "Our next step is to make those strengths part of our everyday process."
+      ]
+    }
+  },
+  {
+    "case": "heldout_sentence",
+    "round": 2,
+    "stage": "explain",
+    "provider_seconds": 4.769,
+    "normalization_ms": 0.201,
+    "json_recovered": false,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "sentence",
+      "completeness": "complete",
+      "selected_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "recommended_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "learning_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "ask_suggestions": [
+        "这个句子如何迁移到其他场景？",
+        "用它写一段具体对话",
+        "它和 although 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "structure",
+        "tags": [
+          "contrast"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ðə nu ˈænəlɪst hoʊps tu ɪmˈpruv ðə ˈfɔrˌkæst, bʌt ʃi stɪl ˈstrʌɡəlz tu ɪkˈspleɪn hɜr əˈsʌmpʃənz/",
+          "connected_speech": "but 常弱读为 /bət/；重音可落在 hopes、improve、struggles、explain 上。",
+          "audio_text": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+          "stress_text": "The NEW AN-a-lyst HOPES to im-PROVE the FORE-cast, but she still STRUG-gles to ex-PLAIN her as-SUMP-tions."
+        },
+        "meaning_summary": "新分析师想改进预测，但仍难以解释自己的假设。",
+        "meaning": "but 引出转折，still 强调困难持续存在，struggles to 表示“费力做某事”而非完全不能。",
+        "pragmatic_function": "",
+        "similar_expressions": [],
+        "examples": [
+          {
+            "english": "The junior designer hopes to simplify the layout, but he still struggles to justify his choices.",
+            "chinese": "这位初级设计师希望简化布局，但他仍难以证明自己的选择合理。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "工作反馈",
+          "能力与意愿对比",
+          "转折表达"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "The report needs clearer reasoning and more accurate estimates.",
+          "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+          "Her manager will review the draft with her tomorrow."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这句话用 but 对比“想改进”和“仍难解释”，突出意愿与能力的落差。记忆时抓住 hopes to 与 still struggles to 的对照。",
+      "reusable_patterns": [
+        {
+          "template": "[person] hopes to [goal], but [pronoun] still struggles to [action].",
+          "slots": {
+            "person": "具体的人或角色",
+            "goal": "希望达成的目标",
+            "pronoun": "指代前面人物的代词",
+            "action": "仍感困难的动作"
+          },
+          "rationale": "替换人物、目标、代词和困难动作，保留对比结构。"
+        }
+      ],
+      "collocations": [
+        "improve the forecast",
+        "explain assumptions",
+        "struggle to explain"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "heldout_sentence",
+    "round": 2,
+    "stage": "syntax",
+    "provider_seconds": 3.692,
+    "normalization_ms": 1.767,
+    "json_recovered": false,
+    "output": {
+      "section_summaries": {
+        "structure": "由 but 连接的并列句，两个分句各含不定式补足成分",
+        "grammar": "一般现在时第三人称单数；不定式补充动作内容",
+        "logic": "转折：希望改进预测，但仍难以解释假设",
+        "information": "先讲积极意图，再讲持续困难",
+        "wording": "hopes to 表意图，struggles to 表有困难",
+        "style": "两个分句结构对称，均以不定式收尾"
+      },
+      "sentence_type": "并列句",
+      "main_clause": "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+      "structure_breakdown": [
+        "The new analyst hopes to improve the forecast — 第一个独立分句，主语 The new analyst，谓语 hopes，to improve the forecast 为不定式补足成分",
+        "but she still struggles to explain her assumptions — 第二个独立分句，主语 she，谓语 struggles，to explain her assumptions 为不定式补足成分",
+        "but — 连接两个独立分句的并列连词"
+      ],
+      "logic_relations": [
+        "but — 前一分句说希望改进预测，后一分句说仍难以解释假设，形成转折",
+        "still — 强调解释假设的困难持续存在"
+      ],
+      "information_hierarchy": [
+        "The new analyst hopes to improve the forecast — 先给出分析师的积极意图",
+        "but she still struggles to explain her assumptions — 再指出她在解释假设上的持续困难"
+      ],
+      "style_features": [
+        "由 but 连接的两个独立分句构成并列结构",
+        "两个分句均以动词后接不定式补足成分"
+      ],
+      "usage_scenarios": [],
+      "grammar_points": [
+        "hopes / struggles — 一般现在时的第三人称单数形式，主语分别为 The new analyst 和 she",
+        "to improve / to explain — 动词后的不定式补充具体动作内容，不是目的状语"
+      ],
+      "wording_notes": [
+        "hopes to improve — 表示想要完成的具体动作，语气积极",
+        "struggles to explain — 表示做某事有困难，程度弱于 cannot explain"
+      ],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "新分析师希望改进预测，但她仍然难以解释自己的假设。",
+          "recommended": false
+        }
+      ],
+      "translation_notes": [
+        "still 译为“仍然”，保留困难持续存在的含义；struggles to 译为“难以”，不加强为“无法”"
+      ],
+      "background_context": null,
+      "evidence": [
+        "The report needs clearer reasoning and more accurate estimates.",
+        "The new analyst hopes to improve the forecast, but she still struggles to explain her assumptions.",
+        "Her manager will review the draft with her tomorrow."
+      ]
+    }
+  }
+]

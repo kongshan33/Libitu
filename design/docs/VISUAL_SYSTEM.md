@@ -1,5 +1,9 @@
 # Web visual system
 
+## Neutral interface palette — 2026-11-06
+
+Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.
+
 ## Typography
 
 The user approved loading Inter on 2026-10-04. The root layout loads the locally bundled Inter 4.1 normal and italic variable fonts with `next/font/local`, `display: swap` and an adjusted Arial fallback. The `--font-ui` token selects this family across headers, body text and controls. Fonts and their OFL license live in `apps/web/app/fonts`; there are no remote font requests at runtime or build time. Unsupported glyphs fall back to system fonts. Existing monospace pronunciation/structure/code text keeps its own stack.
@@ -8,7 +12,7 @@ Existing grids, ordering, spacing, control dimensions and responsive breakpoints
 
 ## Fields
 
-Use `Input`, `Textarea` and `NativeSelect` from `apps/web/components/ui/field.tsx`. Existing Radix Select triggers share the same field appearance. Feature CSS still owns dimensions, padding, line height and resize behavior. `field.css` owns white surfaces, warm borders, placeholder color, purple focus, invalid red borders, disabled states and reduced motion.
+Use `Input`, `Textarea` and `NativeSelect` from `apps/web/components/ui/field.tsx`. Existing Radix Select triggers share the same field appearance. Feature CSS still owns dimensions, padding, line height and resize behavior. `field.css` owns white surfaces, neutral borders, placeholder color, a single black focus boundary, invalid red borders, disabled states and reduced motion.
 
 Inputs inside a search/video wrapper use `appearance="bare"`. Put `className="ui-field-surface"` and `data-field-surface` on the existing wrapper, preserving its existing feature class. Focus and invalid/disabled appearance then belong to the wrapper. Chat keeps its existing pill shape with `shape="pill"`. Keep native form semantics, labels, aria descriptions and handlers. Checkboxes, radios and file controls remain native; their purple accent and common disabled/focus feedback come from global tokens.
 
@@ -34,7 +38,7 @@ Run root `pnpm lint`, `pnpm build` and `pnpm test`. Font or shared-style changes
 
 Reader footer follow-up (2026-10-04): the Stage 2 entry bar spans the viewport horizontally, canceling the reader gutter only for this footer. Its content keeps internal padding; other reader sections retain their responsive gutters.
 
-Page backgrounds and outer gutters use the white primary background. Keep warm-neutral secondary backgrounds for inner surfaces only; do not change the secondary token to recolor page canvases. Existing spacing and framing remain unchanged.
+Page backgrounds and outer gutters use the white primary background. Keep neutral secondary backgrounds for inner surfaces only; do not change the secondary token to recolor page canvases. Existing spacing and framing remain unchanged.
 
 ## Application header
 

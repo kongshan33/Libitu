@@ -1,0 +1,65 @@
+{
+  "headings": [
+    {
+      "tag": "H2",
+      "text": "pockets of greatness"
+    },
+    {
+      "tag": "H2",
+      "text": "Use it"
+    },
+    {
+      "tag": "H2",
+      "text": "Meaning"
+    },
+    {
+      "tag": "H2",
+      "text": "Pronunciation"
+    },
+    {
+      "tag": "H2",
+      "text": "Similar expressions"
+    },
+    {
+      "tag": "H2",
+      "text": "Examples"
+    },
+    {
+      "tag": "H2",
+      "text": "Ask about this"
+    }
+  ],
+  "modal": {
+    "height": 910,
+    "viewport": 950,
+    "closedby": null
+  },
+  "close": {
+    "borderRadius": "999px",
+    "width": 32,
+    "height": 31.999996185302734
+  },
+  "openAfterBackdropClick": true,
+  "escapeCloses": true,
+  "focusReturned": false,
+  "focusAfterEscape": {
+    "tag": "BODY",
+    "label": null
+  },
+  "suggestion": {
+    "immediateRequests": 1,
+    "pressed": null,
+    "selected": null
+  },
+  "form": {
+    "height": 48,
+    "borderRadius": "24px"
+  },
+  "saveButtonAfterSaving": 1,
+  "phraseSyntaxHeadings": [
+    "Internal structure",
+    "Role in the sentence",
+    "Logic with nearby sentences"
+  ],
+  "lazyGenerationCopy": 0
+}

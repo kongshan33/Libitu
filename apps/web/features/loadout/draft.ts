@@ -403,7 +403,10 @@ export function adoptDeviceDraft(storage: DraftStorage, owner: string, index: nu
 }
 
 export function expressionText(record: SavedCorpusRecord): string {
-  return record.item.kind === "structure" ? record.item.text : record.item.text.match(/^["“'](.+?)["”']\s*[-–—]/)?.[1] ?? record.item.text;
+  const text = record.item.kind === "structure" ? record.item.text : record.item.text.match(/^["“'](.+?)["”']\s*[-–—]/)?.[1] ?? record.item.text;
+  const analysis = record.item.analysisDetail?.analysis;
+  // Preserve custom names and saved templates; only normalize the extracted text.
+  return analysis?.learningText && [analysis.selectedText, analysis.recommendedText].includes(text) ? analysis.learningText : text;
 }
 
 export function resolveSelection(draft: LoadoutDraft, records: SavedCorpusRecord[]) {

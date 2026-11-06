@@ -1,6 +1,11 @@
 (() => {
   if (globalThis.__libituBufferBridge || window !== window.top || window.location.origin !== "http://localhost:3000") return;
   globalThis.__libituBufferBridge = true;
+  // A reloaded/disabled extension can throw before sendMessage returns a Promise.
+  // Normalize both synchronous context invalidation and asynchronous failures.
+  async function sendToExtension(message) {
+    return chrome.runtime.sendMessage(message);
+  }
   const sessions = new Map();
   const probes = new Set();
   const extracts = new Map();
@@ -48,7 +53,7 @@
       const { epochTime, wallTime, time, rate, state, generation } = t;
       payload = { telemetry: { epochTime, wallTime, time, rate, state, generation } };
     }
-    chrome.runtime.sendMessage({ type: "LIBITU_BUFFER_REQUEST", version: 4, action: message.action,
+    sendToExtension({ type: "LIBITU_BUFFER_REQUEST", version: 4, action: message.action,
       sessionId: message.sessionId, requestId: message.requestId, contentId: message.contentId, videoId: message.videoId, documentNonce, ...payload }).then(reply).catch(() => reply({
       type: "LIBITU_BUFFER_EVENT", version: 4, sessionId: message.sessionId, requestId: message.sessionId,
       status: "error", error: "The extension connection was lost. Reload the extension and this page."
@@ -62,7 +67,7 @@
     return false;
   });
   window.addEventListener("pagehide", () => {
-    for (const sessionId of sessions.keys()) chrome.runtime.sendMessage({
+    for (const sessionId of sessions.keys()) sendToExtension({
       type: "LIBITU_BUFFER_REQUEST", version: 4, action: "close", sessionId, requestId: sessionId, documentNonce, ...sessions.get(sessionId)
     }).catch(() => {});
     sessions.clear(); probes.clear(); extracts.clear();

@@ -1,0 +1,6 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {installLoadoutFixture} from '../../../apps/web/tests/helpers/loadout-fixture.mjs';
+const {chromium}=createRequire(import.meta.url)('/Users/river/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const browser=await chromium.launch({channel:'chrome',headless:true});
+try{for(const width of [1400,390]){const context=await browser.newContext({viewport:{width,height:1000}});const page=await context.newPage();await installLoadoutFixture(page,{origin:'http://localhost:3000'});await page.goto('http://localhost:3000/corpus');const input=page.getByRole('searchbox',{name:'Search corpus'});await input.focus();const result=await input.evaluate(el=>{const a=getComputedStyle(el),b=getComputedStyle(el.closest('[data-input-group]'));return {inner:a.outlineStyle,outer:b.outlineStyle,color:b.outlineColor,width:b.outlineWidth,shadow:b.boxShadow};});assert.deepEqual(result,{inner:'none',outer:'solid',color:'rgb(12, 10, 9)',width:'1px',shadow:'none'});await input.locator('..').screenshot({path:`output/playwright/input-focus/${width}.png`});console.log('PASS',width,result);await context.close();}}finally{await browser.close();}

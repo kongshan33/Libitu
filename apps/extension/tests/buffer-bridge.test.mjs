@@ -18,7 +18,7 @@ function fixture({ top = true, url = initial } = {}) {
       requestId: message.requestId, status: message.action === "arm" ? "armed" : "available" } : { accepted: true };
   } } };
   runInNewContext(code, { window, chrome, URL, crypto });
-  return { window, callbacks, calls, replies,
+  return { window, callbacks, calls, replies, chrome,
     async send(message, extra = {}) { callbacks.message?.({ data: message, source: window, origin: window.location.origin, ...extra }); await nextTurn(); },
     runtime(message, sender = { id: "libitu" }) { let result; listener?.(message, sender, (value) => { result = value; }); return result; }
   };
@@ -65,3 +65,41 @@ test("verified registrations release their probe slot without arming capture", a
   assert.equal(f.replies.every(reply => reply.status === "available"), true);
   await f.send(arm); assert.equal(f.replies.at(-1).status, "armed");
 });
+
+for (const failure of ["sync", "async"]) {
+  const invalidate = (f) => {
+    f.chrome.runtime.sendMessage = () => {
+      if (failure === "sync") throw new Error("Extension context invalidated.");
+      return Promise.reject(new Error("The message port closed."));
+    };
+  };
+  test(`${failure} runtime failure reports recovery and releases probe/session slots`, async () => {
+    const f = fixture();
+    const sendMessage = f.chrome.runtime.sendMessage;
+    invalidate(f);
+    for (let index = 0; index < 12; index++) {
+      await f.send({ ...arm, action: "ping", sessionId: `probe-${index}`, requestId: `probe-${index}` });
+    }
+    assert.equal(f.replies.length, 12);
+    assert.ok(f.replies.every((reply) => reply.status === "error" && /Reload the extension and this page/.test(reply.error)));
+    f.chrome.runtime.sendMessage = sendMessage;
+    await f.send(arm);
+    assert.equal(f.replies.at(-1).status, "armed");
+    invalidate(f);
+    await f.send(extract);
+    assert.equal(f.replies.at(-1).status, "error");
+    assert.equal(f.runtime({ type: "LIBITU_BUFFER_VERIFY", sessionId: arm.sessionId }).available, false);
+    const count = f.replies.length;
+    f.runtime({ type: "LIBITU_BUFFER_EVENT", version: 4, status: "complete", sessionId: arm.sessionId, requestId: extract.requestId });
+    assert.equal(f.replies.length, count);
+  });
+  test(`${failure} runtime failure during pagehide still clears local state`, async () => {
+    const f = fixture();
+    await f.send(arm);
+    await f.send(extract);
+    invalidate(f);
+    assert.doesNotThrow(() => f.callbacks.pagehide());
+    await nextTurn();
+    assert.equal(f.runtime({ type: "LIBITU_BUFFER_VERIFY", sessionId: arm.sessionId }).available, false);
+  });
+}

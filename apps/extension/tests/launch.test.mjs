@@ -29,6 +29,7 @@ function harness() {
     failReceiver: false
   };
   const chrome = {
+    alarms: { onAlarm: event("alarm"), get: async () => ({}), create: async () => {} },
     webNavigation: { getFrame: async ({ tabId }) => ({ url: tabs.get(tabId)?.url, documentId: "stage-document" }) },
     runtime: {
       id: "test-extension",
@@ -64,7 +65,7 @@ function harness() {
     },
     storage: { session: {
       get: async (key) => structuredClone(key === null ? records : { [key]: records[key] }),
-      set: async (values) => { Object.assign(records, structuredClone(values)); },
+      set: async (values) => { if (state.failStorage) throw new Error("Quota exceeded"); Object.assign(records, structuredClone(values)); },
       remove: async (key) => { delete records[key]; }
     } },
     tabs: {
@@ -87,7 +88,7 @@ function harness() {
     }
   };
   const restart = () => runInNewContext(code, {
-    chrome, URL, URLSearchParams, crypto, clearTimeout,
+    chrome, URL, URLSearchParams, crypto, clearTimeout, TextEncoder,
     setTimeout: (callback, delay) => setTimeout(callback, state.quickTimeout ? Math.min(delay, 5) : delay),
     readCurrentYouTubeCaptionTrack, captionTrackToTranscript,
     createFreshCaptionReader: (chrome) => createFreshCaptionReader(chrome, async () => true),
@@ -323,4 +324,90 @@ test("a verified canonical content tab is reused after the handoff expires", asy
   await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
   assert.equal(h.calls.filter(([type]) => type === "open").length, 1);
   assert.equal(new URL(h.calls.find(([type]) => type === "open")[1]).pathname, "/practice/import");
+});
+
+test("unknown language retries after metadata arrives and concurrent checks share work", async () => {
+  const h = harness();
+  h.state.quickTimeout = true;
+  h.state.language = undefined;
+  const message = { type: "LIBITU_GET_VIDEO_LANGUAGE_SUPPORT", videoId: "first-video" };
+  const results = await Promise.all([h.dispatch(message), h.dispatch(message)]);
+  assert.ok(results.every((result) => result.status === "unknown"));
+  assert.equal(h.calls.filter(([type]) => type === "language").length, 4);
+  h.state.language = { languageCode: "en" };
+  assert.equal((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).opened, true);
+  assert.equal(h.calls.filter(([type]) => type === "language").length, 5);
+});
+
+test("expired handoffs are deleted on read and alarms without another launch", async () => {
+  const h = harness();
+  await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
+  const stage = h.tabs.get(2);
+  const id = new URL(stage.url).searchParams.get("handoffId");
+  const key = `libituHandoff:${id}`;
+  h.records[key].createdAt -= 16 * 60_000;
+  const result = await h.dispatch({ type: "LIBITU_READ_HANDOFF", handoffId: id }, { tab: stage, frameId: 0, url: stage.url });
+  assert.equal(result.unavailable, true);
+  assert.equal(h.records[key], undefined);
+  h.records[key] = { createdAt: Date.now() - 16 * 60_000 };
+  h.records.unrelated = { keep: true };
+  h.listeners.alarm({ name: "libitu-handoff-cleanup" });
+  await nextTurn();
+  assert.equal(h.records[key], undefined);
+  assert.equal(h.records.unrelated.keep, true);
+  h.records[key] = { createdAt: Date.now() - 16 * 60_000 };
+  h.restart();
+  await nextTurn();
+  assert.equal(h.records[key], undefined);
+});
+
+test("closing the import tab clears its captions but closing the source preserves ready handoff", async () => {
+  const h = harness();
+  await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
+  const key = Object.keys(h.records).find((key) => key.startsWith("libituHandoff:"));
+  h.listeners.removed(1);
+  await nextTurn();
+  assert.ok(h.records[key]);
+  h.listeners.removed(2);
+  await nextTurn();
+  assert.equal(h.records[key], undefined);
+});
+
+test("closing the source during capture never resurrects the removed handoff", async () => {
+  const h = harness();
+  let finish;
+  h.state.captionTrack = new Promise((resolve) => { finish = resolve; });
+  const launching = h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
+  await nextTurn();
+  h.listeners.removed(1);
+  await nextTurn();
+  finish({ captionTrack: structuredClone(json3Track) });
+  assert.ok((await launching).error);
+  assert.equal(Object.keys(h.records).filter((key) => key.startsWith("libituHandoff:")).length, 0);
+  assert.equal(h.calls.some(([type]) => type === "open"), false);
+});
+
+test("handoff count and serialized byte budget evict oldest records", async () => {
+  for (const payloadSize of [10, 400_000]) {
+    const h = harness();
+    for (let index = 0; index < 16; index++) h.records[`libituHandoff:old-${index}`] = {
+      createdAt: Date.now() - (100 - index) * 1000, snapshot: { videoId: `old-${index}` }, transcriptText: "x".repeat(payloadSize)
+    };
+    assert.equal((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).opened, true);
+    const handoffs = Object.entries(h.records).filter(([key]) => key.startsWith("libituHandoff:"));
+    assert.ok(handoffs.length <= 16);
+    assert.ok(handoffs.reduce((sum, [key, record]) => sum + new TextEncoder().encode(key + JSON.stringify(record)).byteLength, 0) <= 4 * 1024 * 1024);
+    assert.equal(h.records["libituHandoff:old-0"], undefined);
+  }
+});
+
+test("oversized captions and storage failures return actionable errors and allow retry", async () => {
+  const h = harness();
+  h.state.captions = Promise.resolve({ ...snapshot, transcriptText: "x".repeat(4 * 1024 * 1024) });
+  assert.match((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).error, /too large/);
+  h.state.captions = Promise.resolve({ ...snapshot, transcriptText: "0:01\tRetry captions" });
+  h.state.failStorage = true;
+  assert.match((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).error, /could not store/);
+  h.state.failStorage = false;
+  assert.equal((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).opened, true);
 });

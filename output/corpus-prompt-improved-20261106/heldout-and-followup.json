@@ -1,0 +1,475 @@
+[
+  {
+    "case": "idiom",
+    "stage": "explain",
+    "seconds": 4.132,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "broke the ice",
+      "recommended_text": "broke the ice",
+      "learning_text": "break the ice",
+      "ask_suggestions": [
+        "这个短语还能用在哪些场合？",
+        "用它写一段具体对话",
+        "它和 break the silence 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "idiom",
+        "tags": [
+          "idiom"
+        ],
+        "level": "B1",
+        "usage_register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/breɪk ði aɪs/",
+          "connected_speech": "the 在元音前常读 /ði/，重音落在 break 和 ice 上。",
+          "audio_text": "break the ice",
+          "stress_text": "BREAK the ICE"
+        },
+        "meaning_summary": "打破僵局，使气氛轻松起来",
+        "meaning": "强调在社交或讨论开始时缓解紧张、让互动自然展开。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "break the silence — 侧重打破沉默状态，不强调缓解紧张气氛"
+        ],
+        "examples": [
+          {
+            "english": "A quick game helped break the ice at the workshop.",
+            "chinese": "一个小游戏帮助工作坊打破了僵局。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "社交开场",
+          "会议讨论",
+          "团队活动"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "Her opening joke broke the ice before the discussion began."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这里用“开场玩笑”具体说明打破僵局的方式，意图是让讨论更顺畅地开始。记忆时把 ice 想成“冷场”，break 就是“打破”。",
+      "reusable_patterns": [
+        {
+          "template": "[action] broke the ice at [event]",
+          "slots": {
+            "action": "换成具体行为，如 a warm-up game",
+            "event": "换成具体场合，如 the meeting"
+          },
+          "rationale": "action 替换打破僵局的方式，event 替换发生的场合。"
+        }
+      ],
+      "collocations": [
+        "break the ice with a joke",
+        "help break the ice",
+        "an ice-breaking activity"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "idiom",
+    "stage": "syntax",
+    "seconds": 1.625,
+    "output": {
+      "section_summaries": {
+        "structure": "动宾习语，过去式 broke + 宾语 the ice",
+        "grammar": "",
+        "logic": "先打破僵局，后开始讨论",
+        "information": "",
+        "wording": "",
+        "style": ""
+      },
+      "sentence_type": "动宾短语",
+      "main_clause": "在句中作谓语，主语是 Her opening joke",
+      "structure_breakdown": [
+        "broke — 动词 break 的过去式，在此习语中不表示“打破”",
+        "the ice — 定冠词 + 名词，作 broke 的宾语，整体构成习语"
+      ],
+      "logic_relations": [
+        "before the discussion began — 说明打破僵局发生在讨论开始之前"
+      ],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "打破了冰",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "打破了僵局",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "Her opening joke broke the ice before the discussion began."
+      ]
+    }
+  },
+  {
+    "case": "plural",
+    "stage": "explain",
+    "seconds": 3.799,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "glimmers of hope",
+      "recommended_text": "glimmers of hope",
+      "learning_text": "glimmer of hope",
+      "ask_suggestions": [
+        "这个短语能用在什么情境？",
+        "用它写一段具体对话",
+        "它和 a ray of hope 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "idiom"
+        ],
+        "level": "B2",
+        "usage_register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ˈɡlɪmərz əv hoʊp/",
+          "connected_speech": "of 常弱读为 /əv/，与前后词自然连读。",
+          "audio_text": "glimmer of hope",
+          "stress_text": "GLIM-mer of HOPE"
+        },
+        "meaning_summary": "一线希望；微弱的希望迹象",
+        "meaning": "强调希望只是零星、微弱的迹象，而非确定的好转。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "a ray of hope — 同样指微弱希望，但意象是一道光线，常暗示穿透困境的亮光。",
+          "a sign of hope — 侧重是可观察到的迹象，不强调希望本身的微弱程度。"
+        ],
+        "examples": [
+          {
+            "english": "The charity's small successes offer glimmers of hope for the whole community.",
+            "chinese": "这家慈善机构的小小成功为整个社区带来了一线希望。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "新闻评论",
+          "学术讨论",
+          "日常鼓励"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "The latest results offer glimmers of hope, but more research is needed."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "说话人用“微光”的意象承认希望存在，但刻意压低程度，为后面的保留态度做铺垫。记忆时把 glimmer 想成黑暗中一闪一灭的微光，希望便显得微弱而珍贵。",
+      "reusable_patterns": [
+        {
+          "template": "offer glimmers of hope for [situation]",
+          "slots": {
+            "situation": "具体处境或领域"
+          },
+          "rationale": "把 situation 换成希望所指向的具体领域或局面。"
+        }
+      ],
+      "collocations": [
+        "offer glimmers of hope",
+        "glimmers of hope for [situation]",
+        "see glimmers of hope"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "plural",
+    "stage": "syntax",
+    "seconds": 1.932,
+    "output": {
+      "section_summaries": {
+        "structure": "of 前为中心名词，of 后为修饰内容",
+        "grammar": "",
+        "logic": "转折：有希望迹象但仍需研究",
+        "information": "",
+        "wording": "",
+        "style": ""
+      },
+      "sentence_type": "名词短语",
+      "main_clause": "作 offer 的宾语，表示所提供的内容。",
+      "structure_breakdown": [
+        "glimmers — 中心名词，复数形式，表示微弱的迹象",
+        "of hope — 介词短语作后置修饰，说明 glimmers 的内容"
+      ],
+      "logic_relations": [
+        "but — 前一分句说结果带来希望迹象，后一分句转折指出仍需更多研究"
+      ],
+      "information_hierarchy": [],
+      "style_features": [],
+      "usage_scenarios": [],
+      "grammar_points": [],
+      "wording_notes": [],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "希望的微光",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "一线希望",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "The latest results offer glimmers of hope, but more research is needed."
+      ]
+    }
+  },
+  {
+    "case": "sentence",
+    "stage": "explain",
+    "seconds": 4.036,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "sentence",
+      "completeness": "complete",
+      "selected_text": "Her proposal has several advantages, but the reviewers want to test it before approval.",
+      "recommended_text": "Her proposal has several advantages, but the reviewers want to test it before approval.",
+      "learning_text": "Her proposal has several advantages, but the reviewers want to test it before approval.",
+      "ask_suggestions": [
+        "这个句型如何用于其他场景？",
+        "用它写一段具体对话",
+        "它和 although 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "structure",
+        "tags": [
+          "contrast",
+          "framing"
+        ],
+        "level": "B2",
+        "usage_register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/hɜr prəˈpoʊzəl hæz ˈsɛvərəl ædˈvæntɪdʒɪz bʌt ðə rɪˈvjuərz wɑnt tu tɛst ɪt bɪˈfɔr əˈpruvəl/",
+          "connected_speech": "but 通常弱读为 /bət/，重音落在 advantages 和 test 上。",
+          "audio_text": "Her proposal has several advantages, but the reviewers want to test it before approval.",
+          "stress_text": "Her pro-POS-al has SEV-er-al ad-VAN-tag-es, but the re-VIEW-ers want to TEST it be-FORE ap-PROV-al."
+        },
+        "meaning_summary": "她的提案有若干优点，但评审者希望在批准前测试它。",
+        "meaning": "这句话用 but 引出审查要求，暗示优点虽多，仍需通过测试才能获批。",
+        "pragmatic_function": "",
+        "similar_expressions": [],
+        "examples": [
+          {
+            "english": "The new policy has several advantages, but the board wants to review it before implementation.",
+            "chinese": "新政策有几个优点，但董事会希望在实施前审查它。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "工作讨论",
+          "提案评估",
+          "正式表达"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "Her proposal has several advantages, but the reviewers want to test it before approval."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这句话先肯定优点，再用 but 引出审查要求，语气客观。记忆时抓住“先扬后抑”的对比框架，注意 before approval 表示时间顺序。",
+      "reusable_patterns": [
+        {
+          "template": "[subject] has several advantages, but [reviewers] want to test it before [action].",
+          "slots": {
+            "subject": "被评价的事物，如 proposal、plan",
+            "reviewers": "审查者，如 committee、board",
+            "action": "后续动作，如 approval、launch"
+          },
+          "rationale": "替换主语、审查者和后续动作，保留先肯定后转折的结构。"
+        }
+      ],
+      "collocations": [
+        "have several advantages",
+        "test before approval"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "case": "sentence",
+    "stage": "syntax",
+    "seconds": 3.001,
+    "output": {
+      "section_summaries": {
+        "structure": "由 but 连接的并列句，两个独立分句",
+        "grammar": "has 为实义动词一般现在时；want 后接不定式补足成分",
+        "logic": "先肯定优点，后转折指出仍需检验",
+        "information": "转折后为核心信息",
+        "wording": "advantages 为复数，test 与 approval 有先后关系",
+        "style": "两个分句并列对称，先扬后转"
+      },
+      "sentence_type": "并列句",
+      "main_clause": "Her proposal has several advantages, but the reviewers want to test it",
+      "structure_breakdown": [
+        "Her proposal has several advantages — 第一个独立分句，主谓宾结构，has 为实义动词一般现在时",
+        "but — 并列连词，连接两个独立分句",
+        "the reviewers want to test it — 第二个独立分句，主谓宾结构，to test it 为不定式补足成分，补充 want 的动作内容",
+        "before approval — 介词短语作时间状语，修饰 test"
+      ],
+      "logic_relations": [
+        "but — 前一分句肯定提案的优点，后一分句转而指出审阅者仍要检验，形成转折"
+      ],
+      "information_hierarchy": [
+        "Her proposal has several advantages — 先给出正面评价，作为背景",
+        "the reviewers want to test it before approval — 转折后点出核心信息：批准前仍需检验"
+      ],
+      "style_features": [
+        "由 but 连接两个独立分句，结构对称，先扬后转"
+      ],
+      "usage_scenarios": [],
+      "grammar_points": [
+        "has several advantages — has 后直接接名词短语，是实义动词一般现在时，不是现在完成时",
+        "want to test — want 是实义动词，后接不定式补足成分，不是情态动词"
+      ],
+      "wording_notes": [
+        "advantages — 复数名词，指多项优点",
+        "test — 实义动词，表示检验，与 approval 构成先后关系"
+      ],
+      "reusable_patterns": [],
+      "translations": [
+        {
+          "label": "直译",
+          "text": "她的提案有几个优点，但审阅者想在批准前检验它。",
+          "recommended": false
+        },
+        {
+          "label": "意译",
+          "text": "她的提案有不少优点，但审阅者希望在批准前先对其进行检验。",
+          "recommended": true
+        }
+      ],
+      "translation_notes": [],
+      "background_context": null,
+      "evidence": [
+        "Her proposal has several advantages, but the reviewers want to test it before approval."
+      ]
+    }
+  },
+  {
+    "case": "phrase",
+    "stage": "followup",
+    "question": "用这个表达写两句职场对话，并简短解释。",
+    "first_token_seconds": 0.758,
+    "seconds": 1.382,
+    "done": true,
+    "error": false,
+    "answer": "A: The team has drifted away from its original mission.\nB: True, but it's working hard to regain its focus.\n\n**解释**：`drift away from` 本义是“逐渐漂离”，这里比喻团队慢慢偏离原本的方向，强调偏离是渐进的、非突然的。两句对话保留了原句的转折关系：先承认偏离，再指出正在努力找回重心。"
+  },
+  {
+    "case": "sentence",
+    "stage": "followup",
+    "question": "换成更口语的说法，保留原意。",
+    "first_token_seconds": 0.774,
+    "seconds": 1.41,
+    "done": true,
+    "error": false,
+    "answer": "改写：The new analyst wants to make the forecast better, but she still has a hard time explaining her assumptions.\n\n- 把 `hopes to improve` 改为 `wants to make ... better`，更口语，但仍只是“希望/想要”，没有变成“一定会做到”。\n- 把 `struggles to explain` 改为 `has a hard time explaining`，保留“仍然很难解释”的程度，不等于“完全不能解释”。\n- 保留 `but`、`still` 和 `her assumptions`，转折、频率和指代范围不变。"
+  }
+]

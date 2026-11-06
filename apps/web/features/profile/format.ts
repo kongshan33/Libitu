@@ -12,8 +12,13 @@ export function recordedDuration(milliseconds: number): string {
 export function historyHref(item: HistoryItem): string | null {
   if (item.kind === "speaking" && item.session_id && item.status === "completed" && item.feedback?.unavailable_reason !== "legacy_report") return `/speaking/${encodeURIComponent(item.session_id)}/analytics`;
   if (item.kind === "speaking" && item.session_id) return `/speaking/${encodeURIComponent(item.session_id)}?returnTo=%2Fprofile`;
-  // Old attempts do not carry segment identity. Return to the source safely;
-  // never invent a Stage 2 segment or imply the exact historical take is selected.
+  // Resolve the historical sentence against the current blueprint in the workspace.
+  if (item.kind === "shadowing" && item.content_id && CONTENT_ID.test(item.content_id)
+    && item.sentence_id && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,249}$/.test(item.sentence_id)) {
+    const params = new URLSearchParams({ sentenceId: item.sentence_id });
+    if (item.title) params.set("sentenceText", item.title);
+    return `/practice/${item.content_id}/shadow?${params}`;
+  }
   if ((item.kind === "shadowing" || item.kind === "video") && item.content_id) return profileSourceHref(item.content_id, item.source_url);
   return null;
 }
@@ -21,7 +26,7 @@ export function historyHref(item: HistoryItem): string | null {
 export function historyAction(item: HistoryItem): string {
   if (!historyHref(item)) return "Source unavailable";
   if (item.kind === "video") return "Open Stage 1";
-  if (item.kind === "shadowing") return "View source";
+  if (item.kind === "shadowing") return historyHref(item)?.includes("/shadow?") ? "Open Shadow" : "View source";
   if (item.status !== "completed") return item.status === "active" ? "Continue" : "View conversation";
   const report = item.feedback;
   if (report?.unavailable_reason === "legacy_report") return "View conversation";

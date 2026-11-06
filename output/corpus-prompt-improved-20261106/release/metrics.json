@@ -1,0 +1,50 @@
+[
+  {
+    "stage": "explain",
+    "version": "before",
+    "n": 8,
+    "http_200": 8,
+    "strict_json": 8,
+    "mean_seconds": 3.684,
+    "median_seconds": 3.7,
+    "mean_completion_tokens": 511.75,
+    "min_seconds": 2.826,
+    "max_seconds": 4.388
+  },
+  {
+    "stage": "explain",
+    "version": "after",
+    "n": 8,
+    "http_200": 8,
+    "strict_json": 6,
+    "mean_seconds": 4.102,
+    "median_seconds": 4.27,
+    "mean_completion_tokens": 619.75,
+    "min_seconds": 3.051,
+    "max_seconds": 4.843
+  },
+  {
+    "stage": "syntax",
+    "version": "before",
+    "n": 8,
+    "http_200": 8,
+    "strict_json": 8,
+    "mean_seconds": 2.335,
+    "median_seconds": 2.36,
+    "mean_completion_tokens": 269.5,
+    "min_seconds": 1.743,
+    "max_seconds": 2.96
+  },
+  {
+    "stage": "syntax",
+    "version": "after",
+    "n": 8,
+    "http_200": 8,
+    "strict_json": 8,
+    "mean_seconds": 2.712,
+    "median_seconds": 2.654,
+    "mean_completion_tokens": 375.375,
+    "min_seconds": 1.831,
+    "max_seconds": 3.692
+  }
+]

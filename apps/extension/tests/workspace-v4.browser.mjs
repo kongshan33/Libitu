@@ -11,7 +11,7 @@ const extensionPath = join(temporary, "extension");
 await cp(join(source, "src"), join(extensionPath, "src"), { recursive: true });
 await cp(join(source, "icons"), join(extensionPath, "icons"), { recursive: true });
 const manifest = JSON.parse(await readFile(join(source, "manifest.json"), "utf8"));
-manifest.commands = { _execute_action: { suggested_key: { default: "Ctrl+Shift+Y", mac: "MacCtrl+Shift+Y" } } };
+if (process.env.LIBITU_V4_MANUAL_ACTION !== "1") manifest.commands = { _execute_action: { suggested_key: { default: "Ctrl+Shift+Y", mac: "MacCtrl+Shift+Y" } } };
 await writeFile(join(extensionPath, "manifest.json"), JSON.stringify(manifest));
 const contentId = "a0000000-0000-4000-8000-000000000001";
 const context = await chromium.launchPersistentContext(join(temporary, "profile"), {
@@ -67,7 +67,10 @@ try {
   await page.evaluate(() => send('ping'));
   await page.waitForFunction(() => events.some(event => event.status === 'available'));
   assert.equal(await worker.evaluate(() => globalThis.__identityReads), 0, 'ping is independent of backend latency');
-  await page.click("#enable");
+  if (process.env.LIBITU_V4_MANUAL_ACTION === "1") {
+    console.log("READY_FOR_NATIVE_ENABLE_CLICK: click Enable audio, then the Libitu toolbar action");
+    await page.waitForFunction(() => window.audio?.state === "running", null, { timeout: 120_000 });
+  } else await page.click("#enable");
   await assertEventually(async () => assert.equal(await worker.evaluate(() => globalThis.__identityReads), 1));
   assert.equal(await page.evaluate(() => events.some(event => event.status === 'armed')), false);
   assert.equal(await worker.evaluate(async () => chrome.action.getBadgeText({ tabId: globalThis.__bufferSenders.find(message => message.action === 'arm').tabId })), '', 'ON? waits for real arming');
@@ -84,9 +87,10 @@ try {
   const capture = process.env.LIBITU_V4_CAPTURE === "1";
   if (capture) {
   await page.bringToFront();
-  await page.keyboard.press("Control+Shift+Y");
-  await page.waitForFunction(() => events.some(e=>e.status==='enabled'||e.status==='error'), null, { timeout: 12000 });
-  assert.equal(await page.evaluate(() => events.at(-1).status),"enabled", await page.locator('#status').innerText());
+  if (process.env.LIBITU_V4_MANUAL_ACTION === "1") console.log("READY_FOR_NATIVE_TOOLBAR_CLICK");
+  else await page.keyboard.press("Control+Shift+Y");
+  await page.waitForFunction(() => events.some(e=>e.status==='enabled'||e.status==='error'), null, { timeout: process.env.LIBITU_V4_MANUAL_ACTION === "1" ? 28000 : 12000 });
+  assert.equal(await page.evaluate(() => events.some(event => event.status === "enabled")), true, await page.locator('#status').innerText());
   const session = await worker.evaluate(async () => (await chrome.storage.session.get('libituBufferedSession')).libituBufferedSession);
   await page.evaluate(id => {
     history.pushState({},'',`/practice/${id}/segments?segmentId=s&step=prepare`);
@@ -94,10 +98,11 @@ try {
     window.started=performance.now();
     window.samples=setInterval(()=>send('observe',{telemetry:{epochTime:performance.timeOrigin+performance.now(),wallTime:performance.now(),time:10+(performance.now()-started)/1000,rate:1,state:1,generation:1}}),80);
   }, contentId);
-  await page.waitForFunction(() => events.some(e=>e.status==='coverage'&&e.retainedBytes>32000),null,{timeout:12000});
+  await page.waitForFunction(() => events.some(e=>e.status==='coverage'&&e.retainedBytes>32000&&e.ranges.some(r=>r.end-r.start>=.6)),null,{timeout:12000});
   assert.deepEqual(await worker.evaluate(async () => (await chrome.storage.session.get('libituBufferedSession')).libituBufferedSession),session);
-  await page.evaluate(()=>{const r=events.findLast(e=>e.status==='coverage'&&e.ranges.length)?.ranges[0];send('extract',{requestId:'clip-1',start:r.start+.1,end:r.start+.5});});
-  await page.waitForFunction(()=>events.some(e=>e.requestId==='clip-1'&&e.status==='complete'),null,{timeout:12000});
+  await page.evaluate(()=>{const r=events.findLast(e=>e.status==='coverage'&&e.ranges.some(r=>r.end-r.start>=.6))?.ranges.find(r=>r.end-r.start>=.6);send('extract',{requestId:'clip-1',start:r.start+.1,end:r.start+.5});});
+  await page.waitForFunction(()=>events.some(e=>e.requestId==='clip-1'&&['complete','missing','error'].includes(e.status)),null,{timeout:12000});
+  assert.equal(await page.evaluate(()=>events.find(e=>e.requestId==='clip-1').status), "complete", await page.locator('#status').innerText());
   clip = await page.evaluate(async()=>{
     const e=events.find(e=>e.status==='complete');const bytes=Uint8Array.from(atob(e.audioBase64),x=>x.charCodeAt(0));
     const pcm=await audio.decodeAudioData(bytes.buffer);const samples=pcm.getChannelData(0);
@@ -127,7 +132,7 @@ try {
   assert.equal(await page.evaluate(() => events.at(-1).status), 'armed', 'cold content document can arm after reload');
   await page.evaluate(() => send('close'));
   await page.waitForFunction(() => events.some(event => event.status === 'closed'));
-  console.log(JSON.stringify({importNavigation:'armed with original sender URL',coldContent:'armed after reload',protocol:4,oldVersions:'rejected',grant:capture?'real Chrome action':'not exercised; arm does not authorize capture',sameContent:'retained across paths',clip,reload:'released'}));
+  console.log(JSON.stringify({browser:context.browser().version(),action:!capture?'not exercised':process.env.LIBITU_V4_MANUAL_ACTION === '1'?'native toolbar':'shortcut',importNavigation:'armed with original sender URL',coldContent:'armed after reload',protocol:4,oldVersions:'rejected',grant:capture?'real Chrome action':'not exercised; arm does not authorize capture',sameContent:'retained across paths',clip,reload:'released'}));
 } catch(error) {
   const worker = context.serviceWorkers()[0];
   if (worker) console.error(await worker.evaluate(() => globalThis.__bufferSenders));

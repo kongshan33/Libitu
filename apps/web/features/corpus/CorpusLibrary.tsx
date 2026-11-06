@@ -14,6 +14,7 @@ import { useRouteIntent } from "../navigation/use-route-prefetch";
 import { addCorpusToDraft, expressionText } from "../loadout/draft";
 import { useSavedCorpus } from "./useSavedCorpus";
 import { CorpusFilters } from "./CorpusFilters";
+import { CorpusDeleteDialog } from "./CorpusDeleteDialog";
 import { CorpusItemDialog } from "./CorpusItemDialog";
 import { emptyFilters, libraryItems, type LibraryFilters, type LibrarySort } from "./library";
 import styles from "./CorpusLibrary.module.css";
@@ -45,6 +46,7 @@ function LibraryContent({ owner }: { owner: string | null }) {
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<string[]>([]);
   const [active, setActive] = useState<{ key: string; edit: boolean } | null>(null);
+  const [deleteKeys, setDeleteKeys] = useState<string[] | null>(null);
   const [adding, setAdding] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const query = useDeferredValue(filters.query);
@@ -52,6 +54,8 @@ function LibraryContent({ owner }: { owner: string | null }) {
   const shown = matching.slice(0, limit);
   const resultsRef = useContentMotion(JSON.stringify([view, sort, shown.map(record => record.key)]), undefined, 120);
   const selectedKeys = selected.filter(key => corpus.records.some(record => record.key === key));
+  const loadoutOverLimit = selectedKeys.length > 5;
+  const allMatchingSelected = matching.length > 0 && matching.every(record => selectedKeys.includes(record.key));
   const hidden = selectedKeys.filter(key => !matching.some(record => record.key === key)).length;
   const activeRecord = corpus.records.find(record => record.key === active?.key);
   const disabled = !corpus.ready || corpus.busy || adding;
@@ -72,7 +76,7 @@ function LibraryContent({ owner }: { owner: string | null }) {
     setMessage(null);
   }
   async function addToLoadout() {
-    if (disabled || !selectedKeys.length) return;
+    if (disabled || loadoutOverLimit || !selectedKeys.length) return;
     setAdding(true); setMessage(null);
     try {
       const draft = await addCorpusToDraft(window.localStorage, owner, selectedKeys, corpus.records, {
@@ -88,7 +92,7 @@ function LibraryContent({ owner }: { owner: string | null }) {
       <div className={styles.heading}>
         <div>
           <span className={styles.eyebrow}>From saved to spoken</span>
-          <h1 id="library-title">Corpus library</h1>
+          <h1 id="library-title">Corpus Library</h1>
           <p>Keep useful language close. Make it part of your next conversation.</p>
           <p className={styles.collectionSummary}>{corpus.ready
             ? `${corpus.records.length} saved ${corpus.records.length === 1 ? "item" : "items"} · ${counts.chunk} chunks · ${counts.idiom} idioms · ${counts.structure} structures`
@@ -108,10 +112,10 @@ function LibraryContent({ owner }: { owner: string | null }) {
             const next = event.key === "Home" ? 0 : event.key === "End" ? 1 : 1 - index;
             changeFilters({ highValue: Boolean(next) });
             event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role=tab]")[next]?.focus();
-          }}>{highValue ? "High value" : "All items"}</button>)}
+          }}>{highValue ? "AI recommended" : "All items"}</button>)}
       </div>
-      <div className={styles.toolbar}>
-        <label className={styles.search}>
+      <search className={styles.toolbar} aria-label="Search and filter corpus">
+        <label className={styles.search} data-input-group>
           <Search size={16} aria-hidden="true" />
           <Input appearance="bare" aria-label="Search corpus" type="search" placeholder="Search expressions, meanings, tags…" value={filters.query} onChange={event => changeFilters({ query: event.target.value })} />
         </label>
@@ -129,29 +133,37 @@ function LibraryContent({ owner }: { owner: string | null }) {
             <button type="button" aria-label="List view" aria-pressed={view === "list"} onClick={() => setView("list")}><List size={16} aria-hidden="true" /></button>
           </div>
         </div>
-      </div>
+      </search>
       <div id="corpus-results" role="tabpanel" aria-labelledby={`corpus-view-${filters.highValue ? 1 : 0}`} tabIndex={0} className={styles.results}>
-        {filters.highValue ? <p className={styles.help}>Learning value of 4 or 5 out of 5. Items without a score are not included.</p> : null}
+        {filters.highValue ? <p className={styles.help}>AI-rated learning value of 4 or 5 out of 5. Items without a score are not included.</p> : null}
         {corpus.error ? <div role="alert" className="ui-retry-notice"><p>{corpus.error}</p><Button variant="secondary" size="md" disabled={corpus.busy} loading={corpus.busy} loadingLabel="Syncing…" onClick={corpus.retry}>Retry corpus sync</Button></div> : null}
         {!corpus.ready && !corpus.error ? <ContentSkeleton label="Loading and syncing your corpus…" variant={view === "grid" ? "corpus" : "rows"} rows={view === "grid" ? 6 : 3} /> : null}
         <div className={styles.resultMeta}>
           <span role="status">{corpus.ready ? itemCount(matching.length) : corpus.error ? "Collection unavailable" : null}</span>
-          <span>{selectedKeys.length} selected{hidden ? ` · ${hidden} hidden by filters` : ""}</span>
+          <div className={styles.resultSelection}>
+            <Button variant="ghost" size="sm" disabled={disabled || !matching.length || query !== filters.query}
+              onClick={() => {
+                const keys = new Set(matching.map(record => record.key));
+                setSelected(current => allMatchingSelected ? current.filter(key => !keys.has(key)) : [...new Set([...current, ...keys])]);
+                setMessage(null);
+              }}>{allMatchingSelected ? "Deselect filtered results" : `Select all filtered results (${matching.length})`}</Button>
+            <span>{selectedKeys.length} selected{hidden ? ` · ${hidden} hidden by filters` : ""}</span>
+          </div>
         </div>
         {corpus.ready && !corpus.records.length ? <div className={styles.empty}>
           <BookOpen size={28} aria-hidden="true" /><h2>Your collection starts with one expression.</h2>
           <p>Save useful language while listening or reading, then find it here.</p>
           <ButtonLink href="/" variant="secondary" size="md">Find language to save <ArrowRight size={16} aria-hidden="true" /></ButtonLink>
         </div> : corpus.ready && !matching.length ? <div className={styles.empty}>
-          <Search size={28} aria-hidden="true" /><h2>{filters.highValue && !hasFilters ? "No high-value items yet" : "No matching items"}</h2>
-          <p>{filters.highValue && !hasFilters ? "Saved items with a learning value of 4 or 5 will appear here." : "Try a different search or clear your filters."}</p>
+          <Search size={28} aria-hidden="true" /><h2>{filters.highValue && !hasFilters ? "No AI recommendations yet" : "No matching items"}</h2>
+          <p>{filters.highValue && !hasFilters ? "Saved items with an AI-rated learning value of 4 or 5 will appear here." : "Try a different search or clear your filters."}</p>
           <Button variant="secondary" size="md" onClick={hasFilters ? clearFilters : () => changeFilters({ highValue: false })}>{hasFilters ? "Clear filters" : "View all items"}</Button>
         </div> : null}
         <div ref={resultsRef} className={`${styles.items} ${view === "list" ? styles.list : ""}`}>
           {shown.map(record => <article key={record.key} className={`${styles.card} ${selectedKeys.includes(record.key) ? styles.selected : ""}`}>
             <div className={styles.cardTop}>
               <span className={styles.kind}>{record.item.kind}</span><span className={styles.level}>{[record.item.level ?? "Unassessed", record.item.register].filter(Boolean).join(" · ")}</span>
-              <label className={styles.selectionControl}><input type="checkbox" aria-label={`Select ${expressionText(record)}`} checked={selectedKeys.includes(record.key)} disabled={adding} onChange={() => toggleSelected(record.key)} /></label>
+              <label className={styles.selectionControl}><input type="checkbox" aria-label={`Select ${expressionText(record)}`} checked={selectedKeys.includes(record.key)} disabled={disabled} onChange={() => toggleSelected(record.key)} /></label>
             </div>
             <button type="button" className={styles.cardBody} aria-label={`View ${expressionText(record)}`} onClick={() => setActive({ key: record.key, edit: false })}>
               <strong className={record.item.kind === "structure" ? styles.structure : ""}>{expressionText(record)}</strong><span>{record.item.meaning || "No meaning saved"}</span>
@@ -171,11 +183,19 @@ function LibraryContent({ owner }: { owner: string | null }) {
       </div>
     </section>
     <div hidden={!selectedKeys.length} inert={!selectedKeys.length} className={styles.tray} role="region" aria-label="Selected corpus actions">
-      <div><strong>{selectedKeys.length} selected</strong><small>Loadout: up to 3 structures + 5 expressions</small></div>
-      <Button variant="secondary" size="md" disabled={adding} onClick={() => { setSelected([]); setMessage(null); }}>Clear selection</Button>
-      <Button {...loadoutIntent} variant="primary" size="md" disabled={disabled} loading={adding} loadingLabel="Saving…" onClick={() => void addToLoadout()}>Add to Loadout<ArrowRight size={16} aria-hidden="true" /></Button>
+      <div><strong>{selectedKeys.length} selected</strong><small id="corpus-loadout-limit">{loadoutOverLimit ? "Select 5 or fewer items to add to Loadout. Deletion has no selection limit." : "Loadout: up to 5 items total, including existing selections."}</small></div>
+      <Button variant="secondary" size="md" disabled={disabled} onClick={() => { setSelected([]); setMessage(null); }}>Clear selection</Button>
+      <Button variant="secondary" size="md" disabled={disabled} onClick={() => setDeleteKeys([...selectedKeys])}>Delete selected ({selectedKeys.length})</Button>
+      <Button {...loadoutIntent} variant="primary" size="md" disabled={disabled || loadoutOverLimit} aria-describedby="corpus-loadout-limit" loading={adding} loadingLabel="Saving…" onClick={() => void addToLoadout()}>Add to Loadout<ArrowRight size={16} aria-hidden="true" /></Button>
       {message ? <p role="alert">{message} <Link href="/loadout?returnTo=%2Fcorpus">Open Loadout</Link></p> : null}
     </div>
+    {deleteKeys ? <CorpusDeleteDialog count={deleteKeys.length} hidden={deleteKeys.filter(key => !matching.some(record => record.key === key)).length}
+      onClose={() => setDeleteKeys(null)} onConfirm={async () => {
+        const records = corpus.records.filter(record => deleteKeys.includes(record.key));
+        const removed = await corpus.removeMany(records);
+        setSelected(current => current.filter(key => !removed.includes(key)));
+        return removed.length === records.length;
+      }} /> : null}
     {activeRecord && active ? <CorpusItemDialog key={active.key} record={activeRecord} initialEdit={active.edit} busy={corpus.busy} error={corpus.error} onClose={() => setActive(null)} onUpdate={corpus.update} onRemove={corpus.remove} onHydrate={corpus.hydrate} /> : null}
   </div>;
 }

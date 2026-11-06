@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Shanghai",
+  "browser": "147.0.7727.15",
+  "playwright": "1.61.1",
+  "unit_tests": {
+    "passed": 124,
+    "failed": 0
+  },
+  "lint": "passed",
+  "build": "passed",
+  "native_toolbar_capture": "passed: native UI Enable audio and Chrome Extensions menu > Libitu",
+  "shortcut_capture": "failed: armed but no enabled event; 12000ms timeout",
+  "pcm_extraction": {
+    "duration": 0.4,
+    "rms": 0.10606619392750118
+  },
+  "production_ready": false,
+  "source_sha256": {
+    "apps/extension/manifest.json": "3d52bb3abac4c4cdd16c5b0977af8a84345385cc39d8b62a5bdd3b3930d133a9",
+    "apps/extension/src/background.js": "0e33937339f4a00cf717129790d95b08c5461ee84cab4a4270f76c7739f19928",
+    "apps/extension/src/buffer-bridge.js": "b4dc895c3ab33775004835ae202ef6d2ca8ad713bdea6e6641eba9387752a1c8",
+    "apps/extension/src/buffer-capture.js": "95aa28e9f0d64a6f9afe99280bc0893db2a0c8f9c45dd6d19004124c6843b56f",
+    "apps/extension/src/buffer-offscreen.js": "288d2d25df509eb7dfcdd5d8b86e13b101852ddda69acd4763ede7b100d59afd",
+    "apps/extension/src/buffer-pcm.js": "83e625c38879c9bce6e83c59c7fc3fa69086a5fa7bafd040f703bad49b7529a3",
+    "apps/extension/tests/workspace-v4.browser.mjs": "7016c0455c3d990edb0429625c5b6bcaa86292e428c07b896585b2bb6af7990f"
+  },
+  "entry": {
+    "firstViewMs": 2719,
+    "checks": "real unpacked extension, English-only gate, SPA entry, v4 import handoff, canonical tab reuse, mobile"
+  },
+  "workspace": {
+    "browser": "147.0.7727.15",
+    "action": "not exercised",
+    "importNavigation": "armed with original sender URL",
+    "coldContent": "armed after reload",
+    "protocol": 4,
+    "oldVersions": "rejected",
+    "grant": "not exercised; arm does not authorize capture",
+    "sameContent": "retained across paths",
+    "clip": null,
+    "reload": "released"
+  },
+  "fresh-captions": {
+    "freshCaptionSmoke": "passed",
+    "passiveObserver": true,
+    "scenarios": [
+      {
+        "scenario": "document-start-home-spa",
+        "timedtextReads": 5,
+        "playerRequests": 5,
+        "forbiddenRequests": 0,
+        "transports": [
+          "xhr",
+          "fetch",
+          "xhr",
+          "fetch",
+          "xhr"
+        ]
+      },
+      {
+        "scenario": "late-install-next-player-response",
+        "timedtextReads": 3,
+        "playerRequests": 3,
+        "forbiddenRequests": 0,
+        "transports": [
+          "fetch",
+          "xhr",
+          "fetch"
+        ]
+      }
+    ],
+    "realMediaRequests": 0,
+    "fixtureOnly": true
+  },
+  "native_capture_run": {
+    "browser": "147.0.7727.15",
+    "action": "native toolbar",
+    "importNavigation": "armed with original sender URL",
+    "coldContent": "armed after reload",
+    "protocol": 4,
+    "oldVersions": "rejected",
+    "grant": "real Chrome action",
+    "sameContent": "retained across paths",
+    "clip": {
+      "duration": 0.4,
+      "rms": 0.10606619392750118
+    },
+    "reload": "released"
+  },
+  "reload_cleanup": {
+    "offscreen_documents": 0,
+    "active_capture": false
+  }
+}

@@ -91,7 +91,7 @@ def _parse_selection_response(payload: dict) -> CorpusSelectionAnalysis:
             retryable=finish_reason in {"length", "insufficient_system_resource"},
         )
     content = choice["message"]["content"]
-    result = json.loads(content)
+    result = _selection_json(content)
     if not isinstance(result, dict):
         raise TypeError("Selection analysis must be a JSON object.")
     # These are UI-owned copy / a retired duplicate, never model teaching content.
@@ -101,12 +101,26 @@ def _parse_selection_response(payload: dict) -> CorpusSelectionAnalysis:
     result["pitfalls"] = []
     if isinstance(result.get("explanation"), dict):
         result["explanation"]["pragmatic_function"] = ""
-    result["schema_version"] = 2
+    result["schema_version"] = 3
     result["syntax_state"] = "pending"
     result.pop("syntax_analysis", None)
     result["analysis_source"] = "ai"
     result["provider_notice"] = None
     return CorpusSelectionAnalysis.model_validate(result)
+
+
+def _selection_json(content: str) -> dict:
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        # Observed provider defect: one complete object followed by one extra
+        # closing brace. Recover only that exact case, never prose, truncated
+        # JSON, or a second object. Field validation still runs afterwards.
+        stripped = content.strip()
+        result, end = json.JSONDecoder().raw_decode(stripped)
+        if isinstance(result, dict) and stripped[end:].strip() == "}":
+            return result
+        raise
 
 
 def _selection_provider_error(error: Exception | None) -> AnalysisProviderError:

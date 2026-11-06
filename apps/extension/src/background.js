@@ -7,6 +7,55 @@ const freshCaptions = createFreshCaptionReader(chrome);
 const WEB_BASE_URL = "http://localhost:3000";
 const HANDOFF_PREFIX = "libituHandoff:";
 const HANDOFF_TTL_MS = 15 * 60 * 1000;
+const HANDOFF_CLEANUP_ALARM = "libitu-handoff-cleanup";
+const MAX_HANDOFFS = 16;
+const MAX_HANDOFF_BYTES = 4 * 1024 * 1024;
+let handoffQueue = Promise.resolve();
+// Serialize cleanup and writes so an in-flight capture cannot revive deleted data.
+function handoffOperation(operation) {
+  const work = handoffQueue.then(async () => {
+    const records = await chrome.storage.session.get(null);
+    for (const [key, record] of Object.entries(records)) {
+      if (!key.startsWith(HANDOFF_PREFIX)) continue;
+      if (!Number.isFinite(record?.createdAt) || Date.now() - record.createdAt >= HANDOFF_TTL_MS) {
+        await chrome.storage.session.remove(key);
+        delete records[key];
+      }
+    }
+    return operation(records);
+  });
+  handoffQueue = work.catch(() => {});
+  return work;
+}
+function writeHandoff(id, patch, create = false) {
+  return handoffOperation(async (records) => {
+    const key = HANDOFF_PREFIX + id;
+    if (!create && !records[key]) throw new Error("Caption handoff expired or was cleared. Open Libitu from YouTube again.");
+    const record = { ...records[key], ...patch };
+    const size = (key, value) => new TextEncoder().encode(key + JSON.stringify(value)).byteLength;
+    const bytes = size(key, record);
+    if (bytes > MAX_HANDOFF_BYTES) throw new Error("These captions are too large to transfer. Try another video.");
+    const others = Object.entries(records).filter(([name]) => name.startsWith(HANDOFF_PREFIX) && name !== key)
+      .sort((a, b) => a[1].createdAt - b[1].createdAt);
+    let total = bytes + others.reduce((sum, [name, value]) => sum + size(name, value), 0);
+    while (others.length >= MAX_HANDOFFS || total > MAX_HANDOFF_BYTES) {
+      const [name, value] = others.shift();
+      await chrome.storage.session.remove(name);
+      total -= size(name, value);
+    }
+    try { await chrome.storage.session.set({ [key]: record }); }
+    catch { throw new Error("Chrome could not store the captions. Close old Libitu tabs and try again."); }
+  });
+}
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === HANDOFF_CLEANUP_ALARM) void handoffOperation(() => {}).catch(() => {});
+});
+void (async () => {
+  if (!await chrome.alarms.get(HANDOFF_CLEANUP_ALARM)) {
+    await chrome.alarms.create(HANDOFF_CLEANUP_ALARM, { periodInMinutes: 1 });
+  }
+  await handoffOperation(() => {});
+})().catch(() => {});
 const CAPTION_OBSERVER_WAIT_MS = 6_000;
 const SUPPORTED_LANGUAGE_BASES = new Set(["en"]);
 const ENGLISH_ONLY_MESSAGE = "Libitu currently supports English videos only.";
@@ -28,7 +77,16 @@ chrome.action.onClicked.addListener((tab) => {
   launch(tab).catch((error) => reportError(tab, error.message));
 });
 
-chrome.tabs.onRemoved.addListener((tabId) => { void chrome.storage.session.remove(`libituContentTab:${tabId}`); });
+chrome.tabs.onRemoved.addListener((tabId) => {
+  void chrome.storage.session.remove(`libituContentTab:${tabId}`).catch(() => {});
+  void handoffOperation(async (records) => {
+    for (const [key, record] of Object.entries(records)) {
+      // Ready captions can still be imported after closing the source video.
+      if (key.startsWith(HANDOFF_PREFIX) && (record.stageTabId === tabId
+        || (record.sourceTabId === tabId && !record.stageTabId))) await chrome.storage.session.remove(key);
+    }
+  }).catch(() => {});
+});
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   freshCaptions.onTabUpdated(tabId, changeInfo);
@@ -82,7 +140,7 @@ async function openStageOne(tab, videoId) {
   snapshot.language = languageSupport.languageCode;
   chrome.action.setBadgeText({ tabId: tab.id, text: "" });
   chrome.action.setTitle({ tabId: tab.id, title: "Open Libitu" });
-  const records = await chrome.storage.session.get(null);
+  const records = await handoffOperation((records) => records);
   for (const [key, binding] of Object.entries(records)) {
     if (!key.startsWith("libituContentTab:") || binding.videoId !== videoId) continue;
     try {
@@ -96,10 +154,6 @@ async function openStageOne(tab, videoId) {
   }
   for (const [key, record] of Object.entries(records)) {
     if (!key.startsWith(HANDOFF_PREFIX)) continue;
-    if (Date.now() - record.createdAt > HANDOFF_TTL_MS) {
-      await chrome.storage.session.remove(key);
-      continue;
-    }
     if (record.sourceTabId === tab.id && record.snapshot.videoId === videoId && record.stageTabId) {
       try {
         const existing = await chrome.tabs.get(record.stageTabId);
@@ -117,7 +171,7 @@ async function openStageOne(tab, videoId) {
     id, sourceTabId: tab.id, createdAt: Date.now(), snapshot, navigationVersion,
     status: "pending"
   };
-  await chrome.storage.session.set({ [HANDOFF_PREFIX + id]: record });
+  await writeHandoff(id, record, true);
   // Give the YouTube player a bounded opportunity to finish its caption
   // request before opening Stage 1. This removes the common click-time race
   // while retaining the existing DOM/provider fallback after the deadline.
@@ -138,7 +192,7 @@ async function openStageOne(tab, videoId) {
   });
   const stageTab = await chrome.tabs.create({ url: `${WEB_BASE_URL}/practice/import?${params}` });
   record.stageTabId = stageTab.id;
-  await chrome.storage.session.set({ [HANDOFF_PREFIX + id]: { ...current, stageTabId: stageTab.id } });
+  await writeHandoff(id, { stageTabId: stageTab.id });
   return { opened: true };
 }
 
@@ -166,6 +220,8 @@ function getLanguageSupport(tab, expectedVideoId) {
     status: "unknown",
     reason: `${UNKNOWN_LANGUAGE_MESSAGE} ${ENGLISH_ONLY_MESSAGE}`
   }));
+  // Share concurrent checks only; later user attempts must read fresh metadata.
+  void work.finally(() => { if (languageChecks.get(key) === work) languageChecks.delete(key); });
   languageChecks.set(key, work);
   return work;
 }
@@ -262,7 +318,7 @@ async function readHandoff(id, sender) {
   if (typeof id !== "string" || sender.frameId !== 0 || !sender.tab) throw new Error("Invalid Stage 1 handoff.");
   const url = new URL(sender.url);
   if (url.origin !== WEB_BASE_URL || url.pathname !== "/practice/import" || sender.id !== chrome.runtime.id || url.searchParams.get("handoffId") !== id) throw new Error("Invalid Stage 1 handoff.");
-  const record = (await chrome.storage.session.get(HANDOFF_PREFIX + id))[HANDOFF_PREFIX + id];
+  const record = await handoffOperation((records) => records[HANDOFF_PREFIX + id]);
   if (!record || Date.now() - record.createdAt > HANDOFF_TTL_MS) return { unavailable: true };
   if (url.searchParams.get("sourceUrl") !== record.snapshot.canonicalUrl) throw new Error("The handoff belongs to another video.");
   return capture(record);
@@ -354,7 +410,7 @@ function capture(record) {
     }
     const key = HANDOFF_PREFIX + record.id;
     const current = (await chrome.storage.session.get(key))[key];
-    if (current) await chrome.storage.session.set({ [key]: { ...current, status: "ready", transcriptText, captionTrack } });
+    if (current) await writeHandoff(record.id, { status: "ready", transcriptText, captionTrack });
     return { transcriptText, captionTrack, ...(stale ? { stale: true } : {}) };
   })().finally(() => {
     captures.delete(record.id);

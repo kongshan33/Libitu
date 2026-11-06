@@ -52,13 +52,19 @@ def generate_corpus_syntax(payload: CorpusSyntaxRequest) -> CorpusSelectionSynta
             raise ValueError("Missing syntax")
         updates = {"usage_scenarios": [], "reusable_patterns": [], "background_context": None,
             "evidence": [s for s in (payload.context_before, payload.current_sentence, payload.context_after) if s]}
+        # A difficult action is not necessarily impossible. Omit an unsafe
+        # paraphrase instead of strengthening the source or inventing a repair.
+        if re.search(r"\b(?:struggl\w*|difficulty|difficult|hard)\b", payload.selected_text, re.I) and not re.search(
+            r"\b(?:cannot|can't|unable|never)\b", payload.selected_text, re.I
+        ):
+            updates["translations"] = [t for t in result.translations if not re.search(r"无法|不能|没法|说不清", t.text)]
         if payload.selection_type == "phrase" and payload.kind != "structure":
             # Type is a short label. Internal structure belongs in its own
             # field, not a second, potentially contradictory parenthetical.
             updates["sentence_type"] = re.split(r"[（(，,；;：:]", result.sentence_type, maxsplit=1)[0].strip()
             if not updates["sentence_type"]:
                 raise ValueError("Missing phrase type")
-            updates.update({key: [] for key in ("grammar_points", "information_hierarchy", "style_features", "wording_notes", "translations", "translation_notes")})
+            updates.update({key: [] for key in ("grammar_points", "information_hierarchy", "style_features", "wording_notes")})
         return result.model_copy(update=updates)
     except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError, ValidationError) as error:
         raise AnalysisProviderError("Syntax could not be generated. Please retry.", code="syntax_unavailable") from error

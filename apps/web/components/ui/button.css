@@ -32,7 +32,7 @@
   --button-bg: var(--color-background-secondary);
   --button-edge: transparent;
   --button-hover: var(--color-background-tertiary);
-  --button-pressed: #e2ddd7;
+  --button-pressed: var(--line);
 }
 
 .ui-button[data-variant="ghost"][data-size][data-shape],

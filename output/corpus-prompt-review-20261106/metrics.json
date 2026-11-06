@@ -1,0 +1,42 @@
+[
+  {
+    "stage": "explain",
+    "version": "current",
+    "n": 8,
+    "mean_seconds": 3.533,
+    "min_seconds": 3.041,
+    "max_seconds": 3.967,
+    "mean_output_tokens": 499.125,
+    "app_accepted": 8
+  },
+  {
+    "stage": "explain",
+    "version": "proposed",
+    "n": 8,
+    "mean_seconds": 5.114,
+    "min_seconds": 4.338,
+    "max_seconds": 5.942,
+    "mean_output_tokens": 695.125,
+    "app_accepted": 8
+  },
+  {
+    "stage": "syntax",
+    "version": "current",
+    "n": 8,
+    "mean_seconds": 2.411,
+    "min_seconds": 1.573,
+    "max_seconds": 3.119,
+    "mean_output_tokens": 273.625,
+    "app_accepted": 8
+  },
+  {
+    "stage": "syntax",
+    "version": "proposed",
+    "n": 8,
+    "mean_seconds": 4.224,
+    "min_seconds": 2.907,
+    "max_seconds": 5.519,
+    "mean_output_tokens": 625.875,
+    "app_accepted": 0
+  }
+]

@@ -1,0 +1,200 @@
+[
+  {
+    "selected": "glimmers of hope",
+    "seconds": 5.054,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "glimmers of hope",
+      "recommended_text": "glimmers of hope",
+      "learning_text": "glimmer of hope",
+      "ask_suggestions": [
+        "这个短语能用在哪些领域？",
+        "用它写一段具体对话",
+        "它和 a ray of hope 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "idiom"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/ˈɡlɪmər əv hoʊp/",
+          "connected_speech": "of 常弱读为 /əv/，重音落在 glim 和 hope 上。",
+          "audio_text": "glimmer of hope",
+          "stress_text": "GLIM-mer of HOPE"
+        },
+        "meaning_summary": "些许希望；一线希望",
+        "meaning": "强调希望只是微弱、零星的迹象，而非确定的好转。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "a ray of hope — 同样指微弱的希望，但意象是“一缕光线”，常单数使用。",
+          "a sign of hope — 侧重“迹象”，不强调光亮意象，语气更中性。"
+        ],
+        "examples": [
+          {
+            "english": "The new treatment offers glimmers of hope for patients with rare diseases.",
+            "chinese": "这种新疗法为罕见病患者带来了一线希望。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "新闻评论",
+          "医疗进展",
+          "谨慎乐观"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "The latest results offer glimmers of hope, but more research is needed."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "说话人用“微光”意象承认希望存在，但刻意压低其强度，为后面的保留态度铺垫。记忆时把 glimmer 想成黑暗中微弱闪烁的光点，hope 就是那点光。",
+      "reusable_patterns": [
+        {
+          "template": "offer glimmers of hope for [outcome]",
+          "slots": {
+            "outcome": "期待的具体结果"
+          },
+          "rationale": "把 outcome 换成想要实现的结果，如 recovery、progress。"
+        }
+      ],
+      "collocations": [
+        "offer glimmers of hope",
+        "glimmers of hope for [outcome]",
+        "see glimmers of hope"
+      ],
+      "pitfalls": []
+    }
+  },
+  {
+    "selected": "drifted away from",
+    "seconds": 3.526,
+    "output": {
+      "analysis_source": "ai",
+      "provider_notice": null,
+      "selection_type": "phrase",
+      "completeness": "complete",
+      "selected_text": "drifted away from",
+      "recommended_text": "drifted away from",
+      "learning_text": "drift away from",
+      "ask_suggestions": [
+        "这个短语能用于什么其他场景？",
+        "用它写一段具体对话",
+        "它和 lose sight of 有何区别？"
+      ],
+      "recommendation_reason": "所选内容边界完整，无需补全。",
+      "fields": {
+        "kind": "chunk",
+        "tags": [
+          "idiom"
+        ],
+        "level": "B2",
+        "register": "neutral"
+      },
+      "note_placeholder": "可选：写下你的理解、联想或使用场景",
+      "explanation": {
+        "pronunciation": {
+          "ipa": "/drɪft əˈweɪ frəm/",
+          "connected_speech": "from 常弱读为 /frəm/，重音落在 drift 和 away 上。",
+          "audio_text": "drift away from",
+          "stress_text": "DRIFT a-WAY from"
+        },
+        "meaning_summary": "逐渐偏离（原定使命）",
+        "meaning": "强调偏离是慢慢发生的，常带无意或逐渐失控的意味。",
+        "pragmatic_function": "",
+        "similar_expressions": [
+          "lose sight of — 强调忘记或忽视目标，而非空间上的漂离",
+          "stray from — 强调走偏或偏离正轨，常带主动或失误意味"
+        ],
+        "examples": [
+          {
+            "english": "The discussion drifted away from the main topic.",
+            "chinese": "讨论逐渐偏离了主题。",
+            "typical": true
+          }
+        ],
+        "usage_chips": [
+          "描述逐渐偏离目标",
+          "团队或组织语境"
+        ]
+      },
+      "syntax_analysis": {
+        "section_summaries": {
+          "structure": "",
+          "grammar": "",
+          "logic": "",
+          "information": "",
+          "wording": "",
+          "style": ""
+        },
+        "sentence_type": "",
+        "main_clause": "",
+        "structure_breakdown": [],
+        "logic_relations": [],
+        "information_hierarchy": [],
+        "style_features": [],
+        "usage_scenarios": [],
+        "grammar_points": [],
+        "wording_notes": [],
+        "reusable_patterns": [],
+        "translations": [],
+        "translation_notes": [],
+        "background_context": null,
+        "evidence": [
+          "The team has drifted away from its original mission, but it is working hard to regain its focus."
+        ]
+      },
+      "schema_version": 3,
+      "syntax_state": "pending",
+      "teacher_note": "这里用“逐渐偏离”说明团队与最初使命之间出现了距离，而不是突然改变。记忆时可以把 drift 想成慢慢漂走，强调过程而非瞬间动作。",
+      "reusable_patterns": [
+        {
+          "template": "[subject] has drifted away from [original goal]",
+          "slots": {
+            "subject": "换成具体的人或组织",
+            "original goal": "换成最初的目标或原则"
+          },
+          "rationale": "把 subject 换成具体主体，original goal 换成具体目标。"
+        }
+      ],
+      "collocations": [
+        "drift away from the original mission",
+        "drift away from the core values",
+        "gradually drift away from"
+      ],
+      "pitfalls": []
+    }
+  }
+]

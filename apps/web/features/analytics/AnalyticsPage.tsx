@@ -76,8 +76,8 @@ function Overview({ report }: { report: SpeakingFeedback }) {
     return `${110 + Math.cos(angle) * radius},${100 + Math.sin(angle) * radius}`;
   }).join(" ");
   return <section><h2 className={styles.sideTitle}>Four-dimension overview</h2>{complete ? <svg viewBox="0 0 220 206" className={styles.radar} role="img" aria-label={dimensions.map((value, index) => `${DIMENSIONS[index].label}: ${value!.score} out of 100`).join(". ")}>
-    {[.25, .5, .75, 1].map(scale => <polygon key={scale} points={`110,${100 - 70 * scale} ${110 + 70 * scale},100 110,${100 + 70 * scale} ${110 - 70 * scale},100`} fill="none" stroke="#dedbd5" />)}
-    <path d="M110 30V170M40 100H180" stroke="#dedbd5" /><polygon points={points} fill="rgb(83 74 183 / 14%)" stroke="#534ab7" strokeWidth="2" />
+    {[.25, .5, .75, 1].map(scale => <polygon key={scale} points={`110,${100 - 70 * scale} ${110 + 70 * scale},100 110,${100 + 70 * scale} ${110 - 70 * scale},100`} fill="none" stroke="var(--line)" />)}
+    <path d="M110 30V170M40 100H180" stroke="var(--line)" /><polygon points={points} fill="rgb(83 74 183 / 14%)" stroke="#534ab7" strokeWidth="2" />
     <text x="110" y="16" textAnchor="middle">Task fit</text><text x="187" y="96">Transfer</text><text x="110" y="190" textAnchor="middle">Scenario fit</text><text x="34" y="96" textAnchor="end">Naturalness</text>
   </svg> : <p className={styles.overviewNotice}>A complete chart appears when all four dimensions have enough evidence. Unavailable scores are left blank.</p>}<p className={styles.small}>AI assessments describe this conversation. Naturalness is based on text, not pronunciation or speech timing.</p></section>;
 }
