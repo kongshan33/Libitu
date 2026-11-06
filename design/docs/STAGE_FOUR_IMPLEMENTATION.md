@@ -57,7 +57,7 @@ Concealment uses explicit-support presence, not only Mission version. Stage
 markers bind request-time stage identity to confirmed question presentation and
 persist in private runtime JSON; public revision-validated markers drive actual
 Chat dividers. Missing old history remains unmarked. Evidence detail opens in
-Targets on desktop/mobile. Chat's wrapped hint now has 16px text, #fafaf9 surface
+Targets on desktop/mobile. Chat's wrapped hint now has 16px text, `--surface` (`#FAFAFA`) background
 and 14px/18px padding. Confirmed silent rephrases show “Waiting for you”; the guide
 has its known current-stage cue. The marker/target contracts and limits are in
 [Conversation contract](STAGE_FOUR_CONVERSATION_CONTRACT.md); current verification
