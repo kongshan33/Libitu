@@ -413,7 +413,7 @@ The accepted [refactor contract](STAGE_TWO_REFACTOR_CONTRACT.md) defines the nex
 
 **Target-flow update (2026-09-09):** Stage 2 now targets file-based reference preparation. The following milestone sections describe the implemented local prototype unless explicitly marked planned. In the proposed target flow, content entry checks source capability/cache; confirming a practice segment starts bounded acquisition and preparation for that segment. Do not download the whole video by default or require a 1× preview. Ready references play from authorized sentence assets; the normal learner flow has no Enable practice audio or Chrome reference-capture authorization. First microphone use still follows browser permission requirements.
 
-Keep the official YouTube player and basic practice available when file references are unsupported. Show that capability before recording. Partial readiness and failures do not block sentence navigation, listening where available, recording, or local replay. Reference layers publish independently; unsupported Sound observations remain unevaluated. Preserve the shared operation area above the layers: place the video first, then a continuous neutral control bar for reference playback, recording/replay and range/loop/speed settings. Use the `DESIGN.md` visual language: a black primary Record/Stop pill, warm-gray Play reference pill, white bordered Replay mine pill, light shadows, 44 px interaction targets, visible keyboard focus and restrained 150 ms feedback. Range and Speed use the shared shadcn/Radix Select pattern with a white 12 px trigger, subtle border/elevation, 13 px medium text and a consistent chevron. Its portal menu uses the same warm-neutral surfaces, clearly marks the selected item, manages focus and keyboard navigation, supports typeahead, and exposes distinct open, hover, focus and disabled states. Show reference readiness as a compact status row below the controls, collapse explanatory copy under How It Works, and leave failures visible. Desktop may keep the groups on one wrapping row; mobile stacks them in the same task order. Cloud uploads/history and preserving attempts across sentence changes remain planned. See [file-reference architecture](STAGE_TWO_FILE_REFERENCE_ARCHITECTURE.md) for source-dependent range fetching, user states, playback coordination, and migration acceptance.
+Keep the official YouTube player and basic practice available when file references are unsupported. Show that capability before recording. Partial readiness and failures do not block sentence navigation, listening where available, recording, or local replay. Reference layers publish independently; unsupported Sound observations remain unevaluated. Preserve the shared operation area above the layers: place the video first, then a continuous neutral control bar for reference playback, recording/replay and range/loop/speed settings. Use the `DESIGN.md` visual language: a black primary Record/Stop pill, neutral-gray Play reference pill, white bordered Replay mine pill, light shadows, 44 px interaction targets, visible keyboard focus and restrained 150 ms feedback. Range and Speed use the shared shadcn/Radix Select pattern with a white 12 px trigger, subtle border/elevation, 13 px medium text and a consistent chevron. Its portal menu uses the same neutral surfaces, clearly marks the selected item, manages focus and keyboard navigation, supports typeahead, and exposes distinct open, hover, focus and disabled states. Show reference readiness as a compact status row below the controls, collapse explanatory copy under How It Works, and leave failures visible. Desktop may keep the groups on one wrapping row; mobile stacks them in the same task order. Cloud uploads/history and preserving attempts across sentence changes remain planned. See [file-reference architecture](STAGE_TWO_FILE_REFERENCE_ARCHITECTURE.md) for source-dependent range fetching, user states, playback coordination, and migration acceptance.
 
 **Implemented file-source increment (2026-09-22):** When an operator-registered source permits processing for the signed-in account and selected range, Stage 2 automatically prepares a private file reference on the server. Playback does not require capture authorization or 1× listening. Current/next sentence assets are prefetched; playback, loop, speed and recording stay together above the layers. Sound shows existing rule guidance plus available measured word durations, Rhythm shows measured timing/pauses and Melody shows an F0 curve with explicit gaps. Server/local measurements are identified separately, with no new pronunciation grade or automatic comparison. SSE and persisted status recover partial work after refresh; cancel/retry/delete are available. Other sources retain the current local-buffer path. See [runtime and retention boundaries](STAGE_TWO_SERVER_REFERENCE.md).
 
@@ -699,7 +699,7 @@ Implemented alignment (2026-11-01): dividers require persisted confirmed
 presentation markers, not an inference from current progress. Evidence opens in
 Targets on desktop/mobile. The top guide retains its known current-stage cue;
 confirmed silent rephrases show “Waiting for you”. Chat hints use the prototype's
-16px text, #fafaf9 surface and 14px/18px padding.
+16px text, `--surface` (`#FAFAFA`) background and 14px/18px padding.
 Corrections are light partner recasts of actual learner text, with only changed
 words bold. Categories and teaching/evidence labels belong in the report/target
 panel. Recast generation and actual delivery remain separate facts.
@@ -804,20 +804,26 @@ Libitu is a focused learning tool. It should feel quiet, precise, and suitable f
 
 | Role | Token or value |
 |---|---|
-| Primary background | `#ffffff` |
+| Primary background | `--bg`: `#ffffff` |
 | Secondary background | `--surface`: `#fafafa` |
 | Soft surface | `--line-soft`: `#ededed` |
 | Page background | `#ffffff` (including outer gutters) |
 | Primary text | `--ink`: `#0c0c0c` |
+| Dark hover token | `--ink-hover`: `#262626` |
+| Links and active-word text | `--ink-2`: `#404040` |
 | Secondary text | `--ink-3`: `#525252` |
 | Muted text | `--muted`: `#6b6b6b` |
 | Border | `--line-strong`: `#d4d4d4` |
+| Divider and progress track | `--line`: `#e5e5e5` |
+| Video background | `--video-bg`: `#191919` |
 | Active | Purple ramp |
 | Success and structures | Teal ramp |
 | Chunks and hints | Amber ramp |
 | Recording and errors | Red ramp |
 
-The implementation source is `packages/ui/src/tokens.css`. Update the token file and this table together when a semantic color changes.
+The implementation source is `packages/ui/src/tokens.css`. Update the token file and this table together when a semantic color changes. Base interface grays must have equal RGB channels; feature styles consume shared tokens or semantic aliases instead of copying a local palette. This covers backgrounds, text, borders, skeletons, media controls and neutral chart fills. Overlays use black with alpha. Normal body text needs at least 4.5:1 contrast against its actual surface.
+
+The full usage rules and approved Corpus filter state colors are in section 4 of `libitu 设计规范 v2.0(统一版).md`. Brand, status and Sound phenomenon palettes remain independent. In particular, Sound's beige WK badge is a category color, not a general-purpose gray. Keep it confined to phenomenon marks and legends. Reference/You Rhythm envelopes use `--line-soft`/`--line` in both Detailed and Review.
 
 ### Typography and fields
 
@@ -825,7 +831,7 @@ The web UI loads locally bundled Inter normal and italic variable fonts with swa
 
 ### Shared action buttons
 
-Primary actions remain purple. Secondary, soft, ghost, destructive and recording roles use the shared web button system. Recording controls remain black while idle and red while recording; final destructive confirmations are red. Ordinary buttons use an 8 px radius, while media pills and circular tools retain their shapes. Existing dimensions and selection-control semantics remain unchanged. Loading preserves the idle footprint and disables repeated native clicks. See [button roles and implementation](BUTTON_SYSTEM.md).
+Primary actions use `--ink` with white text. Secondary, soft, ghost, destructive and recording roles use the shared web button system. Recording controls remain black while idle and red while recording; final destructive confirmations are red. Ordinary buttons use an 8 px radius, while media pills and circular tools retain their shapes. Existing dimensions and selection-control semantics remain unchanged. Loading preserves the idle footprint and disables repeated native clicks. See [button roles and implementation](BUTTON_SYSTEM.md).
 
 ### Component rules
 
@@ -1033,7 +1039,7 @@ Resume preserves the transcript and does not automatically enable Chat capture.
 
 Primary buttons use black pill styling; recording state stays neutral. Quick start retains its black card as a user-approved exception, with white primary action, 14px card geometry and neutral supporting colors. Reference and learner pitch traces use solid and dashed neutral strokes. Dialogs, filter panels and selection trays use 160ms opacity/position transitions with immediate reduced-motion fallback. Hidden filter panels and trays are inert. Assessment content fades on explicit selection; saved icons acknowledge successful persistence. Audio visuals retain real state and level inputs. Clerk appearance is unchanged.
 
-Report action buttons use single-line labels without supporting small text, with 15px primary and 13px secondary text. Stage 1 active caption words use line-soft warm gray backgrounds and ink-2 text, retaining corpus underlines without font-weight or spacing changes. Ingest uses the compact Reference audio control without introductory copy or expanded preparation details; necessary setup instructions and errors remain visible.
+Report action buttons use single-line labels without supporting small text, with 15px primary and 13px secondary text. Stage 1 active caption words use `--line-soft` neutral-gray backgrounds and `--ink-2` text, retaining corpus underlines without font-weight or spacing changes. Ingest uses the compact Reference audio control without introductory copy or expanded preparation details; necessary setup instructions and errors remain visible.
 
 2026-11-06 Corpus selection: Select all filtered results includes every matching record, including unloaded pages. Deselect filtered results removes only matching selections; hidden selections remain. Disable selection while search results are settling or corpus operations are pending. Existing delete confirmation and Stage 1 Saved synchronization apply.
 

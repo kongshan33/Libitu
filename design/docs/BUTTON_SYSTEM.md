@@ -1,14 +1,14 @@
 # Shared button system
 
-Accepted 2026-10-04. Purple primary actions and learning semantic colors remain; existing page layouts and control dimensions are preserved.
+Established 2026-10-04; color rules revised 2026-11-06 to match the unified v2.0 spec. Primary actions use black with white text; secondary and soft actions use shared neutral grays. Learning and status semantic colors remain independent.
 
 ## Roles
 
 | Variant | Use | Appearance |
 |---|---|---|
-| `primary` | Main action in a task or dialog | Purple / white |
-| `secondary` | Alternative action | White / warm thin edge |
-| `soft` | Supporting action | Warm gray |
+| `primary` | Main action in a task or dialog | `--ink` / white |
+| `secondary` | Alternative action | White / `--line-strong` thin edge |
+| `soft` | Supporting action | `--surface`; hover `--line-soft`; pressed `--line` |
 | `ghost` | Close, back and quiet tools | Transparent |
 | `danger` | Entry to destructive confirmation | Red text |
 | `danger-outline` | Destructive action needing a visible boundary on a surface | White / red thin edge |
@@ -19,7 +19,7 @@ Accepted 2026-10-04. Purple primary actions and learning semantic colors remain;
 
 Use `Button` and `ButtonLink` from `apps/web/components/ui/button.tsx`; use `buttonAppearance` for native external anchors. Navigation stays an anchor. Button defaults to `type="button"`; forms explicitly set `type="submit"`.
 
-Shared paint and interaction rules live in `button.css`; semantic colors use `packages/ui/src/tokens.css`. Feature styles retain geometry during migration; shared appearance attributes override their legacy paint. New actions should not add per-page color, shadow, focus or disabled rules.
+Shared paint and interaction rules live in `button.css`; semantic colors use `packages/ui/src/tokens.css`. Feature styles retain geometry during migration; shared appearance attributes override their legacy paint. New actions should not add per-page color, shadow, focus or disabled rules. Neutral colors inherit from shared tokens: secondary hover/pressed backgrounds use `--surface`/`--line-soft`; disabled backgrounds/text use `--line`/`--muted`. Do not recreate warm gray surfaces in feature overrides.
 
 The mobile stage navigation explicitly permits shrinking inside its existing horizontal scroll area so the unified weight does not widen the page.
 

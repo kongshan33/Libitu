@@ -4,6 +4,8 @@
 
 Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.
 
+Base gray tokens are owned by `packages/ui/src/tokens.css`. Their RGB channels must be equal; features reference these tokens or semantic aliases rather than declaring another base palette. Component-specific neutral states, such as Corpus filter options, follow section 4 of `libitu 设计规范 v2.0(统一版).md`. Keep ordinary text at least 4.5:1 against its actual background. Brand, status and Sound category colors are explicit exceptions; Sound's WK beige must not become a generic control background.
+
 ## Typography
 
 The user approved loading Inter on 2026-10-04. The root layout loads the locally bundled Inter 4.1 normal and italic variable fonts with `next/font/local`, `display: swap` and an adjusted Arial fallback. The `--font-ui` token selects this family across headers, body text and controls. Fonts and their OFL license live in `apps/web/app/fonts`; there are no remote font requests at runtime or build time. Unsupported glyphs fall back to system fonts. Existing monospace pronunciation/structure/code text keeps its own stack.
