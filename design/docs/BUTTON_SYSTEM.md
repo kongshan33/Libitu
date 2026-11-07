@@ -13,7 +13,7 @@ Established 2026-10-04; color rules revised 2026-11-06 to match the unified v2.0
 | `danger` | Entry to destructive confirmation | Red text |
 | `danger-outline` | Destructive action needing a visible boundary on a surface | White / red thin edge |
 | `danger-solid` | Final destructive confirmation | Red / white |
-| `record` | Start voice or recording | Black / white; `recording` turns red |
+| `record` | Start voice or recording | Black / white; recording stays neutral |
 
 ## Implementation
 
@@ -23,7 +23,7 @@ Shared paint and interaction rules live in `button.css`; semantic colors use `pa
 
 The mobile stage navigation explicitly permits shrinking inside its existing horizontal scroll area so the unified weight does not widen the page.
 
-Existing controls use `size="inherit"` to retain padding, font size, width and height. New controls use `sm`, `md` or `lg` (32/40/44 px minimum height). Ordinary radius is 8 px; media pills and circular tools use explicit `shape`. Supply an accessible name for icon-only controls.
+Existing controls use `size="inherit"` to retain padding, font size, width and height. New controls use `sm`, `md` or `lg` (32/40/44 px minimum height). Shared buttons use a pill radius; circular tools use explicit `shape="circle"`. Supply an accessible name for icon-only controls.
 
 Pass stable idle children with `loading` and `loadingLabel`. The idle content reserves space while an overlay displays progress. Loading disables native clicks and exposes `aria-busy`; it does not replace application-level idempotency. Hover, pressed, keyboard focus, disabled and reduced-motion behavior are shared. Existing learning tabs, filters, switches and selectable cards retain their own selection semantics.
 
@@ -34,6 +34,10 @@ Pass stable idle children with `loading` and `loadingLabel`. The idle content re
 </Button>
 <ButtonLink variant="secondary" href="/corpus">Open corpus</ButtonLink>
 ```
+
+## Current dimensions and focus (2026-11-06)
+
+Shared sm/md/lg sizes use 12/13/14 px text, 18/20/20 px line heights and 32/40/44 px minimum heights. Vertical/horizontal padding is 6/10, 9/14 and 11/18 px; icons are 14/16/18 px. Weight is 500. `.ui-button-group` uses lg for all ordinary buttons and links, with 12 px group gaps and 8 px icon gaps, independent of emphasis or disabled state. Coarse-pointer targets are at least 44 px. Keyboard focus uses the shared 2 px brand outline with a 3 px offset. Text fields instead use a single 1 px black inset boundary. Historical verification below is dated evidence, not a fresh test of these rules.
 
 ## Verification
 

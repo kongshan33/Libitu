@@ -8,7 +8,7 @@ Base gray tokens are owned by `packages/ui/src/tokens.css`. Their RGB channels m
 
 ## Typography
 
-The user approved loading Inter on 2026-10-04. The root layout loads the locally bundled Inter 4.1 normal and italic variable fonts with `next/font/local`, `display: swap` and an adjusted Arial fallback. The `--font-ui` token selects this family across headers, body text and controls. Fonts and their OFL license live in `apps/web/app/fonts`; there are no remote font requests at runtime or build time. Unsupported glyphs fall back to system fonts. Existing monospace pronunciation/structure/code text keeps its own stack.
+The user approved loading Inter on 2026-10-04. The root layout loads the locally bundled Inter 4.1 normal and italic variable fonts with `next/font/local`, `display: swap` and an adjusted Arial fallback. The `--font-ui` token selects this family across headers, body text and controls. Fonts and their OFL license live in `apps/web/app/fonts`; there are no remote font requests at runtime or build time. Unsupported glyphs fall back to system fonts. Metadata, pronunciation marks, IPA and structure templates also use `--font-ui`; `--font-mono` is a compatibility alias, not a monospace stack.
 
 Existing grids, ordering, spacing, control dimensions and responsive breakpoints remain. Font metrics can change text wrapping; check narrow viewports after typography changes. The shared landing wordmark keeps its proportions, purple color and dot.
 
@@ -16,7 +16,7 @@ Existing grids, ordering, spacing, control dimensions and responsive breakpoints
 
 Use `Input`, `Textarea` and `NativeSelect` from `apps/web/components/ui/field.tsx`. Existing Radix Select triggers share the same field appearance. Feature CSS still owns dimensions, padding, line height and resize behavior. `field.css` owns white surfaces, neutral borders, placeholder color, a single black focus boundary, invalid red borders, disabled states and reduced motion.
 
-Inputs inside a search/video wrapper use `appearance="bare"`. Put `className="ui-field-surface"` and `data-field-surface` on the existing wrapper, preserving its existing feature class. Focus and invalid/disabled appearance then belong to the wrapper. Chat keeps its existing pill shape with `shape="pill"`. Keep native form semantics, labels, aria descriptions and handlers. Checkboxes, radios and file controls remain native; their purple accent and common disabled/focus feedback come from global tokens.
+Inputs inside a search/video wrapper use `appearance="bare"`. Put `className="ui-field-surface"`, `data-field-surface` and `data-input-group` on the existing wrapper, preserving its existing feature class. Focus and invalid/disabled appearance then belong to the wrapper. Chat keeps its existing pill shape with `shape="pill"`. Keep native form semantics, labels, aria descriptions and handlers. Checkboxes, radios and file controls remain native; their purple accent and common disabled/focus feedback come from global tokens.
 
 ## Selection and learning colors
 
@@ -52,4 +52,4 @@ Use `SelectField` for controlled option lists and the Radix primitives for custo
 
 Use `DirectionButton` and `DirectionLink` for back/next navigation: 40 px minimum height, 16 px icons and 8 px gaps. Retain multiline card dimensions. Reader bottom padding is zero, with shell height accounting only for the top gutter.
 
-Loadout follow-up: draft-save status keeps its layout footprint when hidden, with delayed visual feedback for normal-motion users. Textarea focus uses a thin neutral outline and retains its normal border color. Directional links default to secondary outlined styling. Existing navigation wording is unchanged.
+Loadout follow-up: draft-save status keeps its layout footprint when hidden, with delayed visual feedback for normal-motion users. Textarea focus uses one 1 px black inset outline with a transparent border and no shadow. Directional links default to secondary outlined styling. Existing navigation wording is unchanged.

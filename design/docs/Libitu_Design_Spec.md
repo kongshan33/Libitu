@@ -1,5 +1,25 @@
 # Build the Libitu MVP experience
 
+## GA Sound target — accepted 2026-11-07, implementation pending
+
+Use [STAGE_TWO_GA_SOUND_PLAN.md](STAGE_TWO_GA_SOUND_PLAN.md) for the next Sound increment: GA only, four groups and 12 top-level entries, subtype filtering, explicit candidate/target/measurement states, shared Detailed/Review marks and reliable per-vowel duration display. This target supersedes earlier ten-filter or proposed mixed-US/UK catalogues and the solid Reference-candidate styling only when implemented. Keep current layout containers, concealment, opt-in dense measurements and recording/history gates. GA is a learning target, not a source-accent verdict. R-linking is not a separate entry; T/D and H elision are subtypes. No actual realization or correctness follows from text rules or forced alignment. See PROJECT.MD/TASK.MD for delivery status.
+
+## Text evidence and report completeness — 2026-11-06
+
+Target occurrence and appropriate use are separate decisions. Match complete
+words, supported variants and filled structure anchors against final learner
+text; require a contextual judgment before awarding use. Mentioning a phrase,
+reading its card or denying use does not establish communicative use. Negative
+sentences can still use an expression appropriately.
+
+Every applicable assessment dimension and criterion must be represented, including
+an explicit null rating with a reason when evidence is insufficient. Ground every
+rating in immutable source evidence; never fabricate content to complete a report.
+A bounded internal repair may complete invalid/missing fields, retaining validated
+partial feedback when it fails. Empty, missing and short transcripts preserve
+their existing unscored/partial behavior. These rules are implemented locally;
+see [measured coverage and limits](../benchmarks/text-quality-20261106/COMPARISON.md).
+
 ## Neutral interface palette — 2026-11-06
 
 Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.
@@ -161,10 +181,12 @@ video visibility, recording/countdown behavior, authorization, historical result
 analysis gates and retention settings. The mockup does not change these behaviors
 or replace real progress/errors with illustrative waveforms or scores.
 
-## Current AI providers — 2026-10-30
+## Current AI providers — 2026-11-06
 
-Doubao text analysis replaces DeepSeek for new blueprint/selection, Mission
-planning/teaching/help and assessment requests. OpenAI Realtime now handles
+DeepSeek Flash is the default for new blueprint/selection, Mission
+planning/teaching/help and assessment requests. `TEXT_ANALYSIS_PROVIDER=ark`
+explicitly selects the retained Doubao adapter for comparison; Corpus has its own
+provider override. See [the current comparison and quality limits](../benchmarks/text-providers-20261106/COMPARISON.md). OpenAI Realtime now handles
 real-time conversations (`gpt-realtime-2.1`, voice `marin`); Gemini is optional. This provider change preserves interaction behavior,
 source/evidence validation and visible failure/retry states. Existing saved results
 remain available; software verification does not establish model-quality parity.
@@ -350,7 +372,7 @@ For a completed YouTube cache with no usable word timing, run a separate recover
 - When auto-scroll is enabled, align the active line only while the video is playing. Pausing or ending playback suspends transcript alignment, but the auto-scroll control remains available so the learner can change the setting before resuming. Manual transcript scrolling temporarily pauses automatic alignment so the learner can read; the auto-scroll control still toggles the setting in this paused state, and turning it back on resumes alignment immediately when playback is active. Explicit timestamp or logic-node navigation resumes alignment once playback starts.
 - Keep Logic Flow aligned to playback time. Clicking a transcript row seeks the video and immediately activates the latest logic node at or before that timestamp; normal playback updates the same logic selection as the active transcript advances.
 - Remove square-bracket caption cues (including their contents), stray square brackets and repeated angle speaker markers (`>>`, `<<`) from subtitle text. Clean cached display text before corpus annotation too; preserve normal spoken punctuation and source timing.
-- Before punctuation and analysis, remove only standalone English filler tokens `um`, `uh`, `er`, and `ah`; never remove those character sequences inside another word. Use this same normalized transcript for Doubao text analysis, evidence validation, and display.
+- Before punctuation and analysis, remove only standalone English filler tokens `um`, `uh`, `er`, and `ah`; never remove those character sequences inside another word. Use this same normalized transcript for text analysis, evidence validation, and display.
 - Preserve reliable source sentence punctuation without running the punctuation model. For captions that need punctuation, send a punctuation-free copy to the local model, attach its sentence marks to the original source words without accepting model casing, then deterministically normalize duplicate or conflicting marks and high-confidence opening discourse markers on every path.
 - Merge caption continuations and conservatively repair incomplete punctuation-model candidates using local syntax evidence. Stage 1 and Stage 2 share one finalized sentence sequence; complete long sentences remain intact, with no child practice groups or length-based hard sentence cuts. Processing windows may cross sentence boundaries without changing the displayed units.
 - Keep independent sentences separate even when they share one source caption timestamp. Use stable sentence IDs for selection and caption-interpolated start/end metadata for approximate navigation. Confirmed streaming rows cannot be changed by later batches; hold uncertain tails for lookahead and label unresolved end-of-source fragments honestly in metadata.
@@ -827,11 +849,11 @@ The full usage rules and approved Corpus filter state colors are in section 4 of
 
 ### Typography and fields
 
-The web UI loads locally bundled Inter normal and italic variable fonts with swap display and an adjusted fallback. Preserve existing monospace learning text and layout geometry. Text fields and native/Radix selects share white surfaces, neutral borders, a single black focus boundary, red invalid borders, placeholder and disabled states. Generic selection uses shared purple tokens; learning/status palettes stay independent. See [the visual system](VISUAL_SYSTEM.md).
+The web UI loads locally bundled Inter normal and italic variable fonts with swap display and an adjusted fallback. Learning text and metadata use the same UI font; preserve layout geometry. Text fields and native/Radix selects share white surfaces, neutral borders, a single black focus boundary, red invalid borders, placeholder and disabled states. Generic selection uses shared purple tokens; learning/status palettes stay independent. See [the visual system](VISUAL_SYSTEM.md).
 
 ### Shared action buttons
 
-Primary actions use `--ink` with white text. Secondary, soft, ghost, destructive and recording roles use the shared web button system. Recording controls remain black while idle and red while recording; final destructive confirmations are red. Ordinary buttons use an 8 px radius, while media pills and circular tools retain their shapes. Existing dimensions and selection-control semantics remain unchanged. Loading preserves the idle footprint and disables repeated native clicks. See [button roles and implementation](BUTTON_SYSTEM.md).
+Primary actions use `--ink` with white text. Secondary, soft, ghost, destructive and recording roles use the shared web button system. Recording controls remain neutral while idle and recording; final destructive confirmations are red. Shared buttons use a pill radius; circular tools retain their circle shape. Existing dimensions and selection-control semantics remain unchanged. Loading preserves the idle footprint and disables repeated native clicks. See [button roles and implementation](BUTTON_SYSTEM.md).
 
 ### Component rules
 
@@ -1025,15 +1047,13 @@ Remove the duplicate yellow preparation progress bar and amber preparation/analy
 
 2026-10-17 Enable setup follow-up: show the setup spinner only during the extension handshake. Once armed and waiting for a toolbar click, stop the spinner, show “Click Libitu in Chrome’s toolbar”, and retain the setup instructions and Cancel action. The extension protocol, authorization and audio acquisition remain unchanged.
 
-### Stage 4 orb and Chat controls — 2026-11-03
+### Stage 4 orb and Chat controls — 2026-11-07
 
-Voice shows a gently breathing, fluid partner orb. Its sound-driven expansion
-uses actual output playback amplitude, independent of the decorative idle motion.
-Stop amplitude response on interruption, pause or playback end; honor reduced
-motion and hidden-tab suspension. Chat exposes Pause conversation beside the
-microphone in the bottom bar, replaced by Resume conversation while paused.
-Resume preserves the transcript and does not automatically enable Chat capture.
+Voice follows the inspected ElevenLabs homepage material: a locally bundled blue/green texture, sphere projection, four-octave FBM, simplex displacement, audio-driven fluid advection and separate 50% stationary overlay grain. Keep the circular silhouette fixed; the texture itself folds and flows. The 56px black call button overlaps the lower edge: start/resume offline, disabled while connecting, pause while connected. End Mission retains confirmation and microphone mute stays separate.
 
+Ambient deformation starts on entry and continues offline and during a paused call. Remove the animation pause/play button. Use a fixed 1.4 animation clock, with separate accumulated audio movement. The existing playback and authorized microphone analysers supply low (0–200Hz), mid (200–2000Hz), high (2000Hz–Nyquist, capped at 20kHz) and RMS levels; input responds before server VAD. Visual RMS ≤ .0015 maps to zero and .12 to full scale; use 28ms attack / 160ms release. This changes visualization only. Queued audio is excluded; mute, pause, interruption and disconnect clear the corresponding signal.
+
+The fluid field uses 128px velocity/pressure and 512px dye targets, three pressure iterations, .98 dissipation and 1.2 blur. Half-float rendering is optional: retain the texture/noise material if unavailable. OS reduced motion, hidden tabs and offscreen content stop rendering. Use at least 2x supersampling, at most 60fps and 1024px; context loss or WebGL failure falls back to the static sphere. Simulation levels appear only in the explicitly gated development preview. No new microphone permission, provider integration or audio retention is introduced. Asset provenance is recorded in apps/web/public/orb/README.md; live-call frames are not promised identical across providers or interaction histories.
 
 ### Shared visual feedback (2026-11-03)
 

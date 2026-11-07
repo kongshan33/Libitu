@@ -273,7 +273,7 @@ def test_queue_readiness_reports_missing_worker(monkeypatch) -> None:
                 "processing_mode": "queue",
                 "upstash_is_configured": True,
                 "analysis_version": "mvp-v6",
-                "ark_model": "doubao-seed-2-1-lite-260915",
+                "text_model": "doubao-seed-2-1-lite-260915",
             },
         )(),
     )
@@ -313,7 +313,7 @@ def test_queue_readiness_reports_live_worker(monkeypatch) -> None:
                 "processing_mode": "queue",
                 "upstash_is_configured": True,
                 "analysis_version": "mvp-v6",
-                "ark_model": "doubao-seed-2-1-lite-260915",
+                "text_model": "doubao-seed-2-1-lite-260915",
             },
         )(),
     )
@@ -344,7 +344,7 @@ def test_queue_readiness_reports_stale_worker(monkeypatch) -> None:
                 "processing_mode": "queue",
                 "upstash_is_configured": True,
                 "analysis_version": "mvp-v5",
-                "ark_model": "doubao-seed-2-1-lite-260915",
+                "text_model": "doubao-seed-2-1-lite-260915",
             },
         )(),
     )

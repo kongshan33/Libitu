@@ -12,7 +12,7 @@ from test_speaking_teaching import analyze, candidate, mission, model, recommend
 @pytest.fixture(autouse=True)
 def no_paid_analysis(monkeypatch):
     monkeypatch.setattr(teaching, "get_settings", lambda: SimpleNamespace(
-        ark_api_key=None, ark_base_url="https://analyzer.invalid", ark_model="fixture-model"))
+        text_api_key=None, text_base_url="https://analyzer.invalid", text_model="fixture-model"))
 
 
 def supported_mission(level="model_frame"):

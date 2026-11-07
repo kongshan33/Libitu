@@ -1,5 +1,46 @@
 # Complete the next Libitu milestone
 
+## GA Sound execution — 2026-11-07
+
+Follow [the accepted plan and acceptance cases](design/docs/STAGE_TWO_GA_SOUND_PLAN.md).
+
+- [x] P0: fix the learning target to GA, define 12 top-level filters and subtypes, symbols, evidence states, compatibility and delivery boundaries.
+- [ ] P1: add the v2 guide contract, shared taxonomy, constrained subtypes, v1 decoding/mapping and versioned cache behavior.
+- [ ] P2: implement the bounded, reviewed GA candidate rules and their positive/negative/ambiguous cases; keep unsupported subtypes explicit.
+- [ ] P3: update Detailed and Review together with grouped filters, local marks, alternatives, evidence styles, concealment and accessible explanations.
+- [ ] P4: expose saved per-vowel durations, clearly label legacy word totals and preserve unavailable/one-sided/matched-only evidence.
+- [ ] P5: pass root lint/build/test and 1400px/390px browser acceptance; update implementation evidence and remaining coverage.
+- [ ] Separate M4b follow-up: validate individual acoustic realization detectors on human-labelled, speaker-disjoint data before publishing confirmed sounds or correctness feedback.
+
+P0 is documentation only. New filters and rules are not yet implemented; the M4b follow-up is not a prerequisite for shipping the bounded P1–P5 learning-guide increment.
+
+## Text quality repair — 2026-11-06
+
+- [x] Share deterministic target grounding; keep contextual appropriateness as a separate judgment.
+- [x] Require fixed assessment dimensions/criteria and source-owned evidence IDs; permit only one bounded repair with validated partial-result retention.
+- [x] Repeat 30 authored live-provider cases three times before/after: 77/90 → 90/90 expected outcomes, with completeness and latency measured separately.
+- [x] Rerun root lint/build/test: 1,940 API tests pass. The five legacy prompt assertions reported by the parallel orb work are resolved by checking the actual fixed-key schema; one acoustic subprocess timing failure passed isolated and full reruns.
+- [x] Recheck all text stages with DeepSeek: 12/12 ready. Preserve unsuccessful experiments and raw authored outputs.
+- [ ] Repeat the same-version Doubao comparison after its account balance is restored; current calls return HTTP 403 AccountOverdueError.
+- [ ] Broader independent learner examples, live audio/ASR and deployed quality/latency acceptance remain open.
+
+See [measurements and reproduction](design/benchmarks/text-quality-20261106/COMPARISON.md).
+
+## Mission partner orb — 2026-11-07
+
+The Voice orb now follows the inspected ElevenLabs homepage material: a locally served blue/green texture, sphere projection, four-octave FBM, simplex displacement and separate stationary overlay grain. The ambient clock runs at the reference 1.4 time scale; the circular silhouette stays fixed. A 128px velocity/pressure field and 512px dye field add audio-driven surface advection (three pressure iterations, .98 dissipation and 1.2 blur); unsupported half-float devices retain the noise-driven renderer. Actual playback and the existing authorized microphone supply low/mid/high FFT bands plus a visual RMS envelope, with 28ms attack / 160ms release. RMS noise floor remains .0015 and full scale .12; this never changes audio gain. Input feedback starts before server VAD. There is no animation pause button: ambient motion starts on entry and continues while offline or the call is paused. OS reduced motion, hidden tabs and offscreen content stop rendering. Use at least 2x supersampling, at most 60fps / 1024px; WebGL failure uses a static fallback. Assets and source provenance are in apps/web/public/orb/README.md. The lower-edge call button, mute control and conversation behavior remain unchanged. Exact live-call frame identity is not claimed because audio and accumulated interaction history differ.
+
+Verification: root lint, build and test passed (527 web tests; API / extension task results reused from cache). New tests cover Hz band boundaries, Nyquist, invalid inputs, frame-rate-independent response and stale capture/playback clearing. The actual localhost:3000 Mission uses WebGL with the optional fluid solver, starts ambient motion automatically and has no animation pause button. Production-preview simulated amplitude 1 reaches energy 1; paused-call energy returns to 0 while ambient motion remains on. At the observed 480px narrow viewport, the sphere is 224px with a 448px canvas and no horizontal overflow. Inspected 24 reference frames over 5.18 seconds and 24 final local frames over 6.94 seconds; these are sampled recordings, not measured render frame rates. No live provider call or physical microphone test was made. Evidence: output/mission-orb/mission-orb-final.jpg, mission-orb-sampled.gif, voice-response.jpg and rebuilt-mobile.jpg. The temporary preview server was stopped; the user’s development server remains running.
+
+
+## Text provider comparison — 2026-11-06
+
+- [x] Route Stage 1, Mission planning/teaching/help and Stage 5 through the selected DeepSeek/Ark credential, URL and model; default to DeepSeek Flash and retain bounded requests and strict evidence validation.
+- [x] Isolate credentials in automatic tests; cover both HTTP routes and missing-key behavior. Root lint/build/test pass (1,913 API, 522 Web, 124 extension tests).
+- [x] Run two alternating real-provider rounds on authored inputs without database access; retain partial outcomes and compare actual validated outputs. See [comparison](design/benchmarks/text-providers-20261106/COMPARISON.md).
+- [x] Switch local configuration and restart the development stack; `/health/ready` confirms the DeepSeek worker.
+- [ ] Qualify broader teaching quality beyond the authored cases repaired above; repeat the current contract against Doubao when its account is available. No automatic bulk regeneration or production deployment.
+
 ## Neutral interface palette — 2026-11-06
 
 Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.

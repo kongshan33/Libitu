@@ -146,7 +146,7 @@ def _synthetic_validation_checks(model) -> dict:
     return checks
 
 
-async def _capture_decoded(iterator, trace):
+async def _capture_decoded(iterator, trace, context=None):
     """Capture bounded decoded bytes, after HTTPX handles content encoding."""
     captured = bytearray()
     async for chunk in iterator:
@@ -169,15 +169,21 @@ async def _capture_decoded(iterator, trace):
             }
         choice = envelope["choices"][0]
         finish = choice.get("finish_reason")
-        trace["finish_reason"] = finish if finish in {"stop", "length", "content_filter"} else "other"
+        trace["finish_reason"] = finish if finish in {"stop", "tool_calls", "length", "content_filter"} else "other"
         try:
-            raw_assessment = json.loads(choice["message"]["content"])
+            raw = choice["message"].get("content")
+            if finish == "tool_calls":
+                calls = choice["message"].get("tool_calls", [])
+                if len(calls) != 1 or calls[0].get("function", {}).get("name") != "submit_assessment":
+                    raise ValueError("unexpected_probe_tool")
+                raw = calls[0]["function"]["arguments"]
+            raw_assessment = assessment.contract.load_json(raw)
             dimensions = raw_assessment.get("dimensions") if isinstance(raw_assessment, dict) else None
             trace["canonicalized_empty_notes"] = sum(
                 isinstance(row, dict) and "criteria_note" in row and row["criteria_note"] is None
                 for row in dimensions
             ) if isinstance(dimensions, list) else 0
-            parsed = assessment._parse_assessment(choice["message"]["content"], include_missed=True)
+            parsed = assessment._parse_assessment(raw, include_missed=True, context=context)
         except ValidationError as error:
             # Only fixed validator codes and known field names; no inputs,
             # messages or arbitrary extra-key names from the model are retained.
@@ -250,7 +256,7 @@ async def run_probe(*, ipv4: bool = False, diagnose_extra_keys: bool = False) ->
             original_iterator = response.aiter_bytes
 
             def traced_bytes(*iter_args, **iter_kwargs):
-                return _capture_decoded(original_iterator(*iter_args, **iter_kwargs), trace)
+                return _capture_decoded(original_iterator(*iter_args, **iter_kwargs), trace, context)
 
             response.aiter_bytes = traced_bytes
             return response
@@ -285,7 +291,7 @@ async def run_probe(*, ipv4: bool = False, diagnose_extra_keys: bool = False) ->
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--run-live", action="store_true", help="Authorize exactly one real Doubao request.")
+    parser.add_argument("--run-live", action="store_true", help="Authorize one real request to the configured text provider.")
     parser.add_argument("--ipv4", action="store_true")
     parser.add_argument("--diagnose-extra-keys", action="store_true",
                         help="For this synthetic source only, report extra snake_case key names of at most 40 characters.")

@@ -605,8 +605,8 @@ def test_save_failures_are_distinct_from_generation_without_leaking_database_det
 @pytest.mark.parametrize("failure", ["timeout", "rate_limit", "unauthorized", "transport", "truncated", "bad_json"])
 def test_actual_provider_failures_are_safe_and_retryable(monkeypatch, failure):
     from app.services import speaking_teaching
-    settings = SimpleNamespace(ark_api_key="test-key", ark_model="test-model",
-                               ark_base_url="https://provider.example")
+    settings = SimpleNamespace(text_api_key="test-key", text_model="test-model",
+                               text_base_url="https://provider.example")
     monkeypatch.setattr(speaking_planning, "get_settings", lambda: settings)
     monkeypatch.setattr(speaking_planning, "request_analysis_json", speaking_teaching.request_analysis_json)
     original_client = httpx.AsyncClient
@@ -639,8 +639,8 @@ def test_actual_provider_failures_are_safe_and_retryable(monkeypatch, failure):
 
 def test_provider_helper_honors_per_call_deadline_without_changing_default(monkeypatch):
     from app.services import speaking_teaching
-    settings = SimpleNamespace(ark_api_key="test-key", ark_model="test-model",
-                               ark_base_url="https://provider.example")
+    settings = SimpleNamespace(text_api_key="test-key", text_model="test-model",
+                               text_base_url="https://provider.example")
     original_client = httpx.AsyncClient
     async def slow(request):
         await asyncio.sleep(0.05)

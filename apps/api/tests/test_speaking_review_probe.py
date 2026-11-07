@@ -37,8 +37,8 @@ def test_probe_keeps_one_call_and_only_safe_provider_metadata(monkeypatch, compr
                               headers={"Content-Encoding": "gzip"} if compressed else {})
 
     monkeypatch.setattr(probe.assessment, "get_settings", lambda: SimpleNamespace(
-        ark_api_key="synthetic-secret", ark_base_url="https://fixture.invalid",
-        ark_model="fixture-model",
+        text_api_key="synthetic-secret", text_base_url="https://fixture.invalid",
+        text_model="fixture-model",
     ))
     monkeypatch.setattr(probe.httpx, "AsyncHTTPTransport", lambda **kwargs: httpx.MockTransport(handler))
     event = asyncio.run(probe.run_probe())
@@ -128,8 +128,8 @@ def test_extra_dimension_field_is_rejected_without_retry_or_relaxing_scores(monk
         return httpx.Response(200, stream=httpx.ByteStream(json.dumps(envelope).encode()))
 
     monkeypatch.setattr(probe.assessment, "get_settings", lambda: SimpleNamespace(
-        ark_api_key="synthetic-secret", ark_base_url="https://fixture.invalid",
-        ark_model="fixture-model",
+        text_api_key="synthetic-secret", text_base_url="https://fixture.invalid",
+        text_model="fixture-model",
     ))
     monkeypatch.setattr(probe.httpx, "AsyncHTTPTransport", lambda **kwargs: httpx.MockTransport(handler))
     event = asyncio.run(probe.run_probe())
@@ -138,8 +138,12 @@ def test_extra_dimension_field_is_rejected_without_retry_or_relaxing_scores(monk
     assert event["missed_opportunities_count"] == 0 and event["used_primary_targets"] == 0
     assert len(event["provider"]["assessment_schema_errors"]) == 3
     assert all(row["type"] == "extra_forbidden" for row in event["provider"]["assessment_schema_errors"])
-    assert "Every dimensions entry has exactly id, summary, criteria." in requests[0]["messages"][0]["content"]
-    assert "Never add criteria_note" in requests[0]["messages"][0]["content"]
+    schema = json.loads(requests[0]["messages"][1]["content"])["output_schema"]
+    dimensions = schema["properties"]["dimensions"]
+    assert set(dimensions["required"]) == set(probe.assessment.CRITERIA)
+    for dimension in dimensions["properties"].values():
+        assert set(dimension["required"]) == {"criteria", "summary"}
+        assert dimension["additionalProperties"] is False
 
 
 def test_corrected_synthetic_structure_is_ready_without_weakening_extra_or_quote_validation():

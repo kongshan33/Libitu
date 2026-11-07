@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Phone, PhoneOff, LoaderCircle } from "lucide-react";
 import { FlowNavigation } from "@/components/FlowNavigation";
 import { stageCue } from "./conversation-view";
 import { observeVisible } from "./visibility";
@@ -60,15 +60,24 @@ export function ConversationToolbar({ view, onView, status, online, actions }: {
   </div>;
 }
 
-export function VoiceSurface({ phase, speaker, utterance, recast, hint, controls, action, getOutputLevel }: {
-  phase: string; getOutputLevel?: () => number; speaker?: string; utterance?: ReactNode; recast?: ReactNode;
+export function VoiceSurface({ phase, speaker, utterance, recast, hint, controls, action, callControl, status, getOutputLevel, getInputLevel, getOutputBands, getInputBands }: {
+  phase: string; getOutputBands?: () => Float32Array; getInputBands?: () => Float32Array; getOutputLevel?: () => number; getInputLevel?: () => number; callControl?: ReactNode; status?: string; speaker?: string; utterance?: ReactNode; recast?: ReactNode;
   hint?: ReactNode; controls?: ReactNode; action?: ReactNode;
 }) {
   return <div className={styles.voice} data-phase={phase}>
-    <PartnerOrb phase={phase} getOutputLevel={getOutputLevel} />
+    <div className={styles.partnerStage}><PartnerOrb phase={phase} getOutputLevel={getOutputLevel} getInputLevel={getInputLevel} getOutputBands={getOutputBands} getInputBands={getInputBands} />{callControl ? <div className={styles.orbCallDock}>{callControl}</div> : null}</div>
+    {status ? <p className={styles.orbStatus}>{status}</p> : null}
     {utterance ? <div className={styles.currentUtterance}><span className={styles.eyebrow}>{speaker ?? "AI partner · now"}</span><div className={styles.currentText}>{utterance}</div></div> : null}
     {recast}{hint}{action}{controls}
   </div>;
+}
+
+export function VoiceCallButton({ connected, connecting, disabled, label, onClick }: {
+  connected: boolean; connecting?: boolean; disabled?: boolean; label: string; onClick: () => void;
+}) {
+  return <button type="button" className={styles.orbCallButton} aria-label={label} title={label} aria-busy={connecting || undefined} disabled={disabled || connecting} onClick={onClick}>
+    {connecting ? <LoaderCircle className={styles.helpSpinner} size={23} aria-hidden="true" /> : connected ? <PhoneOff size={23} aria-hidden="true" /> : <Phone size={23} aria-hidden="true" />}
+  </button>;
 }
 
 export function MicrophoneButton({ enabled, disabled, onClick, large = false }: { enabled: boolean; disabled?: boolean; onClick: () => void; large?: boolean }) {

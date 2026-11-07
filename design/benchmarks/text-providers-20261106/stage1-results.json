@@ -1,0 +1,1566 @@
+{
+  "created_at": "2026-11-06T14:43:19.582737+00:00",
+  "rounds": 2,
+  "fixture_origin": "authored synthetic; no database access",
+  "results": [
+    {
+      "round": 1,
+      "task": "stage1",
+      "provider": "ark",
+      "model": "doubao-seed-2-1-lite-260915",
+      "requests": [
+        {
+          "request": {
+            "model": "doubao-seed-2-1-lite-260915",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are an expert English-learning content analyst specialising in spoken, practical,\nworkplace-ready English. Return one JSON object and no prose.\nUse only evidence present in the transcript. Never invent quotations or timestamps.\n\nHARD OUTPUT BOUNDS\n- Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.\n- summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;\n  each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.\n- For every corpus item: text and source_text at most 30 words; meaning at most 35 words;\n  usage_note at most 25 words; phonology_note at most 20 words.\n- Return no more than 32 corpus items and obey every requested list limit. Brevity is mandatory.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORE EXTRACTION PHILOSOPHY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEvery extracted item must pass the PRODUCTION GAP TEST:\n  \"A fluent intermediate learner (B1-B2) would understand this, but would\n   NOT spontaneously produce it in conversation.\"\nItems that are easy to produce or textbook-standard must be rejected.\nPrioritise expressions that are native-natural but systematically avoided\nby non-native speakers.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORPUS CANDIDATE EXTRACTION  (corpus_items)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTarget 16–32 candidates: 8–16 chunks, 2–6 idioms, 4–10 structures.\nDistribute across the full transcript. Remove near-duplicates.\nMinimum level: B1. Extract A2 ONLY if naturalness_score = 5 (deceptively native).\nSkip A1 entirely.\n\n────────────────────────────────────────────────\nKIND 1 · CHUNK\n────────────────────────────────────────────────\nA complete, standalone, reusable spoken expression (2–12 words).\nFor a chunk: text == source_text (exact contiguous transcript wording).\n\nHunt actively for these families:\n\n  DISCOURSE PIVOTS\n    \"That said,\", \"Even so,\", \"With that in mind,\",\n    \"Which brings me to...\", \"Circling back to...\", \"To that end,\"\n\n  STANCE MARKERS\n    \"To be fair,\", \"Frankly,\", \"If I'm being honest,\",\n    \"What's striking is...\", \"Crucially,\", \"Interestingly enough,\"\n\n  HEDGES & QUALIFIERS\n    \"To some extent,\", \"Broadly speaking,\", \"For the most part,\",\n    \"More often than not,\", \"With some caveats,\", \"All else being equal,\"\n\n  CONCESSION MOVES\n    \"I get that, but...\", \"Fair point, though...\",\n    \"I don't dispute [that], but...\", \"You could argue..., but...\"\n\n  CLARIFICATION & REPAIR\n    \"What I mean by that is...\", \"Let me put it another way,\",\n    \"To be more precise,\", \"What I'm getting at is...\"\n\n  FRAMING OPENERS\n    \"Here's the thing:\", \"The way I think about it is...\",\n    \"Let me give you some context.\", \"To give you a sense of...\"\n\n  SOFTENED ASSERTIONS\n    \"I'd argue that...\", \"There's a case to be made that...\",\n    \"My sense is that...\", \"It's worth noting that...\"\n\n  STRONG COLLOCATIONS (extract as one unit)\n    verb+noun: \"strike a balance\", \"draw a distinction\", \"bear the cost\",\n               \"make a compelling case\", \"bridge the gap\", \"move the needle\"\n    adj+noun:  \"a nuanced view\", \"a sharp contrast\", \"a calculated risk\",\n               \"a common misconception\", \"a natural fit\"\n\nCHUNK REJECTION RULES\n  ✗ Filler-only phrases with no pragmatic function\n  ✗ Proper nouns, company names, domain-specific facts\n  ✗ Expressions only meaningful inside this specific topic\n  ✗ Near-duplicates of an already-selected candidate\n  ✗ \"I think\", \"you know\", \"kind of\" unless pragmatic use is exceptional\n  ✗ Anything below B1 unless naturalness_score = 5\n\n────────────────────────────────────────────────\nKIND 2 · IDIOM\n────────────────────────────────────────────────\nA fixed or semi-fixed expression whose meaning cannot be derived from its\nparts, including: idioms, phrasal collocations, workplace slang, and\nculturally-loaded fixed phrases.\n\nFor an idiom: text = the canonical form of the idiom (may differ slightly\nfrom source if inflected); source_text = exact transcript wording.\n\nHunt actively for:\n\n  WORKPLACE IDIOMS\n    \"move the needle\", \"in the weeds\", \"circle back\", \"low-hanging fruit\",\n    \"get buy-in\", \"at a high level\", \"deep dive\", \"boil the ocean\",\n    \"skin in the game\", \"heavy lifting\", \"hit the ground running\"\n\n  GENERAL IDIOMS & FIXED PHRASES\n    \"ground zero\", \"a double-edged sword\", \"a moving target\",\n    \"raise the bar\", \"the elephant in the room\", \"tip of the iceberg\",\n    \"read the room\", \"go down a rabbit hole\", \"cut to the chase\"\n\n  IDIOMATIC COLLOCATIONS (word pairs that must be learned as one unit)\n    \"blissfully unaware\", \"painfully obvious\", \"deeply uncomfortable\",\n    \"wildly optimistic\", \"fundamentally flawed\", \"inherently difficult\"\n\n  PHRASAL VERBS USED IDIOMATICALLY\n    \"double down on\", \"build up to\", \"back away from\", \"push back on\",\n    \"buy into\", \"zoom out\", \"step back and look at\"\n\nIDIOM REJECTION RULES\n  ✗ Literal phrasal verbs (pick up a book — extractable meaning from parts)\n  ✗ Idioms so common they are already in B1 textbooks\n  ✗ Idioms tied to one specific domain that won't transfer\n\n────────────────────────────────────────────────\nKIND 3 · STRUCTURE\n────────────────────────────────────────────────\nA productive sentence pattern capturing a PRAGMATIC MOVE. Must be\ngeneralisable across many topics. Use 1–3 named slots in [square brackets]\nwith semantic names (e.g. [claim], [concession], [situation]).\nDo NOT use [X] or [Y].\n\nFor a structure: text = reusable template with slots;\nsource_text = exact transcript wording that demonstrates the template.\n\nAlso include the pattern_family field (see schema).\n\nHunt actively for these families:\n\n  CONTRAST / REFRAME\n    \"It's not [assumption] — it's [reality].\"\n    \"The problem isn't [surface issue], it's [root cause].\"\n    \"We tend to think [belief], but actually [reframing].\"\n    \"Less about [X], more about [Y].\"\n\n  CONCESSION + PIVOT\n    \"While [concession], [main claim].\"\n    \"I understand [concern], and at the same time [counter].\"\n    \"[Concession] — that said, [pivot].\"\n    \"Granted, [concession], but [counter-point].\"\n\n  JUSTIFIED CLAIM\n    \"The reason [we did X] is [reason].\"\n    \"We chose [option] precisely because [justification].\"\n    \"[Claim], and here's why: [reason].\"\n    \"What drove [decision] was [factor].\"\n\n  FRAMED EXPLANATION\n    \"Think of [concept] as [analogy].\"\n    \"The way [X] works is: [explanation].\"\n    \"To give you a sense of [scale/dimension], [concrete example].\"\n    \"The best way to describe [X] is [description].\"\n\n  HEDGED POSITION\n    \"[Claim], though I'd caveat that [caveat].\"\n    \"My sense is [position], with the caveat that [uncertainty].\"\n    \"[Observation], for the most part — with some exceptions.\"\n\n  CLEFT & PSEUDO-CLEFT  ← grammar patterns worth internalising\n    \"What [subject] [verb] is [noun phrase].\"\n      e.g. \"What makes this hard is the uncertainty.\"\n    \"It's [focus element] that [rest of clause].\"\n      e.g. \"It's the execution, not the idea, that matters.\"\n    \"[Noun] is [one / the thing] that [relative clause].\"\n      e.g. \"Trust is the one thing that you cannot fake.\"\n    \"The [noun] that [relative clause] is [result].\"\n\n  NARRATIVE ARC\n    \"We started with [situation], realised [insight], and ended up [outcome].\"\n    \"What began as [initial state] turned into [result].\"\n    \"It took [trigger] for us to realise [insight].\"\n\n  EMPHASIS STRUCTURE\n    \"What makes [X] [quality] is [factor].\"\n    \"The thing that changed everything was [turning point].\"\n    \"Of all the [things], [specific thing] stands out.\"\n\n  COMPARATIVE DIMINISHMENT\n    \"Less [overrated quality], more [underrated quality].\"\n    \"Not so much [rejected frame] as [accepted frame].\"\n\nSTRUCTURE REJECTION RULES\n  ✗ Long quotations with no abstraction (no slots = not a structure)\n  ✗ Patterns tied to one topic that won't transfer\n  ✗ Patterns that duplicate a chunk already captured\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nFIELD DEFINITIONS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nkind              \"chunk\" | \"idiom\" | \"structure\"\ntext              As defined per kind above.\nsource_text       Always exact verbatim transcript wording.\nmeaning           The PRAGMATIC FUNCTION in plain English: what social or\n                  communicative job does this do? Max 2 sentences.\n                  For idioms: include the decoded meaning + typical context.\nusage_note        One sentence showing how to slot this into a new sentence.\n                  e.g. \"Use to soften a disagreement before stating your view.\"\ntags              1–3 from the taxonomy below.\npattern_family    For structures only. One of:\n                  \"contrast\" | \"concession-pivot\" | \"justified-claim\" |\n                  \"framed-explanation\" | \"hedged-position\" |\n                  \"cleft\" | \"pseudo-cleft\" | \"one-that\" | \"what-clause\" |\n                  \"narrative-arc\" | \"emphasis\" | \"comparative-diminishment\"\ntimestamp         \"M:SS\" or null\nlevel             B1 | B2 | C1  (A2 only if naturalness_score = 5)\nregister          \"casual\" | \"neutral\" | \"professional\" | \"formal\"\nscenario_tags     1–3 from: \"workplace\" | \"daily_life\" | \"explanation\" |\n                  \"negotiation\" | \"small_talk\" | \"storytelling\" |\n                  \"disagreement\" | \"presentation\" | \"email\"\nphonology_note    Flag notable connected-speech features useful for shadowing\n                  (weak forms, linking, stress, assimilation). One sentence or null.\n\nnaturalness_score      1–5. How native-sounding vs textbook-stiff?\n                       5 = exactly what a native would say.\ntransferability_score  1–5. How many real-life contexts can this drop into?\ntransferability_score  5 = works across topics, registers, and speakers.\nlearning_value_score   1–5. How much production gap does this close?\n                       5 = high-frequency pattern learners consistently avoid.\n\nScores must differentiate. Reserve 5 for genuinely outstanding examples.\nTarget ≤ 20% of candidates scoring 5 on any dimension.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTAG TAXONOMY  (1–3 per item, primary function first)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nacknowledging   Validating what the other person said before adding your view\nclarifying      Unpacking, defining, or rephrasing something just said\nconceding       Admitting a point against your position before countering\ncontrast        Opposing two ideas or options\ndiscourse       Managing turn-taking, pacing, or conversational flow\nemphasising     Highlighting the most important element\nframing         Setting up context or mental model before the main point\nhedging         Softening a claim; signalling uncertainty or limitation\nidiom           Fixed expression whose meaning is non-compositional\njustifying      Giving reasons for a decision, position, or action\nproposing       Putting forward an idea, plan, or suggestion\nreframing       Replacing a flawed premise with a better one\nredirecting     Moving the conversation to a new angle or topic\nsoftening       Reducing the force of criticism, disagreement, or bad news\nsummarising     Closing, wrapping up, or drawing a conclusion\ntransitioning   Moving from one topic or phase to the next\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nLOGIC FLOW  (logic_flow)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nProduce 4–6 nodes for long transcripts; fewer for short ones.\nTitles must be verb phrases describing a RHETORICAL MOVE, not topic labels.\n  ✓ \"Establishing why the status quo is broken\"\n  ✗ \"Background\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nOUTPUT SHAPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{\n  \"summary\": \"One paragraph. What the speaker argues and achieves rhetorically.\",\n  \"chapters\": [\"chapter name\"],\n  \"logic_flow\": [\n    {\n      \"title\": \"Verb-phrase rhetorical move\",\n      \"subtitle\": \"One clause elaboration\",\n      \"timestamp\": \"M:SS or null\"\n    }\n  ],\n  \"corpus_items\": [\n    {\n      \"kind\": \"chunk\",\n      \"text\": \"exact transcript wording\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"Pragmatic function in plain English.\",\n      \"usage_note\": \"Use to open a concession before stating your real position.\",\n      \"tags\": [\"hedging\", \"softening\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B1\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\"],\n      \"phonology_note\": \"Weak form on 'to' — good shadowing target.\",\n      \"naturalness_score\": 4,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 4\n    },\n    {\n      \"kind\": \"idiom\",\n      \"text\": \"move the needle\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"To make a meaningful difference to a measurable outcome. Common in business and strategy contexts.\",\n      \"usage_note\": \"Use when discussing whether an action will have real impact: 'Will this actually move the needle?'\",\n      \"tags\": [\"idiom\", \"framing\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 4,\n      \"learning_value_score\": 5\n    },\n    {\n      \"kind\": \"structure\",\n      \"text\": \"It's not [surface problem] — it's [root cause].\",\n      \"source_text\": \"exact transcript wording demonstrating this template\",\n      \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one. Creates a persuasive pivot.\",\n      \"usage_note\": \"Use when you want to redirect a conversation toward a deeper issue: 'It's not the budget — it's the prioritisation.'\",\n      \"tags\": [\"reframing\", \"contrast\"],\n      \"pattern_family\": \"contrast\",\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 5\n    }\n  ],\n  \"key_points\": [\"...\"],\n  \"scenario_suggestions\": [\"...\"]\n}"
+              },
+              {
+                "role": "user",
+                "content": "Analyze this transcript as JSON.\nTitle: A small service pilot\nLanguage: en\nTranscript:\n0:00\tOur team has been discussing whether to launch the new service this month.\n0:06\tTo be fair, the prototype works well, and customers like its simple design.\n0:12\tBut liking a demo is not the same as relying on a service every day.\n0:18\tThe problem isn't a lack of ideas, but rather a lack of time to test them.\n0:25\tOne trade-off is that a wider launch gives us more feedback but increases support costs.\n0:32\tWe only have two support engineers, and both are already busy with existing customers.\n0:39\tThat's why I suggest starting with a small pilot instead of launching to everyone.\n0:46\tWe could invite ten customers and check in with them twice a week.\n0:52\tIf the pilot goes well, we can roll out the service to a larger group next month.\n0:59\tIf it does not, we will still have time to fix the main problems.\n1:05\tI am not saying we should delay forever. I am saying we should make the risk manageable.\n1:12\tLet's agree on the success criteria today and review the results in two weeks."
+              }
+            ],
+            "response_format": {
+              "type": "json_object"
+            },
+            "thinking": {
+              "type": "disabled"
+            },
+            "temperature": 0.2,
+            "max_tokens": 32000,
+            "stream": true,
+            "stream_options": {
+              "include_usage": true
+            }
+          },
+          "prompt_sha256": "cec02ba1ff5704bf642ce14b9bd433c8a5c21457cacc2cce95236250339a882a",
+          "http_status": 200,
+          "response_envelope": {
+            "choices": [
+              {
+                "finish_reason": "stop",
+                "message": {
+                  "content": "{\"summary\": \"A team member argues against a full immediate launch of a new service, conceding the prototype works well but noting customer demo approval does not equal daily reliance. They frame the core issue as insufficient testing time, weigh the trade-off between broader feedback and stretched support capacity, and propose a small 10-customer pilot with twice-weekly check-ins, clear success criteria, and a two-week review to keep launch risk manageable.\", \"chapters\": [\"Conceding prototype strengths\", \"Reframing the core launch problem\", \"Proposing a low-risk pilot plan\"], \"logic_flow\": [{\"title\": \"Conceding prototype strengths\", \"subtitle\": \"Acknowledges the working prototype and positive customer demo feedback\", \"timestamp\": \"0:06\"}, {\"title\": \"Reframing the core launch problem\", \"subtitle\": \"Distinguishes demo approval from daily reliance, names the real gap as limited testing time\", \"timestamp\": \"0:12\"}, {\"title\": \"Weighing launch trade-offs\", \"subtitle\": \"Balances broader feedback value against stretched support team capacity\", \"timestamp\": \"0:25\"}, {\"title\": \"Proposing a small pilot solution\", \"subtitle\": \"Recommends a limited 10-customer pilot with structured check-ins\", \"timestamp\": \"0:39\"}, {\"title \":\" \"}, {\"title\": \"Setting clear next steps\", \"subtitle\": \"Proposes agreeing success criteria today and reviewing pilot results in two weeks\", \"timestamp\": \"1:12\"}], \"corpus_items\": [{\"kind\": \"chunk\", \"text\": \"To be fair,\", \"source_text\": \"To be fair, the prototype works well, and customers like its simple design.\", \"meaning\": \"Signals you are acknowledging a valid opposing point before stating your own position, softening disagreement.\", \"usage_note\": \"Use to open a concession before presenting your counterargument in a debate.\", \"tags\": [\"conceding\", \"softening\"], \"pattern_family\": null, \"timestamp\": \"0:06\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"disagreement\"], \"phonology_note\": \"Weak form of 'to' as /tə/, natural linking across the phrase.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"[Positive reaction] is not the same as [real, sustained outcome].\", \"source_text\": \"But liking a demo is not the same as relying on a service every day.\", \"meaning\": \"Draws a clear contrast between superficial positive reactions and genuine, long-term real-world use.\", \"usage_note\": \"Use to separate surface-level approval from meaningful, sustained adoption or impact.\", \"tags\": [\"contrast\", \"reframing\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:12\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"presentation\", \"disagreement\"], \"phonology_note\": \"Stress falls on 'not same' to emphasize the contrast.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 5}, {\"kind\": \"structure\", \"text\": \"The problem isn't [surface issue], but rather [root cause].\", \"source_text\": \"The problem isn't a lack of ideas, but rather a lack of time to test them.\", \"meaning\": \"Reframes a problem by rejecting a common surface diagnosis and naming the actual root cause.\", \"usage_note\": \"Use to redirect problem-solving conversations away from obvious but incorrect explanations.\", \"tags\": [\"reframing\", \"contrast\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:18\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Weak form of 'isn't' as /ˈɪzənt/, pause before 'but rather'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"chunk\", \"text\": \"One trade-off is that\", \"source_text\": \"One trade-off is that a wider launch gives us more feedback but increases support costs.\", \"meaning\": \"Introduces a balanced weighing of competing pros and cons for a given decision.\", \"usage_note\": \"Use to open a balanced assessment of competing costs and benefits of an option.\", \"tags\": [\"framing\", \"hedging\"], \"pattern_family\": null, \"timestamp\": \"0:25\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\", \"presentation\"], \"phonology_note\": \"Stress on 'trade-off' to signal a balanced weighing of options.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"That's why I suggest\", \"source_text\": \"That's why I suggest starting with a small pilot instead of launching to everyone.\", \"meaning\": \"Links a previously stated reason directly to a concrete proposed action.\", \"usage_note\": \"Use to connect a prior stated reason directly to your recommended next step.\", \"tags\": [\"justifying\", \"proposing\"], \"pattern_family\": null, \"timestamp\": \"0:39\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"negotiation\"], \"phonology_note\": \"Contracted 'That's' with natural linking to 'why'.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"idiom\", \"text\": \"roll out\", \"source_text\": \"If the pilot goes well, we can roll out the service to a larger group next month.\", \"meaning\": \"To gradually launch or introduce a new product, service, or initiative to a wider audience.\", \"usage_note\": \"Use when describing phased, staged launch plans for new offerings.\", \"tags\": [\"idiom\", \"proposing\"], \"pattern_family\": null, \"timestamp\": \"0:52\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"presentation\"], \"phonology_note\": \"Stress on 'roll' as the phrasal verb core.\", \"naturalness_score\": 5, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"I am not saying [extreme position]. I am saying [balanced position].\", \"source_text\": \"I am not saying we should delay forever. I am saying we should make the risk manageable.\", \"meaning\": \"Prevents misinterpretation of your stance by rejecting an extreme misreading before clarifying your actual balanced position.\", \"usage_note\": \"Use to clarify your position by rejecting an extreme misinterpretation first.\", \"tags\": [\"clarifying\", \"hedging\"], \"pattern_family\": \"contrast\", \"timestamp\": \"1:05\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Contrastive stress on 'not saying' vs 'saying' to clarify stance.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"chunk\", \"text\": \"Let's agree on\", \"source_text\": \"Let's agree on the success criteria today and review the results in two weeks.\", \"meaning\": \"Proposes a concrete, actionable shared commitment to move the conversation forward.\", \"usage_note\": \"Use to propose a concrete shared commitment to close a discussion and set next steps.\", \"tags\": [\"proposing\", \"summarising\"], \"pattern_family\": null, \"timestamp\": \"1:12\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"negotiation\"], \"phonology_note\": \"Contracted 'Let's' with natural linking to 'agree'.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}], \"key_points\": [\"Customer approval of a demo does not equal reliable, daily use of a full service.\", \"The core launch barrier is limited testing time, not a shortage of new ideas.\", \"A full immediate launch would stretch the already small, busy support team too thin.\", \"A limited 10-customer pilot with twice-weekly check-ins reduces launch risk.\", \"Clear success criteria and a two-week review create a structured, reversible path forward.\"], \"scenario_suggestions\": [\"Proposing a phased product launch in a cross-functional team planning meeting\", \"Clarifying your balanced stance during a heated project timeline debate\", \"Weighing trade-offs between user feedback and operational team capacity\", \"Setting measurable success criteria for a small internal pilot program\"]}"
+                }
+              }
+            ],
+            "usage": {
+              "completion_tokens": 1961,
+              "prompt_tokens": 4461,
+              "total_tokens": 6422,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          "application_validation": {
+            "status": "rejected",
+            "code": "analysis_response_schema_invalid",
+            "diagnostic": "string_type@logic_flow.4.title"
+          }
+        },
+        {
+          "request": {
+            "model": "doubao-seed-2-1-lite-260915",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are an expert English-learning content analyst specialising in spoken, practical,\nworkplace-ready English. Return one JSON object and no prose.\nUse only evidence present in the transcript. Never invent quotations or timestamps.\n\nHARD OUTPUT BOUNDS\n- Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.\n- summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;\n  each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.\n- For every corpus item: text and source_text at most 30 words; meaning at most 35 words;\n  usage_note at most 25 words; phonology_note at most 20 words.\n- Return no more than 32 corpus items and obey every requested list limit. Brevity is mandatory.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORE EXTRACTION PHILOSOPHY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEvery extracted item must pass the PRODUCTION GAP TEST:\n  \"A fluent intermediate learner (B1-B2) would understand this, but would\n   NOT spontaneously produce it in conversation.\"\nItems that are easy to produce or textbook-standard must be rejected.\nPrioritise expressions that are native-natural but systematically avoided\nby non-native speakers.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORPUS CANDIDATE EXTRACTION  (corpus_items)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTarget 16–32 candidates: 8–16 chunks, 2–6 idioms, 4–10 structures.\nDistribute across the full transcript. Remove near-duplicates.\nMinimum level: B1. Extract A2 ONLY if naturalness_score = 5 (deceptively native).\nSkip A1 entirely.\n\n────────────────────────────────────────────────\nKIND 1 · CHUNK\n────────────────────────────────────────────────\nA complete, standalone, reusable spoken expression (2–12 words).\nFor a chunk: text == source_text (exact contiguous transcript wording).\n\nHunt actively for these families:\n\n  DISCOURSE PIVOTS\n    \"That said,\", \"Even so,\", \"With that in mind,\",\n    \"Which brings me to...\", \"Circling back to...\", \"To that end,\"\n\n  STANCE MARKERS\n    \"To be fair,\", \"Frankly,\", \"If I'm being honest,\",\n    \"What's striking is...\", \"Crucially,\", \"Interestingly enough,\"\n\n  HEDGES & QUALIFIERS\n    \"To some extent,\", \"Broadly speaking,\", \"For the most part,\",\n    \"More often than not,\", \"With some caveats,\", \"All else being equal,\"\n\n  CONCESSION MOVES\n    \"I get that, but...\", \"Fair point, though...\",\n    \"I don't dispute [that], but...\", \"You could argue..., but...\"\n\n  CLARIFICATION & REPAIR\n    \"What I mean by that is...\", \"Let me put it another way,\",\n    \"To be more precise,\", \"What I'm getting at is...\"\n\n  FRAMING OPENERS\n    \"Here's the thing:\", \"The way I think about it is...\",\n    \"Let me give you some context.\", \"To give you a sense of...\"\n\n  SOFTENED ASSERTIONS\n    \"I'd argue that...\", \"There's a case to be made that...\",\n    \"My sense is that...\", \"It's worth noting that...\"\n\n  STRONG COLLOCATIONS (extract as one unit)\n    verb+noun: \"strike a balance\", \"draw a distinction\", \"bear the cost\",\n               \"make a compelling case\", \"bridge the gap\", \"move the needle\"\n    adj+noun:  \"a nuanced view\", \"a sharp contrast\", \"a calculated risk\",\n               \"a common misconception\", \"a natural fit\"\n\nCHUNK REJECTION RULES\n  ✗ Filler-only phrases with no pragmatic function\n  ✗ Proper nouns, company names, domain-specific facts\n  ✗ Expressions only meaningful inside this specific topic\n  ✗ Near-duplicates of an already-selected candidate\n  ✗ \"I think\", \"you know\", \"kind of\" unless pragmatic use is exceptional\n  ✗ Anything below B1 unless naturalness_score = 5\n\n────────────────────────────────────────────────\nKIND 2 · IDIOM\n────────────────────────────────────────────────\nA fixed or semi-fixed expression whose meaning cannot be derived from its\nparts, including: idioms, phrasal collocations, workplace slang, and\nculturally-loaded fixed phrases.\n\nFor an idiom: text = the canonical form of the idiom (may differ slightly\nfrom source if inflected); source_text = exact transcript wording.\n\nHunt actively for:\n\n  WORKPLACE IDIOMS\n    \"move the needle\", \"in the weeds\", \"circle back\", \"low-hanging fruit\",\n    \"get buy-in\", \"at a high level\", \"deep dive\", \"boil the ocean\",\n    \"skin in the game\", \"heavy lifting\", \"hit the ground running\"\n\n  GENERAL IDIOMS & FIXED PHRASES\n    \"ground zero\", \"a double-edged sword\", \"a moving target\",\n    \"raise the bar\", \"the elephant in the room\", \"tip of the iceberg\",\n    \"read the room\", \"go down a rabbit hole\", \"cut to the chase\"\n\n  IDIOMATIC COLLOCATIONS (word pairs that must be learned as one unit)\n    \"blissfully unaware\", \"painfully obvious\", \"deeply uncomfortable\",\n    \"wildly optimistic\", \"fundamentally flawed\", \"inherently difficult\"\n\n  PHRASAL VERBS USED IDIOMATICALLY\n    \"double down on\", \"build up to\", \"back away from\", \"push back on\",\n    \"buy into\", \"zoom out\", \"step back and look at\"\n\nIDIOM REJECTION RULES\n  ✗ Literal phrasal verbs (pick up a book — extractable meaning from parts)\n  ✗ Idioms so common they are already in B1 textbooks\n  ✗ Idioms tied to one specific domain that won't transfer\n\n────────────────────────────────────────────────\nKIND 3 · STRUCTURE\n────────────────────────────────────────────────\nA productive sentence pattern capturing a PRAGMATIC MOVE. Must be\ngeneralisable across many topics. Use 1–3 named slots in [square brackets]\nwith semantic names (e.g. [claim], [concession], [situation]).\nDo NOT use [X] or [Y].\n\nFor a structure: text = reusable template with slots;\nsource_text = exact transcript wording that demonstrates the template.\n\nAlso include the pattern_family field (see schema).\n\nHunt actively for these families:\n\n  CONTRAST / REFRAME\n    \"It's not [assumption] — it's [reality].\"\n    \"The problem isn't [surface issue], it's [root cause].\"\n    \"We tend to think [belief], but actually [reframing].\"\n    \"Less about [X], more about [Y].\"\n\n  CONCESSION + PIVOT\n    \"While [concession], [main claim].\"\n    \"I understand [concern], and at the same time [counter].\"\n    \"[Concession] — that said, [pivot].\"\n    \"Granted, [concession], but [counter-point].\"\n\n  JUSTIFIED CLAIM\n    \"The reason [we did X] is [reason].\"\n    \"We chose [option] precisely because [justification].\"\n    \"[Claim], and here's why: [reason].\"\n    \"What drove [decision] was [factor].\"\n\n  FRAMED EXPLANATION\n    \"Think of [concept] as [analogy].\"\n    \"The way [X] works is: [explanation].\"\n    \"To give you a sense of [scale/dimension], [concrete example].\"\n    \"The best way to describe [X] is [description].\"\n\n  HEDGED POSITION\n    \"[Claim], though I'd caveat that [caveat].\"\n    \"My sense is [position], with the caveat that [uncertainty].\"\n    \"[Observation], for the most part — with some exceptions.\"\n\n  CLEFT & PSEUDO-CLEFT  ← grammar patterns worth internalising\n    \"What [subject] [verb] is [noun phrase].\"\n      e.g. \"What makes this hard is the uncertainty.\"\n    \"It's [focus element] that [rest of clause].\"\n      e.g. \"It's the execution, not the idea, that matters.\"\n    \"[Noun] is [one / the thing] that [relative clause].\"\n      e.g. \"Trust is the one thing that you cannot fake.\"\n    \"The [noun] that [relative clause] is [result].\"\n\n  NARRATIVE ARC\n    \"We started with [situation], realised [insight], and ended up [outcome].\"\n    \"What began as [initial state] turned into [result].\"\n    \"It took [trigger] for us to realise [insight].\"\n\n  EMPHASIS STRUCTURE\n    \"What makes [X] [quality] is [factor].\"\n    \"The thing that changed everything was [turning point].\"\n    \"Of all the [things], [specific thing] stands out.\"\n\n  COMPARATIVE DIMINISHMENT\n    \"Less [overrated quality], more [underrated quality].\"\n    \"Not so much [rejected frame] as [accepted frame].\"\n\nSTRUCTURE REJECTION RULES\n  ✗ Long quotations with no abstraction (no slots = not a structure)\n  ✗ Patterns tied to one topic that won't transfer\n  ✗ Patterns that duplicate a chunk already captured\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nFIELD DEFINITIONS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nkind              \"chunk\" | \"idiom\" | \"structure\"\ntext              As defined per kind above.\nsource_text       Always exact verbatim transcript wording.\nmeaning           The PRAGMATIC FUNCTION in plain English: what social or\n                  communicative job does this do? Max 2 sentences.\n                  For idioms: include the decoded meaning + typical context.\nusage_note        One sentence showing how to slot this into a new sentence.\n                  e.g. \"Use to soften a disagreement before stating your view.\"\ntags              1–3 from the taxonomy below.\npattern_family    For structures only. One of:\n                  \"contrast\" | \"concession-pivot\" | \"justified-claim\" |\n                  \"framed-explanation\" | \"hedged-position\" |\n                  \"cleft\" | \"pseudo-cleft\" | \"one-that\" | \"what-clause\" |\n                  \"narrative-arc\" | \"emphasis\" | \"comparative-diminishment\"\ntimestamp         \"M:SS\" or null\nlevel             B1 | B2 | C1  (A2 only if naturalness_score = 5)\nregister          \"casual\" | \"neutral\" | \"professional\" | \"formal\"\nscenario_tags     1–3 from: \"workplace\" | \"daily_life\" | \"explanation\" |\n                  \"negotiation\" | \"small_talk\" | \"storytelling\" |\n                  \"disagreement\" | \"presentation\" | \"email\"\nphonology_note    Flag notable connected-speech features useful for shadowing\n                  (weak forms, linking, stress, assimilation). One sentence or null.\n\nnaturalness_score      1–5. How native-sounding vs textbook-stiff?\n                       5 = exactly what a native would say.\ntransferability_score  1–5. How many real-life contexts can this drop into?\ntransferability_score  5 = works across topics, registers, and speakers.\nlearning_value_score   1–5. How much production gap does this close?\n                       5 = high-frequency pattern learners consistently avoid.\n\nScores must differentiate. Reserve 5 for genuinely outstanding examples.\nTarget ≤ 20% of candidates scoring 5 on any dimension.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTAG TAXONOMY  (1–3 per item, primary function first)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nacknowledging   Validating what the other person said before adding your view\nclarifying      Unpacking, defining, or rephrasing something just said\nconceding       Admitting a point against your position before countering\ncontrast        Opposing two ideas or options\ndiscourse       Managing turn-taking, pacing, or conversational flow\nemphasising     Highlighting the most important element\nframing         Setting up context or mental model before the main point\nhedging         Softening a claim; signalling uncertainty or limitation\nidiom           Fixed expression whose meaning is non-compositional\njustifying      Giving reasons for a decision, position, or action\nproposing       Putting forward an idea, plan, or suggestion\nreframing       Replacing a flawed premise with a better one\nredirecting     Moving the conversation to a new angle or topic\nsoftening       Reducing the force of criticism, disagreement, or bad news\nsummarising     Closing, wrapping up, or drawing a conclusion\ntransitioning   Moving from one topic or phase to the next\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nLOGIC FLOW  (logic_flow)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nProduce 4–6 nodes for long transcripts; fewer for short ones.\nTitles must be verb phrases describing a RHETORICAL MOVE, not topic labels.\n  ✓ \"Establishing why the status quo is broken\"\n  ✗ \"Background\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nOUTPUT SHAPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{\n  \"summary\": \"One paragraph. What the speaker argues and achieves rhetorically.\",\n  \"chapters\": [\"chapter name\"],\n  \"logic_flow\": [\n    {\n      \"title\": \"Verb-phrase rhetorical move\",\n      \"subtitle\": \"One clause elaboration\",\n      \"timestamp\": \"M:SS or null\"\n    }\n  ],\n  \"corpus_items\": [\n    {\n      \"kind\": \"chunk\",\n      \"text\": \"exact transcript wording\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"Pragmatic function in plain English.\",\n      \"usage_note\": \"Use to open a concession before stating your real position.\",\n      \"tags\": [\"hedging\", \"softening\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B1\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\"],\n      \"phonology_note\": \"Weak form on 'to' — good shadowing target.\",\n      \"naturalness_score\": 4,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 4\n    },\n    {\n      \"kind\": \"idiom\",\n      \"text\": \"move the needle\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"To make a meaningful difference to a measurable outcome. Common in business and strategy contexts.\",\n      \"usage_note\": \"Use when discussing whether an action will have real impact: 'Will this actually move the needle?'\",\n      \"tags\": [\"idiom\", \"framing\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 4,\n      \"learning_value_score\": 5\n    },\n    {\n      \"kind\": \"structure\",\n      \"text\": \"It's not [surface problem] — it's [root cause].\",\n      \"source_text\": \"exact transcript wording demonstrating this template\",\n      \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one. Creates a persuasive pivot.\",\n      \"usage_note\": \"Use when you want to redirect a conversation toward a deeper issue: 'It's not the budget — it's the prioritisation.'\",\n      \"tags\": [\"reframing\", \"contrast\"],\n      \"pattern_family\": \"contrast\",\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 5\n    }\n  ],\n  \"key_points\": [\"...\"],\n  \"scenario_suggestions\": [\"...\"]\n}"
+              },
+              {
+                "role": "user",
+                "content": "Analyze this transcript as JSON.\nTitle: A small service pilot\nLanguage: en\nTranscript:\n0:00\tOur team has been discussing whether to launch the new service this month.\n0:06\tTo be fair, the prototype works well, and customers like its simple design.\n0:12\tBut liking a demo is not the same as relying on a service every day.\n0:18\tThe problem isn't a lack of ideas, but rather a lack of time to test them.\n0:25\tOne trade-off is that a wider launch gives us more feedback but increases support costs.\n0:32\tWe only have two support engineers, and both are already busy with existing customers.\n0:39\tThat's why I suggest starting with a small pilot instead of launching to everyone.\n0:46\tWe could invite ten customers and check in with them twice a week.\n0:52\tIf the pilot goes well, we can roll out the service to a larger group next month.\n0:59\tIf it does not, we will still have time to fix the main problems.\n1:05\tI am not saying we should delay forever. I am saying we should make the risk manageable.\n1:12\tLet's agree on the success criteria today and review the results in two weeks."
+              }
+            ],
+            "response_format": {
+              "type": "json_object"
+            },
+            "thinking": {
+              "type": "disabled"
+            },
+            "temperature": 0.2,
+            "max_tokens": 64000,
+            "stream": true,
+            "stream_options": {
+              "include_usage": true
+            }
+          },
+          "prompt_sha256": "cec02ba1ff5704bf642ce14b9bd433c8a5c21457cacc2cce95236250339a882a",
+          "http_status": 200,
+          "response_envelope": {
+            "choices": [
+              {
+                "finish_reason": "stop",
+                "message": {
+                  "content": "{\"summary\": \"The speaker argues against an immediate full launch of a new service, proposing a small, controlled pilot instead. They acknowledge the prototype's strengths, then reframe the core problem as limited testing time rather than a lack of ideas. They weigh the trade-off between broader feedback and support capacity, noting only two engineers are available. The pilot mitigates risk: if successful, scale next month; if not, fix issues early. They clarify this is not indefinite delay, and propose agreeing on success criteria today with a two-week review.\", \"chapters\": [\"Acknowledging the prototype's strengths\", \"Reframing the core problem\", \"Weighing launch trade-offs\", \"Proposing a small pilot\", \"Clarifying scope and next steps\"], \"logic_flow\": [{\"title\": \"Acknowledging the prototype's strengths\", \"subtitle\": \"Validates the working prototype and positive customer reaction\", \"timestamp\": \"0:06\"}, {\"title\": \"Reframing the core problem\", \"subtitle\": \"Rejects the idea shortage narrative, names testing time as the bottleneck\", \"timestamp\": \"0:18\"}, {\"title\": \"Weighing launch trade-offs\", \"subtitle\": \"Contrasts broader feedback against limited support engineering capacity\", \"timestamp\": \"0:25\"}, {\"title\": \"Proposing a small pilot\", \"subtitle\": \"Recommends a limited ten-customer pilot with twice-weekly check-ins\", \"timestamp\": \"0:39\"}, {\"title\": \"Clarifying scope and next steps\", \"subtitle\": \"Distances from indefinite delay, sets criteria and two-week review\", \"timestamp\": \"1:05\"}], \"corpus_items\": [{\"kind\": \"chunk\", \"text\": \"To be fair,\", \"source_text\": \"To be fair, the prototype works well, and customers like its simple design.\", \"meaning\": \"Opens by conceding a valid opposing point before pivoting to your main argument.\", \"usage_note\": \"Use to acknowledge a counterpoint before stating your own position.\", \"tags\": [\"conceding\", \"softening\"], \"pattern_family\": null, \"timestamp\": \"0:06\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"small_talk\"], \"phonology_note\": \"Weak form of 'to' /tə/; stress on 'fair'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"not the same as\", \"source_text\": \"But liking a demo is not the same as relying on a service every day.\", \"meaning\": \"Draws a sharp distinction between two superficially similar things.\", \"usage_note\": \"Use to distinguish two concepts that are often conflated.\", \"tags\": [\"contrast\", \"clarifying\"], \"pattern_family\": null, \"timestamp\": \"0:12\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"explanation\"], \"phonology_note\": \"Linking: 'same-as' flows as one unit.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"chunk\", \"text\": \"One trade-off is that\", \"source_text\": \"One trade-off is that a wider launch gives us more feedback but increases support costs.\", \"meaning\": \"Introduces a balanced cost-benefit trade-off when weighing options.\", \"usage_note\": \"Use to frame a decision as a balance of competing factors.\", \"tags\": [\"framing\", \"justifying\"], \"pattern_family\": null, \"timestamp\": \"0:25\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"presentation\", \"negotiation\"], \"phonology_note\": \"Stress on 'trade' and 'off'.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"That's why I suggest\", \"source_text\": \"That's why I suggest starting with a small pilot instead of launching to everyone.\", \"meaning\": \"Signals a recommendation grounded in the reasoning just presented.\", \"usage_note\": \"Use to transition from reasoning to a concrete proposal.\", \"tags\": [\"proposing\", \"justifying\"], \"pattern_family\": null, \"timestamp\": \"0:39\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"negotiation\"], \"phonology_note\": \"Weak form of 'that's' /ðæts/; stress on 'suggest'.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"chunk\", \"text\": \"check in with them\", \"source_text\": \"We could invite ten customers and check in with them twice a week.\", \"meaning\": \"Means to contact someone regularly to monitor progress or well-being.\", \"usage_note\": \"Use to describe regular follow-ups with customers or team members.\", \"tags\": [\"framing\", \"proposing\"], \"pattern_family\": null, \"timestamp\": \"0:46\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"daily_life\"], \"phonology_note\": \"Phrasal verb stress on 'check' and 'in'.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"idiom\", \"text\": \"roll out\", \"source_text\": \"If the pilot goes well, we can roll out the service to a larger group next month.\", \"meaning\": \"To officially launch or introduce a product or service to a wider audience.\", \"usage_note\": \"Use when describing phased product or service launches.\", \"tags\": [\"idiom\", \"proposing\"], \"pattern_family\": null, \"timestamp\": \"0:52\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"presentation\"], \"phonology_note\": \"Stress on 'roll' and 'out'.\", \"naturalness_score\": 5, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"make the risk manageable\", \"source_text\": \"I am saying we should make the risk manageable.\", \"meaning\": \"Frames risk as controllable through deliberate, measured action.\", \"usage_note\": \"Use to describe reducing risk to an acceptable level.\", \"tags\": [\"hedging\", \"framing\"], \"pattern_family\": null, \"timestamp\": \"1:05\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\"], \"phonology_note\": \"Stress on 'risk' and 'manageable'.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"Let's agree on\", \"source_text\": \"Let's agree on the success criteria today and review the results in two weeks.\", \"meaning\": \"Proposes reaching a shared decision to move the conversation forward.\", \"usage_note\": \"Use to propose consensus on a specific point.\", \"tags\": [\"proposing\", \"discourse\"], \"pattern_family\": null, \"timestamp\": \"1:12\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"negotiation\"], \"phonology_note\": \"Weak form of 'let's' /lets/.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"structure\", \"text\": \"The problem isn't [surface issue], but rather [root cause].\", \"source_text\": \"The problem isn't a lack of ideas, but rather a lack of time to test them.\", \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one.\", \"usage_note\": \"Use to redirect a conversation toward a deeper issue.\", \"tags\": [\"reframing\", \"contrast\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:18\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Stress on 'problem', 'ideas', and 'time'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"structure\", \"text\": \"I am not saying [misinterpretation]. I am saying [actual position].\", \"source_text\": \"I am not saying we should delay forever. I am saying we should make the risk manageable.\", \"meaning\": \"Pre-empts and corrects a likely misreading of your position.\", \"usage_note\": \"Use to clarify your stance against a common misinterpretation.\", \"tags\": [\"clarifying\", \"contrast\"], \"pattern_family\": \"contrast\", \"timestamp\": \"1:05\", \"level\": \"B2\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"explanation\"], \"phonology_note\": \"Contrastive stress on 'not' and 'saying'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"structure\", \"text\": \"If [condition], we can [outcome].\", \"source_text\": \"If the pilot goes well, we can roll out the service to a larger group next month.\", \"meaning\": \"Describes a conditional future action contingent on a positive outcome.\", \"usage_note\": \"Use to outline a conditional next step in a plan.\", \"tags\": [\"proposing\", \"framing\"], \"pattern_family\": \"framed-explanation\", \"timestamp\": \"0:52\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"explanation\"], \"phonology_note\": \"Linking: 'goes-well' flows smoothly.\", \"naturalness_score\": 3, \"transferability_score\": 5, \"learning_value_score\": 2}], \"key_points\": [\"Customer liking a demo differs from relying on a service daily.\", \"Core bottleneck is testing time, not shortage of ideas.\", \"Full launch trades more feedback against limited support capacity.\", \"Small pilot with ten customers and twice-weekly check-ins reduces risk.\", \"Pilot is not indefinite delay; success criteria set for two-week review.\"], \"scenario_suggestions\": [\"Proposing a phased product launch to stakeholders\", \"Defending a cautious rollout against pressure to launch immediately\", \"Negotiating scope of a new service with limited engineering resources\", \"Facilitating a team decision on pilot success criteria and review timeline\"]}"
+                }
+              }
+            ],
+            "usage": {
+              "completion_tokens": 2382,
+              "prompt_tokens": 4461,
+              "total_tokens": 6843,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          "application_validation": {
+            "status": "accepted"
+          }
+        }
+      ],
+      "first_useful_preview_seconds": 2.295,
+      "status": "ready",
+      "result": {
+        "summary": "The speaker argues against an immediate full launch of a new service, proposing a small, controlled pilot instead. They acknowledge the prototype's strengths, then reframe the core problem as limited testing time rather than a lack of ideas. They weigh the trade-off between broader feedback and support capacity, noting only two engineers are available. The pilot mitigates risk: if successful, scale next month; if not, fix issues early. They clarify this is not indefinite delay, and propose agreeing on success criteria today with a two-week review.",
+        "chapters": [
+          "Acknowledging the prototype's strengths",
+          "Reframing the core problem",
+          "Weighing launch trade-offs",
+          "Proposing a small pilot",
+          "Clarifying scope and next steps"
+        ],
+        "logic_flow": [
+          {
+            "title": "Acknowledging the prototype's strengths",
+            "subtitle": "Validates the working prototype and positive customer reaction",
+            "timestamp": "0:06"
+          },
+          {
+            "title": "Reframing the core problem",
+            "subtitle": "Rejects the idea shortage narrative, names testing time as the bottleneck",
+            "timestamp": "0:18"
+          },
+          {
+            "title": "Weighing launch trade-offs",
+            "subtitle": "Contrasts broader feedback against limited support engineering capacity",
+            "timestamp": "0:25"
+          },
+          {
+            "title": "Proposing a small pilot",
+            "subtitle": "Recommends a limited ten-customer pilot with twice-weekly check-ins",
+            "timestamp": "0:39"
+          },
+          {
+            "title": "Clarifying scope and next steps",
+            "subtitle": "Distances from indefinite delay, sets criteria and two-week review",
+            "timestamp": "1:05"
+          }
+        ],
+        "corpus_items": [
+          {
+            "kind": "chunk",
+            "text": "To be fair, the prototype works well, and customers like its simple design.",
+            "source_text": "To be fair, the prototype works well, and customers like its simple design.",
+            "meaning": "Opens by conceding a valid opposing point before pivoting to your main argument.",
+            "usage_note": "Use to acknowledge a counterpoint before stating your own position.",
+            "tags": [
+              "conceding",
+              "softening"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:06",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "small_talk"
+            ],
+            "phonology_note": "Weak form of 'to' /tə/; stress on 'fair'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "But liking a demo is not the same as relying on a service every day.",
+            "source_text": "But liking a demo is not the same as relying on a service every day.",
+            "meaning": "Draws a sharp distinction between two superficially similar things.",
+            "usage_note": "Use to distinguish two concepts that are often conflated.",
+            "tags": [
+              "contrast",
+              "clarifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:12",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "explanation"
+            ],
+            "phonology_note": "Linking: 'same-as' flows as one unit.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 3
+          },
+          {
+            "kind": "chunk",
+            "text": "One trade-off is that a wider launch gives us more feedback but increases support costs.",
+            "source_text": "One trade-off is that a wider launch gives us more feedback but increases support costs.",
+            "meaning": "Introduces a balanced cost-benefit trade-off when weighing options.",
+            "usage_note": "Use to frame a decision as a balance of competing factors.",
+            "tags": [
+              "framing",
+              "justifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:25",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation",
+              "negotiation"
+            ],
+            "phonology_note": "Stress on 'trade' and 'off'.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "That's why I suggest starting with a small pilot instead of launching to everyone.",
+            "source_text": "That's why I suggest starting with a small pilot instead of launching to everyone.",
+            "meaning": "Signals a recommendation grounded in the reasoning just presented.",
+            "usage_note": "Use to transition from reasoning to a concrete proposal.",
+            "tags": [
+              "proposing",
+              "justifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:39",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Weak form of 'that's' /ðæts/; stress on 'suggest'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 3
+          },
+          {
+            "kind": "chunk",
+            "text": "We could invite ten customers and check in with them twice a week.",
+            "source_text": "We could invite ten customers and check in with them twice a week.",
+            "meaning": "Means to contact someone regularly to monitor progress or well-being.",
+            "usage_note": "Use to describe regular follow-ups with customers or team members.",
+            "tags": [
+              "framing",
+              "proposing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:46",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "daily_life"
+            ],
+            "phonology_note": "Phrasal verb stress on 'check' and 'in'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 3
+          },
+          {
+            "kind": "idiom",
+            "text": "roll out",
+            "source_text": "If the pilot goes well, we can roll out the service to a larger group next month.",
+            "meaning": "To officially launch or introduce a product or service to a wider audience.",
+            "usage_note": "Use when describing phased product or service launches.",
+            "tags": [
+              "idiom",
+              "proposing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:52",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation"
+            ],
+            "phonology_note": "Stress on 'roll' and 'out'.",
+            "naturalness_score": 5,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "I am saying we should make the risk manageable.",
+            "source_text": "I am saying we should make the risk manageable.",
+            "meaning": "Frames risk as controllable through deliberate, measured action.",
+            "usage_note": "Use to describe reducing risk to an acceptable level.",
+            "tags": [
+              "hedging",
+              "framing"
+            ],
+            "pattern_family": null,
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Stress on 'risk' and 'manageable'.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "Let's agree on the success criteria today and review the results in two weeks.",
+            "source_text": "Let's agree on the success criteria today and review the results in two weeks.",
+            "meaning": "Proposes reaching a shared decision to move the conversation forward.",
+            "usage_note": "Use to propose consensus on a specific point.",
+            "tags": [
+              "proposing",
+              "discourse"
+            ],
+            "pattern_family": null,
+            "timestamp": "1:12",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Weak form of 'let's' /lets/.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 3
+          },
+          {
+            "kind": "structure",
+            "text": "The problem isn't [surface issue], but rather [root cause].",
+            "source_text": "The problem isn't a lack of ideas, but rather a lack of time to test them.",
+            "meaning": "Reframes a problem by rejecting the common diagnosis and naming the real one.",
+            "usage_note": "Use to redirect a conversation toward a deeper issue.",
+            "tags": [
+              "reframing",
+              "contrast"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:18",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "presentation"
+            ],
+            "phonology_note": "Stress on 'problem', 'ideas', and 'time'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "structure",
+            "text": "I am not saying [misinterpretation]. I am saying [actual position].",
+            "source_text": "I am not saying we should delay forever. I am saying we should make the risk manageable.",
+            "meaning": "Pre-empts and corrects a likely misreading of your position.",
+            "usage_note": "Use to clarify your stance against a common misinterpretation.",
+            "tags": [
+              "clarifying",
+              "contrast"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "explanation"
+            ],
+            "phonology_note": "Contrastive stress on 'not' and 'saying'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "structure",
+            "text": "If [condition], we can [outcome].",
+            "source_text": "If the pilot goes well, we can roll out the service to a larger group next month.",
+            "meaning": "Describes a conditional future action contingent on a positive outcome.",
+            "usage_note": "Use to outline a conditional next step in a plan.",
+            "tags": [
+              "proposing",
+              "framing"
+            ],
+            "pattern_family": "framed-explanation",
+            "timestamp": "0:52",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "explanation"
+            ],
+            "phonology_note": "Linking: 'goes-well' flows smoothly.",
+            "naturalness_score": 3,
+            "transferability_score": 5,
+            "learning_value_score": 2
+          }
+        ],
+        "key_points": [
+          "Customer liking a demo differs from relying on a service daily.",
+          "Core bottleneck is testing time, not shortage of ideas.",
+          "Full launch trades more feedback against limited support capacity.",
+          "Small pilot with ten customers and twice-weekly check-ins reduces risk.",
+          "Pilot is not indefinite delay; success criteria set for two-week review."
+        ],
+        "scenario_suggestions": [
+          "Proposing a phased product launch to stakeholders",
+          "Defending a cautious rollout against pressure to launch immediately",
+          "Negotiating scope of a new service with limited engineering resources",
+          "Facilitating a team decision on pilot success criteria and review timeline"
+        ]
+      },
+      "elapsed_seconds": 42.929
+    },
+    {
+      "round": 1,
+      "task": "stage1",
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "requests": [
+        {
+          "request": {
+            "model": "deepseek-flash",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are an expert English-learning content analyst specialising in spoken, practical,\nworkplace-ready English. Return one JSON object and no prose.\nUse only evidence present in the transcript. Never invent quotations or timestamps.\n\nHARD OUTPUT BOUNDS\n- Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.\n- summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;\n  each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.\n- For every corpus item: text and source_text at most 30 words; meaning at most 35 words;\n  usage_note at most 25 words; phonology_note at most 20 words.\n- Return no more than 32 corpus items and obey every requested list limit. Brevity is mandatory.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORE EXTRACTION PHILOSOPHY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEvery extracted item must pass the PRODUCTION GAP TEST:\n  \"A fluent intermediate learner (B1-B2) would understand this, but would\n   NOT spontaneously produce it in conversation.\"\nItems that are easy to produce or textbook-standard must be rejected.\nPrioritise expressions that are native-natural but systematically avoided\nby non-native speakers.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORPUS CANDIDATE EXTRACTION  (corpus_items)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTarget 16–32 candidates: 8–16 chunks, 2–6 idioms, 4–10 structures.\nDistribute across the full transcript. Remove near-duplicates.\nMinimum level: B1. Extract A2 ONLY if naturalness_score = 5 (deceptively native).\nSkip A1 entirely.\n\n────────────────────────────────────────────────\nKIND 1 · CHUNK\n────────────────────────────────────────────────\nA complete, standalone, reusable spoken expression (2–12 words).\nFor a chunk: text == source_text (exact contiguous transcript wording).\n\nHunt actively for these families:\n\n  DISCOURSE PIVOTS\n    \"That said,\", \"Even so,\", \"With that in mind,\",\n    \"Which brings me to...\", \"Circling back to...\", \"To that end,\"\n\n  STANCE MARKERS\n    \"To be fair,\", \"Frankly,\", \"If I'm being honest,\",\n    \"What's striking is...\", \"Crucially,\", \"Interestingly enough,\"\n\n  HEDGES & QUALIFIERS\n    \"To some extent,\", \"Broadly speaking,\", \"For the most part,\",\n    \"More often than not,\", \"With some caveats,\", \"All else being equal,\"\n\n  CONCESSION MOVES\n    \"I get that, but...\", \"Fair point, though...\",\n    \"I don't dispute [that], but...\", \"You could argue..., but...\"\n\n  CLARIFICATION & REPAIR\n    \"What I mean by that is...\", \"Let me put it another way,\",\n    \"To be more precise,\", \"What I'm getting at is...\"\n\n  FRAMING OPENERS\n    \"Here's the thing:\", \"The way I think about it is...\",\n    \"Let me give you some context.\", \"To give you a sense of...\"\n\n  SOFTENED ASSERTIONS\n    \"I'd argue that...\", \"There's a case to be made that...\",\n    \"My sense is that...\", \"It's worth noting that...\"\n\n  STRONG COLLOCATIONS (extract as one unit)\n    verb+noun: \"strike a balance\", \"draw a distinction\", \"bear the cost\",\n               \"make a compelling case\", \"bridge the gap\", \"move the needle\"\n    adj+noun:  \"a nuanced view\", \"a sharp contrast\", \"a calculated risk\",\n               \"a common misconception\", \"a natural fit\"\n\nCHUNK REJECTION RULES\n  ✗ Filler-only phrases with no pragmatic function\n  ✗ Proper nouns, company names, domain-specific facts\n  ✗ Expressions only meaningful inside this specific topic\n  ✗ Near-duplicates of an already-selected candidate\n  ✗ \"I think\", \"you know\", \"kind of\" unless pragmatic use is exceptional\n  ✗ Anything below B1 unless naturalness_score = 5\n\n────────────────────────────────────────────────\nKIND 2 · IDIOM\n────────────────────────────────────────────────\nA fixed or semi-fixed expression whose meaning cannot be derived from its\nparts, including: idioms, phrasal collocations, workplace slang, and\nculturally-loaded fixed phrases.\n\nFor an idiom: text = the canonical form of the idiom (may differ slightly\nfrom source if inflected); source_text = exact transcript wording.\n\nHunt actively for:\n\n  WORKPLACE IDIOMS\n    \"move the needle\", \"in the weeds\", \"circle back\", \"low-hanging fruit\",\n    \"get buy-in\", \"at a high level\", \"deep dive\", \"boil the ocean\",\n    \"skin in the game\", \"heavy lifting\", \"hit the ground running\"\n\n  GENERAL IDIOMS & FIXED PHRASES\n    \"ground zero\", \"a double-edged sword\", \"a moving target\",\n    \"raise the bar\", \"the elephant in the room\", \"tip of the iceberg\",\n    \"read the room\", \"go down a rabbit hole\", \"cut to the chase\"\n\n  IDIOMATIC COLLOCATIONS (word pairs that must be learned as one unit)\n    \"blissfully unaware\", \"painfully obvious\", \"deeply uncomfortable\",\n    \"wildly optimistic\", \"fundamentally flawed\", \"inherently difficult\"\n\n  PHRASAL VERBS USED IDIOMATICALLY\n    \"double down on\", \"build up to\", \"back away from\", \"push back on\",\n    \"buy into\", \"zoom out\", \"step back and look at\"\n\nIDIOM REJECTION RULES\n  ✗ Literal phrasal verbs (pick up a book — extractable meaning from parts)\n  ✗ Idioms so common they are already in B1 textbooks\n  ✗ Idioms tied to one specific domain that won't transfer\n\n────────────────────────────────────────────────\nKIND 3 · STRUCTURE\n────────────────────────────────────────────────\nA productive sentence pattern capturing a PRAGMATIC MOVE. Must be\ngeneralisable across many topics. Use 1–3 named slots in [square brackets]\nwith semantic names (e.g. [claim], [concession], [situation]).\nDo NOT use [X] or [Y].\n\nFor a structure: text = reusable template with slots;\nsource_text = exact transcript wording that demonstrates the template.\n\nAlso include the pattern_family field (see schema).\n\nHunt actively for these families:\n\n  CONTRAST / REFRAME\n    \"It's not [assumption] — it's [reality].\"\n    \"The problem isn't [surface issue], it's [root cause].\"\n    \"We tend to think [belief], but actually [reframing].\"\n    \"Less about [X], more about [Y].\"\n\n  CONCESSION + PIVOT\n    \"While [concession], [main claim].\"\n    \"I understand [concern], and at the same time [counter].\"\n    \"[Concession] — that said, [pivot].\"\n    \"Granted, [concession], but [counter-point].\"\n\n  JUSTIFIED CLAIM\n    \"The reason [we did X] is [reason].\"\n    \"We chose [option] precisely because [justification].\"\n    \"[Claim], and here's why: [reason].\"\n    \"What drove [decision] was [factor].\"\n\n  FRAMED EXPLANATION\n    \"Think of [concept] as [analogy].\"\n    \"The way [X] works is: [explanation].\"\n    \"To give you a sense of [scale/dimension], [concrete example].\"\n    \"The best way to describe [X] is [description].\"\n\n  HEDGED POSITION\n    \"[Claim], though I'd caveat that [caveat].\"\n    \"My sense is [position], with the caveat that [uncertainty].\"\n    \"[Observation], for the most part — with some exceptions.\"\n\n  CLEFT & PSEUDO-CLEFT  ← grammar patterns worth internalising\n    \"What [subject] [verb] is [noun phrase].\"\n      e.g. \"What makes this hard is the uncertainty.\"\n    \"It's [focus element] that [rest of clause].\"\n      e.g. \"It's the execution, not the idea, that matters.\"\n    \"[Noun] is [one / the thing] that [relative clause].\"\n      e.g. \"Trust is the one thing that you cannot fake.\"\n    \"The [noun] that [relative clause] is [result].\"\n\n  NARRATIVE ARC\n    \"We started with [situation], realised [insight], and ended up [outcome].\"\n    \"What began as [initial state] turned into [result].\"\n    \"It took [trigger] for us to realise [insight].\"\n\n  EMPHASIS STRUCTURE\n    \"What makes [X] [quality] is [factor].\"\n    \"The thing that changed everything was [turning point].\"\n    \"Of all the [things], [specific thing] stands out.\"\n\n  COMPARATIVE DIMINISHMENT\n    \"Less [overrated quality], more [underrated quality].\"\n    \"Not so much [rejected frame] as [accepted frame].\"\n\nSTRUCTURE REJECTION RULES\n  ✗ Long quotations with no abstraction (no slots = not a structure)\n  ✗ Patterns tied to one topic that won't transfer\n  ✗ Patterns that duplicate a chunk already captured\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nFIELD DEFINITIONS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nkind              \"chunk\" | \"idiom\" | \"structure\"\ntext              As defined per kind above.\nsource_text       Always exact verbatim transcript wording.\nmeaning           The PRAGMATIC FUNCTION in plain English: what social or\n                  communicative job does this do? Max 2 sentences.\n                  For idioms: include the decoded meaning + typical context.\nusage_note        One sentence showing how to slot this into a new sentence.\n                  e.g. \"Use to soften a disagreement before stating your view.\"\ntags              1–3 from the taxonomy below.\npattern_family    For structures only. One of:\n                  \"contrast\" | \"concession-pivot\" | \"justified-claim\" |\n                  \"framed-explanation\" | \"hedged-position\" |\n                  \"cleft\" | \"pseudo-cleft\" | \"one-that\" | \"what-clause\" |\n                  \"narrative-arc\" | \"emphasis\" | \"comparative-diminishment\"\ntimestamp         \"M:SS\" or null\nlevel             B1 | B2 | C1  (A2 only if naturalness_score = 5)\nregister          \"casual\" | \"neutral\" | \"professional\" | \"formal\"\nscenario_tags     1–3 from: \"workplace\" | \"daily_life\" | \"explanation\" |\n                  \"negotiation\" | \"small_talk\" | \"storytelling\" |\n                  \"disagreement\" | \"presentation\" | \"email\"\nphonology_note    Flag notable connected-speech features useful for shadowing\n                  (weak forms, linking, stress, assimilation). One sentence or null.\n\nnaturalness_score      1–5. How native-sounding vs textbook-stiff?\n                       5 = exactly what a native would say.\ntransferability_score  1–5. How many real-life contexts can this drop into?\ntransferability_score  5 = works across topics, registers, and speakers.\nlearning_value_score   1–5. How much production gap does this close?\n                       5 = high-frequency pattern learners consistently avoid.\n\nScores must differentiate. Reserve 5 for genuinely outstanding examples.\nTarget ≤ 20% of candidates scoring 5 on any dimension.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTAG TAXONOMY  (1–3 per item, primary function first)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nacknowledging   Validating what the other person said before adding your view\nclarifying      Unpacking, defining, or rephrasing something just said\nconceding       Admitting a point against your position before countering\ncontrast        Opposing two ideas or options\ndiscourse       Managing turn-taking, pacing, or conversational flow\nemphasising     Highlighting the most important element\nframing         Setting up context or mental model before the main point\nhedging         Softening a claim; signalling uncertainty or limitation\nidiom           Fixed expression whose meaning is non-compositional\njustifying      Giving reasons for a decision, position, or action\nproposing       Putting forward an idea, plan, or suggestion\nreframing       Replacing a flawed premise with a better one\nredirecting     Moving the conversation to a new angle or topic\nsoftening       Reducing the force of criticism, disagreement, or bad news\nsummarising     Closing, wrapping up, or drawing a conclusion\ntransitioning   Moving from one topic or phase to the next\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nLOGIC FLOW  (logic_flow)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nProduce 4–6 nodes for long transcripts; fewer for short ones.\nTitles must be verb phrases describing a RHETORICAL MOVE, not topic labels.\n  ✓ \"Establishing why the status quo is broken\"\n  ✗ \"Background\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nOUTPUT SHAPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{\n  \"summary\": \"One paragraph. What the speaker argues and achieves rhetorically.\",\n  \"chapters\": [\"chapter name\"],\n  \"logic_flow\": [\n    {\n      \"title\": \"Verb-phrase rhetorical move\",\n      \"subtitle\": \"One clause elaboration\",\n      \"timestamp\": \"M:SS or null\"\n    }\n  ],\n  \"corpus_items\": [\n    {\n      \"kind\": \"chunk\",\n      \"text\": \"exact transcript wording\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"Pragmatic function in plain English.\",\n      \"usage_note\": \"Use to open a concession before stating your real position.\",\n      \"tags\": [\"hedging\", \"softening\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B1\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\"],\n      \"phonology_note\": \"Weak form on 'to' — good shadowing target.\",\n      \"naturalness_score\": 4,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 4\n    },\n    {\n      \"kind\": \"idiom\",\n      \"text\": \"move the needle\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"To make a meaningful difference to a measurable outcome. Common in business and strategy contexts.\",\n      \"usage_note\": \"Use when discussing whether an action will have real impact: 'Will this actually move the needle?'\",\n      \"tags\": [\"idiom\", \"framing\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 4,\n      \"learning_value_score\": 5\n    },\n    {\n      \"kind\": \"structure\",\n      \"text\": \"It's not [surface problem] — it's [root cause].\",\n      \"source_text\": \"exact transcript wording demonstrating this template\",\n      \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one. Creates a persuasive pivot.\",\n      \"usage_note\": \"Use when you want to redirect a conversation toward a deeper issue: 'It's not the budget — it's the prioritisation.'\",\n      \"tags\": [\"reframing\", \"contrast\"],\n      \"pattern_family\": \"contrast\",\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 5\n    }\n  ],\n  \"key_points\": [\"...\"],\n  \"scenario_suggestions\": [\"...\"]\n}"
+              },
+              {
+                "role": "user",
+                "content": "Analyze this transcript as JSON.\nTitle: A small service pilot\nLanguage: en\nTranscript:\n0:00\tOur team has been discussing whether to launch the new service this month.\n0:06\tTo be fair, the prototype works well, and customers like its simple design.\n0:12\tBut liking a demo is not the same as relying on a service every day.\n0:18\tThe problem isn't a lack of ideas, but rather a lack of time to test them.\n0:25\tOne trade-off is that a wider launch gives us more feedback but increases support costs.\n0:32\tWe only have two support engineers, and both are already busy with existing customers.\n0:39\tThat's why I suggest starting with a small pilot instead of launching to everyone.\n0:46\tWe could invite ten customers and check in with them twice a week.\n0:52\tIf the pilot goes well, we can roll out the service to a larger group next month.\n0:59\tIf it does not, we will still have time to fix the main problems.\n1:05\tI am not saying we should delay forever. I am saying we should make the risk manageable.\n1:12\tLet's agree on the success criteria today and review the results in two weeks."
+              }
+            ],
+            "response_format": {
+              "type": "json_object"
+            },
+            "thinking": {
+              "type": "disabled"
+            },
+            "temperature": 0.2,
+            "max_tokens": 32000,
+            "stream": true,
+            "stream_options": {
+              "include_usage": true
+            }
+          },
+          "prompt_sha256": "cec02ba1ff5704bf642ce14b9bd433c8a5c21457cacc2cce95236250339a882a",
+          "http_status": 200,
+          "response_capture": "compressed bytes unavailable; see parsed result"
+        }
+      ],
+      "first_useful_preview_seconds": 1.812,
+      "status": "ready",
+      "result": {
+        "summary": "The speaker argues for a limited service pilot rather than a full launch, weighing the prototype's appeal against support capacity and cost. They concede the demo works, reframe the issue as time to test rather than ideas, and propose ten customers with twice-weekly check-ins. The close pairs a concession against endless delay with a call to set success criteria today and review in two weeks.",
+        "chapters": [
+          "Weighing the launch decision",
+          "Proposing a small pilot"
+        ],
+        "logic_flow": [
+          {
+            "title": "Opening the launch question",
+            "subtitle": "Framing the decision the team has been debating",
+            "timestamp": "0:00"
+          },
+          {
+            "title": "Conceding the prototype's strengths",
+            "subtitle": "Granting the demo works before pivoting",
+            "timestamp": "0:06"
+          },
+          {
+            "title": "Reframing the real constraint",
+            "subtitle": "Shifting from ideas to testing time",
+            "timestamp": "0:18"
+          },
+          {
+            "title": "Naming the trade-off and capacity limit",
+            "subtitle": "Balancing feedback gains against support costs",
+            "timestamp": "0:25"
+          },
+          {
+            "title": "Proposing the pilot and its terms",
+            "subtitle": "Setting scope, cadence, and fallback",
+            "timestamp": "0:39"
+          },
+          {
+            "title": "Closing with criteria and a review date",
+            "subtitle": "Converting the proposal into a concrete commitment",
+            "timestamp": "1:12"
+          }
+        ],
+        "corpus_items": [
+          {
+            "kind": "chunk",
+            "text": "To be fair,",
+            "source_text": "To be fair,",
+            "meaning": "Signals you are granting the other side a genuine point before adding your own view.",
+            "usage_note": "Use to open a concession so your disagreement lands as balanced rather than dismissive.",
+            "tags": [
+              "conceding",
+              "acknowledging"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:06",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "disagreement"
+            ],
+            "phonology_note": "Weak form on 'to' and 'be' — good shadowing target.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "[Liking something] is not the same as [depending on it].",
+            "source_text": "But liking a demo is not the same as relying on a service every day.",
+            "meaning": "Separates surface approval from real-world commitment, quietly undercutting an overly positive signal.",
+            "usage_note": "Use to temper enthusiasm: 'Enjoying a workshop is not the same as changing how you work.'",
+            "tags": [
+              "contrast",
+              "reframing"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:12",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "presentation"
+            ],
+            "phonology_note": "Contrastive stress on 'liking' and 'relying'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "structure",
+            "text": "The problem isn't [surface issue], but rather [root cause].",
+            "source_text": "The problem isn't a lack of ideas, but rather a lack of time to test them.",
+            "meaning": "Rejects the assumed diagnosis and installs the real one, steering the discussion toward the true constraint.",
+            "usage_note": "Use when a group is solving the wrong problem: 'The problem isn't the tool, but rather how we use it.'",
+            "tags": [
+              "reframing",
+              "contrast"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:18",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation",
+              "disagreement"
+            ],
+            "phonology_note": "Stress falls on 'ideas' and 'time' for the contrast.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "chunk",
+            "text": "One trade-off is that",
+            "source_text": "One trade-off is that",
+            "meaning": "Introduces a cost that comes with a benefit, showing you have weighed both sides.",
+            "usage_note": "Use to acknowledge a downside before recommending a direction: 'One trade-off is that it costs more upfront.'",
+            "tags": [
+              "framing",
+              "hedging"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:25",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation",
+              "presentation"
+            ],
+            "phonology_note": "Linked 'trade-off is' — smooth consonant-to-vowel joining.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "both are already busy with existing customers",
+            "source_text": "both are already busy with existing customers",
+            "meaning": "Points to a capacity limit as the practical reason a bigger plan will not work.",
+            "usage_note": "Use to justify a smaller scope by naming who is already stretched.",
+            "tags": [
+              "justifying",
+              "framing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:32",
+            "level": "B1",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Weak 'are' and linking in 'busy with existing'.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 3
+          },
+          {
+            "kind": "structure",
+            "text": "That's why I suggest [proposal] instead of [alternative].",
+            "source_text": "That's why I suggest starting with a small pilot instead of launching to everyone.",
+            "meaning": "Links the preceding evidence to a recommendation, making the proposal feel reasoned rather than arbitrary.",
+            "usage_note": "Use after laying out constraints: 'That's why I suggest a trial run instead of a full rollout.'",
+            "tags": [
+              "proposing",
+              "justifying"
+            ],
+            "pattern_family": "justified-claim",
+            "timestamp": "0:39",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation",
+              "presentation"
+            ],
+            "phonology_note": "Contrastive stress on 'pilot' and 'everyone'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "check in with them",
+            "source_text": "check in with them",
+            "meaning": "Make brief contact to see how someone is doing, common in managing pilots or clients.",
+            "usage_note": "Use for light-touch follow-up: 'I'll check in with them on Friday.'",
+            "tags": [
+              "discourse",
+              "framing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:46",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "daily_life"
+            ],
+            "phonology_note": "Linking in 'check in with' — practise the joined consonants.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "idiom",
+            "text": "roll out",
+            "source_text": "roll out the service to a larger group",
+            "meaning": "To launch or release something to a wider audience after testing. Standard in product and service contexts.",
+            "usage_note": "Use for staged releases: 'We'll roll out the feature to all users next quarter.'",
+            "tags": [
+              "idiom",
+              "transitioning"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:52",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation"
+            ],
+            "phonology_note": "Linked 'roll out' — single stress unit.",
+            "naturalness_score": 5,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "If [condition], we can [benefit]. If it does not, we will still have time to [fallback].",
+            "source_text": "If the pilot goes well, we can roll out the service to a larger group next month. If it does not, we will still have time to fix the main problems.",
+            "meaning": "Presents both outcomes as acceptable, lowering perceived risk and making the proposal easier to accept.",
+            "usage_note": "Use to de-risk a suggestion by showing the downside is survivable.",
+            "tags": [
+              "hedging",
+              "proposing"
+            ],
+            "pattern_family": "hedged-position",
+            "timestamp": "0:52",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation",
+              "presentation"
+            ],
+            "phonology_note": "Falling then rising intonation across the two conditional clauses.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "I am not saying [extreme reading]. I am saying [reasonable ask].",
+            "source_text": "I am not saying we should delay forever. I am saying we should make the risk manageable.",
+            "meaning": "Blocks an exaggerated interpretation of your position and restates it in moderate terms.",
+            "usage_note": "Use when you expect pushback: 'I'm not saying cancel it. I'm saying we scope it down.'",
+            "tags": [
+              "clarifying",
+              "softening"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "negotiation"
+            ],
+            "phonology_note": "Parallel stress on 'not saying' and 'saying'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "chunk",
+            "text": "make the risk manageable",
+            "source_text": "make the risk manageable",
+            "meaning": "Frames a cautious step as risk control rather than avoidance or delay.",
+            "usage_note": "Use to justify a phased approach: 'A pilot lets us make the risk manageable.'",
+            "tags": [
+              "framing",
+              "justifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Stress on 'risk' and 'manageable'.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "Let's agree on the success criteria today",
+            "source_text": "Let's agree on the success criteria today",
+            "meaning": "Proposes fixing in advance what counts as success, turning discussion into commitment.",
+            "usage_note": "Use to close a planning meeting: 'Let's agree on the success criteria before we start.'",
+            "tags": [
+              "proposing",
+              "summarising"
+            ],
+            "pattern_family": null,
+            "timestamp": "1:12",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation",
+              "presentation"
+            ],
+            "phonology_note": "Weak 'on the' before the stressed noun.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          }
+        ],
+        "key_points": [
+          "The prototype works and customers like it, but daily reliance is a different test.",
+          "The real constraint is testing time, not a shortage of ideas.",
+          "A wider launch brings more feedback but raises support costs with only two busy engineers.",
+          "A ten-customer pilot with twice-weekly check-ins keeps the risk manageable.",
+          "The speaker rejects endless delay and asks for success criteria today, review in two weeks."
+        ],
+        "scenario_suggestions": [
+          "Pitch a phased rollout to a manager who wants a full launch.",
+          "Push back on a colleague's optimism using 'not the same as'.",
+          "Close a meeting by agreeing success criteria and a review date."
+        ]
+      },
+      "elapsed_seconds": 13.365
+    },
+    {
+      "round": 2,
+      "task": "stage1",
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "requests": [
+        {
+          "request": {
+            "model": "deepseek-flash",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are an expert English-learning content analyst specialising in spoken, practical,\nworkplace-ready English. Return one JSON object and no prose.\nUse only evidence present in the transcript. Never invent quotations or timestamps.\n\nHARD OUTPUT BOUNDS\n- Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.\n- summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;\n  each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.\n- For every corpus item: text and source_text at most 30 words; meaning at most 35 words;\n  usage_note at most 25 words; phonology_note at most 20 words.\n- Return no more than 32 corpus items and obey every requested list limit. Brevity is mandatory.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORE EXTRACTION PHILOSOPHY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEvery extracted item must pass the PRODUCTION GAP TEST:\n  \"A fluent intermediate learner (B1-B2) would understand this, but would\n   NOT spontaneously produce it in conversation.\"\nItems that are easy to produce or textbook-standard must be rejected.\nPrioritise expressions that are native-natural but systematically avoided\nby non-native speakers.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORPUS CANDIDATE EXTRACTION  (corpus_items)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTarget 16–32 candidates: 8–16 chunks, 2–6 idioms, 4–10 structures.\nDistribute across the full transcript. Remove near-duplicates.\nMinimum level: B1. Extract A2 ONLY if naturalness_score = 5 (deceptively native).\nSkip A1 entirely.\n\n────────────────────────────────────────────────\nKIND 1 · CHUNK\n────────────────────────────────────────────────\nA complete, standalone, reusable spoken expression (2–12 words).\nFor a chunk: text == source_text (exact contiguous transcript wording).\n\nHunt actively for these families:\n\n  DISCOURSE PIVOTS\n    \"That said,\", \"Even so,\", \"With that in mind,\",\n    \"Which brings me to...\", \"Circling back to...\", \"To that end,\"\n\n  STANCE MARKERS\n    \"To be fair,\", \"Frankly,\", \"If I'm being honest,\",\n    \"What's striking is...\", \"Crucially,\", \"Interestingly enough,\"\n\n  HEDGES & QUALIFIERS\n    \"To some extent,\", \"Broadly speaking,\", \"For the most part,\",\n    \"More often than not,\", \"With some caveats,\", \"All else being equal,\"\n\n  CONCESSION MOVES\n    \"I get that, but...\", \"Fair point, though...\",\n    \"I don't dispute [that], but...\", \"You could argue..., but...\"\n\n  CLARIFICATION & REPAIR\n    \"What I mean by that is...\", \"Let me put it another way,\",\n    \"To be more precise,\", \"What I'm getting at is...\"\n\n  FRAMING OPENERS\n    \"Here's the thing:\", \"The way I think about it is...\",\n    \"Let me give you some context.\", \"To give you a sense of...\"\n\n  SOFTENED ASSERTIONS\n    \"I'd argue that...\", \"There's a case to be made that...\",\n    \"My sense is that...\", \"It's worth noting that...\"\n\n  STRONG COLLOCATIONS (extract as one unit)\n    verb+noun: \"strike a balance\", \"draw a distinction\", \"bear the cost\",\n               \"make a compelling case\", \"bridge the gap\", \"move the needle\"\n    adj+noun:  \"a nuanced view\", \"a sharp contrast\", \"a calculated risk\",\n               \"a common misconception\", \"a natural fit\"\n\nCHUNK REJECTION RULES\n  ✗ Filler-only phrases with no pragmatic function\n  ✗ Proper nouns, company names, domain-specific facts\n  ✗ Expressions only meaningful inside this specific topic\n  ✗ Near-duplicates of an already-selected candidate\n  ✗ \"I think\", \"you know\", \"kind of\" unless pragmatic use is exceptional\n  ✗ Anything below B1 unless naturalness_score = 5\n\n────────────────────────────────────────────────\nKIND 2 · IDIOM\n────────────────────────────────────────────────\nA fixed or semi-fixed expression whose meaning cannot be derived from its\nparts, including: idioms, phrasal collocations, workplace slang, and\nculturally-loaded fixed phrases.\n\nFor an idiom: text = the canonical form of the idiom (may differ slightly\nfrom source if inflected); source_text = exact transcript wording.\n\nHunt actively for:\n\n  WORKPLACE IDIOMS\n    \"move the needle\", \"in the weeds\", \"circle back\", \"low-hanging fruit\",\n    \"get buy-in\", \"at a high level\", \"deep dive\", \"boil the ocean\",\n    \"skin in the game\", \"heavy lifting\", \"hit the ground running\"\n\n  GENERAL IDIOMS & FIXED PHRASES\n    \"ground zero\", \"a double-edged sword\", \"a moving target\",\n    \"raise the bar\", \"the elephant in the room\", \"tip of the iceberg\",\n    \"read the room\", \"go down a rabbit hole\", \"cut to the chase\"\n\n  IDIOMATIC COLLOCATIONS (word pairs that must be learned as one unit)\n    \"blissfully unaware\", \"painfully obvious\", \"deeply uncomfortable\",\n    \"wildly optimistic\", \"fundamentally flawed\", \"inherently difficult\"\n\n  PHRASAL VERBS USED IDIOMATICALLY\n    \"double down on\", \"build up to\", \"back away from\", \"push back on\",\n    \"buy into\", \"zoom out\", \"step back and look at\"\n\nIDIOM REJECTION RULES\n  ✗ Literal phrasal verbs (pick up a book — extractable meaning from parts)\n  ✗ Idioms so common they are already in B1 textbooks\n  ✗ Idioms tied to one specific domain that won't transfer\n\n────────────────────────────────────────────────\nKIND 3 · STRUCTURE\n────────────────────────────────────────────────\nA productive sentence pattern capturing a PRAGMATIC MOVE. Must be\ngeneralisable across many topics. Use 1–3 named slots in [square brackets]\nwith semantic names (e.g. [claim], [concession], [situation]).\nDo NOT use [X] or [Y].\n\nFor a structure: text = reusable template with slots;\nsource_text = exact transcript wording that demonstrates the template.\n\nAlso include the pattern_family field (see schema).\n\nHunt actively for these families:\n\n  CONTRAST / REFRAME\n    \"It's not [assumption] — it's [reality].\"\n    \"The problem isn't [surface issue], it's [root cause].\"\n    \"We tend to think [belief], but actually [reframing].\"\n    \"Less about [X], more about [Y].\"\n\n  CONCESSION + PIVOT\n    \"While [concession], [main claim].\"\n    \"I understand [concern], and at the same time [counter].\"\n    \"[Concession] — that said, [pivot].\"\n    \"Granted, [concession], but [counter-point].\"\n\n  JUSTIFIED CLAIM\n    \"The reason [we did X] is [reason].\"\n    \"We chose [option] precisely because [justification].\"\n    \"[Claim], and here's why: [reason].\"\n    \"What drove [decision] was [factor].\"\n\n  FRAMED EXPLANATION\n    \"Think of [concept] as [analogy].\"\n    \"The way [X] works is: [explanation].\"\n    \"To give you a sense of [scale/dimension], [concrete example].\"\n    \"The best way to describe [X] is [description].\"\n\n  HEDGED POSITION\n    \"[Claim], though I'd caveat that [caveat].\"\n    \"My sense is [position], with the caveat that [uncertainty].\"\n    \"[Observation], for the most part — with some exceptions.\"\n\n  CLEFT & PSEUDO-CLEFT  ← grammar patterns worth internalising\n    \"What [subject] [verb] is [noun phrase].\"\n      e.g. \"What makes this hard is the uncertainty.\"\n    \"It's [focus element] that [rest of clause].\"\n      e.g. \"It's the execution, not the idea, that matters.\"\n    \"[Noun] is [one / the thing] that [relative clause].\"\n      e.g. \"Trust is the one thing that you cannot fake.\"\n    \"The [noun] that [relative clause] is [result].\"\n\n  NARRATIVE ARC\n    \"We started with [situation], realised [insight], and ended up [outcome].\"\n    \"What began as [initial state] turned into [result].\"\n    \"It took [trigger] for us to realise [insight].\"\n\n  EMPHASIS STRUCTURE\n    \"What makes [X] [quality] is [factor].\"\n    \"The thing that changed everything was [turning point].\"\n    \"Of all the [things], [specific thing] stands out.\"\n\n  COMPARATIVE DIMINISHMENT\n    \"Less [overrated quality], more [underrated quality].\"\n    \"Not so much [rejected frame] as [accepted frame].\"\n\nSTRUCTURE REJECTION RULES\n  ✗ Long quotations with no abstraction (no slots = not a structure)\n  ✗ Patterns tied to one topic that won't transfer\n  ✗ Patterns that duplicate a chunk already captured\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nFIELD DEFINITIONS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nkind              \"chunk\" | \"idiom\" | \"structure\"\ntext              As defined per kind above.\nsource_text       Always exact verbatim transcript wording.\nmeaning           The PRAGMATIC FUNCTION in plain English: what social or\n                  communicative job does this do? Max 2 sentences.\n                  For idioms: include the decoded meaning + typical context.\nusage_note        One sentence showing how to slot this into a new sentence.\n                  e.g. \"Use to soften a disagreement before stating your view.\"\ntags              1–3 from the taxonomy below.\npattern_family    For structures only. One of:\n                  \"contrast\" | \"concession-pivot\" | \"justified-claim\" |\n                  \"framed-explanation\" | \"hedged-position\" |\n                  \"cleft\" | \"pseudo-cleft\" | \"one-that\" | \"what-clause\" |\n                  \"narrative-arc\" | \"emphasis\" | \"comparative-diminishment\"\ntimestamp         \"M:SS\" or null\nlevel             B1 | B2 | C1  (A2 only if naturalness_score = 5)\nregister          \"casual\" | \"neutral\" | \"professional\" | \"formal\"\nscenario_tags     1–3 from: \"workplace\" | \"daily_life\" | \"explanation\" |\n                  \"negotiation\" | \"small_talk\" | \"storytelling\" |\n                  \"disagreement\" | \"presentation\" | \"email\"\nphonology_note    Flag notable connected-speech features useful for shadowing\n                  (weak forms, linking, stress, assimilation). One sentence or null.\n\nnaturalness_score      1–5. How native-sounding vs textbook-stiff?\n                       5 = exactly what a native would say.\ntransferability_score  1–5. How many real-life contexts can this drop into?\ntransferability_score  5 = works across topics, registers, and speakers.\nlearning_value_score   1–5. How much production gap does this close?\n                       5 = high-frequency pattern learners consistently avoid.\n\nScores must differentiate. Reserve 5 for genuinely outstanding examples.\nTarget ≤ 20% of candidates scoring 5 on any dimension.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTAG TAXONOMY  (1–3 per item, primary function first)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nacknowledging   Validating what the other person said before adding your view\nclarifying      Unpacking, defining, or rephrasing something just said\nconceding       Admitting a point against your position before countering\ncontrast        Opposing two ideas or options\ndiscourse       Managing turn-taking, pacing, or conversational flow\nemphasising     Highlighting the most important element\nframing         Setting up context or mental model before the main point\nhedging         Softening a claim; signalling uncertainty or limitation\nidiom           Fixed expression whose meaning is non-compositional\njustifying      Giving reasons for a decision, position, or action\nproposing       Putting forward an idea, plan, or suggestion\nreframing       Replacing a flawed premise with a better one\nredirecting     Moving the conversation to a new angle or topic\nsoftening       Reducing the force of criticism, disagreement, or bad news\nsummarising     Closing, wrapping up, or drawing a conclusion\ntransitioning   Moving from one topic or phase to the next\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nLOGIC FLOW  (logic_flow)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nProduce 4–6 nodes for long transcripts; fewer for short ones.\nTitles must be verb phrases describing a RHETORICAL MOVE, not topic labels.\n  ✓ \"Establishing why the status quo is broken\"\n  ✗ \"Background\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nOUTPUT SHAPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{\n  \"summary\": \"One paragraph. What the speaker argues and achieves rhetorically.\",\n  \"chapters\": [\"chapter name\"],\n  \"logic_flow\": [\n    {\n      \"title\": \"Verb-phrase rhetorical move\",\n      \"subtitle\": \"One clause elaboration\",\n      \"timestamp\": \"M:SS or null\"\n    }\n  ],\n  \"corpus_items\": [\n    {\n      \"kind\": \"chunk\",\n      \"text\": \"exact transcript wording\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"Pragmatic function in plain English.\",\n      \"usage_note\": \"Use to open a concession before stating your real position.\",\n      \"tags\": [\"hedging\", \"softening\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B1\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\"],\n      \"phonology_note\": \"Weak form on 'to' — good shadowing target.\",\n      \"naturalness_score\": 4,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 4\n    },\n    {\n      \"kind\": \"idiom\",\n      \"text\": \"move the needle\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"To make a meaningful difference to a measurable outcome. Common in business and strategy contexts.\",\n      \"usage_note\": \"Use when discussing whether an action will have real impact: 'Will this actually move the needle?'\",\n      \"tags\": [\"idiom\", \"framing\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 4,\n      \"learning_value_score\": 5\n    },\n    {\n      \"kind\": \"structure\",\n      \"text\": \"It's not [surface problem] — it's [root cause].\",\n      \"source_text\": \"exact transcript wording demonstrating this template\",\n      \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one. Creates a persuasive pivot.\",\n      \"usage_note\": \"Use when you want to redirect a conversation toward a deeper issue: 'It's not the budget — it's the prioritisation.'\",\n      \"tags\": [\"reframing\", \"contrast\"],\n      \"pattern_family\": \"contrast\",\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 5\n    }\n  ],\n  \"key_points\": [\"...\"],\n  \"scenario_suggestions\": [\"...\"]\n}"
+              },
+              {
+                "role": "user",
+                "content": "Analyze this transcript as JSON.\nTitle: A small service pilot\nLanguage: en\nTranscript:\n0:00\tOur team has been discussing whether to launch the new service this month.\n0:06\tTo be fair, the prototype works well, and customers like its simple design.\n0:12\tBut liking a demo is not the same as relying on a service every day.\n0:18\tThe problem isn't a lack of ideas, but rather a lack of time to test them.\n0:25\tOne trade-off is that a wider launch gives us more feedback but increases support costs.\n0:32\tWe only have two support engineers, and both are already busy with existing customers.\n0:39\tThat's why I suggest starting with a small pilot instead of launching to everyone.\n0:46\tWe could invite ten customers and check in with them twice a week.\n0:52\tIf the pilot goes well, we can roll out the service to a larger group next month.\n0:59\tIf it does not, we will still have time to fix the main problems.\n1:05\tI am not saying we should delay forever. I am saying we should make the risk manageable.\n1:12\tLet's agree on the success criteria today and review the results in two weeks."
+              }
+            ],
+            "response_format": {
+              "type": "json_object"
+            },
+            "thinking": {
+              "type": "disabled"
+            },
+            "temperature": 0.2,
+            "max_tokens": 32000,
+            "stream": true,
+            "stream_options": {
+              "include_usage": true
+            }
+          },
+          "prompt_sha256": "cec02ba1ff5704bf642ce14b9bd433c8a5c21457cacc2cce95236250339a882a",
+          "http_status": 200,
+          "response_capture": "compressed bytes unavailable; see parsed result"
+        }
+      ],
+      "first_useful_preview_seconds": 1.495,
+      "status": "ready",
+      "result": {
+        "summary": "A team member argues for a phased launch of a new service rather than a full rollout. They concede the prototype works and customers like it, then reframe the real constraint as testing time and support capacity. They propose a ten-customer pilot with twice-weekly check-ins, a clear path to wider rollout, and a fallback if results disappoint. They pre-empt the charge of endless delay by framing the pilot as risk management, and close by asking for agreed success criteria and a two-week review.",
+        "chapters": [
+          "Weighing the launch decision",
+          "Naming the real constraint",
+          "Proposing a small pilot",
+          "Setting criteria and review"
+        ],
+        "logic_flow": [
+          {
+            "title": "Conceding strengths before raising doubt",
+            "subtitle": "Acknowledges the working prototype and customer appeal first",
+            "timestamp": "0:06"
+          },
+          {
+            "title": "Reframing the problem as time, not ideas",
+            "subtitle": "Shifts the debate from creativity to testing capacity",
+            "timestamp": "0:18"
+          },
+          {
+            "title": "Exposing the hidden cost of a wide launch",
+            "subtitle": "Support load becomes the limiting factor",
+            "timestamp": "0:25"
+          },
+          {
+            "title": "Proposing a bounded pilot instead",
+            "subtitle": "Ten customers, twice-weekly check-ins, reversible",
+            "timestamp": "0:39"
+          },
+          {
+            "title": "Pre-empting the delay accusation",
+            "subtitle": "Positions the pilot as risk management, not stalling",
+            "timestamp": "1:05"
+          },
+          {
+            "title": "Closing with criteria and a review date",
+            "subtitle": "Turns discussion into a concrete commitment",
+            "timestamp": "1:12"
+          }
+        ],
+        "corpus_items": [
+          {
+            "kind": "chunk",
+            "text": "To be fair,",
+            "source_text": "To be fair,",
+            "meaning": "Signals you are granting the other side a genuine point before adding your own view. Softens the disagreement that follows.",
+            "usage_note": "Open with it when conceding a strength before raising a concern.",
+            "tags": [
+              "conceding",
+              "softening"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:06",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "disagreement"
+            ],
+            "phonology_note": "'To' reduces to a weak schwa; stress lands on 'fair'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "[Activity] is not the same as [harder activity].",
+            "source_text": "liking a demo is not the same as relying on a service every day",
+            "meaning": "Distinguishes a light, favourable impression from the demanding reality. Used to puncture optimism without direct criticism.",
+            "usage_note": "Use to separate easy approval from sustained commitment: 'Liking a plan is not the same as funding it.'",
+            "tags": [
+              "contrast",
+              "reframing"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:12",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement"
+            ],
+            "phonology_note": "'not the same as' runs together with weak 'as'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "structure",
+            "text": "The problem isn't [assumed cause], but rather [real cause].",
+            "source_text": "The problem isn't a lack of ideas, but rather a lack of time to test them.",
+            "meaning": "Rejects the obvious diagnosis and installs a better one. A persuasive pivot that redirects a discussion.",
+            "usage_note": "Use to move a group away from a wrong explanation: 'The problem isn't the price, but rather the timing.'",
+            "tags": [
+              "reframing",
+              "contrast"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:18",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation",
+              "disagreement"
+            ],
+            "phonology_note": "'but rather' is lightly linked; stress falls on the two contrasting nouns.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "chunk",
+            "text": "One trade-off is that",
+            "source_text": "One trade-off is that",
+            "meaning": "Introduces a cost that comes bundled with a benefit, showing you see both sides. Common in balanced professional reasoning.",
+            "usage_note": "Use to name a downside before recommending an option.",
+            "tags": [
+              "framing",
+              "justifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:25",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation"
+            ],
+            "phonology_note": "'trade-off' takes main stress; 'that' is weak.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "[Option] gives us more [benefit] but increases [cost].",
+            "source_text": "a wider launch gives us more feedback but increases support costs",
+            "meaning": "Weighs a benefit against a cost in one balanced clause. Frames a decision as a trade-off rather than a preference.",
+            "usage_note": "Use in recommendations to show you have counted both sides.",
+            "tags": [
+              "contrast",
+              "justifying"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:25",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Contrastive stress on 'more' and 'increases'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "That's why I suggest",
+            "source_text": "That's why I suggest",
+            "meaning": "Links the evidence just given to a proposal, making the suggestion feel earned rather than arbitrary.",
+            "usage_note": "Use after laying out constraints to introduce your recommendation.",
+            "tags": [
+              "proposing",
+              "justifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:39",
+            "level": "B1",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "'That's why' contracts; 'I' links smoothly into 'suggest'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "Instead of [risky option], I suggest [bounded option].",
+            "source_text": "I suggest starting with a small pilot instead of launching to everyone",
+            "meaning": "Contrasts a risky full commitment with a limited, reversible alternative. Makes caution sound decisive.",
+            "usage_note": "Use to propose a smaller first step without sounding negative.",
+            "tags": [
+              "proposing",
+              "contrast"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:39",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "'instead of' compresses to a weak, fast unit.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "check in with them",
+            "source_text": "check in with them",
+            "meaning": "Contact someone briefly to see how things are going. Implies light, regular contact rather than a formal meeting.",
+            "usage_note": "Use for informal follow-ups: 'I'll check in with the client on Friday.'",
+            "tags": [
+              "discourse",
+              "framing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:46",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "daily_life"
+            ],
+            "phonology_note": "'check in with' links across all three words.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "If [condition], we can [upside]; if not, we will still [fallback].",
+            "source_text": "If the pilot goes well, we can roll out the service to a larger group next month.",
+            "meaning": "Presents both outcomes as acceptable, which lowers perceived risk. A classic move for getting cautious approval.",
+            "usage_note": "Use to make a proposal feel safe: 'If it works, we scale; if not, we've lost little.'",
+            "tags": [
+              "proposing",
+              "justifying"
+            ],
+            "pattern_family": "hedged-position",
+            "timestamp": "0:52",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation",
+              "presentation"
+            ],
+            "phonology_note": "Parallel stress on 'well' and 'not' highlights the fork.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "idiom",
+            "text": "roll out",
+            "source_text": "we can roll out the service",
+            "meaning": "To launch or distribute something to a wider audience. Standard workplace term for staged releases.",
+            "usage_note": "Use for products, policies, or features: 'We'll roll out the update in phases.'",
+            "tags": [
+              "idiom",
+              "proposing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:52",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation"
+            ],
+            "phonology_note": "'roll out' links; stress on 'out'.",
+            "naturalness_score": 5,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "I am not saying [extreme reading]. I am saying [reasonable ask].",
+            "source_text": "I am not saying we should delay forever. I am saying we should make the risk manageable.",
+            "meaning": "Blocks the worst interpretation of your position before restating it modestly. Defuses an anticipated objection.",
+            "usage_note": "Use when you expect your caution to be heard as obstruction.",
+            "tags": [
+              "clarifying",
+              "conceding"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "negotiation"
+            ],
+            "phonology_note": "Heavy stress on 'not' and on 'manageable'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "chunk",
+            "text": "make the risk manageable",
+            "source_text": "make the risk manageable",
+            "meaning": "To reduce exposure to a level you can handle, rather than eliminating it. Frames caution as control, not avoidance.",
+            "usage_note": "Use to justify a cautious step: 'A pilot makes the risk manageable.'",
+            "tags": [
+              "justifying",
+              "framing"
+            ],
+            "pattern_family": null,
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Stress on 'manageable'; 'the' is weak.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "Let's agree on the success criteria today",
+            "source_text": "Let's agree on the success criteria today",
+            "meaning": "To settle in advance what counts as success, so later judgement is not subjective. Common in project and review talk.",
+            "usage_note": "Use at the start of any trial: 'Let's agree on the success criteria first.'",
+            "tags": [
+              "proposing",
+              "summarising"
+            ],
+            "pattern_family": null,
+            "timestamp": "1:12",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation"
+            ],
+            "phonology_note": "'agree on' links; stress on 'criteria'.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "Let's [commitment] today and [follow-up] in [timeframe].",
+            "source_text": "Let's agree on the success criteria today and review the results in two weeks.",
+            "meaning": "Converts a discussion into two dated commitments. Closes a meeting with momentum rather than vague agreement.",
+            "usage_note": "Use to end a meeting with clear next steps and dates.",
+            "tags": [
+              "summarising",
+              "proposing"
+            ],
+            "pattern_family": "narrative-arc",
+            "timestamp": "1:12",
+            "level": "B1",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "'Let's' contracts; parallel stress on 'today' and 'two weeks'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          }
+        ],
+        "key_points": [
+          "Concede the prototype's strengths before questioning readiness for daily use.",
+          "Reframe the constraint as testing time and support capacity, not ideas.",
+          "Name the trade-off explicitly: more feedback versus higher support costs.",
+          "Propose a bounded pilot with named customers and a check-in rhythm.",
+          "Pre-empt the delay accusation by framing caution as risk management.",
+          "Close by fixing success criteria and a review date."
+        ],
+        "scenario_suggestions": [
+          "Pitch a limited trial of a new tool to a sceptical manager.",
+          "Push back on a full rollout by naming support capacity as the constraint.",
+          "Agree success criteria before starting any internal experiment.",
+          "Use the 'not saying X, saying Y' move to defuse an objection in a meeting."
+        ]
+      },
+      "elapsed_seconds": 15.154
+    },
+    {
+      "round": 2,
+      "task": "stage1",
+      "provider": "ark",
+      "model": "doubao-seed-2-1-lite-260915",
+      "requests": [
+        {
+          "request": {
+            "model": "doubao-seed-2-1-lite-260915",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are an expert English-learning content analyst specialising in spoken, practical,\nworkplace-ready English. Return one JSON object and no prose.\nUse only evidence present in the transcript. Never invent quotations or timestamps.\n\nHARD OUTPUT BOUNDS\n- Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.\n- summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;\n  each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.\n- For every corpus item: text and source_text at most 30 words; meaning at most 35 words;\n  usage_note at most 25 words; phonology_note at most 20 words.\n- Return no more than 32 corpus items and obey every requested list limit. Brevity is mandatory.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORE EXTRACTION PHILOSOPHY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEvery extracted item must pass the PRODUCTION GAP TEST:\n  \"A fluent intermediate learner (B1-B2) would understand this, but would\n   NOT spontaneously produce it in conversation.\"\nItems that are easy to produce or textbook-standard must be rejected.\nPrioritise expressions that are native-natural but systematically avoided\nby non-native speakers.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORPUS CANDIDATE EXTRACTION  (corpus_items)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTarget 16–32 candidates: 8–16 chunks, 2–6 idioms, 4–10 structures.\nDistribute across the full transcript. Remove near-duplicates.\nMinimum level: B1. Extract A2 ONLY if naturalness_score = 5 (deceptively native).\nSkip A1 entirely.\n\n────────────────────────────────────────────────\nKIND 1 · CHUNK\n────────────────────────────────────────────────\nA complete, standalone, reusable spoken expression (2–12 words).\nFor a chunk: text == source_text (exact contiguous transcript wording).\n\nHunt actively for these families:\n\n  DISCOURSE PIVOTS\n    \"That said,\", \"Even so,\", \"With that in mind,\",\n    \"Which brings me to...\", \"Circling back to...\", \"To that end,\"\n\n  STANCE MARKERS\n    \"To be fair,\", \"Frankly,\", \"If I'm being honest,\",\n    \"What's striking is...\", \"Crucially,\", \"Interestingly enough,\"\n\n  HEDGES & QUALIFIERS\n    \"To some extent,\", \"Broadly speaking,\", \"For the most part,\",\n    \"More often than not,\", \"With some caveats,\", \"All else being equal,\"\n\n  CONCESSION MOVES\n    \"I get that, but...\", \"Fair point, though...\",\n    \"I don't dispute [that], but...\", \"You could argue..., but...\"\n\n  CLARIFICATION & REPAIR\n    \"What I mean by that is...\", \"Let me put it another way,\",\n    \"To be more precise,\", \"What I'm getting at is...\"\n\n  FRAMING OPENERS\n    \"Here's the thing:\", \"The way I think about it is...\",\n    \"Let me give you some context.\", \"To give you a sense of...\"\n\n  SOFTENED ASSERTIONS\n    \"I'd argue that...\", \"There's a case to be made that...\",\n    \"My sense is that...\", \"It's worth noting that...\"\n\n  STRONG COLLOCATIONS (extract as one unit)\n    verb+noun: \"strike a balance\", \"draw a distinction\", \"bear the cost\",\n               \"make a compelling case\", \"bridge the gap\", \"move the needle\"\n    adj+noun:  \"a nuanced view\", \"a sharp contrast\", \"a calculated risk\",\n               \"a common misconception\", \"a natural fit\"\n\nCHUNK REJECTION RULES\n  ✗ Filler-only phrases with no pragmatic function\n  ✗ Proper nouns, company names, domain-specific facts\n  ✗ Expressions only meaningful inside this specific topic\n  ✗ Near-duplicates of an already-selected candidate\n  ✗ \"I think\", \"you know\", \"kind of\" unless pragmatic use is exceptional\n  ✗ Anything below B1 unless naturalness_score = 5\n\n────────────────────────────────────────────────\nKIND 2 · IDIOM\n────────────────────────────────────────────────\nA fixed or semi-fixed expression whose meaning cannot be derived from its\nparts, including: idioms, phrasal collocations, workplace slang, and\nculturally-loaded fixed phrases.\n\nFor an idiom: text = the canonical form of the idiom (may differ slightly\nfrom source if inflected); source_text = exact transcript wording.\n\nHunt actively for:\n\n  WORKPLACE IDIOMS\n    \"move the needle\", \"in the weeds\", \"circle back\", \"low-hanging fruit\",\n    \"get buy-in\", \"at a high level\", \"deep dive\", \"boil the ocean\",\n    \"skin in the game\", \"heavy lifting\", \"hit the ground running\"\n\n  GENERAL IDIOMS & FIXED PHRASES\n    \"ground zero\", \"a double-edged sword\", \"a moving target\",\n    \"raise the bar\", \"the elephant in the room\", \"tip of the iceberg\",\n    \"read the room\", \"go down a rabbit hole\", \"cut to the chase\"\n\n  IDIOMATIC COLLOCATIONS (word pairs that must be learned as one unit)\n    \"blissfully unaware\", \"painfully obvious\", \"deeply uncomfortable\",\n    \"wildly optimistic\", \"fundamentally flawed\", \"inherently difficult\"\n\n  PHRASAL VERBS USED IDIOMATICALLY\n    \"double down on\", \"build up to\", \"back away from\", \"push back on\",\n    \"buy into\", \"zoom out\", \"step back and look at\"\n\nIDIOM REJECTION RULES\n  ✗ Literal phrasal verbs (pick up a book — extractable meaning from parts)\n  ✗ Idioms so common they are already in B1 textbooks\n  ✗ Idioms tied to one specific domain that won't transfer\n\n────────────────────────────────────────────────\nKIND 3 · STRUCTURE\n────────────────────────────────────────────────\nA productive sentence pattern capturing a PRAGMATIC MOVE. Must be\ngeneralisable across many topics. Use 1–3 named slots in [square brackets]\nwith semantic names (e.g. [claim], [concession], [situation]).\nDo NOT use [X] or [Y].\n\nFor a structure: text = reusable template with slots;\nsource_text = exact transcript wording that demonstrates the template.\n\nAlso include the pattern_family field (see schema).\n\nHunt actively for these families:\n\n  CONTRAST / REFRAME\n    \"It's not [assumption] — it's [reality].\"\n    \"The problem isn't [surface issue], it's [root cause].\"\n    \"We tend to think [belief], but actually [reframing].\"\n    \"Less about [X], more about [Y].\"\n\n  CONCESSION + PIVOT\n    \"While [concession], [main claim].\"\n    \"I understand [concern], and at the same time [counter].\"\n    \"[Concession] — that said, [pivot].\"\n    \"Granted, [concession], but [counter-point].\"\n\n  JUSTIFIED CLAIM\n    \"The reason [we did X] is [reason].\"\n    \"We chose [option] precisely because [justification].\"\n    \"[Claim], and here's why: [reason].\"\n    \"What drove [decision] was [factor].\"\n\n  FRAMED EXPLANATION\n    \"Think of [concept] as [analogy].\"\n    \"The way [X] works is: [explanation].\"\n    \"To give you a sense of [scale/dimension], [concrete example].\"\n    \"The best way to describe [X] is [description].\"\n\n  HEDGED POSITION\n    \"[Claim], though I'd caveat that [caveat].\"\n    \"My sense is [position], with the caveat that [uncertainty].\"\n    \"[Observation], for the most part — with some exceptions.\"\n\n  CLEFT & PSEUDO-CLEFT  ← grammar patterns worth internalising\n    \"What [subject] [verb] is [noun phrase].\"\n      e.g. \"What makes this hard is the uncertainty.\"\n    \"It's [focus element] that [rest of clause].\"\n      e.g. \"It's the execution, not the idea, that matters.\"\n    \"[Noun] is [one / the thing] that [relative clause].\"\n      e.g. \"Trust is the one thing that you cannot fake.\"\n    \"The [noun] that [relative clause] is [result].\"\n\n  NARRATIVE ARC\n    \"We started with [situation], realised [insight], and ended up [outcome].\"\n    \"What began as [initial state] turned into [result].\"\n    \"It took [trigger] for us to realise [insight].\"\n\n  EMPHASIS STRUCTURE\n    \"What makes [X] [quality] is [factor].\"\n    \"The thing that changed everything was [turning point].\"\n    \"Of all the [things], [specific thing] stands out.\"\n\n  COMPARATIVE DIMINISHMENT\n    \"Less [overrated quality], more [underrated quality].\"\n    \"Not so much [rejected frame] as [accepted frame].\"\n\nSTRUCTURE REJECTION RULES\n  ✗ Long quotations with no abstraction (no slots = not a structure)\n  ✗ Patterns tied to one topic that won't transfer\n  ✗ Patterns that duplicate a chunk already captured\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nFIELD DEFINITIONS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nkind              \"chunk\" | \"idiom\" | \"structure\"\ntext              As defined per kind above.\nsource_text       Always exact verbatim transcript wording.\nmeaning           The PRAGMATIC FUNCTION in plain English: what social or\n                  communicative job does this do? Max 2 sentences.\n                  For idioms: include the decoded meaning + typical context.\nusage_note        One sentence showing how to slot this into a new sentence.\n                  e.g. \"Use to soften a disagreement before stating your view.\"\ntags              1–3 from the taxonomy below.\npattern_family    For structures only. One of:\n                  \"contrast\" | \"concession-pivot\" | \"justified-claim\" |\n                  \"framed-explanation\" | \"hedged-position\" |\n                  \"cleft\" | \"pseudo-cleft\" | \"one-that\" | \"what-clause\" |\n                  \"narrative-arc\" | \"emphasis\" | \"comparative-diminishment\"\ntimestamp         \"M:SS\" or null\nlevel             B1 | B2 | C1  (A2 only if naturalness_score = 5)\nregister          \"casual\" | \"neutral\" | \"professional\" | \"formal\"\nscenario_tags     1–3 from: \"workplace\" | \"daily_life\" | \"explanation\" |\n                  \"negotiation\" | \"small_talk\" | \"storytelling\" |\n                  \"disagreement\" | \"presentation\" | \"email\"\nphonology_note    Flag notable connected-speech features useful for shadowing\n                  (weak forms, linking, stress, assimilation). One sentence or null.\n\nnaturalness_score      1–5. How native-sounding vs textbook-stiff?\n                       5 = exactly what a native would say.\ntransferability_score  1–5. How many real-life contexts can this drop into?\ntransferability_score  5 = works across topics, registers, and speakers.\nlearning_value_score   1–5. How much production gap does this close?\n                       5 = high-frequency pattern learners consistently avoid.\n\nScores must differentiate. Reserve 5 for genuinely outstanding examples.\nTarget ≤ 20% of candidates scoring 5 on any dimension.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTAG TAXONOMY  (1–3 per item, primary function first)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nacknowledging   Validating what the other person said before adding your view\nclarifying      Unpacking, defining, or rephrasing something just said\nconceding       Admitting a point against your position before countering\ncontrast        Opposing two ideas or options\ndiscourse       Managing turn-taking, pacing, or conversational flow\nemphasising     Highlighting the most important element\nframing         Setting up context or mental model before the main point\nhedging         Softening a claim; signalling uncertainty or limitation\nidiom           Fixed expression whose meaning is non-compositional\njustifying      Giving reasons for a decision, position, or action\nproposing       Putting forward an idea, plan, or suggestion\nreframing       Replacing a flawed premise with a better one\nredirecting     Moving the conversation to a new angle or topic\nsoftening       Reducing the force of criticism, disagreement, or bad news\nsummarising     Closing, wrapping up, or drawing a conclusion\ntransitioning   Moving from one topic or phase to the next\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nLOGIC FLOW  (logic_flow)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nProduce 4–6 nodes for long transcripts; fewer for short ones.\nTitles must be verb phrases describing a RHETORICAL MOVE, not topic labels.\n  ✓ \"Establishing why the status quo is broken\"\n  ✗ \"Background\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nOUTPUT SHAPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{\n  \"summary\": \"One paragraph. What the speaker argues and achieves rhetorically.\",\n  \"chapters\": [\"chapter name\"],\n  \"logic_flow\": [\n    {\n      \"title\": \"Verb-phrase rhetorical move\",\n      \"subtitle\": \"One clause elaboration\",\n      \"timestamp\": \"M:SS or null\"\n    }\n  ],\n  \"corpus_items\": [\n    {\n      \"kind\": \"chunk\",\n      \"text\": \"exact transcript wording\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"Pragmatic function in plain English.\",\n      \"usage_note\": \"Use to open a concession before stating your real position.\",\n      \"tags\": [\"hedging\", \"softening\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B1\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\"],\n      \"phonology_note\": \"Weak form on 'to' — good shadowing target.\",\n      \"naturalness_score\": 4,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 4\n    },\n    {\n      \"kind\": \"idiom\",\n      \"text\": \"move the needle\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"To make a meaningful difference to a measurable outcome. Common in business and strategy contexts.\",\n      \"usage_note\": \"Use when discussing whether an action will have real impact: 'Will this actually move the needle?'\",\n      \"tags\": [\"idiom\", \"framing\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 4,\n      \"learning_value_score\": 5\n    },\n    {\n      \"kind\": \"structure\",\n      \"text\": \"It's not [surface problem] — it's [root cause].\",\n      \"source_text\": \"exact transcript wording demonstrating this template\",\n      \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one. Creates a persuasive pivot.\",\n      \"usage_note\": \"Use when you want to redirect a conversation toward a deeper issue: 'It's not the budget — it's the prioritisation.'\",\n      \"tags\": [\"reframing\", \"contrast\"],\n      \"pattern_family\": \"contrast\",\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 5\n    }\n  ],\n  \"key_points\": [\"...\"],\n  \"scenario_suggestions\": [\"...\"]\n}"
+              },
+              {
+                "role": "user",
+                "content": "Analyze this transcript as JSON.\nTitle: A small service pilot\nLanguage: en\nTranscript:\n0:00\tOur team has been discussing whether to launch the new service this month.\n0:06\tTo be fair, the prototype works well, and customers like its simple design.\n0:12\tBut liking a demo is not the same as relying on a service every day.\n0:18\tThe problem isn't a lack of ideas, but rather a lack of time to test them.\n0:25\tOne trade-off is that a wider launch gives us more feedback but increases support costs.\n0:32\tWe only have two support engineers, and both are already busy with existing customers.\n0:39\tThat's why I suggest starting with a small pilot instead of launching to everyone.\n0:46\tWe could invite ten customers and check in with them twice a week.\n0:52\tIf the pilot goes well, we can roll out the service to a larger group next month.\n0:59\tIf it does not, we will still have time to fix the main problems.\n1:05\tI am not saying we should delay forever. I am saying we should make the risk manageable.\n1:12\tLet's agree on the success criteria today and review the results in two weeks."
+              }
+            ],
+            "response_format": {
+              "type": "json_object"
+            },
+            "thinking": {
+              "type": "disabled"
+            },
+            "temperature": 0.2,
+            "max_tokens": 32000,
+            "stream": true,
+            "stream_options": {
+              "include_usage": true
+            }
+          },
+          "prompt_sha256": "cec02ba1ff5704bf642ce14b9bd433c8a5c21457cacc2cce95236250339a882a",
+          "http_status": 200,
+          "response_envelope": {
+            "choices": [
+              {
+                "finish_reason": "stop",
+                "message": {
+                  "content": "{\"summary\": \"The speaker argues against an immediate full launch of a new service, acknowledging the prototype's strengths while noting that customer enthusiasm for a demo does not equal daily reliance. They identify limited testing time and stretched support capacity as core constraints, then propose a small pilot with ten customers, twice-weekly check-ins, and clear success criteria to manage risk before a wider rollout.\", \"chapters\": [\"Acknowledging the prototype's strengths\", \"Diagnosing the real launch constraint\", \"Proposing a low-risk pilot approach\", \"Setting review and decision milestones\"], \"logic_flow\": [{\"title\": \"Acknowledging the prototype's strengths\", \"subtitle \":\"Validating the demo's appeal before raising concerns\", \"timestamp\": \"0:06\"}, {\"title\": \"Reframing the core launch problem\", \"subtitle\": \"Distinguishing demo liking from daily service reliance\", \"timestamp\": \"0:12\"}, {\"title\": \"Naming the real bottleneck\", \"subtitle\": \"Identifying limited testing time as the core barrier\", \"timestamp\": \"0:18\"}, {\"title\": \"Weighing the wider launch trade-off\", \"subtitle\": \"Balancing more feedback against rising support costs\", \"timestamp\": \"0:25\"}, {\"title\": \"Proposing a small pilot solution\", \"subtitle\": \"Recommending a limited customer group to reduce risk\", \"timestamp\": \"0:39\"}, {\"title\": \"Setting clear review milestones\", \"subtitle\": \"Agreeing success criteria and scheduling a two-week check-in\", \"timestamp\": \"1:12\"}], \"corpus_items\": [{\"kind\": \"chunk\", \"text\": \"To be fair,\", \"source_text\": \"To be fair, the prototype works well, and customers like its simple design.\", \"meaning\": \"Signals you are acknowledging a valid opposing point before presenting your own view. Softens disagreement by showing you have considered the other side.\", \"usage_note\": \"Use to open a concession before stating your counter-position: 'To be fair, the design is clean, but we need more testing first.'\", \"tags\": [\"conceding\", \"softening\", \"discourse\"], \"pattern_family\": null, \"timestamp\": \"0:06\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"small_talk\"], \"phonology_note\": \"Stress on 'fair'; 'to' reduces to a weak schwa.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"[Action] is not the same as [alternative action].\", \"source_text\": \"But liking a demo is not the same as relying on a service every day.\", \"meaning\": \"Draws a sharp distinction between two superficially similar things that actually differ in important ways. Prevents the audience from conflating them.\", \"usage_note\": \"Use to correct a false equivalence: 'Finishing a draft is not the same as publishing it.'\", \"tags\": [\"contrast\", \"reframing\", \"clarifying\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:12\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"explanation\", \"presentation\"], \"phonology_note\": \"Link 'not-the-same-as' in connected speech.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"structure\", \"text\": \"The problem isn't [surface issue], but rather [root cause].\", \"source_text\": \"The problem isn't a lack of ideas, but rather a lack of time to test them.\", \"meaning\": \"Reframes a problem by rejecting the commonly assumed cause and naming the real underlying one. Creates a persuasive pivot in argument.\", \"usage_note\": \"Use when redirecting a conversation toward the true issue: 'The problem isn't budget, but rather unclear priorities.'\", \"tags\": [\"reframing\", \"contrast\", \"justifying\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:18\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Contrastive stress on 'isn't' and 'rather'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"chunk\", \"text\": \"One trade-off is that\", \"source_text\": \"One trade-off is that a wider launch gives us more feedback but increases support costs.\", \"meaning\": \"Introduces a balanced weighing of pros and cons for a decision. Signals you are presenting a neutral, realistic assessment rather than a one-sided argument.\", \"usage_note\": \"Use to frame a balanced cost-benefit point: 'One trade-off is that faster delivery will raise our shipping costs.'\", \"tags\": [\"framing\", \"hedging\", \"justifying\"], \"pattern_family\": null, \"timestamp\": \"0:25\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\", \"explanation\"], \"phonology_note\": \"Weak form of 'that' after 'is'.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"That's why I suggest [proposed action].\", \"source_text\": \"That's why I suggest starting with a small pilot instead of launching to everyone.\", \"meaning\": \"Links a previously stated reason directly to a concrete recommendation. Makes your proposal feel logically grounded rather than arbitrary.\", \"usage_note\": \"Use to transition from problem analysis to your solution: 'That's why I suggest running a smaller test first.'\", \"tags\": [\"justifying\", \"proposing\", \"transitioning\"], \"pattern_family\": \"justified-claim\", \"timestamp\": \"0:39\", \"level\": \"B1\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\", \"presentation\"], \"phonology_note\": \"Contraction 'That's' reduces smoothly in speech.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"idiom\", \"text\": \"roll out\", \"source_text\": \"If the pilot goes well, we can roll out the service to a larger group next month.\", \"meaning\": \"To formally launch or introduce a new product, service, or policy to a wider audience. Common in business and product contexts.\", \"usage_note\": \"Use when describing a staged product launch: 'We plan to roll out the feature to all users next quarter.'\", \"tags\": [\"idiom\", \"proposing\"], \"pattern_family\": null, \"timestamp\": \"0:52\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"presentation\", \"explanation\"], \"phonology_note\": \"Stress on 'roll'; 'out' links to following vowel.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"I am not saying [misinterpretation]. I am saying [actual position].\", \"source_text\": \"I am not saying we should delay forever. I am saying we should make the risk manageable.\", \"meaning\": \"Pre-empts and corrects a likely misreading of your position. Clarifies your actual stance by rejecting an extreme version of it.\", \"usage_note\": \"Use to clarify your position: 'I'm not saying we cancel the project. I'm saying we adjust the timeline.'\", \"tags\": [\"clarifying\", \"reframing\", \"softening\"], \"pattern_family\": \"contrast\", \"timestamp\": \"1:05\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"negotiation\"], \"phonology_note\": \"Contrastive stress on 'not' and the second 'saying'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"chunk\", \"text\": \"make the risk manageable\", \"source_text\": \"I am saying we should make the risk manageable.\", \"meaning\": \"Frames risk reduction as a practical, achievable goal rather than eliminating risk entirely. Sounds measured and realistic.\", \"usage_note\": \"Use when advocating for a cautious approach: 'We don't need zero risk, just make the risk manageable.'\", \"tags\": [\"hedging\", \"framing\", \"justifying\"], \"pattern_family\": null, \"timestamp\": \"1:05\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\", \"explanation\"], \"phonology_note\": \"Stress on 'manageable' with secondary stress on first syllable.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"Let's agree on\", \"source_text\": \"Let's agree on the success criteria today and review the results in two weeks.\", \"meaning\": \"Moves a discussion toward concrete alignment and next steps. Frames the request as collaborative rather than directive.\", \"usage_note\": \"Use to close a discussion by seeking consensus: 'Let's agree on the timeline before we leave today.'\", \"tags\": [\"proposing\", \"transitioning\", \"discourse\"], \"pattern_family\": null, \"timestamp\": \"1:12\", \"level\": \"B1\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\", \"meeting\"], \"phonology_note\": \"Contraction 'Let's' with reduced vowel.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}], \"key_points\": [\"Customer enthusiasm for a demo does not equal willingness to rely on a service daily.\", \"The core barrier to launch is insufficient testing time, not a lack of new ideas.\", \"A wider launch would generate more feedback but overstretch the small support team.\", \"A limited pilot with ten customers and twice-weekly check-ins reduces launch risk.\", \"Clear success criteria and a two-week review create a structured decision point.\"], \"scenario_suggestions\": [\"Presenting a cautious product launch recommendation to a leadership team\", \"Negotiating a phased rollout plan with stakeholders who want immediate full release\", \"Running a pilot program kickoff meeting to align on success metrics\", \"Explaining risk-management trade-offs in a product strategy discussion\"]}"
+                }
+              }
+            ],
+            "usage": {
+              "completion_tokens": 2335,
+              "prompt_tokens": 4461,
+              "total_tokens": 6796,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          "application_validation": {
+            "status": "rejected",
+            "code": "analysis_response_schema_invalid",
+            "diagnostic": "string_type@logic_flow.0.subtitle"
+          }
+        },
+        {
+          "request": {
+            "model": "doubao-seed-2-1-lite-260915",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are an expert English-learning content analyst specialising in spoken, practical,\nworkplace-ready English. Return one JSON object and no prose.\nUse only evidence present in the transcript. Never invent quotations or timestamps.\n\nHARD OUTPUT BOUNDS\n- Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.\n- summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;\n  each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.\n- For every corpus item: text and source_text at most 30 words; meaning at most 35 words;\n  usage_note at most 25 words; phonology_note at most 20 words.\n- Return no more than 32 corpus items and obey every requested list limit. Brevity is mandatory.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORE EXTRACTION PHILOSOPHY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEvery extracted item must pass the PRODUCTION GAP TEST:\n  \"A fluent intermediate learner (B1-B2) would understand this, but would\n   NOT spontaneously produce it in conversation.\"\nItems that are easy to produce or textbook-standard must be rejected.\nPrioritise expressions that are native-natural but systematically avoided\nby non-native speakers.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCORPUS CANDIDATE EXTRACTION  (corpus_items)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTarget 16–32 candidates: 8–16 chunks, 2–6 idioms, 4–10 structures.\nDistribute across the full transcript. Remove near-duplicates.\nMinimum level: B1. Extract A2 ONLY if naturalness_score = 5 (deceptively native).\nSkip A1 entirely.\n\n────────────────────────────────────────────────\nKIND 1 · CHUNK\n────────────────────────────────────────────────\nA complete, standalone, reusable spoken expression (2–12 words).\nFor a chunk: text == source_text (exact contiguous transcript wording).\n\nHunt actively for these families:\n\n  DISCOURSE PIVOTS\n    \"That said,\", \"Even so,\", \"With that in mind,\",\n    \"Which brings me to...\", \"Circling back to...\", \"To that end,\"\n\n  STANCE MARKERS\n    \"To be fair,\", \"Frankly,\", \"If I'm being honest,\",\n    \"What's striking is...\", \"Crucially,\", \"Interestingly enough,\"\n\n  HEDGES & QUALIFIERS\n    \"To some extent,\", \"Broadly speaking,\", \"For the most part,\",\n    \"More often than not,\", \"With some caveats,\", \"All else being equal,\"\n\n  CONCESSION MOVES\n    \"I get that, but...\", \"Fair point, though...\",\n    \"I don't dispute [that], but...\", \"You could argue..., but...\"\n\n  CLARIFICATION & REPAIR\n    \"What I mean by that is...\", \"Let me put it another way,\",\n    \"To be more precise,\", \"What I'm getting at is...\"\n\n  FRAMING OPENERS\n    \"Here's the thing:\", \"The way I think about it is...\",\n    \"Let me give you some context.\", \"To give you a sense of...\"\n\n  SOFTENED ASSERTIONS\n    \"I'd argue that...\", \"There's a case to be made that...\",\n    \"My sense is that...\", \"It's worth noting that...\"\n\n  STRONG COLLOCATIONS (extract as one unit)\n    verb+noun: \"strike a balance\", \"draw a distinction\", \"bear the cost\",\n               \"make a compelling case\", \"bridge the gap\", \"move the needle\"\n    adj+noun:  \"a nuanced view\", \"a sharp contrast\", \"a calculated risk\",\n               \"a common misconception\", \"a natural fit\"\n\nCHUNK REJECTION RULES\n  ✗ Filler-only phrases with no pragmatic function\n  ✗ Proper nouns, company names, domain-specific facts\n  ✗ Expressions only meaningful inside this specific topic\n  ✗ Near-duplicates of an already-selected candidate\n  ✗ \"I think\", \"you know\", \"kind of\" unless pragmatic use is exceptional\n  ✗ Anything below B1 unless naturalness_score = 5\n\n────────────────────────────────────────────────\nKIND 2 · IDIOM\n────────────────────────────────────────────────\nA fixed or semi-fixed expression whose meaning cannot be derived from its\nparts, including: idioms, phrasal collocations, workplace slang, and\nculturally-loaded fixed phrases.\n\nFor an idiom: text = the canonical form of the idiom (may differ slightly\nfrom source if inflected); source_text = exact transcript wording.\n\nHunt actively for:\n\n  WORKPLACE IDIOMS\n    \"move the needle\", \"in the weeds\", \"circle back\", \"low-hanging fruit\",\n    \"get buy-in\", \"at a high level\", \"deep dive\", \"boil the ocean\",\n    \"skin in the game\", \"heavy lifting\", \"hit the ground running\"\n\n  GENERAL IDIOMS & FIXED PHRASES\n    \"ground zero\", \"a double-edged sword\", \"a moving target\",\n    \"raise the bar\", \"the elephant in the room\", \"tip of the iceberg\",\n    \"read the room\", \"go down a rabbit hole\", \"cut to the chase\"\n\n  IDIOMATIC COLLOCATIONS (word pairs that must be learned as one unit)\n    \"blissfully unaware\", \"painfully obvious\", \"deeply uncomfortable\",\n    \"wildly optimistic\", \"fundamentally flawed\", \"inherently difficult\"\n\n  PHRASAL VERBS USED IDIOMATICALLY\n    \"double down on\", \"build up to\", \"back away from\", \"push back on\",\n    \"buy into\", \"zoom out\", \"step back and look at\"\n\nIDIOM REJECTION RULES\n  ✗ Literal phrasal verbs (pick up a book — extractable meaning from parts)\n  ✗ Idioms so common they are already in B1 textbooks\n  ✗ Idioms tied to one specific domain that won't transfer\n\n────────────────────────────────────────────────\nKIND 3 · STRUCTURE\n────────────────────────────────────────────────\nA productive sentence pattern capturing a PRAGMATIC MOVE. Must be\ngeneralisable across many topics. Use 1–3 named slots in [square brackets]\nwith semantic names (e.g. [claim], [concession], [situation]).\nDo NOT use [X] or [Y].\n\nFor a structure: text = reusable template with slots;\nsource_text = exact transcript wording that demonstrates the template.\n\nAlso include the pattern_family field (see schema).\n\nHunt actively for these families:\n\n  CONTRAST / REFRAME\n    \"It's not [assumption] — it's [reality].\"\n    \"The problem isn't [surface issue], it's [root cause].\"\n    \"We tend to think [belief], but actually [reframing].\"\n    \"Less about [X], more about [Y].\"\n\n  CONCESSION + PIVOT\n    \"While [concession], [main claim].\"\n    \"I understand [concern], and at the same time [counter].\"\n    \"[Concession] — that said, [pivot].\"\n    \"Granted, [concession], but [counter-point].\"\n\n  JUSTIFIED CLAIM\n    \"The reason [we did X] is [reason].\"\n    \"We chose [option] precisely because [justification].\"\n    \"[Claim], and here's why: [reason].\"\n    \"What drove [decision] was [factor].\"\n\n  FRAMED EXPLANATION\n    \"Think of [concept] as [analogy].\"\n    \"The way [X] works is: [explanation].\"\n    \"To give you a sense of [scale/dimension], [concrete example].\"\n    \"The best way to describe [X] is [description].\"\n\n  HEDGED POSITION\n    \"[Claim], though I'd caveat that [caveat].\"\n    \"My sense is [position], with the caveat that [uncertainty].\"\n    \"[Observation], for the most part — with some exceptions.\"\n\n  CLEFT & PSEUDO-CLEFT  ← grammar patterns worth internalising\n    \"What [subject] [verb] is [noun phrase].\"\n      e.g. \"What makes this hard is the uncertainty.\"\n    \"It's [focus element] that [rest of clause].\"\n      e.g. \"It's the execution, not the idea, that matters.\"\n    \"[Noun] is [one / the thing] that [relative clause].\"\n      e.g. \"Trust is the one thing that you cannot fake.\"\n    \"The [noun] that [relative clause] is [result].\"\n\n  NARRATIVE ARC\n    \"We started with [situation], realised [insight], and ended up [outcome].\"\n    \"What began as [initial state] turned into [result].\"\n    \"It took [trigger] for us to realise [insight].\"\n\n  EMPHASIS STRUCTURE\n    \"What makes [X] [quality] is [factor].\"\n    \"The thing that changed everything was [turning point].\"\n    \"Of all the [things], [specific thing] stands out.\"\n\n  COMPARATIVE DIMINISHMENT\n    \"Less [overrated quality], more [underrated quality].\"\n    \"Not so much [rejected frame] as [accepted frame].\"\n\nSTRUCTURE REJECTION RULES\n  ✗ Long quotations with no abstraction (no slots = not a structure)\n  ✗ Patterns tied to one topic that won't transfer\n  ✗ Patterns that duplicate a chunk already captured\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nFIELD DEFINITIONS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nkind              \"chunk\" | \"idiom\" | \"structure\"\ntext              As defined per kind above.\nsource_text       Always exact verbatim transcript wording.\nmeaning           The PRAGMATIC FUNCTION in plain English: what social or\n                  communicative job does this do? Max 2 sentences.\n                  For idioms: include the decoded meaning + typical context.\nusage_note        One sentence showing how to slot this into a new sentence.\n                  e.g. \"Use to soften a disagreement before stating your view.\"\ntags              1–3 from the taxonomy below.\npattern_family    For structures only. One of:\n                  \"contrast\" | \"concession-pivot\" | \"justified-claim\" |\n                  \"framed-explanation\" | \"hedged-position\" |\n                  \"cleft\" | \"pseudo-cleft\" | \"one-that\" | \"what-clause\" |\n                  \"narrative-arc\" | \"emphasis\" | \"comparative-diminishment\"\ntimestamp         \"M:SS\" or null\nlevel             B1 | B2 | C1  (A2 only if naturalness_score = 5)\nregister          \"casual\" | \"neutral\" | \"professional\" | \"formal\"\nscenario_tags     1–3 from: \"workplace\" | \"daily_life\" | \"explanation\" |\n                  \"negotiation\" | \"small_talk\" | \"storytelling\" |\n                  \"disagreement\" | \"presentation\" | \"email\"\nphonology_note    Flag notable connected-speech features useful for shadowing\n                  (weak forms, linking, stress, assimilation). One sentence or null.\n\nnaturalness_score      1–5. How native-sounding vs textbook-stiff?\n                       5 = exactly what a native would say.\ntransferability_score  1–5. How many real-life contexts can this drop into?\ntransferability_score  5 = works across topics, registers, and speakers.\nlearning_value_score   1–5. How much production gap does this close?\n                       5 = high-frequency pattern learners consistently avoid.\n\nScores must differentiate. Reserve 5 for genuinely outstanding examples.\nTarget ≤ 20% of candidates scoring 5 on any dimension.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTAG TAXONOMY  (1–3 per item, primary function first)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nacknowledging   Validating what the other person said before adding your view\nclarifying      Unpacking, defining, or rephrasing something just said\nconceding       Admitting a point against your position before countering\ncontrast        Opposing two ideas or options\ndiscourse       Managing turn-taking, pacing, or conversational flow\nemphasising     Highlighting the most important element\nframing         Setting up context or mental model before the main point\nhedging         Softening a claim; signalling uncertainty or limitation\nidiom           Fixed expression whose meaning is non-compositional\njustifying      Giving reasons for a decision, position, or action\nproposing       Putting forward an idea, plan, or suggestion\nreframing       Replacing a flawed premise with a better one\nredirecting     Moving the conversation to a new angle or topic\nsoftening       Reducing the force of criticism, disagreement, or bad news\nsummarising     Closing, wrapping up, or drawing a conclusion\ntransitioning   Moving from one topic or phase to the next\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nLOGIC FLOW  (logic_flow)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nProduce 4–6 nodes for long transcripts; fewer for short ones.\nTitles must be verb phrases describing a RHETORICAL MOVE, not topic labels.\n  ✓ \"Establishing why the status quo is broken\"\n  ✗ \"Background\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nOUTPUT SHAPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{\n  \"summary\": \"One paragraph. What the speaker argues and achieves rhetorically.\",\n  \"chapters\": [\"chapter name\"],\n  \"logic_flow\": [\n    {\n      \"title\": \"Verb-phrase rhetorical move\",\n      \"subtitle\": \"One clause elaboration\",\n      \"timestamp\": \"M:SS or null\"\n    }\n  ],\n  \"corpus_items\": [\n    {\n      \"kind\": \"chunk\",\n      \"text\": \"exact transcript wording\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"Pragmatic function in plain English.\",\n      \"usage_note\": \"Use to open a concession before stating your real position.\",\n      \"tags\": [\"hedging\", \"softening\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B1\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\"],\n      \"phonology_note\": \"Weak form on 'to' — good shadowing target.\",\n      \"naturalness_score\": 4,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 4\n    },\n    {\n      \"kind\": \"idiom\",\n      \"text\": \"move the needle\",\n      \"source_text\": \"exact transcript wording\",\n      \"meaning\": \"To make a meaningful difference to a measurable outcome. Common in business and strategy contexts.\",\n      \"usage_note\": \"Use when discussing whether an action will have real impact: 'Will this actually move the needle?'\",\n      \"tags\": [\"idiom\", \"framing\"],\n      \"pattern_family\": null,\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 4,\n      \"learning_value_score\": 5\n    },\n    {\n      \"kind\": \"structure\",\n      \"text\": \"It's not [surface problem] — it's [root cause].\",\n      \"source_text\": \"exact transcript wording demonstrating this template\",\n      \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one. Creates a persuasive pivot.\",\n      \"usage_note\": \"Use when you want to redirect a conversation toward a deeper issue: 'It's not the budget — it's the prioritisation.'\",\n      \"tags\": [\"reframing\", \"contrast\"],\n      \"pattern_family\": \"contrast\",\n      \"timestamp\": \"M:SS or null\",\n      \"level\": \"B2\",\n      \"register\": \"professional\",\n      \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"],\n      \"phonology_note\": null,\n      \"naturalness_score\": 5,\n      \"transferability_score\": 5,\n      \"learning_value_score\": 5\n    }\n  ],\n  \"key_points\": [\"...\"],\n  \"scenario_suggestions\": [\"...\"]\n}"
+              },
+              {
+                "role": "user",
+                "content": "Analyze this transcript as JSON.\nTitle: A small service pilot\nLanguage: en\nTranscript:\n0:00\tOur team has been discussing whether to launch the new service this month.\n0:06\tTo be fair, the prototype works well, and customers like its simple design.\n0:12\tBut liking a demo is not the same as relying on a service every day.\n0:18\tThe problem isn't a lack of ideas, but rather a lack of time to test them.\n0:25\tOne trade-off is that a wider launch gives us more feedback but increases support costs.\n0:32\tWe only have two support engineers, and both are already busy with existing customers.\n0:39\tThat's why I suggest starting with a small pilot instead of launching to everyone.\n0:46\tWe could invite ten customers and check in with them twice a week.\n0:52\tIf the pilot goes well, we can roll out the service to a larger group next month.\n0:59\tIf it does not, we will still have time to fix the main problems.\n1:05\tI am not saying we should delay forever. I am saying we should make the risk manageable.\n1:12\tLet's agree on the success criteria today and review the results in two weeks."
+              }
+            ],
+            "response_format": {
+              "type": "json_object"
+            },
+            "thinking": {
+              "type": "disabled"
+            },
+            "temperature": 0.2,
+            "max_tokens": 64000,
+            "stream": true,
+            "stream_options": {
+              "include_usage": true
+            }
+          },
+          "prompt_sha256": "cec02ba1ff5704bf642ce14b9bd433c8a5c21457cacc2cce95236250339a882a",
+          "http_status": 200,
+          "response_envelope": {
+            "choices": [
+              {
+                "finish_reason": "stop",
+                "message": {
+                  "content": "{\"summary\": \"The speaker argues for launching a small customer pilot rather than a full immediate service rollout. They acknowledge the prototype works well, but distinguish positive demo feedback from reliable daily usage. They identify the core constraint as limited testing time and stretched support capacity, then propose a low-risk phased rollout plan with clear success criteria and a two-week review checkpoint.\", \"chapters\": [\"Acknowledging prototype strengths\", \"Diagnosing the real constraint\", \"Proposing a small pilot\", \"Setting review checkpoints\"], \"logic_flow\": [{\"title\": \"Acknowledging prototype strengths\", \"subtitle\": \"Validates the working prototype and positive customer reaction\", \"timestamp\": \"0:06\"}, {\"title\": \"Diagnosing the real constraint\", \"subtitle\": \"Reframes the problem as limited testing time, not missing ideas\", \"timestamp\": \"0:18\"}, {\"title\": \"Proposing a small pilot\", \"subtitle\": \"Recommends a limited 10-customer pilot to manage risk\", \"timestamp\": \"0:39\"}, {\"title\": \"Setting review checkpoints\", \"subtitle\": \"Calls for agreed success criteria and a two-week review\", \"timestamp\": \"1:12\"}], \"corpus_items\": [{\"kind\": \"chunk\", \"text\": \"To be fair,\", \"source_text\": \"To be fair, the prototype works well, and customers like its simple design.\", \"meaning\": \"Signals you are acknowledging a valid opposing point before presenting your counterargument.\", \"usage_note\": \"Use to open a concession before stating your real position.\", \"tags\": [\"conceding\", \"softening\"], \"pattern_family\": null, \"timestamp\": \"0:06\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"disagreement\"], \"phonology_note\": \"Weak form of 'to' — good shadowing target.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"[Action] is not the same as [action].\", \"source_text\": \"But liking a demo is not the same as relying on a service every day.\", \"meaning\": \"Draws a sharp distinction between two superficially similar actions to correct a flawed assumption.\", \"usage_note\": \"Use to separate two easily confused concepts in an argument.\", \"tags\": [\"contrast\", \"reframing\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:12\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Stress contrast on 'not the same as'.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"The problem isn't [surface issue], it's [root cause].\", \"source_text\": \"The problem isn't a lack of ideas, but rather a lack of time to test them.\", \"meaning\": \"Reframes a problem by rejecting the common diagnosis and naming the real one.\", \"usage_note\": \"Use to redirect a conversation toward a deeper issue.\", \"tags\": [\"reframing\", \"contrast\"], \"pattern_family\": \"contrast\", \"timestamp\": \"0:18\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Contrast stress on 'isn't' and 'it's'.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}, {\"kind\": \"chunk\", \"text\": \"One trade-off is that\", \"source_text\": \"One trade-off is that a wider launch gives us more feedback but increases support costs.\", \"meaning\": \"Introduces a balanced cost-benefit analysis of a proposed option.\", \"usage_note\": \"Use to frame a decision by naming its key trade-off.\", \"tags\": [\"framing\", \"justifying\"], \"pattern_family\": null, \"timestamp\": \"0:25\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"negotiation\", \"presentation\"], \"phonology_note\": \"Link 'trade-off' as a single stressed unit.\", \"naturalness_score\": 4, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"chunk\", \"text\": \"That's why I suggest\", \"source_text\": \"That's why I suggest starting with a small pilot instead of launching to everyone.\", \"meaning\": \"Signals you are about to propose a solution derived from prior reasoning.\", \"usage_note\": \"Use to transition from problem analysis to a concrete recommendation.\", \"tags\": [\"proposing\", \"transitioning\"], \"pattern_family\": null, \"timestamp\": \"0:39\", \"level\": \"B1\", \"register\": \"neutral\", \"scenario_tags\": [\"workplace\", \"negotiation\"], \"phonology_note\": \"Weak form of 'that's' in connected speech.\", \"naturalness_score\": 4, \"transferability_score\": 5, \"learning_value_score\": 3}, {\"kind\": \"idiom\", \"text\": \"roll out\", \"source_text\": \"If the pilot goes well, we can roll out the service to a larger group next month.\", \"meaning\": \"To formally launch or deploy a product or service to a wider audience.\", \"usage_note\": \"Use when describing phased product or service deployment.\", \"tags\": [\"idiom\", \"proposing\"], \"pattern_family\": null, \"timestamp\": \"0:52\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"presentation\"], \"phonology_note\": \"Stress on 'roll', light stress on 'out'.\", \"naturalness_score\": 5, \"transferability_score\": 4, \"learning_value_score\": 4}, {\"kind\": \"structure\", \"text\": \"I am not saying [claim]. I am saying [claim].\", \"source_text\": \"I am not saying we should delay forever. I am saying we should make the risk manageable.\", \"meaning\": \"Corrects a potential misinterpretation of your position before clarifying your actual stance.\", \"usage_note\": \"Use to preempt and reframe a misreading of your argument.\", \"tags\": [\"clarifying\", \"reframing\"], \"pattern_family\": \"contrast\", \"timestamp\": \"1:05\", \"level\": \"B2\", \"register\": \"professional\", \"scenario_tags\": [\"workplace\", \"disagreement\", \"presentation\"], \"phonology_note\": \"Contrast stress between the two clauses.\", \"naturalness_score\": 5, \"transferability_score\": 5, \"learning_value_score\": 5}], \"key_points\": [\"Prototype works well, but demo approval differs from reliable daily service reliance.\", \"Core constraint is limited testing time, not a shortage of new ideas.\", \"Full launch would overstretch the two-person support team.\", \"Small 10-customer pilot keeps risk manageable while gathering real feedback.\", \"Agree success criteria today and review pilot results in two weeks.\"], \"scenario_suggestions\": [\"Proposing a phased product launch to a skeptical leadership team.\", \"Negotiating scope of a new service rollout with limited support resources.\", \"Presenting a risk-mitigation plan for an upcoming product release.\"]}"
+                }
+              }
+            ],
+            "usage": {
+              "completion_tokens": 1616,
+              "prompt_tokens": 4461,
+              "total_tokens": 6077,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          "application_validation": {
+            "status": "accepted"
+          }
+        }
+      ],
+      "first_useful_preview_seconds": 2.158,
+      "status": "ready",
+      "result": {
+        "summary": "The speaker argues for launching a small customer pilot rather than a full immediate service rollout. They acknowledge the prototype works well, but distinguish positive demo feedback from reliable daily usage. They identify the core constraint as limited testing time and stretched support capacity, then propose a low-risk phased rollout plan with clear success criteria and a two-week review checkpoint.",
+        "chapters": [
+          "Acknowledging prototype strengths",
+          "Diagnosing the real constraint",
+          "Proposing a small pilot",
+          "Setting review checkpoints"
+        ],
+        "logic_flow": [
+          {
+            "title": "Acknowledging prototype strengths",
+            "subtitle": "Validates the working prototype and positive customer reaction",
+            "timestamp": "0:06"
+          },
+          {
+            "title": "Diagnosing the real constraint",
+            "subtitle": "Reframes the problem as limited testing time, not missing ideas",
+            "timestamp": "0:18"
+          },
+          {
+            "title": "Proposing a small pilot",
+            "subtitle": "Recommends a limited 10-customer pilot to manage risk",
+            "timestamp": "0:39"
+          },
+          {
+            "title": "Setting review checkpoints",
+            "subtitle": "Calls for agreed success criteria and a two-week review",
+            "timestamp": "1:12"
+          }
+        ],
+        "corpus_items": [
+          {
+            "kind": "chunk",
+            "text": "To be fair, the prototype works well, and customers like its simple design.",
+            "source_text": "To be fair, the prototype works well, and customers like its simple design.",
+            "meaning": "Signals you are acknowledging a valid opposing point before presenting your counterargument.",
+            "usage_note": "Use to open a concession before stating your real position.",
+            "tags": [
+              "conceding",
+              "softening"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:06",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "disagreement"
+            ],
+            "phonology_note": "Weak form of 'to' — good shadowing target.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "[Action] is not the same as [action].",
+            "source_text": "But liking a demo is not the same as relying on a service every day.",
+            "meaning": "Draws a sharp distinction between two superficially similar actions to correct a flawed assumption.",
+            "usage_note": "Use to separate two easily confused concepts in an argument.",
+            "tags": [
+              "contrast",
+              "reframing"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:12",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "presentation"
+            ],
+            "phonology_note": "Stress contrast on 'not the same as'.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "The problem isn't [surface issue], it's [root cause].",
+            "source_text": "The problem isn't a lack of ideas, but rather a lack of time to test them.",
+            "meaning": "Reframes a problem by rejecting the common diagnosis and naming the real one.",
+            "usage_note": "Use to redirect a conversation toward a deeper issue.",
+            "tags": [
+              "reframing",
+              "contrast"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "0:18",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "presentation"
+            ],
+            "phonology_note": "Contrast stress on 'isn't' and 'it's'.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          },
+          {
+            "kind": "chunk",
+            "text": "One trade-off is that a wider launch gives us more feedback but increases support costs.",
+            "source_text": "One trade-off is that a wider launch gives us more feedback but increases support costs.",
+            "meaning": "Introduces a balanced cost-benefit analysis of a proposed option.",
+            "usage_note": "Use to frame a decision by naming its key trade-off.",
+            "tags": [
+              "framing",
+              "justifying"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:25",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "negotiation",
+              "presentation"
+            ],
+            "phonology_note": "Link 'trade-off' as a single stressed unit.",
+            "naturalness_score": 4,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "chunk",
+            "text": "That's why I suggest starting with a small pilot instead of launching to everyone.",
+            "source_text": "That's why I suggest starting with a small pilot instead of launching to everyone.",
+            "meaning": "Signals you are about to propose a solution derived from prior reasoning.",
+            "usage_note": "Use to transition from problem analysis to a concrete recommendation.",
+            "tags": [
+              "proposing",
+              "transitioning"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:39",
+            "level": "B1",
+            "register": "neutral",
+            "scenario_tags": [
+              "workplace",
+              "negotiation"
+            ],
+            "phonology_note": "Weak form of 'that's' in connected speech.",
+            "naturalness_score": 4,
+            "transferability_score": 5,
+            "learning_value_score": 3
+          },
+          {
+            "kind": "idiom",
+            "text": "roll out",
+            "source_text": "If the pilot goes well, we can roll out the service to a larger group next month.",
+            "meaning": "To formally launch or deploy a product or service to a wider audience.",
+            "usage_note": "Use when describing phased product or service deployment.",
+            "tags": [
+              "idiom",
+              "proposing"
+            ],
+            "pattern_family": null,
+            "timestamp": "0:52",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "presentation"
+            ],
+            "phonology_note": "Stress on 'roll', light stress on 'out'.",
+            "naturalness_score": 5,
+            "transferability_score": 4,
+            "learning_value_score": 4
+          },
+          {
+            "kind": "structure",
+            "text": "I am not saying [claim]. I am saying [claim].",
+            "source_text": "I am not saying we should delay forever. I am saying we should make the risk manageable.",
+            "meaning": "Corrects a potential misinterpretation of your position before clarifying your actual stance.",
+            "usage_note": "Use to preempt and reframe a misreading of your argument.",
+            "tags": [
+              "clarifying",
+              "reframing"
+            ],
+            "pattern_family": "contrast",
+            "timestamp": "1:05",
+            "level": "B2",
+            "register": "professional",
+            "scenario_tags": [
+              "workplace",
+              "disagreement",
+              "presentation"
+            ],
+            "phonology_note": "Contrast stress between the two clauses.",
+            "naturalness_score": 5,
+            "transferability_score": 5,
+            "learning_value_score": 5
+          }
+        ],
+        "key_points": [
+          "Prototype works well, but demo approval differs from reliable daily service reliance.",
+          "Core constraint is limited testing time, not a shortage of new ideas.",
+          "Full launch would overstretch the two-person support team.",
+          "Small 10-customer pilot keeps risk manageable while gathering real feedback.",
+          "Agree success criteria today and review pilot results in two weeks."
+        ],
+        "scenario_suggestions": [
+          "Proposing a phased product launch to a skeptical leadership team.",
+          "Negotiating scope of a new service rollout with limited support resources.",
+          "Presenting a risk-mitigation plan for an upcoming product release."
+        ]
+      },
+      "elapsed_seconds": 37.869
+    }
+  ],
+  "real_requests": 6,
+  "capture_note": "Initial harness recorded compressed HTTP bytes before decoding; unreadable transport bodies omitted. Parsed application outputs, teaching raw_content, exact request payloads, timings and failures are retained. Runner now decodes gzip/deflate and requests identity encoding. Readable Ark SSE was compacted to concatenated content, finish reason and usage, with offline parser validation of initial and retried responses."
+}

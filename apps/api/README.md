@@ -1,5 +1,15 @@
 # Libitu API
 
+Text tasks default to `TEXT_ANALYSIS_PROVIDER=deepseek` / `DEEPSEEK_MODEL=deepseek-flash`. `ark` explicitly selects Doubao; missing credentials fail without cross-provider fallback. Existing `ARK_*` budgets apply to both. Restart API and blueprint/feedback workers after changes. See [the current comparison](../../design/benchmarks/text-providers-20261106/COMPARISON.md) for quality limits.
+
+Stage 5 defaults to `DEEPSEEK_ASSESSMENT_STRICT=true` (Beta function schema), with
+fixed dimensions/criteria, frozen reference IDs and local evidence validation.
+Set it to false only to select JSON mode explicitly; no automatic provider
+fallback is added. One contract repair is bounded to 15 seconds after the initial
+45-second request. Teaching candidate matching is deterministic; semantic
+appropriateness remains model-reviewed. The [quality regression](../../design/benchmarks/text-quality-20261106/COMPARISON.md)
+records before/after measurements, raw authored outputs and failure limits.
+
 FastAPI backend workspace for content resolution, processing jobs, blueprints, corpus, and speaking sessions.
 
 Current state:

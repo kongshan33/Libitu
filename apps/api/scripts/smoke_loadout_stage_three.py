@@ -77,7 +77,7 @@ def main():
     parser.add_argument("--live", action="store_true", required=True)
     parser.add_argument("--ipv4", action="store_true")
     args = parser.parse_args()
-    check(get_settings().ark_is_configured and get_settings().supabase_server_is_configured, "configuration_missing")
+    check(get_settings().text_is_configured and get_settings().supabase_server_is_configured, "configuration_missing")
     database = get_supabase_repository()
     if args.ipv4:
         old = database._client

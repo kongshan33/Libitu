@@ -8,13 +8,15 @@ from __future__ import annotations
 import asyncio
 import json
 import math
+import logging
+from time import monotonic
 import re
 from collections import Counter
 from typing import Literal
 from uuid import NAMESPACE_URL, uuid5
 
 import httpx
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, ValidationError
 
 from app.config import get_settings
 from app.schemas.speaking import SpeakingSession
@@ -24,12 +26,17 @@ from app.schemas.speaking_feedback import (
     FeedbackReference, FeedbackRefactor, FeedbackResult, FeedbackStatistics, FeedbackStatus,
 )
 from app.services import speaking_missed_opportunities as missed
+from app.services import speaking_assessment_contract as contract
+from app.services.speaking_evidence import normalize_target_quote, _utf16_length
 from app.services.speaking_teaching import _assistance, _exact_spans, _quoted, _structure_supported, _tokens
 from app.services.speaking_support import variant_supported as _variant_supported
 from app.services.speaking_opportunities import confirmed_imitation, is_staged_plan
 
 ASSESSMENT_TIMEOUT_SECONDS = 45.0
 ASSESSMENT_MAX_TOKENS = 8000
+ASSESSMENT_REPAIR_SECONDS = 15.0
+ASSESSMENT_PROMPT_VERSION = "speaking-assessment-contract-v5"
+log = logging.getLogger(__name__)
 MAX_RESPONSE_BYTES = 128 * 1024
 MAX_INPUT_BYTES = 160 * 1024
 MAX_USER_TURNS = 100
@@ -110,6 +117,7 @@ class _Logic(_Strict):
 
 
 class _Assessment(_Strict):
+    _trace: dict = PrivateAttr(default_factory=dict)
     reviewed_message_ids: list[str] = Field(max_length=100)
     dimensions: list[_Dimension] = Field(max_length=3)
     item_results: list[_Item] = Field(max_length=8)
@@ -131,16 +139,9 @@ may not have been heard. Missing learner transcripts are not failures or zeroes.
 Use exactly the supplied dimension and criterion IDs. The fixed 0-4 scale is:
 0 = observed language clearly does not meet this criterion; 1 = substantial gaps;
 2 = partially meets it; 3 = mostly meets it; 4 = clearly meets it in this scenario.
-Every dimensions entry has exactly id, summary, criteria. Each criteria entry has
-exactly id, rating, reason, evidence. Put rating only inside criteria, never on a
-dimension. Do not copy rubric labels or add score, basis or any other fields.
-The complete dimension shape is {"id": "<supplied dimension ID>", "summary":
-"<brief explanation>", "criteria": [{"id": "<supplied criterion ID>", "rating":
-null, "reason": "<criterion explanation>", "evidence": []}]}.
-This illustrates keys only; provide all supplied criteria and evidence-grounded
-ratings. A general dimension note belongs in summary; a criterion-specific note
-belongs in that criterion's reason. Never add criteria_note, notes, explanation,
-or any other sibling of id, summary and criteria.
+Follow the supplied fixed-key object schema for dimensions and criteria. Include
+all three dimensions and all nine criteria. Use concise summaries and reasons.
+Never include a raw dimension score; the server calculates it from valid ratings.
 Use null when evidence is insufficient or the criterion cannot be assessed.
 Every non-null rating MUST cite an exact contiguous user quote, message ID, and
 current transcript_revision. OMIT start and end: the server computes UTF-16
@@ -340,7 +341,8 @@ def _grounded_use(item, use: _Use) -> bool:
         return use.match_type == "structure" and _structure_supported(item.text, use.reference.quote)
     if use.match_type == "structure":
         return False
-    return bool(_exact_spans(use.reference.quote, item.text)) or (use.match_type == "variant" and _variant_supported(item.text, use.reference.quote))
+    return normalize_target_quote(item.text, item.kind, use.reference.quote, use.reference.quote,
+                                  0, _utf16_length(use.reference.quote), use.match_type) is not None
 
 
 def _items(source: dict, session: SpeakingSession, users: list[dict], reliable: list[dict],
@@ -361,6 +363,13 @@ def _items(source: dict, session: SpeakingSession, users: list[dict], reliable: 
                 if not ref or not _grounded_use(item, use):
                     invalid = True
                     continue
+                message = by_message[ref.message_id]
+                normalized = normalize_target_quote(item.text, item.kind, message["text"], ref.quote,
+                                                     ref.start, ref.end, use.match_type)
+                if not normalized:
+                    invalid = True
+                    continue
+                ref = ref.model_copy(update={key: normalized[key] for key in ("quote", "start", "end")})
                 key = (ref.message_id, ref.start, ref.end)
                 old = accepted.get(key)
                 verdict = use.appropriateness if not old or old[1] == use.appropriateness else "uncertain"
@@ -583,47 +592,158 @@ def _context(source: dict, *, include_missed: bool = False) -> dict:
         }
     if len(users) > MAX_USER_TURNS or len(json.dumps(context, ensure_ascii=False).encode("utf-8")) > MAX_INPUT_BYTES:
         raise ValueError("assessment_input_limit")
+    context = contract.prepare(context, session, reliable, CRITERIA)
+    if len(users) > MAX_USER_TURNS or len(json.dumps(context, ensure_ascii=False).encode("utf-8")) > MAX_INPUT_BYTES:
+        raise ValueError("assessment_input_limit")
     return context
 
 
-def _parse_assessment(raw: str, *, include_missed: bool = False) -> _Assessment:
+def _parse_assessment(raw: str, *, include_missed: bool = False, context: dict | None = None) -> _Assessment:
     """Ignore only the provider's confirmed empty v3 dimension-note placeholder."""
-    payload = json.loads(raw)
+    audit = {}
+    payload = contract.load_json(raw, audit)
+    if context is not None:
+        payload = contract.decode(payload, context, audit)
     if include_missed and isinstance(payload, dict) and isinstance(payload.get("dimensions"), list):
         for dimension in payload["dimensions"]:
             if isinstance(dimension, dict) and "criteria_note" in dimension and dimension["criteria_note"] is None:
                 del dimension["criteria_note"]
-    return _Assessment.model_validate(payload)
+    result = _Assessment.model_validate(payload)
+    result._trace = audit
+    return result
 
 
-async def _assess_with_provider(source: dict, *, include_missed: bool = False) -> _Assessment:
-    context = _context(source, include_missed=include_missed)
-    settings = get_settings()
-    if not settings.ark_api_key:
-        raise ValueError("assessment_not_configured")
-    payload = {"model": settings.ark_model, "messages": [
-        {"role": "system", "content": _SYSTEM_PROMPT + (missed.PROMPT if include_missed else "")},
+async def _request_assessment_json(settings, prompt: str, context: dict, *, timeout: float,
+                                   max_tokens: int = ASSESSMENT_MAX_TOKENS) -> tuple[str, dict]:
+    started = monotonic()
+    payload = {"model": settings.text_model, "messages": [
+        {"role": "system", "content": prompt},
         {"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
         "response_format": {"type": "json_object"}, "thinking": {"type": "disabled"},
-        "temperature": 0, "max_tokens": ASSESSMENT_MAX_TOKENS, "stream": False}
-    async with asyncio.timeout(ASSESSMENT_TIMEOUT_SECONDS):
-        async with httpx.AsyncClient(base_url=settings.ark_base_url.rstrip("/"), timeout=ASSESSMENT_TIMEOUT_SECONDS) as client:
+        "temperature": 0, "max_tokens": max_tokens, "stream": False}
+    strict = (getattr(settings, "text_analysis_provider", None) == "deepseek"
+              and getattr(settings, "deepseek_assessment_strict", False))
+    base_url = settings.text_base_url.rstrip("/")
+    if strict:
+        payload["messages"][1]["content"] = json.dumps({key: value for key, value in context.items() if key != "output_schema"}, ensure_ascii=False)
+        base_url += "" if base_url.endswith("/beta") else "/beta"
+        payload.pop("response_format")
+        payload["tools"] = [{"type": "function", "function": {"name": "submit_assessment", "strict": True,
+            "description": "Return the complete evidence-grounded assessment or requested repair.",
+            "parameters": contract.strict_schema(context["output_schema"])}}]
+        payload["tool_choice"] = {"type": "function", "function": {"name": "submit_assessment"}}
+    async with asyncio.timeout(timeout):
+        async with httpx.AsyncClient(base_url=base_url, timeout=timeout) as client:
             async with client.stream("POST", "/chat/completions", json=payload,
-                                     headers={"Authorization": f"Bearer {settings.ark_api_key}"}) as response:
+                                     headers={"Authorization": f"Bearer {settings.text_api_key}"}) as response:
                 response.raise_for_status()
                 data = bytearray()
                 async for chunk in response.aiter_bytes():
                     data.extend(chunk)
                     if len(data) > MAX_RESPONSE_BYTES:
                         raise ValueError("assessment_response_limit")
-    choice = json.loads(data)["choices"][0]
-    if choice.get("finish_reason") != "stop":
+    body = json.loads(data)
+    choice = body["choices"][0]
+    trace = {"elapsed_ms": round((monotonic() - started) * 1000, 2),
+             "finish_reason": choice.get("finish_reason"),
+             "usage": {key: value for key, value in (body.get("usage") or {}).items()
+                       if key in {"prompt_tokens", "completion_tokens", "total_tokens"} and type(value) is int}}
+    if choice.get("finish_reason") != ("tool_calls" if strict else "stop"):
+        log.info("assessment_response_rejected %s", json.dumps(trace))
         raise ValueError("assessment_response_incomplete")
-    return _parse_assessment(choice["message"]["content"], include_missed=include_missed)
+    if strict:
+        calls = choice["message"].get("tool_calls", [])
+        if len(calls) != 1 or calls[0].get("function", {}).get("name") != "submit_assessment":
+            raise ValueError("assessment_unexpected_tool")
+        raw = calls[0]["function"]["arguments"]
+    else:
+        raw = choice["message"]["content"]
+    if not isinstance(raw, str) or not raw.strip():
+        raise ValueError("assessment_empty_response")
+    return raw, trace
+
+
+async def _assess_with_provider(source: dict, *, include_missed: bool = False) -> _Assessment:
+    context = _context(source, include_missed=include_missed)
+    settings = get_settings()
+    if not settings.text_api_key:
+        raise ValueError("assessment_not_configured")
+    prompt = _SYSTEM_PROMPT + (missed.PROMPT if include_missed else "") + contract.PROMPT
+    trace = {"prompt_version": ASSESSMENT_PROMPT_VERSION, "model": settings.text_model,
+             "requests": [], "initial_issues": [], "remaining_issues": [], "repair_status": "not_needed"}
+    deadline = monotonic() + min(65.0, ASSESSMENT_TIMEOUT_SECONDS + ASSESSMENT_REPAIR_SECONDS)
+    try:
+        raw, request_trace = await _request_assessment_json(settings, prompt, context, timeout=ASSESSMENT_TIMEOUT_SECONDS)
+    except (httpx.HTTPError, TimeoutError, ValueError, KeyError, IndexError, TypeError) as error:
+        trace["error_type"] = type(error).__name__
+        log.info("assessment_contract %s", json.dumps(trace))
+        raise
+    trace["requests"].append(request_trace)
+    model = None
+    try:
+        model = _parse_assessment(raw, include_missed=include_missed, context=context)
+        trace.update(model._trace)
+        problems = contract.issues(source, model)
+    except (ValueError, TypeError, KeyError) as error:
+        if isinstance(error, ValidationError):
+            schema = _Assessment.model_json_schema()
+            known_fields = set(schema["properties"]) | {
+                name for definition in schema.get("$defs", {}).values()
+                for name in definition.get("properties", {})}
+            trace["parse_errors"] = [{"path": [part if isinstance(part, int) or part in known_fields
+                                                else "unknown_field" for part in row["loc"]], "code": row["type"]}
+                                     for row in error.errors(include_input=False, include_url=False)[:16]]
+        else:
+            trace["parse_error"] = type(error).__name__
+        problems = [{"id": "r0", "path": [], "code": "invalid_output_schema_or_json"}]
+    trace["initial_issues"] = problems
+    if problems:
+        trace["repair_status"] = "failed"
+        remaining = min(ASSESSMENT_REPAIR_SECONDS, deadline - monotonic())
+        repair_context = {**context, "repair_tasks": problems}
+        if model is not None:
+            repair_context["previous_assessment"] = model.model_dump(mode="json")
+            repair_context["output_schema"] = contract.repair_schema(problems, _Assessment.model_json_schema())
+            repair_prompt = prompt + """
+REPAIR ONLY: previous_assessment is the canonical ARRAY form. Return exactly
+{"repairs":{"r0": <replacement at the supplied path>, ...}} with every repair ID.
+Only replace the listed paths. Keep every existing uniquely identified row when
+adding missing rows. Preserve all other values, and preserve_rating when requested.
+Use canonical field names, IDs and full exact references from evidence_catalog in
+replacements, not item_key/candidate_id shortcuts. Null ratings with an honest
+reason are allowed when evidence is insufficient. Never invent quotes or scores.
+"""
+        else:
+            repair_prompt = prompt + "\nThe previous response was not parseable. Return the complete required JSON object."
+        if remaining > 0 and len(json.dumps(repair_context).encode()) <= MAX_INPUT_BYTES:
+            try:
+                fixed, request_trace = await _request_assessment_json(settings, repair_prompt, repair_context,
+                    timeout=remaining, max_tokens=ASSESSMENT_MAX_TOKENS if model is None else 4000)
+                trace["requests"].append(request_trace)
+                if model is None:
+                    model = _parse_assessment(fixed, include_missed=include_missed, context=context)
+                    trace.update(model._trace)
+                else:
+                    document = contract.apply_repairs(model.model_dump(), problems, contract.load_json(fixed))
+                    replacement = _Assessment.model_validate(document)
+                    # A bad repair must never damage previously usable results.
+                    if len(contract.issues(source, replacement)) < len(problems):
+                        model = replacement
+                trace["remaining_issues"] = contract.issues(source, model)
+                trace["repair_status"] = "complete" if not trace["remaining_issues"] else "partial"
+            except (httpx.HTTPError, TimeoutError, ValueError, TypeError, KeyError, IndexError) as error:
+                trace["repair_error"] = type(error).__name__
+        if model is None:
+            log.info("assessment_contract %s", json.dumps(trace))
+            raise ValueError("assessment_invalid_after_repair")
+        trace["remaining_issues"] = contract.issues(source, model)
+    model._trace = trace
+    log.info("assessment_contract %s", json.dumps(trace, ensure_ascii=True))
+    return model
 
 
 async def assess_feedback(source: dict, *, analysis_version: str = ANALYSIS_VERSION) -> tuple[FeedbackStatus, FeedbackResult]:
-    """No model call for empty/oversized input; one bounded attempt otherwise."""
+    """No model call for empty/oversized input; one request plus at most one bounded contract repair otherwise."""
     result = baseline_result(source)
     enabled = analysis_version == ANALYSIS_VERSION
     if enabled:

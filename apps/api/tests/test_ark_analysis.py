@@ -231,7 +231,7 @@ def test_rejected_request_is_not_retried_as_schema_failure(monkeypatch) -> None:
         ark_analysis.analyze_transcript(_content(), "0:01\tA short transcript.")
 
     assert raised.value.code == "analysis_provider_rejected"
-    assert str(raised.value) == "Doubao rejected the blueprint request (HTTP 400)."
+    assert str(raised.value) == "The text analysis provider rejected the blueprint request (HTTP 400)."
     assert len(client.payloads) == 1
 
 
@@ -298,8 +298,8 @@ def _stream_response(content: str, finish_reason: str, completion_tokens: int) -
 
 def _settings() -> SimpleNamespace:
     return SimpleNamespace(
-        ark_api_key="test-key",
-        ark_model="doubao-seed-2-1-lite-260915",
+        text_api_key="test-key",
+        text_model="doubao-seed-2-1-lite-260915",
         ark_max_input_chars=240_000,
         ark_max_output_tokens=32_000,
         ark_max_attempts=2,

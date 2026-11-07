@@ -1,5 +1,40 @@
 # Track Libitu decisions
 
+## GA-only Sound taxonomy and execution boundary — 2026-11-07
+
+The user selected General American as Stage 2's initial supported learning target. Adopt [the GA Sound plan](design/docs/STAGE_TWO_GA_SOUND_PLAN.md): 12 top-level entries in four groups, T/D and H loss under Elision, separate Coalescence and T/D tap, and retained Voicing change and Vowel duration. Exclude a dedicated non-rhotic R-linking/intrusive-R entry; do not infer the source speaker's accent from the learning target.
+
+The next implementation must give both Reference and learner text candidates explicit non-confirmed styling, replacing the 2026-11-04 solid Reference-candidate convention while retaining shared Detailed/Review components and opt-in dense measurements. Unknown or unsupported evidence is not absence. Keep word totals distinct from per-vowel timing, preserve historical evidence and implement P1–P5 before claiming delivery. Validated acoustic realization remains separate M4b work. This decision records accepted scope, not completed application changes.
+
+## Grounded classification and complete assessment — 2026-11-06
+
+Separate deterministic phrase/span matching from contextual appropriateness.
+Server candidates bind exact final-user text, revision and UTF-16 positions;
+neither lexical detection nor structure completion awards usage credit alone.
+Use fixed provider dimension/criterion keys and short request-scoped reference IDs,
+then compile into the unchanged public report. DeepSeek's strict Beta function
+schema is configurable and supplements local validation. A uniquely contained
+exact span may replace an overlong quote without changing its semantic verdict.
+
+Allow one targeted repair within 15 seconds after the initial 45-second request,
+preserving valid siblings/ratings; unparseable output gets one regeneration.
+Never fill missing scores, invent evidence, reinterpret insufficient data as zero,
+or silently switch providers. Retain a validated partial report on repair failure.
+Narrow redundant-brace/order normalization is audited; duplicate keys remain
+invalid. Separate authored regression acceptance from broad teaching quality.
+See [implementation evidence and remaining limits](design/benchmarks/text-quality-20261106/COMPARISON.md).
+
+## Mission partner orb — 2026-11-07
+
+The Voice orb now follows the inspected ElevenLabs homepage material: a locally served blue/green texture, sphere projection, four-octave FBM, simplex displacement and separate stationary overlay grain. The ambient clock runs at the reference 1.4 time scale; the circular silhouette stays fixed. A 128px velocity/pressure field and 512px dye field add audio-driven surface advection (three pressure iterations, .98 dissipation and 1.2 blur); unsupported half-float devices retain the noise-driven renderer. Actual playback and the existing authorized microphone supply low/mid/high FFT bands plus a visual RMS envelope, with 28ms attack / 160ms release. RMS noise floor remains .0015 and full scale .12; this never changes audio gain. Input feedback starts before server VAD. There is no animation pause button: ambient motion starts on entry and continues while offline or the call is paused. OS reduced motion, hidden tabs and offscreen content stop rendering. Use at least 2x supersampling, at most 60fps / 1024px; WebGL failure uses a static fallback. Assets and source provenance are in apps/web/public/orb/README.md. The lower-edge call button, mute control and conversation behavior remain unchanged. Exact live-call frame identity is not claimed because audio and accumulated interaction history differ.
+
+
+## Text provider switch — 2026-11-06
+
+Stage 1 extraction, Mission planning/teaching/help and Stage 5 assessment now select `TEXT_ANALYSIS_PROVIDER=deepseek` with `DEEPSEEK_MODEL=deepseek-flash` by default. The local ignored environment uses that selection and the existing DeepSeek credential. `ark` remains an explicit comparison/rollback option; missing credentials never fall back to the other provider. Corpus retains its independent switch, now also defaulting to DeepSeek. Existing `ARK_*` timeout/retry/input/output budgets remain shared for deployment compatibility. OpenAI Realtime voice and TTS retain their independent settings. Saved results are not regenerated.
+
+Two alternating live rounds used authored input through the actual adapters, with unchanged prompts and validators. DeepSeek was faster in these samples, but teaching misclassified an exact phrase as a variant in both rounds, and Stage 5 produced incomplete reports for both providers. This is a local provider switch and sampled comparison, not broad teaching acceptance or production deployment. See [inputs, results, timings and limitations](design/benchmarks/text-providers-20261106/COMPARISON.md). Root lint/build/test pass (1,913 API tests); the development stack was restarted and queue readiness reports `deepseek-flash`.
+
 ## Neutral interface palette — 2026-11-06
 
 Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.

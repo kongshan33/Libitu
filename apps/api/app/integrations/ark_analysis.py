@@ -48,8 +48,8 @@ def analyze_transcript(
     on_progress: AnalysisProgressCallback | None = None,
 ) -> BlueprintAnalysis:
     settings = get_settings()
-    if not settings.ark_api_key:
-        raise AnalysisProviderError("Doubao is not configured.")
+    if not settings.text_api_key:
+        raise AnalysisProviderError("The text analysis provider is not configured.")
 
     if len(transcript_text) > settings.ark_max_input_chars:
         raise AnalysisProviderError(
@@ -66,7 +66,7 @@ def analyze_transcript(
         f"Language: {content.language or 'unknown'}\nTranscript:\n{bounded_transcript}"
     )
     payload = {
-        "model": settings.ark_model,
+        "model": settings.text_model,
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -127,7 +127,7 @@ def analyze_transcript(
 
     if isinstance(last_error, AnalysisProviderError):
         raise last_error
-    raise AnalysisProviderError("Doubao could not generate the blueprint. Please retry.") from last_error
+    raise AnalysisProviderError("The text analysis provider could not generate the blueprint. Please retry.") from last_error
 
 
 def _merge_analysis_preview(
@@ -165,7 +165,7 @@ def _stream_analysis_response(
     with _ark_analysis_client().stream(
         "POST",
         "/chat/completions",
-        headers={"Authorization": f"Bearer {settings.ark_api_key}"},
+        headers={"Authorization": f"Bearer {settings.text_api_key}"},
         json=request_payload,
     ) as response:
         response.raise_for_status()
@@ -200,7 +200,7 @@ def _stream_analysis_response(
     completion_text = "".join(content_parts)
     if finish_reason is None:
         raise AnalysisProviderError(
-            "Doubao's response stream ended before completion. Please retry.",
+            "The text analysis provider's response stream ended before completion. Please retry.",
             code="analysis_stream_interrupted",
             diagnostic=f"attempt={attempt}/{max_attempts};output_chars={len(completion_text)}",
             retryable=True,
@@ -244,14 +244,14 @@ def _parse_analysis_payload(
     finish_reason = choice.get("finish_reason")
     if finish_reason == "length":
         raise AnalysisProviderError(
-            "Doubao stopped before the blueprint JSON was complete. Please retry.",
+            "The text analysis provider stopped before the blueprint JSON was complete. Please retry.",
             code="analysis_response_truncated",
             diagnostic=_completion_diagnostic(payload, finish_reason, requested_max_tokens),
             retryable=True,
         )
     if finish_reason not in (None, "stop"):
         raise AnalysisProviderError(
-            "Doubao could not complete the blueprint. Please retry.",
+            "The text analysis provider could not complete the blueprint. Please retry.",
             code="analysis_response_incomplete",
             diagnostic=_completion_diagnostic(payload, finish_reason, requested_max_tokens),
             retryable=finish_reason == "insufficient_system_resource",
@@ -260,7 +260,7 @@ def _parse_analysis_payload(
     message = choice["message"]["content"]
     if not message:
         raise AnalysisProviderError(
-            "Doubao returned an empty blueprint. Please retry.",
+            "The text analysis provider returned an empty blueprint. Please retry.",
             code="analysis_response_empty",
             diagnostic="empty_content",
             retryable=True,
@@ -269,7 +269,7 @@ def _parse_analysis_payload(
         payload = json.loads(message)
     except json.JSONDecodeError as error:
         raise AnalysisProviderError(
-            "Doubao returned malformed blueprint JSON. Please retry.",
+            "The text analysis provider returned malformed blueprint JSON. Please retry.",
             code="analysis_response_invalid_json",
             diagnostic=f"json_decode_error@{error.pos}",
             retryable=True,
@@ -282,7 +282,7 @@ def _parse_analysis_payload(
         issue = error.errors(include_url=False)[0]
         location = ".".join(str(part) for part in issue["loc"]) or "root"
         raise AnalysisProviderError(
-            f"Doubao returned an invalid blueprint field ({location}). Please retry.",
+            f"The text analysis provider returned an invalid blueprint field ({location}). Please retry.",
             code="analysis_response_schema_invalid",
             diagnostic=f"{issue['type']}@{location}",
             retryable=True,
@@ -544,7 +544,7 @@ def _provider_error(error: Exception) -> AnalysisProviderError:
         return error
     if isinstance(error, httpx.TimeoutException):
         return AnalysisProviderError(
-            "Doubao timed out while generating the blueprint. Please retry.",
+            "The text analysis provider timed out while generating the blueprint. Please retry.",
             code="analysis_provider_timeout",
             diagnostic=type(error).__name__,
             retryable=True,
@@ -552,20 +552,20 @@ def _provider_error(error: Exception) -> AnalysisProviderError:
     if isinstance(error, httpx.HTTPStatusError):
         status = error.response.status_code
         return AnalysisProviderError(
-            f"Doubao rejected the blueprint request (HTTP {status}).",
+            f"The text analysis provider rejected the blueprint request (HTTP {status}).",
             code="analysis_provider_rate_limited" if status == 429 else "analysis_provider_rejected",
             diagnostic=f"http_status={status}",
             retryable=status == 429 or status >= 500,
         )
     if isinstance(error, httpx.TransportError):
         return AnalysisProviderError(
-            "Doubao could not be reached. Please retry.",
+            "The text analysis provider could not be reached. Please retry.",
             code="analysis_provider_unreachable",
             diagnostic=type(error).__name__,
             retryable=True,
         )
     return AnalysisProviderError(
-        "Doubao returned an unreadable blueprint response. Please retry.",
+        "The text analysis provider returned an unreadable blueprint response. Please retry.",
         code="analysis_response_unreadable",
         diagnostic=type(error).__name__,
         retryable=True,
@@ -576,7 +576,7 @@ def _provider_error(error: Exception) -> AnalysisProviderError:
 def _ark_analysis_client() -> httpx.Client:
     settings = get_settings()
     return httpx.Client(
-        base_url=settings.ark_base_url.rstrip("/"),
+        base_url=settings.text_base_url.rstrip("/"),
         timeout=httpx.Timeout(settings.ark_timeout_seconds, connect=10.0),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
     )

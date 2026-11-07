@@ -13,7 +13,7 @@ from test_speaking_teaching import mission, utterance
 @pytest.fixture(autouse=True)
 def no_paid_help(monkeypatch):
     monkeypatch.setattr(help_service, "get_settings", lambda: SimpleNamespace(
-        ark_api_key=None, ark_base_url="https://analyzer.invalid", ark_model="fixture-model"))
+        text_api_key=None, text_base_url="https://analyzer.invalid", text_model="fixture-model"))
 
 
 def help_transport(monkeypatch, result, *, finish_reason="stop"):
@@ -24,7 +24,7 @@ def help_transport(monkeypatch, result, *, finish_reason="stop"):
         return httpx.Response(200, json={"choices": [{"finish_reason": finish_reason,
                                                      "message": {"content": json.dumps(result)}}]})
     monkeypatch.setattr(help_service, "get_settings", lambda: SimpleNamespace(
-        ark_api_key="test-only", ark_base_url="https://analyzer.invalid", ark_model="fixture-model"))
+        text_api_key="test-only", text_base_url="https://analyzer.invalid", text_model="fixture-model"))
     monkeypatch.setattr(teaching.httpx, "AsyncClient", lambda **kwargs: original(**kwargs, transport=httpx.MockTransport(handler)))
     return requests
 
@@ -301,7 +301,7 @@ def test_whole_help_request_timeout_is_bounded_without_exposing_provider_excepti
         await asyncio.sleep(0.1)
         raise AssertionError("The whole-operation deadline should cancel this request")
     monkeypatch.setattr(help_service, "get_settings", lambda: SimpleNamespace(
-        ark_api_key="test-only", ark_base_url="https://analyzer.invalid", ark_model="fixture-model"))
+        text_api_key="test-only", text_base_url="https://analyzer.invalid", text_model="fixture-model"))
     monkeypatch.setattr(teaching, "ANALYSIS_TIMEOUT_SECONDS", 0.01)
     monkeypatch.setattr(teaching.httpx, "AsyncClient", lambda **kwargs: original(**kwargs, transport=httpx.MockTransport(handler)))
     result = request_help(mission())

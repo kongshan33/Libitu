@@ -16,7 +16,7 @@ STRUCTURE = "10000000-0000-0000-0000-000000000002"
 @pytest.fixture(autouse=True)
 def no_live_calls(monkeypatch):
     monkeypatch.setattr(assessment, "get_settings", lambda: SimpleNamespace(
-        ark_api_key=None, ark_base_url="https://assessor.invalid", ark_model="fixture-model"))
+        text_api_key=None, text_base_url="https://assessor.invalid", text_model="fixture-model"))
 
 
 def message(text, identifier="user-1", **updates):
@@ -464,7 +464,7 @@ def test_surface_refactor_provenance_and_saveable_phrase():
 def transport(monkeypatch, handler):
     original = httpx.AsyncClient
     monkeypatch.setattr(assessment, "get_settings", lambda: SimpleNamespace(
-        ark_api_key="fixture-only", ark_base_url="https://assessor.invalid", ark_model="fixture-model"))
+        text_api_key="fixture-only", text_base_url="https://assessor.invalid", text_model="fixture-model"))
     monkeypatch.setattr(assessment.httpx, "AsyncClient", lambda **kwargs: original(**kwargs, transport=httpx.MockTransport(handler)))
 
 

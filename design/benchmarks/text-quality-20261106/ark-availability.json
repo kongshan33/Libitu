@@ -1,0 +1,6 @@
+{
+  "http_status": 403,
+  "model": "doubao-seed-2-1-lite-260915",
+  "code": "AccountOverdueError",
+  "message": "The request failed because your account has an overdue balance. Request id: 02179397985429192ebd1237b33dc9f829320565798fa7e954f9a"
+}

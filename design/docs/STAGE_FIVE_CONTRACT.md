@@ -1,5 +1,33 @@
 # Stage 5 report contract
 
+## Structured text assessment — 2026-11-06
+
+The provider protocol now uses fixed keys for all three AI dimensions and nine
+criteria, plus request-scoped evidence and target-candidate IDs. Those IDs resolve
+only to frozen final-user text, revision and UTF-16 spans. The server owns exact,
+bounded variant and filled-structure matching; the model still judges contextual
+appropriateness. A lexical occurrence alone never earns credit. Free conversation
+uses a null provider target object, mapped to the existing empty public list.
+
+DeepSeek uses its Beta strict function schema by default
+(`DEEPSEEK_ASSESSMENT_STRICT=true`); Ark and the explicit false setting use JSON
+mode. Strict output still passes local schema, completeness and evidence checks.
+Only one redundant terminal closing brace and redundant dimension-order metadata
+can be removed, with diagnostics. Duplicate keys, ambiguous evidence and invented
+scores remain rejected. Summaries follow criteria to avoid an observed duplicate
+summary defect. The final compiler and public report shape remain unchanged.
+
+One bounded repair may replace specified invalid/missing fields while preserving
+validated siblings and usable ratings. Unparseable output permits one complete
+regeneration. Failed repair retains any validated partial result; insufficient
+speech and honest null ratings do not trigger repair. Provider time is bounded by
+45 seconds initially and 15 seconds for repair, within the existing 75-second
+worker deadline. Diagnostics record versions, request timing/token counts and
+validation paths without source text. Saved reports are not regenerated.
+
+See the [real provider regression and comparison](../benchmarks/text-quality-20261106/COMPARISON.md)
+for observed success, latency and remaining qualification limits.
+
 2026-10-20 amendment: new reports use `speaking-rubric-v2` /
 `speaking-feedback-v3`, described in
 [expression-led Mission planning P0–P4](STAGE_THREE_FOUR_MISSION_PLAN.md).
@@ -72,7 +100,7 @@ The database owns parent-session locks, immutable enqueue, one active claim, 120
 
 `pnpm dev` includes the feedback worker. To run it separately: `pnpm --filter @libitu/api worker:feedback`; `uv run python -m app.workers.speaking_feedback_worker --once` runs one worker cycle from `apps/api`. The worker reconciles completed missions missing a report, then claims work. API end remains successful if enqueue temporarily fails; the worker or Analytics page repairs that gap. Long-lived worker supervision in a hosted environment is still required.
 
-Assessment reuses server-only `DEEPSEEK_API_KEY`, `DEEPSEEK_BASE_URL` and `DEEPSEEK_MODEL`. Each attempt has a 45-second provider timeout, 8,000 output-token cap, 128 KiB response cap and 160 KiB complete-input cap; the outer worker deadline is 75 seconds. At most 100 user turns are supported. Oversized input is not silently truncated or scored in part. Per-account spend enforcement and production monitoring remain operational work.
+Assessment uses the selected text provider's server-only credentials and model. The initial request has a 45-second timeout and at most one repair has 15 seconds; requests retain the 8,000 output-token cap, 128 KiB response cap and 160 KiB complete-input cap. The outer worker deadline is 75 seconds. At most 100 user turns are supported. Oversized input is not silently truncated or scored in part. Per-account spend enforcement and production monitoring remain operational work.
 
 API CORS follows configured `CLERK_AUTHORIZED_PARTIES`, consistent with the existing identity/runtime origin configuration. Initial implementation was verified in an isolated worktree on localhost:3001/8001. The 2026-10-02 integration preserves the original checkout's localhost:3000/8000 configuration; ignored environment files were not copied. Server-only development processes need a separately launched feedback worker or a restart through `pnpm dev` to process jobs. The local feedback worker was launched during integration after a read-only check found no pending or unreported completed Missions; normal future end/request jobs can now be processed.
 

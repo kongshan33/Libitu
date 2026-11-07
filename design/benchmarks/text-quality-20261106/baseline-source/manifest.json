@@ -1,0 +1,8 @@
+{
+  "purpose": "pre-quality-change overlay; apply to a temporary copy of apps/api/app",
+  "sha256": {
+    "app/services/speaking_assessment.py": "5e3c9b91171fffa12b8f2d04e74102963ef125f7a6a77fa27dab588688d9874b",
+    "app/services/speaking_teaching.py": "41fcc571ab87579a7ec157bf0575fa3173495dfc6e207f038c6dea0d47692078",
+    "app/prompts/stage_one_system.txt": "bf067602625b38a61f9e4d63a9665150c29e67ecb85432399b2c76f0139050ae"
+  }
+}

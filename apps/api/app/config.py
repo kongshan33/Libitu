@@ -43,7 +43,8 @@ class Settings(BaseSettings):
     upstash_max_retries: int = 1
     upstash_retry_interval_seconds: float = 0.5
 
-    # Doubao text analysis through Volcengine Ark. Server-only.
+    # Server-only text providers. Ark remains available for explicit comparisons.
+    text_analysis_provider: Literal["ark", "deepseek"] = "deepseek"
     ark_api_key: str | None = None
     ark_base_url: str = "https://ark.cn-beijing.volces.com/api/v3"
     ark_model: str = "doubao-seed-2-1-lite-260915"
@@ -52,11 +53,31 @@ class Settings(BaseSettings):
     ark_max_input_chars: int = 240000
     ark_max_output_tokens: int = 32000
 
-    # Corpus detail can compare providers without changing other text tasks.
-    corpus_analysis_provider: Literal["ark", "deepseek"] = "ark"
+    # Existing ARK_* budgets also bound DeepSeek; keep deployment compatibility.
+    # Corpus detail retains its independent provider/model override.
+    corpus_analysis_provider: Literal["ark", "deepseek"] = "deepseek"
     deepseek_api_key: str | None = None
     deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-flash"
+    # Stage 5 schema-constrained function arguments; local validation still owns evidence.
+    deepseek_assessment_strict: bool = True
     corpus_deepseek_model: str = "deepseek-flash"
+
+    @property
+    def text_api_key(self) -> str | None:
+        return self.deepseek_api_key if self.text_analysis_provider == "deepseek" else self.ark_api_key
+
+    @property
+    def text_base_url(self) -> str:
+        return self.deepseek_base_url if self.text_analysis_provider == "deepseek" else self.ark_base_url
+
+    @property
+    def text_model(self) -> str:
+        return self.deepseek_model if self.text_analysis_provider == "deepseek" else self.ark_model
+
+    @property
+    def text_is_configured(self) -> bool:
+        return bool(self.text_api_key)
 
     @property
     def corpus_api_key(self) -> str | None:

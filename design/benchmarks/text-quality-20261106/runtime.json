@@ -1,0 +1,63 @@
+{
+  "recorded_at": "2026-11-06T15:49:50.625382+00:00",
+  "git_head": "41aa60766819345e47a9dec10604e63560063f3a",
+  "working_tree": "uncommitted; unrelated frontend work preserved",
+  "local_supervisor_pid": 23005,
+  "health": {
+    "api": {
+      "http_status": 200,
+      "body": {
+        "status": "ok"
+      }
+    },
+    "ready": {
+      "http_status": 200,
+      "body": {
+        "status": "ok",
+        "processing_mode": "queue",
+        "worker": "ready",
+        "worker_last_seen_at": "2026-11-06T15:49:49.216339+00:00",
+        "analysis_version": "mvp-v9",
+        "model": "deepseek-flash"
+      }
+    },
+    "web": {
+      "http_status": 200
+    }
+  },
+  "workers": [
+    {
+      "pid": 23252,
+      "parent_pid": 23163,
+      "command": "/Users/river/Documents/Libitu/apps/api/.venv/bin/python3 -m app.workers.blueprint_worker"
+    },
+    {
+      "pid": 23257,
+      "parent_pid": 23201,
+      "command": "/Users/river/Documents/Libitu/apps/api/.venv/bin/python3 -m app.workers.speaking_feedback_worker"
+    }
+  ],
+  "tests": {
+    "root_lint": "passed",
+    "root_build": "passed",
+    "root_test": "passed",
+    "api": 1940,
+    "web": 523,
+    "extension": 124,
+    "total": 2587,
+    "focused_evidence_assessment_and_acoustic": 97,
+    "historical_failures": "Five obsolete prompt assertions fixed; one acoustic subprocess timing failure passed isolated and full reruns."
+  },
+  "sha256": {
+    "apps/api/app/config.py": "e47248735d349d193be5c54938531723a31434aefe0ec37964b1c8efb7456f87",
+    "apps/api/app/prompts/stage_one_system.txt": "7c24a1ea71fe0b35c4de99a201440c4d44ad5877576b45ae9c79c50f136a01a6",
+    "apps/api/app/services/speaking_assessment.py": "c6a80759465ae9b754ab30a09371b6d42bcf5d5417caa1ee1128cd7717311aac",
+    "apps/api/app/services/speaking_teaching.py": "ea0a31c62f0a5e7f68871651e61c137b0a3053d7ac16ce5137b83a66dbd1b424",
+    "apps/api/app/services/speaking_assessment_contract.py": "465c7cddd0ce2f8563c4ca3e6479cfc89e9c588f41150c8485624c58e11d2f97",
+    "apps/api/app/services/speaking_evidence.py": "bb3170e1c1cf865f2a4e3df749b92b1376186d0d30455b55d73fa3429e24ade9",
+    "apps/api/scripts/evaluate_text_quality.py": "8917d4cc6dde9499fa834026f2a6a38a81b22874458a9ad0371f5fb92f6446bb",
+    "apps/api/scripts/compare_text_providers.py": "1789105b4ad08b88e85a88ba970a08f34690471dd6d02fe8c83986b776bb4538"
+  },
+  "scope": "Local authored-data provider calls and unit/regression tests; no production deployment or real-audio acceptance",
+  "final_raw_assessments_replayed_without_network": 15
+}

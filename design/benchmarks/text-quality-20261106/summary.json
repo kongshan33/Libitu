@@ -1,0 +1,142 @@
+{
+  "method": "30 authored cases x 3 repetitions; separate serial baseline and final batches; no user data or DB/voice calls",
+  "regression": {
+    "regression-baseline-30x3": {
+      "passed": 77,
+      "total": 90,
+      "requests": 81,
+      "teaching": {
+        "passed": 62,
+        "total": 72,
+        "missed_positive_occurrences": 9,
+        "extra_positive_occurrences": 0,
+        "timing": {
+          "n": 66,
+          "mean_s": 1.156,
+          "median_s": 1.147,
+          "p95_s": 1.503
+        }
+      },
+      "assessment": {
+        "passed": 15,
+        "total": 18,
+        "complete_3_dimensions_9_criteria": 10,
+        "requested_assessments": 15,
+        "ready_eligible": 6,
+        "ready_eligible_total": 9,
+        "timing": {
+          "n": 15,
+          "mean_s": 5.584,
+          "median_s": 5.794,
+          "p95_s": 8.0
+        },
+        "extra_network_requests": 0,
+        "terminal_brace_recoveries": 0
+      }
+    },
+    "regression-final-30x3": {
+      "passed": 90,
+      "total": 90,
+      "requests": 81,
+      "teaching": {
+        "passed": 72,
+        "total": 72,
+        "missed_positive_occurrences": 0,
+        "extra_positive_occurrences": 0,
+        "timing": {
+          "n": 66,
+          "mean_s": 1.013,
+          "median_s": 0.989,
+          "p95_s": 1.372
+        }
+      },
+      "assessment": {
+        "passed": 18,
+        "total": 18,
+        "complete_3_dimensions_9_criteria": 15,
+        "requested_assessments": 15,
+        "ready_eligible": 9,
+        "ready_eligible_total": 9,
+        "timing": {
+          "n": 15,
+          "mean_s": 4.195,
+          "median_s": 4.403,
+          "p95_s": 4.683
+        },
+        "extra_network_requests": 0,
+        "terminal_brace_recoveries": 6
+      }
+    }
+  },
+  "provider_comparison": {
+    "ark": {
+      "total": 12,
+      "ready": 0,
+      "http_statuses": [
+        403
+      ]
+    },
+    "deepseek": {
+      "total": 12,
+      "ready": 12,
+      "http_statuses": [
+        200
+      ],
+      "tasks": {
+        "assessment_mention": {
+          "n": 2,
+          "mean_s": 4.531,
+          "median_s": 4.531,
+          "p95_s": 5.02
+        },
+        "assessment_use": {
+          "n": 2,
+          "mean_s": 4.616,
+          "median_s": 4.616,
+          "p95_s": 4.634
+        },
+        "planning": {
+          "n": 2,
+          "mean_s": 4.402,
+          "median_s": 4.402,
+          "p95_s": 4.407
+        },
+        "stage1": {
+          "n": 2,
+          "mean_s": 13.623,
+          "median_s": 13.623,
+          "p95_s": 13.68
+        },
+        "teaching_mention": {
+          "n": 2,
+          "mean_s": 1.147,
+          "median_s": 1.147,
+          "p95_s": 1.212
+        },
+        "teaching_use": {
+          "n": 2,
+          "mean_s": 1.278,
+          "median_s": 1.278,
+          "p95_s": 1.339
+        }
+      }
+    }
+  },
+  "artifact_requests": {
+    "v4-comparison.json": 17,
+    "regression-baseline-30x3.json": 81,
+    "json-mode-trial.json": 18,
+    "v5-probe.json": 6,
+    "strict-final-probe.json": 3,
+    "regression-v4-30x3.json": 88,
+    "baseline.json": 12,
+    "providers-final.json": 24,
+    "strict-schema-error.json": 12,
+    "strict-probe.json": 4,
+    "regression-final-30x3.json": 81
+  },
+  "unlisted_requests": {
+    "initial_minimal_strict_probe": 1,
+    "ark_availability_probe": 1
+  }
+}

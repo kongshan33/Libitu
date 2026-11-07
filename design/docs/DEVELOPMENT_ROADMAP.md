@@ -9,15 +9,24 @@ meta:
 
 This roadmap orders implementation by dependency and product risk. Each phase must produce a testable learner outcome before the next phase expands scope.
 
+GA Sound update (2026-11-07, accepted plan): execute [the bounded GA increment](STAGE_TWO_GA_SOUND_PLAN.md) as P0 scope/documentation → P1 versioned contract and compatibility → P2 conservative candidate rules → P3 shared Detailed/Review presentation → P4 per-vowel duration display → P5 regression and delivery evidence. Only P0 is complete. Target GA with 12 entries; do not add British/non-rhotic R-linking. This work extends the existing learning guide and measurement UI; it does not complete M4b acoustic realization detection or depend on shipping those future detectors.
+
 Routing architecture update (2026-10-10): R3 directly enables `/practice/import`, `/practice/{contentId}`, `/segments` and `/shadow` with a shared content layout/media host. Main steps push; selection and explicit returns replace. The user removed compatibility requirements: root query learning links and old extension protocols are unsupported, entry links use new paths, continuation uses v2 only, and Web/extension 0.2.0 must update together. R4 entry work is included; R5 cleanup is implemented. See [architecture](ROUTING_AND_RESPONSIBILITY_ARCHITECTURE.md) and TASK.MD for checks and the outstanding real-toolbar capture qualification. No product phase, provider, database schema or consent boundary changes.
 
 Stage 2 practice refactor update (2026-10-12): execute [the accepted contract](STAGE_TWO_REFACTOR_CONTRACT.md) in six ordered steps: contract (complete), backend three-tier gate (implemented), persistence/feedback (implemented; both migrations applied to hosted Libitu), practice UI (implemented and locally verified at desktop/mobile), full navigation/history acceptance (implemented; hosted directory RPC verified), then final wider regression/documentation. Reuse existing original-video reference acquisition. This is the next Stage 2 workspace increment, not delivery of new Sound detectors or remote file acquisition. TASK.MD tracks implementation.
 
-## Doubao text-provider migration — 2026-10-23
+## DeepSeek text-provider comparison — 2026-11-06
 
-The general text provider is Doubao for Stage 1 analysis, Mission planning,
+Follow-up: deterministic occurrence candidates, fixed assessment fields, evidence
+IDs and one bounded repair are implemented. The 30-case × 3 authored regression
+improves from 77/90 to 90/90 expected outcomes with lower sampled mean latency;
+the same-version Doubao comparison is blocked by account-overdue 403 responses.
+See [quality measurements](../benchmarks/text-quality-20261106/COMPARISON.md).
+Independent learner/ASR and deployed qualification remain the next acceptance step.
+
+The general text provider defaults to DeepSeek Flash for Stage 1 analysis, Mission planning,
 Stage 4 analysis/help and Stage 5 assessment. OpenAI Realtime is the voice provider as of 2026-10-30.
-Corpus detail has a separate provider switch as of 2026-11-05; the local API now uses DeepSeek Flash after two live comparison rounds. Broader teaching-quality qualification remains open.
+Corpus detail keeps its separate provider switch. Ark/Doubao remains an explicit comparison option. The initial two alternating live rounds showed faster sampled responses and exposed evidence-classification and assessment-completeness failures; see the [historical comparison](../benchmarks/text-providers-20261106/COMPARISON.md) and the repair follow-up above. Broader teaching-quality qualification remains open.
 This infrastructure replacement preserves delivery order and product contracts;
 see `PROJECT.MD` and `TASK.MD` for configuration and verification boundaries.
 
