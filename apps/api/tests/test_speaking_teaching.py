@@ -15,7 +15,7 @@ from app.services import speaking_teaching as teaching
 @pytest.fixture(autouse=True)
 def no_paid_analysis(monkeypatch):
     monkeypatch.setattr(teaching, "get_settings", lambda: SimpleNamespace(
-        ark_api_key=None, ark_base_url="https://analyzer.invalid", ark_model="fixture-model",
+        text_api_key=None, text_base_url="https://analyzer.invalid", text_model="fixture-model",
     ))
 
 
@@ -443,7 +443,7 @@ def test_reconcile_rejects_changed_transcript_revision_without_removing_newer_ev
 def transport(monkeypatch, handler):
     original = httpx.AsyncClient
     monkeypatch.setattr(teaching, "get_settings", lambda: SimpleNamespace(
-        ark_api_key="test-only", ark_base_url="https://analyzer.invalid", ark_model="fixture-model"))
+        text_api_key="test-only", text_base_url="https://analyzer.invalid", text_model="fixture-model"))
     monkeypatch.setattr(teaching.httpx, "AsyncClient", lambda **kwargs: original(**kwargs, transport=httpx.MockTransport(handler)))
 
 

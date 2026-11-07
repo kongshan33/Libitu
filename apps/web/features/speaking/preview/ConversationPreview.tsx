@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowUp, ChevronDown, Pause, Square } from "lucide-react";
 import Link from "next/link";
-import { ConversationHeader, MissionIntro, StageGuide, ConversationToolbar, VoiceSurface, MicrophoneButton, MicrophoneBar, ConversationHint, ConversationMessage, RecastLine, StageDivider, TargetPanel, type HintPresentation } from "../ConversationPresentation";
+import { ConversationHeader, MissionIntro, StageGuide, ConversationToolbar, VoiceSurface, VoiceCallButton, MicrophoneButton, MicrophoneBar, ConversationHint, ConversationMessage, RecastLine, StageDivider, TargetPanel, type HintPresentation } from "../ConversationPresentation";
 import { freeHints, hints, previewStates, scene, targets, type PreviewState } from "./fixtures";
 import styles from "../Speaking.module.css";
 
@@ -19,6 +19,8 @@ export function ConversationPreview() {
   const [reveal, setReveal] = useState(true);
   const [targetsOpen, setTargetsOpen] = useState(false);
   const [microphone, setMicrophone] = useState(true);
+  const [volume, setVolume] = useState(0);
+  const getLevel = useCallback(() => volume, [volume]);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const [skipped, setSkipped] = useState(false);
@@ -26,7 +28,7 @@ export function ConversationPreview() {
   const ended = state === "completed";
   const speaking = state === "speaking";
   const offline = ready || ended || state === "paused" || state === "error";
-  const status = state === "connecting" ? "Connecting…" : state === "paused" ? "Paused" : ended ? "Completed" : offline ? "Offline" : state === "silence" ? "Waiting for you" : microphone ? "Listening" : "Microphone off";
+  const status = state === "connecting" ? "Connecting…" : state === "paused" ? "Paused" : ended ? "Completed" : offline ? "Offline" : !speaking && state !== "silence" ? "Speaking" : state === "silence" ? "Waiting for you" : microphone ? "Listening" : "Microphone off";
   const help = !offline ? hint : null;
   const label = help?.status === "unavailable" ? "Try hint again" : help?.level === "direction" ? "Opening words" : help?.level === "opening" ? "See an example" : help?.level === "example" ? "Hide hint" : "Need a hint?";
   const text = state === "free" ? "What is something you enjoyed this week?" : state === "silence" ? scene.simpler : scene.partner;
@@ -57,18 +59,20 @@ export function ConversationPreview() {
     <main className={styles.page}><section className={styles.shell} aria-label="Speaking mission preview">
       <div className={styles.previewTools} role="group" aria-label="Prototype state">
         <span className={styles.eyebrow}>Prototype state</span>{previewStates.map(([value, label]) => <button type="button" key={value} aria-pressed={state === value} onClick={() => chooseState(value)}>{label}</button>)}
+        <label>Simulated audio level <input aria-label="Simulated audio level" type="range" min="0" max="1" step="0.05" value={volume} onChange={event => setVolume(Number(event.target.value))} /></label>
         <p>Simulated UI preview · no microphone, provider connection, or saved learner data. Silence and hint states are selected manually.</p>
       </div>
       <MissionIntro goal={state === "free" ? "A conversation at your own pace." : scene.goal} metadata={ended ? "Saved conversation · read-only review" : scene.metadata} setting={state === "free" ? undefined : scene.setting} actions={<><Link href="/loadout">Back to loadout</Link>{!ended ? <button type="button" onClick={() => chooseState("completed")}>End mission</button> : null}</>} />
       {state !== "free" ? <StageGuide title="Persuasive pitch" steps={[...scene.stages]} currentIndex={ready ? null : 1} statuses={ready ? undefined : ["completed", "current", "pending", "pending"]} /> : null}
       <div className={styles.workspace}><section className={styles.conversation} aria-label="Conversation">
         <ConversationToolbar view={view} onView={setView} status={status} online={!offline} actions={<button type="button" className={styles.trainingToggle} aria-expanded={targetsOpen} aria-controls="preview-targets" onClick={() => setTargetsOpen(value => !value)}>Targets<ChevronDown size={14} aria-hidden="true" /></button>} />
-        {state === "paused" || state === "error" ? <div className={styles.connectionNotice}><div><strong>{state === "paused" ? "Conversation paused" : "Connection lost"}</strong><p>Your transcript is saved. {state === "paused" ? "Resume when you are ready." : "Reconnect to continue."}</p></div>{view === "voice" ? start : null}</div> : null}
-        {view === "voice" ? <VoiceSurface phase={speaking ? "listening" : "idle"} speaker="AI partner · now"
+        {state === "paused" || state === "error" ? <div className={styles.connectionNotice}><div><strong>{state === "paused" ? "Conversation paused" : "Connection lost"}</strong><p>Your transcript is saved. {state === "paused" ? "Resume when you are ready." : "Reconnect to continue."}</p></div></div> : null}
+        {view === "voice" ? <VoiceSurface phase={state === "connecting" ? "connecting" : offline ? "idle" : speaking || state === "silence" ? "listening" : "speaking"} getOutputLevel={!speaking && state !== "silence" ? getLevel : undefined} getInputLevel={microphone ? getLevel : undefined} status={offline ? startLabel : speaking ? "Listening" : "Speaking"}
+          callControl={!ended ? <VoiceCallButton connected={!offline} connecting={state === "connecting"} label={offline ? startLabel : "Pause conversation"} onClick={() => chooseState(offline ? "live" : "paused")} /> : undefined} speaker="AI partner · now"
           utterance={!ready ? <ModelText text={messages.at(-1) ?? text} phrase={state === "uncertain" || state === "free" || speaking || messages.length ? "__none__" : "zero-sum game"} /> : undefined}
           recast={!ready && !speaking && !messages.length && state !== "free" ? recast : undefined}
-          hint={<ConversationHint hint={help} speaking={false} />} action={ready ? start : undefined}
-          controls={!offline ? <div className={styles.voiceControls}><MicrophoneButton large enabled={microphone} onClick={() => setMicrophone(value => !value)} /><div className={styles.voiceActions}><button type="button" className={styles.quiet} onClick={() => chooseState("paused")}><Pause size={12} />Pause conversation</button></div></div> : undefined} />
+          hint={<ConversationHint hint={help} speaking={false} />}
+          controls={!offline ? <div className={styles.voiceControls}><MicrophoneButton enabled={microphone} onClick={() => setMicrophone(value => !value)} /></div> : undefined} />
           : <div className={styles.chat} aria-label="Conversation transcript">
             {ready ? <div className={styles.chatEmpty}><h2>Ready when you are</h2></div> : <>
               <ConversationMessage speaker="Partner"><div className={styles.bubble}>{state === "free" ? "How has your week been?" : scene.opening}</div></ConversationMessage>

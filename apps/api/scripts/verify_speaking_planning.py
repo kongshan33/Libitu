@@ -655,7 +655,7 @@ def main() -> None:
         _OUTPUT = (args.output if args.output.is_absolute() else _INVOCATION_DIRECTORY / args.output).resolve()
         _OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     settings = get_settings()
-    if not settings.supabase_server_is_configured or (not args.replay_events and not settings.ark_is_configured):
+    if not settings.supabase_server_is_configured or (not args.replay_events and not settings.text_is_configured):
         parser.error("Configure server Supabase and the existing Doubao provider before this smoke.")
     replay_path = ((args.replay_events if args.replay_events.is_absolute()
                     else _INVOCATION_DIRECTORY / args.replay_events).resolve()) if args.replay_events else None

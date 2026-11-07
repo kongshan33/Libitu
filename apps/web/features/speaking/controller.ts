@@ -18,7 +18,7 @@ export type ConversationState = {
   replyReference: { question: string | null; assistantId: string | null; outputIds: string[]; help: ConversationHelp | null; legacyHelp: SpeakingWorkspace["help"] } | null;
 };
 export const initialConversationState = (): ConversationState => ({ workspace: null, connection: "loading", phase: "listening", microphone: false, microphoneBusy: false, userSpeaking: false, error: null, conflict: false, busy: false, partials: {}, pending: null, supportPending: null, supportError: null, recastSourceRetired: null, retainedConversationHelp: null, helpLoadingVisible: false, replyReference: null });
-type AudioPort = Pick<ConversationAudio, "prepare" | "enableMicrophone" | "disableMicrophone" | "append" | "report" | "clear" | "dispose"> & Partial<Pick<ConversationAudio, "getOutputLevel">>;
+type AudioPort = Pick<ConversationAudio, "prepare" | "enableMicrophone" | "disableMicrophone" | "append" | "report" | "clear" | "dispose"> & Partial<Pick<ConversationAudio, "getOutputLevel" | "getInputLevel" | "getOutputBands" | "getInputBands">>;
 type Dependencies = {
   socket?: (url: string) => WebSocket;
   socketUrl?: (path: string) => string;
@@ -181,7 +181,11 @@ export class ConversationController {
     if (this.socket.bufferedAmount > 256_000) { this.disconnect("Your connection fell behind. Reconnect to continue."); return false; }
     try { this.socket.send(JSON.stringify(event)); return true; } catch { this.disconnect("Connection interrupted. Reconnect to continue."); return false; }
   }
+  private silentBands = new Float32Array(4);
+  getOutputBands = (): Float32Array => this.state.connection === "connected" ? this.audio?.getOutputBands?.() ?? this.silentBands : this.silentBands;
+  getInputBands = (): Float32Array => this.state.connection === "connected" && this.state.microphone ? this.audio?.getInputBands?.() ?? this.silentBands : this.silentBands;
   getOutputLevel = (): number => this.state.connection === "connected" ? this.audio?.getOutputLevel?.() ?? 0 : 0;
+  getInputLevel = (): number => this.state.connection === "connected" && this.state.microphone ? this.audio?.getInputLevel?.() ?? 0 : 0;
   private getAudio(): AudioPort {
     if (!this.audio) {
       const create = this.dependencies.audio ?? ((frame, boundary, lost) => new ConversationAudio(frame, boundary, lost));

@@ -19,6 +19,9 @@ def use_inline_processing(monkeypatch: pytest.MonkeyPatch, tmp_path):
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("GEMINI_API_KEY", "")
     monkeypatch.setenv("ARK_API_KEY", "")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "")
+    monkeypatch.setenv("TEXT_ANALYSIS_PROVIDER", "ark")
+    monkeypatch.setenv("CORPUS_ANALYSIS_PROVIDER", "ark")
     get_settings.cache_clear()
     get_supabase_repository.cache_clear()
     yield

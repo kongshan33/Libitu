@@ -1,0 +1,26 @@
+{
+  "verified_at": "2026-11-06T14:49:40.899756+00:00",
+  "readiness": {
+    "status": "ok",
+    "processing_mode": "queue",
+    "worker": "ready",
+    "worker_last_seen_at": "2026-11-06T14:49:35.499477+00:00",
+    "analysis_version": "mvp-v9",
+    "model": "deepseek-flash"
+  },
+  "web_http_status": 200,
+  "text_provider": "deepseek",
+  "text_model": "deepseek-flash",
+  "corpus_provider": "deepseek",
+  "corpus_model": "deepseek-flash",
+  "voice_provider": "openai",
+  "checks": {
+    "lint": "passed",
+    "build": "passed",
+    "test": "passed",
+    "api_tests": 1913,
+    "web_tests": 522,
+    "extension_tests": 124
+  },
+  "deployment": "local development only"
+}

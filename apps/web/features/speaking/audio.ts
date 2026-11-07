@@ -1,3 +1,5 @@
+import { visualFrequencyBands } from "./orb-energy.ts";
+
 export function encodePcm(bytes: ArrayBuffer): string {
   let value = "";
   for (const byte of new Uint8Array(bytes)) value += String.fromCharCode(byte);
@@ -15,11 +17,26 @@ export function decodePcm(value: string): Float32Array<ArrayBuffer> {
   return samples;
 }
 type Segment = { item: string; start: number; duration: number; node: AudioBufferSourceNode };
+/** Visual-only compression: make quiet speech visible without amplifying the audio. */
+export function visualAudioLevel(samples: Float32Array): number {
+  if (!samples.length) return 0;
+  let energy = 0;
+  for (const sample of samples) energy += sample * sample;
+  const rms = Math.sqrt(energy / samples.length);
+  if (!Number.isFinite(rms) || rms <= .0015) return 0;
+  return Math.min(1, Math.sqrt((rms - .0015) / .1185));
+}
 export class ConversationAudio {
   private context: AudioContext | null = null;
   private stream: MediaStream | null = null;
   private outputMeter: AnalyserNode | null = null;
-  private meterSamples = new Float32Array(256);
+  private inputMeter: AnalyserNode | null = null;
+  private inputSamples = new Float32Array(2048);
+  private meterSamples = new Float32Array(2048);
+  private inputFrequencies = new Uint8Array(1024);
+  private outputFrequencies = new Uint8Array(1024);
+  private inputBands = new Float32Array(4);
+  private outputBands = new Float32Array(4);
   private capture: AudioWorkletNode | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
   private sink: GainNode | null = null;
@@ -50,7 +67,8 @@ export class ConversationAudio {
       const node = new AudioWorkletNode(context, "libitu-speaking-capture");
       node.port.onmessage = (event: MessageEvent<ArrayBuffer>) => { if (!this.disposed && generation === this.captureGeneration && event.data instanceof ArrayBuffer && event.data.byteLength <= 32768) this.onFrame(encodePcm(event.data)); };
       this.capture = node; this.source = context.createMediaStreamSource(stream); this.sink = context.createGain(); this.sink.gain.value = 0;
-      this.source.connect(node); node.connect(this.sink); this.sink.connect(context.destination);
+      this.inputMeter = context.createAnalyser(); this.inputMeter.fftSize = 2048; this.inputMeter.smoothingTimeConstant = .2;
+      this.source.connect(this.inputMeter); this.inputMeter.connect(node); node.connect(this.sink); this.sink.connect(context.destination);
       stream.getAudioTracks().forEach(track => { track.onended = () => { if (!this.disposed && generation === this.captureGeneration) { this.disableMicrophone(); this.onTrackLost(); } }; });
     } catch (error) { this.disableMicrophone(); throw error; }
   }
@@ -58,6 +76,7 @@ export class ConversationAudio {
     this.captureGeneration++;
     this.stream?.getTracks().forEach(track => { track.onended = null; track.stop(); }); this.stream = null;
     if (this.capture) { this.capture.port.onmessage = null; this.capture.disconnect(); this.capture.port.close(); }
+    this.inputMeter?.disconnect(); this.inputMeter = null;
     this.source?.disconnect(); this.sink?.disconnect(); this.capture = null; this.source = null; this.sink = null;
   }
   append(item: string, audio: string): void {
@@ -69,7 +88,7 @@ export class ConversationAudio {
     const buffer = context.createBuffer(1, samples.length, 24000); buffer.copyToChannel(samples, 0);
     const node = context.createBufferSource(); node.buffer = buffer;
     if (!this.outputMeter) {
-      this.outputMeter = context.createAnalyser(); this.outputMeter.fftSize = 256;
+      this.outputMeter = context.createAnalyser(); this.outputMeter.fftSize = 2048; this.outputMeter.smoothingTimeConstant = .2;
       this.outputMeter.connect(context.destination);
     }
     node.connect(this.outputMeter);
@@ -84,9 +103,23 @@ export class ConversationAudio {
   getOutputLevel(): number {
     if (!this.outputMeter || this.context?.state !== "running" || !this.segments.some(segment => this.context!.currentTime >= segment.start && this.context!.currentTime < segment.start + segment.duration)) return 0;
     this.outputMeter.getFloatTimeDomainData(this.meterSamples);
-    let energy = 0;
-    for (const sample of this.meterSamples) energy += sample * sample;
-    return Math.min(1, Math.sqrt(energy / this.meterSamples.length) * 4);
+    return visualAudioLevel(this.meterSamples);
+  }
+  /** Reads the already-authorized capture graph; never opens another microphone. */
+  getInputLevel(): number {
+    if (!this.inputMeter || !this.stream || this.context?.state !== "running") return 0;
+    this.inputMeter.getFloatTimeDomainData(this.inputSamples);
+    return visualAudioLevel(this.inputSamples);
+  }
+  getOutputBands(): Float32Array {
+    const level=this.getOutputLevel();
+    if (level>0) this.outputMeter?.getByteFrequencyData(this.outputFrequencies);
+    return visualFrequencyBands(this.outputFrequencies,this.context?.sampleRate ?? 0,level,this.outputBands);
+  }
+  getInputBands(): Float32Array {
+    const level=this.getInputLevel();
+    if (level>0) this.inputMeter?.getByteFrequencyData(this.inputFrequencies);
+    return visualFrequencyBands(this.inputFrequencies,this.context?.sampleRate ?? 0,level,this.inputBands);
   }
   report(): void {
     if (!this.context) return;

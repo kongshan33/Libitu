@@ -19,6 +19,10 @@ import httpx
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, ValidationError
 
 from app.config import get_settings
+from app.services.speaking_evidence import (
+    _utf16_length, _quoted, _tokens, _exact_spans, _structure_supported,
+    normalize_target_quote, target_candidates,
+)
 from app.schemas.speaking import SpeakingSession
 from app.services.speaking_opportunities import (
     is_staged_plan, planned_targets, stage_progress, staged_policy_invalid_reason,
@@ -37,7 +41,7 @@ OBSERVATION_TURNS = 2
 POLICY_TTL_SECONDS = 45
 POLICY_MAX_FUTURE_TURNS = 2
 POLICY_PROMPT_VERSION = "speaking-support-v4"
-ANALYSIS_PROMPT_VERSION = "speaking-analysis-v5"
+ANALYSIS_PROMPT_VERSION = "speaking-analysis-v6"
 _WORDS = re.compile(r"\w+(?:['’]\w+)*", re.UNICODE)
 _SEPARATOR = re.compile(r"^[\s,\-–—]*$")
 _HELP = re.compile(
@@ -89,8 +93,18 @@ inappropriate.
 If mission_targets are supplied, prioritize a relevant primary target's planned
 communicative function over optional targets. Adapt its trigger to current context;
 the plan is not a script to force after a topic change or a farewell.
+The server supplies occurrence_candidates with exact positions and match types.
+Review EVERY supplied candidate once in candidate_reviews, copying candidate_id.
+Judge contextual use only; never reclassify or recopy these occurrences in evidence.
+A complete target followed by more words is still exact: target "One trade-off is"
+in "One trade-off is that it costs more" is exact, not an inflectional variant.
+"I didn't use 'to be fair'; I only read the card" is an inappropriate mention.
+"To be fair, we cannot accept that deadline" is an ordinary communicative use.
+Use evidence only to propose ADDITIONAL occurrences missing from the candidates.
+Do not omit an existing candidate just because it is quoted or inappropriate.
 Schema:
-{"evidence":[{"session_item_id":"selected UUID","quote":"exact user text",
+{"candidate_reviews":[{"candidate_id":"c0","appropriateness":"appropriate|uncertain|inappropriate",
+"reason":"brief contextual reason"}],"evidence":[{"session_item_id":"selected UUID","quote":"exact user text",
 "match_type":"exact|variant|structure",
 "appropriateness":"appropriate|uncertain|inappropriate","reason":"brief reason"}],
 "needs_help":null,"recommendation":null}
@@ -127,8 +141,16 @@ class _Recommendation(BaseModel):
     closing: bool = False
 
 
+class _CandidateReview(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    candidate_id: str = Field(min_length=1, max_length=16)
+    appropriateness: Literal["appropriate", "uncertain", "inappropriate"]
+    reason: str = Field(min_length=1, max_length=300)
+
+
 class _Analysis(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
+    candidate_reviews: list[_CandidateReview] = Field(default_factory=list, max_length=64)
     evidence: list[_Candidate] = Field(max_length=16)
     needs_help: _Quote | None = None
     recommendation: _Recommendation | None = None
@@ -149,21 +171,21 @@ async def request_analysis_json(settings, prompt: str, context: dict, *, prompt_
     """One bounded model request shared by observation, explicit help and assessment."""
     timeout_seconds = ANALYSIS_TIMEOUT_SECONDS if timeout_seconds is None else timeout_seconds
     started = time.monotonic()
-    trace = {"model": settings.ark_model, "prompt_version": prompt_version,
+    trace = {"model": settings.text_model, "prompt_version": prompt_version,
              "started_at": datetime.now(timezone.utc).isoformat(), "raw_content": None,
              "usage": None, "finish_reason": None, "error_type": None}
     try:
-        if not settings.ark_api_key:
+        if not settings.text_api_key:
             raise ValueError("analyzer_not_configured")
-        payload = {"model": settings.ark_model,
+        payload = {"model": settings.text_model,
                    "messages": [{"role": "system", "content": prompt},
                                 {"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
                    "response_format": {"type": "json_object"}, "thinking": {"type": "disabled"},
                    "temperature": 0.1, "max_tokens": max_tokens, "stream": False}
         async with asyncio.timeout(timeout_seconds):
-            async with httpx.AsyncClient(base_url=settings.ark_base_url.rstrip("/"), timeout=timeout_seconds) as client:
+            async with httpx.AsyncClient(base_url=settings.text_base_url.rstrip("/"), timeout=timeout_seconds) as client:
                 async with client.stream("POST", "/chat/completions", json=payload,
-                                         headers={"Authorization": f"Bearer {settings.ark_api_key}"}) as response:
+                                         headers={"Authorization": f"Bearer {settings.text_api_key}"}) as response:
                     response.raise_for_status()
                     data = bytearray()
                     async for chunk in response.aiter_bytes():
@@ -204,21 +226,6 @@ async def request_analysis_json(settings, prompt: str, context: dict, *, prompt_
     return raw, trace
 
 
-def _utf16_length(text: str) -> int:
-    return len(text.encode("utf-16-le")) // 2
-
-
-def _quoted(text: str, start: int | None, end: int | None, quote: str) -> bool:
-    """Strict slicing also rejects offsets that split a surrogate pair."""
-    if type(start) is not int or type(end) is not int or not 0 <= start < end:
-        return False
-    try:
-        encoded = text.encode("utf-16-le")
-        return end * 2 <= len(encoded) and encoded[start * 2:end * 2].decode("utf-16-le") == quote
-    except (UnicodeError, AttributeError):
-        return False
-
-
 def _anchor_quote(text: str, candidate: _Quote) -> tuple[dict | None, str | None]:
     """Anchor new model quotes only; persisted evidence remains strictly sliced.
 
@@ -237,58 +244,6 @@ def _anchor_quote(text: str, candidate: _Quote) -> tuple[dict | None, str | None
     source = "server_derived" if candidate.start is None and candidate.end is None else "server_repaired"
     return {**anchor, "source": source, "start": _utf16_length(text[:start]),
             "end": _utf16_length(text[:end])}, None
-
-
-def _tokens(text: str) -> list[tuple[str, int, int]]:
-    return [(unicodedata.normalize("NFKC", m.group()).casefold().replace("’", "'"), m.start(), m.end())
-            for m in _WORDS.finditer(text)]
-
-
-def _exact_spans(text: str, expression: str) -> list[tuple[int, int, str]]:
-    words, target = _tokens(text), [word[0] for word in _tokens(expression)]
-    if not target:
-        return []
-    spans = []
-    for index in range(len(words) - len(target) + 1):
-        selected = words[index:index + len(target)]
-        if [word[0] for word in selected] != target:
-            continue
-        if any(not _SEPARATOR.fullmatch(text[left[2]:right[1]]) for left, right in zip(selected, selected[1:])):
-            continue
-        start, end = selected[0][1], selected[-1][2]
-        spans.append((_utf16_length(text[:start]), _utf16_length(text[:end]), text[start:end]))
-    return spans
-
-
-def _structure_supported(pattern: str, quote: str, *, allow_surrounding: bool = False) -> bool:
-    """A model must ground every literal anchor and fill every bracketed slot."""
-    if len(pattern) > 1000:
-        return False
-    parts = re.split(r"(\[[^\]\n]{1,120}\])", pattern)
-    fragments, anchors = [], 0
-    for part in parts:
-        if part.startswith("[") and part.endswith("]"):
-            fragments.append(None)
-        else:
-            tokens = [word[0] for word in _tokens(part)]
-            anchors += len(tokens)
-            fragments.extend(tokens)
-    if anchors < 2:
-        return False
-    actual = [word[0] for word in _tokens(quote)]
-    # Linear-space DP avoids regex backtracking on many arbitrary user-defined slots.
-    reachable = ([True] * (len(actual) + 1) if allow_surrounding
-                 else [True, *([False] * len(actual))])
-    for token in fragments:
-        next_positions, earlier = [False] * len(reachable), False
-        for index in range(len(actual)):
-            if token is None:
-                earlier = earlier or reachable[index]
-                next_positions[index + 1] = earlier  # Every slot has at least one token.
-            else:
-                next_positions[index + 1] = reachable[index] and actual[index] == token
-        reachable = next_positions
-    return any(reachable) if allow_surrounding else reachable[-1]
 
 
 def find_target_quote(text: str, target: str, kind: str) -> tuple[str, str] | None:
@@ -850,7 +805,9 @@ def _staged_recommendation(session: SpeakingSession, message: dict, evidence: li
 
 
 async def _analyze_with_provider(session: SpeakingSession, message: dict, history: list[dict]) -> _Analysis:
+    candidates = target_candidates(session.items, [message])[:64]
     context = {"scenario": session.scenario_type, "goal": session.goal[:500],
+               "occurrence_candidates": candidates,
                "selected_language": [{"session_item_id": str(item.id), "kind": item.kind,
                                       "text": item.text[:1000], "meaning": (item.meaning or "")[:400],
                                       "pattern_family": item.pattern_family,
@@ -873,6 +830,20 @@ async def _analyze_with_provider(session: SpeakingSession, message: dict, histor
         trace["rejected"] = [{"kind": "schema", "reason": entry["type"], "path": list(entry["loc"])}
                              for entry in error.errors(include_input=False, include_url=False)[:16]]
         raise AnalysisProviderError(trace) from None
+    by_id = {row["candidate_id"]: row for row in candidates}
+    counts = {}
+    for review in analysis.candidate_reviews:
+        counts[review.candidate_id] = counts.get(review.candidate_id, 0) + 1
+    trace["candidate_review_issues"] = []
+    for identifier in by_id.keys() | counts.keys():
+        if identifier not in by_id or counts.get(identifier) != 1:
+            trace["candidate_review_issues"].append({"candidate_id": identifier, "reason": "unknown_or_unreviewed_candidate"})
+    for review in analysis.candidate_reviews:
+        candidate = by_id.get(review.candidate_id)
+        if candidate and counts[review.candidate_id] == 1:
+            analysis.evidence.append(_Candidate(**{key: candidate[key] for key in (
+                "session_item_id", "quote", "start", "end", "match_type")},
+                appropriateness=review.appropriateness, reason=review.reason))
     analysis._trace = trace
     return analysis
 
@@ -882,7 +853,7 @@ async def analyze_utterance(session: SpeakingSession, message: dict, history: li
     started = time.monotonic()
     messages = _messages(history, message)
     controller = _controller_state(previous)
-    trace = {"model": get_settings().ark_model, "prompt_version": ANALYSIS_PROMPT_VERSION,
+    trace = {"model": get_settings().text_model, "prompt_version": ANALYSIS_PROMPT_VERSION,
              "source_message_id": message.get("id"), "source_revision": message.get("revision"),
              "context_version": previous.get("version"),
              "context_message_ids": [row["id"] for row in history if row.get("id") != message.get("id")
@@ -931,6 +902,15 @@ async def analyze_utterance(session: SpeakingSession, message: dict, history: li
         for candidate in analysis.evidence:
             item = items.get(candidate.session_item_id)
             anchor, anchor_error = _anchor_quote(message["text"], candidate)
+            original_candidate = candidate.model_dump()
+            normalized = None
+            if item and anchor:
+                normalized = normalize_target_quote(item.text, item.kind, message["text"], candidate.quote,
+                    anchor["start"], anchor["end"], candidate.match_type)
+                if normalized and any(getattr(candidate, key) != normalized[key] for key in ("quote", "match_type")):
+                    candidate = candidate.model_copy(update=normalized)
+                    anchor = {**anchor, "start": normalized["start"], "end": normalized["end"], "source": "server_exact_span"}
+                    trace.setdefault("match_repairs", []).append({"from": original_candidate, "to": candidate.model_dump()})
             reason = None
             if not item:
                 reason = "unknown_session_item"
@@ -940,7 +920,7 @@ async def analyze_utterance(session: SpeakingSession, message: dict, history: li
                 reason = "item_match_type_mismatch"
             elif candidate.match_type == "structure" and not _structure_supported(item.text, candidate.quote):
                 reason = "structure_anchors_or_slots_missing"
-            elif candidate.match_type == "variant" and not variant_supported(item.text, candidate.quote):
+            elif candidate.match_type == "variant" and normalized is None:
                 reason = "variant_target_not_grounded"
             if not reason:
                 row = _observation(session, message, candidate.session_item_id, anchor["start"], anchor["end"],

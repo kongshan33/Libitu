@@ -2,6 +2,10 @@
 
 Updated: 2026-09-09
 
+## Accepted next increment — 2026-11-07
+
+[The GA-only execution plan](STAGE_TWO_GA_SOUND_PLAN.md) defines the next version: 12 entries, subtypes, evidence-aware marks, bounded v2 candidates and per-vowel duration display. It is planned, not implemented. The five-kind v1 catalogue documented below remains the current rule-engine baseline; the new plan does not authorize treating candidate rules or measurements as observed sound realization. Use PROJECT.MD/TASK.MD for implementation progress.
+
 ## Delivered scope
 
 M4a adds a source-bound Sound guide in a three-layer workspace with separate Sound, Rhythm and Melody tabs. The initial implementation is **dictionary lookup plus deterministic phonology rules**. No LLM is called, no audio is sent to the endpoint and no extra API key is needed. The earlier architectural principle still applies: a future LLM can reason about text/phonemes, but it must not label its reasoning as acoustic evidence.

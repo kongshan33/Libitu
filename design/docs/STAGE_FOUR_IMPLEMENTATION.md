@@ -1,5 +1,22 @@
 # Stage 4: live conversation
 
+## Deterministic target candidates — 2026-11-06
+
+Teaching analysis v6 receives bounded, source-positioned target candidates and
+reviews each candidate ID for contextual appropriateness. Exact lexical spans,
+supported contractions/inflections and filled structure anchors are computed by
+the server. A uniquely contained exact phrase can be trimmed from an overlong
+model quote without changing its semantic verdict. Partial words, cross-sentence
+variants, paraphrases and unfilled structures cannot establish usage. Mentioning,
+quoting or denying use of a card phrase remains separate from using it in context;
+ordinary sentence negation is not automatically inappropriate.
+
+Missing, duplicate or unknown candidate reviews are diagnosed, with lexical-only
+observations remaining uncertain. Stage 5 shares the matching rules. Teaching
+analysis keeps its single-call latency budget and the existing exposure ledger;
+no voice, hint-display or assistance-attribution behavior changes. See the
+[real regression results](../benchmarks/text-quality-20261106/COMPARISON.md).
+
 ## Stage 4 reply references — 2026-11-03
 
 User instruction supersedes speech-start hint fade-out: retain the already
@@ -150,7 +167,7 @@ Implemented locally, 2026-10-01; default voice provider switched to OpenAI on 20
 ### Minimal partner recasts (Conversation protocol 1)
 
 `speaking_recasts.py` analyzes finalized learner text through the existing bounded
-Doubao JSON adapter (`conversation-recast-v1`). At most one candidate per turn
+selected text-provider JSON adapter (`conversation-recast-v1`). At most one candidate per turn
 contains 1–3 exact UTF-16 edits; the server reconstructs the replacement and
 derives changed-word spans. Uncertain ASR, incomplete utterances, broad rewrites,
 changed names/numbers/negation/commitments and ungrounded quotes are rejected.
@@ -199,7 +216,7 @@ Starting voice is an explicit action. Speech is streamed continuously, OpenAI se
 
 2026-10-18 conversation pacing: defer the initial opening until the browser acknowledges its microphone mode, preventing the initial enable event from cancelling or silencing that opening. With the microphone enabled, wait at least 15 seconds after AI generation and acknowledged playback finish, then request one brief in-role follow-up; allow at most two until nonblank learner text resets the count. Pending speech/transcription, generation, playback, mute and terminal/ownership changes block follow-ups. Timer checks use the approximately two-second heartbeat; reconnect resets the connection-local budget. Controls do not create learner turns or learning evidence. The former 144 KB fixed one-second input ceiling is replaced by a 240 KB token bucket refilling at 60 KB/s, allowing bounded catch-up of nominal 48 KB/s PCM while still rejecting sustained excess. See the [runtime contract](STAGE_FOUR_RUNTIME_CONTRACT.md). These paths have synthetic regression coverage; real microphone/provider timing remains unmeasured.
 
-An asynchronous Doubao analyzer checks each finalized learner revision against frozen context while the live partner responds independently. The first two substantive learner utterances stay in observation mode; later automatic teaching requires a contextual opportunity, a two-substantive-turn cooldown and a separate target attempt budget. Candidates can survive through two later user turns within 45 seconds of source finalization. Analysis completion actively wakes safe-boundary dispatch. Evidence retains exact UTF-16 quotes, uncertain lexical fallback and assistance provenance; revision changes invalidate old evidence without rewriting actual presentation history.
+An asynchronous DeepSeek analyzer checks each finalized learner revision against frozen context while the live partner responds independently. The first two substantive learner utterances stay in observation mode; later automatic teaching requires a contextual opportunity, a two-substantive-turn cooldown and a separate target attempt budget. Candidates can survive through two later user turns within 45 seconds of source finalization. Analysis completion actively wakes safe-boundary dispatch. Evidence retains exact UTF-16 quotes, uncertain lexical fallback and assistance provenance; revision changes invalidate old evidence without rewriting actual presentation history.
 
 The subsequent compliance fix withholds selected wording from Gemini's setup and implicit controls. The control assigns a communicative task to the learner and asks the partner to elicit it with one question. Private target metadata supports deterministic post-response disclosure checks before advisory assessment; no voice buffering or extra pre-response model request is added. `speaking-analysis-v3` asks for exact quote text and derives UTF-16 offsets server-side when unique, retaining valid supplied ranges for repeated-quote disambiguation and logging repaired/derived provenance. Stored evidence and Stage 5 remain strictly validated.
 
@@ -221,7 +238,7 @@ Input and output are PCM16LE mono24k. Input transcription uses
 `gpt-4o-mini-transcribe` with no target-language priming. Semantic VAD uses low
 eagerness; the application requests responses and handles interruption itself.
 Private policies bind to explicit `response.create` requests and never require
-waiting for Doubao analysis before audio response generation.
+waiting for text analysis before audio response generation.
 
 OpenAI cancellation stops generation and `conversation.item.truncate` removes
 unplayed audio from the provider context using playback receipts. Recovery still
@@ -253,7 +270,7 @@ One active runtime per mission, a one-use 30-second ticket delivered in the firs
 
 Defaults: at most 100 learner utterances, 4,000 characters per typed/finalized learner message, 450 provider output tokens, 20-minute application connection ceiling, three-minute idle timeout and 1 MiB persisted document. A provider may require reconnection sooner. These are per-connection/mission bounds; account-wide rate limits, spend enforcement, production supervision and fleet metrics remain operational follow-ups. This local delivery has not been deployed.
 
-Configuration lives in ignored `apps/api/.env`; safe variable names/defaults are in `.env.example`. Select `SPEAKING_REALTIME_PROVIDER=openai`, configure `OPENAI_API_KEY`, and retain `ARK_API_KEY` for the separate Doubao analyzer. The local API reloads after source edits; restart it after environment-only changes before opening a new call. Secrets never enter browser bundles. Libitu retains text and derived observations, not raw audio; provider processing/retention is a separate boundary.
+Configuration lives in ignored `apps/api/.env`; safe variable names/defaults are in `.env.example`. Select `SPEAKING_REALTIME_PROVIDER=openai`, configure `OPENAI_API_KEY`, and configure `DEEPSEEK_API_KEY` for the separate DeepSeek analyzer (`TEXT_ANALYSIS_PROVIDER=deepseek`; Ark remains an explicit alternative). The local API reloads after source edits; restart it after environment-only changes before opening a new call. Secrets never enter browser bundles. Libitu retains text and derived observations, not raw audio; provider processing/retention is a separate boundary.
 
 ## OpenAI verification — 2026-10-30
 

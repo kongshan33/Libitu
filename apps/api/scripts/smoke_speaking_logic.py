@@ -127,7 +127,7 @@ def main():
                         help="Use IPv4 for this process's Supabase client; TLS verification stays enabled.")
     args = parser.parse_args()
     settings = get_settings()
-    check(settings.ark_is_configured and settings.supabase_server_is_configured, "configuration_missing")
+    check(settings.text_is_configured and settings.supabase_server_is_configured, "configuration_missing")
     database = get_supabase_repository()
     check(database is not None, "durable_database_missing")
     if args.ipv4:

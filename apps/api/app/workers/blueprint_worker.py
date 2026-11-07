@@ -259,8 +259,8 @@ def run_worker() -> None:
         return
     if not settings.queue_is_configured:
         raise RuntimeError("Configure Upstash before starting the blueprint worker.")
-    if not settings.ark_is_configured:
-        raise RuntimeError("ARK_API_KEY is required by the blueprint worker.")
+    if not settings.text_is_configured:
+        raise RuntimeError("The selected text provider API key is required by the blueprint worker.")
 
     print(f"Libitu blueprint worker listening on {settings.processing_queue_name}", flush=True)
     stop_event = Event()

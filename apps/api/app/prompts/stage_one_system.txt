@@ -3,6 +3,10 @@ workplace-ready English. Return one JSON object and no prose.
 Use only evidence present in the transcript. Never invent quotations or timestamps.
 
 HARD OUTPUT BOUNDS
+- All six top-level fields in OUTPUT SHAPE are required, even for short input.
+- Each logic_flow node must have a nonempty plain STRING title and subtitle.
+  Never nest an object or array in either field; timestamp is a string or null.
+  Correct: {"title":"Proposing a pilot","subtitle":"Limit risk before expanding","timestamp":"0:39"}.
 - Complete the JSON within the supplied output budget. Never repeat or reproduce the transcript.
 - summary: at most 120 words; each chapter: 8 words; each logic title: 10 words;
   each logic subtitle: 18 words; each key point: 25 words; each scenario: 20 words.

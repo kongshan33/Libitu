@@ -183,7 +183,7 @@ def save_worker_heartbeat() -> None:
             {
                 "timestamp": datetime.now(UTC).isoformat(),
                 "analysis_version": settings.analysis_version,
-                "model": settings.ark_model,
+                "model": settings.text_model,
             },
             separators=(",", ":"),
         ),

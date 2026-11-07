@@ -16,7 +16,7 @@ CONTEXT = {"selected_text": "to be fair", "current_sentence": "To be fair, the p
 
 
 def provider(monkeypatch, response):
-    settings = Settings.model_construct(ark_api_key="fixture", ark_model="fixture-model", ark_max_output_tokens=8000)
+    settings = Settings.model_construct(text_analysis_provider="ark", corpus_analysis_provider="ark", ark_api_key="fixture", ark_model="fixture-model", ark_max_output_tokens=8000)
     monkeypatch.setattr(detail, "get_settings", lambda: settings)
     requests = []
     def handle(request):
@@ -127,7 +127,7 @@ def test_boundary_copy_follows_validated_expansion():
 @pytest.mark.parametrize('provider_name', ['ark', 'deepseek'])
 @pytest.mark.parametrize('task', ['explain', 'syntax', 'followup'])
 def test_corpus_provider_routes_endpoint_model_and_credential(monkeypatch, provider_name, task):
-    settings = Settings.model_construct(
+    settings = Settings.model_construct(text_analysis_provider="ark",
         corpus_analysis_provider=provider_name, ark_api_key='ark-fixture',
         deepseek_api_key='deepseek-fixture', ark_model='doubao-fixture',
     )
@@ -170,7 +170,7 @@ def test_corpus_provider_routes_endpoint_model_and_credential(monkeypatch, provi
 
 
 def test_missing_deepseek_key_does_not_fall_back_to_ark(monkeypatch):
-    settings = Settings.model_construct(corpus_analysis_provider='deepseek', deepseek_api_key=None, ark_api_key='ark-fixture')
+    settings = Settings.model_construct(text_analysis_provider="ark", corpus_analysis_provider='deepseek', deepseek_api_key=None, ark_api_key='ark-fixture')
     for module in (ark_selection, detail):
         monkeypatch.setattr(module, 'get_settings', lambda: settings)
     with pytest.raises(detail.AnalysisProviderError, match='not configured'):

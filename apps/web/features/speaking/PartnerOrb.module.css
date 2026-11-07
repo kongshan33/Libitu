@@ -1,0 +1,11 @@
+.scene { position: relative; width: clamp(200px, 26vw, 292px); max-width: 100%; aspect-ratio: 1; }
+.orb { --orb-level: 0; position: absolute; inset: 0; isolation: isolate; content-visibility: auto; contain-intrinsic-size: auto 292px; border-radius: 50%; overflow: hidden; }
+.canvas, .fallback { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; }
+.canvas { display: block; opacity: 0; }
+.orb[data-renderer=webgl] .canvas { opacity: 1; }
+.orb[data-renderer=webgl] .fallback { visibility: hidden; }
+.fallback { background: radial-gradient(ellipse at 28% 22%, #729a45, transparent 60%), radial-gradient(ellipse at 76% 36%, #d4faf2, transparent 53%), radial-gradient(ellipse at 35% 78%, #36b5f3, #146781 90%); }
+/* The reference uses a separate static overlay, not animated shader grain. */
+.orb::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: url("/orb/grain.png") repeat; background-size: 256px; image-rendering: pixelated; mix-blend-mode: overlay; opacity: .5; }
+@media (min-resolution: 2dppx) { .orb::after { background-size: 128px; } }
+@media (max-width: 600px) { .scene { width: 224px; } }
