@@ -1,28 +1,29 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { PracticeAnalysis } from '../persistence/practice-api';
 import type { ComparisonView } from '../comparison/view';
 import { columnWidth, wordColumnWidth, envelopePath, fitTimelineZoom, timelinePitchPath, timelineColumns, timelineTicks, type TimelineVoice } from '../comparison/timeline';
 import { useAnalysisSelection } from '../comparison/AnalysisSelection';
 import { usePlayingWord, type ComparisonPlayback } from '../comparison/use-playing-word';
-import { phenomena, soundMarks, visibleSoundMarks } from '../sound/phenomena';
+import { allSound, soundMarks, wordSoundCategories, type SoundFilter } from '../sound/phenomena';
 import type { PracticeLayer } from './PracticeLayers';
 import styles from './AnalysisTimeline.module.css';
-import { SoundBadge, SoundLink } from './SoundCue';
+import { SoundLink, SoundMore, SoundWordCues } from './SoundCue';
+import { SoundFilters, SoundDetails, SoundNotes, SoundScope, SoundEmpty } from './SoundExplorer';
 
 type VoiceName = 'reference' | 'yours';
 const voices: VoiceName[] = ['reference', 'yours'];
-const soundLaneHeight = 40;
+const soundLaneHeight = 48;
 const name = (voice: VoiceName) => voice === 'reference' ? 'Reference' : 'You';
 const duration = (voice: TimelineVoice) => voice.duration === null ? 'unavailable' : `${Math.round(voice.duration)} ms`;
 const prominence = (voice: TimelineVoice) => voice.prominence === null ? 'not evaluated' : `${voice.prominence.toFixed(2)}${voice.uncertain ? ' (uncertain)' : ''}`;
 
-export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls = false, playback }: {
+export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls = false, playback, concealed:concealedProp, onConcealedChange }: {
   view: ComparisonView; data: PracticeAnalysis | null; layers: PracticeLayer[]; sentenceId: string; voiceControls?: boolean;
-  playback?: ComparisonPlayback;
+  playback?: ComparisonPlayback;concealed?:boolean;onConcealedChange?(value:boolean):void;
 }) {
   const columns = useMemo(() => timelineColumns(view, data), [view, data]);
-  const marks = useMemo(() => visibleSoundMarks(soundMarks(view)), [view]);
+  const marks = useMemo(() => soundMarks(view), [view]);
   const { selected, select } = useAnalysisSelection(sentenceId);
   const playing = usePlayingWord(view, playback);
   const active = playing ?? selected;
@@ -30,12 +31,19 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
   const [dragging, setDragging] = useState(false);
   const [labelMeasurements, setLabelMeasurements] = useState<{ words: string; widths: number[] } | null>(null);
   const wordsKey = JSON.stringify(columns.map(column => column.text));
-  // Linking belongs to the outgoing boundary, not both words in its span.
-  const columnMarks = columns.map((_, index) => phenomena.filter(p => marks.some(m => m.kind === p.id
-    && index >= m.start && index < m.end - (p.id === 'linking' ? 1 : 0))));
+  const [soundFilter,setSoundFilter]=useState<SoundFilter>(allSound);
+  const [selectedMark,setSelectedMark]=useState<string|null>(null);
+  const [selectedSoundVoice,setSelectedSoundVoice]=useState<VoiceName>('reference');
+  const [expandedMore,setExpandedMore]=useState<string|null>(null);
+  const explanationId=useId();
+  const [localConcealed,setLocalConcealed]=useState(false),[revealed,setRevealed]=useState<number[]>([]);
+  const concealed=concealedProp??localConcealed;
+  const allowed=(index:number)=>!concealed||revealed.includes(index);
+  const safeMarks=marks.filter(m=>Array.from({length:m.end-m.start},(_,i)=>m.start+i).every(allowed));
+  // Reserve the bounded cue lane even at minimum zoom and when filtering.
   const labelWidths = columns.map((column, index) => Math.max(
     labelMeasurements?.words === wordsKey ? labelMeasurements.widths[index] : column.text.length * 16,
-    columnMarks[index].length * 36));
+    wordSoundCategories(marks,index,soundFilter).length>2?224:marks.some(m=>(m.candidate?.anchor?.token_index??m.start)===index)?180:100));
   useEffect(() => {
     let cancelled = false;
     const measure = () => {
@@ -61,7 +69,7 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
   const sound = layers.includes('sound'), rhythm = layers.includes('rhythm'), melody = layers.includes('melody');
   const width = columns.reduce((sum, c, i) => sum + columnWidth(c, zoom, labelWidths[i]), 0);
   const ticks = visibleVoices.length === 1 ? timelineTicks(columns, zoom, labelWidths, visibleVoices[0]) : [];
-  const soundHeight = 28 + visibleVoices.length * soundLaneHeight, rhythmHeight = visibleVoices.length * 64;
+  const soundHeight = 28 + voices.length * soundLaneHeight, rhythmHeight = visibleVoices.length * 64;
   const maxProminence = .88;
   const energies = columns.flatMap(c => voices.flatMap(v => c[v].frames.flatMap(f => f.energy === null ? [] : [f.energy])));
   const peak = Math.max(-120, ...energies);
@@ -86,6 +94,12 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
   const endDrag = () => { suppressClick.current = Boolean(drag.current?.moved); drag.current = null; setDragging(false); };
   if (!layers.length) return <div className={styles.empty}>Turn on at least one layer to see it here.</div>;
   return <section className={styles.root} aria-label="Analysis timeline">
+    {sound?<div className={styles.soundControls}>
+      <SoundFilters filter={soundFilter} onChange={value=>{setSoundFilter(value);setSelectedMark(null);setExpandedMore(null);}} marks={marks} concealed={concealed}/>
+      <div className={styles.soundActions}><button type="button" aria-pressed={concealed} onClick={()=>{setLocalConcealed(!concealed);onConcealedChange?.(!concealed);setRevealed([]);setSelectedMark(null);setExpandedMore(null);}}>{concealed?'Show text':'Hide text'}</button>
+      <details><summary>Notes</summary><SoundNotes view={view} concealed={concealed}/></details></div>
+      <SoundScope/>{!concealed?<SoundEmpty marks={marks} filter={soundFilter}/>:null}
+    </div>:null}
     {voiceControls ? <div className={styles.voices} role="group" aria-label="Voices"><span className={styles.mono}>Voices</span>
       {voices.map(v => <button className="analysis-chip" key={v} type="button" aria-pressed={visibleVoices.includes(v)} disabled={v === 'reference' && !hasReference}
         onClick={() => toggleVoice(v)}>{name(v)}</button>)}
@@ -101,7 +115,7 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
     </div>
     {!columns.length ? <div className={styles.empty}>Word timing is unavailable for this take.</div> : <div className={styles.chart}>
       <div className={styles.labels} aria-hidden="true"><div className={styles.ruler}/>
-        {sound ? <div className={styles.label} style={{ height: soundHeight }}>Sound{visibleVoices.map((v, i) => <small key={v} style={{ top: 48 + i * soundLaneHeight }}>{v === 'reference' ? 'Ref' : 'You'}</small>)}</div> : null}
+        {sound ? <div className={styles.label} style={{ height: soundHeight }}>Sound{voices.map((v,i)=><small key={v} style={{top:44+i*soundLaneHeight}}>{v==='reference'?'Ref cues':'Your targets'}</small>)}</div> : null}
         {rhythm ? <div className={styles.label} style={{ height: rhythmHeight }}>Rhythm{visibleVoices.map((v, i) => <small key={v} style={{ top: 40 + i * 64 }}>{v === 'reference' ? 'Ref' : 'You'}</small>)}</div> : null}
         {melody ? <div className={styles.label} style={{ height:112, paddingTop:46 }}>Melody<small className={styles.axisTop}>+12</small><small className={styles.axisZero}>0</small><small className={styles.axisBottom}>−12</small></div> : null}
       </div>
@@ -118,18 +132,18 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
           <div className={styles.columns}>{columns.map((column, index) => {
             const px = columnWidth(column, zoom, labelWidths[index]);
             const wordPx = wordColumnWidth(column, zoom, labelWidths[index]);
-            const tags = columnMarks[index];
+            const covered=!allowed(index);
+            const link=sound?safeMarks.find(m=>m.kind==='linking'&&m.start===index):undefined;
+            const overflow=wordSoundCategories(safeMarks,index,soundFilter).length>2;
             const pauses = visibleVoices.flatMap(v => column[v].pause ? [`${name(v)} pause ${(column[v].pause! / 1000).toFixed(2)} s`] : []);
             return <div key={index} className={styles.slot} style={{width:px}}>
             <button type="button" ref={el => { buttons.current[index] = el; }} className={styles.column} style={{ width:wordPx }} aria-pressed={selected === index} data-playing={playing === index}
-              aria-label={`Compare ${column.text}, word ${index + 1}`} onClick={() => select(index)} title={column.text}
+              aria-label={covered?`Reveal word ${index+1}`:`Compare ${column.text}, word ${index + 1}`} onClick={() => {if(covered)setRevealed(items=>[...items,index]);select(index);setSelectedMark(null);setExpandedMore(null);}}
               onKeyDown={e => { const next = e.key === 'ArrowRight' ? Math.min(index + 1, columns.length - 1) : e.key === 'ArrowLeft' ? Math.max(0, index - 1) : e.key === 'Home' ? 0 : e.key === 'End' ? columns.length - 1 : null;
-                if (next !== null) { e.preventDefault(); select(next); buttons.current[next]?.focus({ preventScroll:true }); } }}>
-              {sound ? <span className={styles.sound} style={{ height:soundHeight }}><span className={styles.word}>{column.text}</span>
-                {visibleVoices.map(v => <span key={v} className={styles.tags} style={{height:soundLaneHeight}} data-sound-voice={v}>
-                  {tags.filter(p => p.id !== 'linking').map(p => <SoundBadge key={p.id} kind={p.id} uncertain={v === 'yours'} evidence="target"
-                    title={`${p.label}: ${v === 'yours' ? 'not evaluated in your voice' : 'possible reading'}`}/>)}
-                  {tags.some(p => p.id === 'linking') ? <SoundLink uncertain={v === 'yours'}/> : null}
+                if (next !== null) { e.preventDefault(); select(next); setSelectedMark(null);setExpandedMore(null); buttons.current[next]?.focus({ preventScroll:true }); } }}>
+              {sound ? <span className={styles.sound} style={{ height:soundHeight }}><span className={styles.word}>{covered?'•••':column.text}</span>
+                {voices.map(voice=><span key={voice} className={styles.tags} style={{height:soundLaneHeight}} data-sound-cues="true" data-sound-voice={voice} data-overflow={overflow}>
+                  {!covered?<SoundWordCues marks={safeMarks} index={index} filter={soundFilter}/>:null}
                 </span>)}
               </span> : null}
               {rhythm ? <span className={styles.rhythm} style={{width:px}}>{visibleVoices.map(v => {
@@ -142,8 +156,14 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
                 </span>;
               })}</span> : null}
               {melody ? <span className={styles.melody} style={{width:px}}/> : null}
-              {!sound ? <span className={styles.word}>{column.text}</span> : null}
+              {!sound ? <span className={styles.word}>{covered?'•••':column.text}</span> : null}
             </button>
+            {sound&&!covered&&overflow?<div className={styles.soundMoreControls} style={{insetInlineStart:wordPx-92}}>{voices.map(voice=><SoundMore key={voice} marks={safeMarks} index={index} filter={soundFilter}
+              word={column.text} voice={voice==='reference'?'Reference':'Your voice'} controls={explanationId} expanded={selected===index&&expandedMore===`${voice}:${index}`}
+              onToggle={()=>{if(selected===index&&expandedMore===`${voice}:${index}`){select(null);setExpandedMore(null);}else{select(index);setSelectedSoundVoice(voice);setSelectedMark(null);setExpandedMore(`${voice}:${index}`);}}}/>)}</div>:null}
+            {link?<div className={styles.soundLinks}>{voices.map(voice=><SoundLink key={voice} mark={link} filter={soundFilter} voice={voice==='reference'?'Reference':'Your voice'}
+              selected={selected===index&&selectedMark===link.id&&selectedSoundVoice===voice} controls={explanationId}
+              onSelect={()=>{if(selectedMark===link.id&&selectedSoundVoice===voice){setSelectedMark(null);setExpandedMore(null);select(null);}else{select(index);setSelectedSoundVoice(voice);setSelectedMark(link.id);setExpandedMore(null);}}}/>)}</div>:null}
             {px - wordPx >= 72 && pauses.length ? <span className={styles.pauseLabel} style={{left:wordPx,width:px-wordPx}} title={pauses.join(' · ')}>{visibleVoices.length === 1 ? `Pause ${(column[visibleVoices[0]].pause! / 1000).toFixed(2)} s` : 'Pause'}</span> : null}
             </div>;
           })}</div>
@@ -152,11 +172,13 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
         </div>
       </div>
     </div>}
-    {selectedColumn && layers.length ? <div className={styles.readout} aria-live="polite"><strong>{selectedColumn.text}</strong>
+    {sound?<><p className={styles.mono}>Reference reading cues · Your voice practice targets · Not checked in either recording.</p>
+      <SoundDetails id={explanationId} view={view} marks={marks} index={selected} markId={selectedMark} allowed={allowed} filter={soundFilter} voice={selectedMark||expandedMore===`${selectedSoundVoice}:${selected}`?selectedSoundVoice:undefined} expanded={expandedMore===`${selectedSoundVoice}:${selected}`} onClose={()=>{select(null);setSelectedMark(null);setExpandedMore(null);}}/></>:null}
+    {selectedColumn && allowed(selectedColumn.index) && (rhythm||melody) ? <div className={styles.readout} aria-live="polite"><strong>{selectedColumn.text}</strong>
       {visibleVoices.map(v => { const evidence = selectedColumn[v], pitches = evidence.frames.filter(f => f.time * 1000 < (evidence.duration ?? 0)).flatMap(f => f.pitch === null ? [] : [f.pitch]);
         return <span key={v}><b>{name(v)}</b> {duration(evidence)} · prominence {prominence(evidence)}{visibleVoices.length === 1 && pitches.length ? ` · pitch ${Math.min(...pitches).toFixed(1)}–${Math.max(...pitches).toFixed(1)} st` : ''}{evidence.pause ? ` · pause ${Math.round(evidence.pause)} ms` : ''}</span>; })}
       {visibleVoices.length === 2 && selectedColumn.reference.duration !== null && selectedColumn.yours.duration !== null ? <span>Δ You − Reference {Math.round(selectedColumn.yours.duration - selectedColumn.reference.duration)} ms</span> : null}
-      {phenomena.filter(p => marks.some(m => m.kind === p.id && selectedColumn.index >= m.start && selectedColumn.index < m.end)).map(p => <span key={p.id} className="sound-inline-badge" data-phenomenon={p.id} title={p.label}>{p.badge}</span>)}
+
     </div> : null}
   </section>;
 }

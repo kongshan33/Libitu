@@ -3710,3 +3710,9 @@ svg {
   input:is([type=checkbox],[type=radio]) { min-width:24px;min-height:24px; }
   label:has(input:is([type=checkbox],[type=radio])) { min-height:44px; }
 }
+
+/* GA Sound additions. Shape, text and evidence state remain primary cues. */
+.sound-inline-badge[data-phenomenon="coalescence"] { color:#6d28d9;background:#ede9fe; }
+.sound-inline-badge[data-phenomenon="reduced_form"] { color:#9a3412;background:#ffedd5; }
+.sound-inline-badge[data-phenomenon="unreleased"] { color:#115e59;background:#ccfbf1; }
+.sound-inline-badge[data-phenomenon="syllabic"] { color:#3730a3;background:#e0e7ff; }

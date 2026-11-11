@@ -1,78 +1,62 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-
-import { useMemo, useState } from 'react';
+'use client';
+import { Button } from '@/components/ui/button';
+import { useId, useMemo, useState } from 'react';
 import type { ComparisonView } from '../comparison/view';
-import { emptyPhenomenon, phenomena, soundMarks, visibleSoundMarks, type Phenomenon } from '../sound/phenomena';
+import { allSound, soundMarks, type SoundFilter } from '../sound/phenomena';
 import styles from './SoundComparison.module.css';
-import { SoundBadge, SoundLink } from './SoundCue';
+import { SoundLink, SoundMore, SoundWordCues } from './SoundCue';
+import { SoundDetails, SoundEmpty, SoundFilters } from './SoundExplorer';
 
-export function SoundComparison({view,concealed,onConcealedChange,filter,onFilterChange}:{
-  filter:Phenomenon|'all';onFilterChange(value:Phenomenon|'all'):void;
+const voices = ['reference', 'yours'] as const;
+const voiceName = (voice:typeof voices[number]) => voice==='reference'?'Reference':'Your voice';
+
+export function SoundComparison({view,concealed,onConcealedChange,filter=allSound,onFilterChange}:{
+  filter?:SoundFilter;onFilterChange(value:SoundFilter):void;
   view:ComparisonView;concealed:boolean;onConcealedChange?(value:boolean):void;
 }) {
   const [revealed,setRevealed]=useState<number[]>([]);
+  const [selected,setSelected]=useState<number|null>(null);
+  const [selectedMark,setSelectedMark]=useState<string|null>(null);
+  const [selectedVoice,setSelectedVoice]=useState<typeof voices[number]>('reference');
+  const [expandedMore,setExpandedMore]=useState<string|null>(null);
+  const explanationId=useId();
   const marks=useMemo(()=>soundMarks(view),[view]);
-  // Keep the default text reading stable when acoustic results arrive. Dense
-  // measurements belong to their explicit filter, not every word in All.
-  const visible=visibleSoundMarks(marks,filter);
-  const displayed=marks.filter(mark=>mark.kind!=='vowel_length'||filter==='vowel_length');
-  const count=view.reference.words.length;
+  const allowed=(index:number)=>!concealed||revealed.includes(index);
+  const safeMarks=marks.filter(m=>Array.from({length:m.end-m.start},(_,i)=>m.start+i).every(allowed));
+  const close=()=>{setSelected(null);setSelectedMark(null);setExpandedMore(null);};
   return <div className={styles.root}>
-    <div className={styles.filters} role="group" aria-label="Sound phenomenon filters">
-      <button type="button" aria-pressed={filter==='all'} onClick={()=>onFilterChange('all')}>All</button>
-      {phenomena.map(p=><button key={p.id} type="button" aria-label={p.label} data-phenomenon={p.id} aria-pressed={filter===p.id}
-        onClick={()=>onFilterChange(p.id)}><span aria-hidden="true">{p.symbol}</span> {p.label}</button>)}
-    </div>
+    <SoundFilters filter={filter} onChange={value=>{onFilterChange(value);setSelectedMark(null);setExpandedMore(null);}} marks={marks} concealed={concealed}/>
+    {!concealed?<SoundEmpty marks={marks} filter={filter}/>:null}
     <div className={styles.revealBar}>
-      <span className={styles.mono}>Shadow mode · {concealed?'click a covered word to peek':'hover a reference word for IPA'}</span>
-      <Button variant="secondary" type="button" aria-pressed={concealed} onClick={()=>{setRevealed([]);onConcealedChange?.(!concealed);}}>{concealed?'Show text':'Hide text'}</Button>
-      {concealed?<small className={styles.mono} role="status">{revealed.length} / {count} revealed</small>:null}
+      <span className={styles.mono}>Learning target · General American · {concealed?'tap a covered word to peek':'select a word or linking arc for its explanation'}</span>
+      <Button variant="secondary" type="button" aria-pressed={concealed} onClick={()=>{setRevealed([]);close();onConcealedChange?.(!concealed);}}>{concealed?'Show text':'Hide text'}</Button>
+      {concealed?<small className={styles.mono} role="status">{revealed.length} / {view.reference.words.length} revealed</small>:null}
     </div>
-    <div className={styles.comparison}>
-      {[view.reference,view.yours].map((voice,v)=><div key={v} className={`${styles.voice} paired-${v?'learner':'reference'}`}>
-        <div className={styles.voiceHeading}><h3>{v?'Your voice':'Reference'}</h3>
-          <span className={styles.mono}>{v?'dashed with “?” = not yet evaluated':'possible readings from the text'}</span></div>
-        <div className={`${styles.words} sound-word-flow`} aria-label={`${v?'Your voice':'Reference'} sound-marked text`}>
-          {voice.words.map((word,i)=>{
-            const covered=concealed&&!revealed.includes(i);
-            const targets=displayed.filter(m=>i>=m.start&&i<m.end);
-            const linking=targets.find(m=>m.kind==='linking'&&i<m.end-1);
-            const badges=phenomena.filter(p=>p.id!=='linking'&&targets.some(m=>m.kind===p.id));
-            return <div key={i} className={`${styles.wordGroup} sound-word-group`} data-word-index={i}>
-              <div className={`${styles.word} sound-word-card`} tabIndex={!covered&&word.ipa?0:undefined}>
-                <span className="sound-word-ipa">{!covered&&word.ipa?word.ipa:''}</span>
-                {covered?<button type="button" className={styles.peek} aria-label={`Reveal word ${i+1}`}
-                  style={{width:`${Math.max(3,word.text.length)}ch`}}
-                  onClick={()=>setRevealed(items=>items.includes(i)?items:[...items,i])}><span aria-hidden="true">•••</span></button>:<strong>{word.text}</strong>}
-                <span className="sound-word-marks">{!covered?badges.map(p=>{
-                  const measured=p.id==='vowel_length'&&word.vowel!==null;
-                  const note=measured?`${Math.round(word.vowel!)} ms vowel duration`:
-                    `${p.label}: ${v?'practice target, not evaluated in your voice':'possible reading'}`;
-                  return <SoundBadge key={p.id} kind={p.id} evidence={measured?'measured':'target'}
-                    uncertain={Boolean(v&&!measured)} muted={filter!=='all'&&filter!==p.id}
-                    title={`${note}. ${targets.filter(m=>m.kind===p.id).map(m=>m.description).join(' ')}`}>
-                    {p.badge}{measured?` ${Math.round(word.vowel!)} ms`:v?'?':''}
-                  </SoundBadge>;
-                }):null}</span>
-              </div>
-              {!covered&&linking&&(!concealed||revealed.includes(i+1))?<SoundLink className={styles.link} uncertain={Boolean(v)} muted={filter!=='all'&&filter!=='linking'}
-                title={`${linking.description} ${v?'Your voice: not evaluated.':''}`}/>:null}
-              {!covered&&filter==='linking'&&word.pause!==null&&word.pause>0?<span className={`${styles.pause} sound-boundary-pause`}
-                title="Measured silence at this word boundary; not a linking verdict" aria-label={`After ${word.text}: measured pause ${(word.pause/1000).toFixed(2)} seconds`}>
-                <i aria-hidden="true"/>{(word.pause/1000).toFixed(2)} s
-              </span>:null}
-            </div>;
-          })}
-        </div>
-        {voice.status?<p className={`${styles.mono} ${styles.status}`}>{voice.status}</p>:null}
-      </div>)}
-      {!visible.length?<p className={`${styles.mono} ${styles.status}`} role="status">{emptyPhenomenon(filter)}</p>:null}
-    </div>
-    <div className={`${styles.legend} sound-phenomenon-legend`} aria-label="Sound marker legend">
-      {phenomena.map(p=><span key={p.id}><SoundBadge kind={p.id}/>{p.label}</span>)}
-    </div>
-    <p className={styles.footnote}>Colored marks are possible readings from the text. “?” means your voice has not been evaluated for that sound. Choose Vowel len. for measured vowel durations, or Linking for measured pauses.</p>
+    {voices.map(voice=><div key={voice} className={styles.comparison} data-sound-voice={voice}>
+      <div className={styles.voiceHeading}><h3>{voiceName(voice)}</h3><span className={styles.mono}>{voice==='reference'?'Reading cues · GA conditions':'Practice targets · not checked'}</span></div>
+      <div className={`${styles.words} sound-word-flow`} role="group" aria-label={`${voiceName(voice)} sound cues`}>
+        {view.reference.words.map((word,i)=>{
+          const covered=!allowed(i),link=safeMarks.find(m=>m.kind==='linking'&&m.start===i);
+          return <div key={i} className={`${styles.wordGroup} sound-word-group`} data-word-index={i}>
+            <button type="button" className={`${styles.word} sound-word-card`} aria-pressed={selectedVoice===voice&&selected===i&&!covered&&!selectedMark}
+              aria-label={covered?`Reveal word ${i+1} · ${voiceName(voice)}`:`Explore ${word.text}, word ${i+1} · ${voiceName(voice)}`} aria-controls={explanationId}
+              onClick={()=>{if(covered)setRevealed(items=>items.includes(i)?items:[...items,i]);setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(null);}}>
+              <span className="sound-word-ipa">{!covered&&word.ipa?word.ipa:''}</span>
+              <strong className={covered?styles.peek:undefined} aria-hidden={covered||undefined}><span>{word.text}</span></strong>
+              <span className="sound-word-marks">{!covered?<SoundWordCues marks={safeMarks} index={i} filter={filter}/>:null}</span>
+            </button>
+            {!covered?<SoundMore marks={safeMarks} index={i} filter={filter} word={word.text} voice={voiceName(voice)} controls={explanationId}
+              expanded={expandedMore===`${voice}:${i}`} onToggle={()=>{if(expandedMore===`${voice}:${i}`)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(`${voice}:${i}`);}}}/>:null}
+            {link?<SoundLink mark={link} filter={filter} selected={selectedVoice===voice&&selectedMark===link.id} controls={explanationId} voice={voiceName(voice)}
+              onSelect={()=>{if(selectedVoice===voice&&selectedMark===link.id)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(link.id);setExpandedMore(null);}}}/>:null}
+          </div>;
+        })}
+      </div>
+      <p className={`${styles.mono} ${styles.status}`}>{voice==='reference'
+        ?`${view.reference.evidence?.source==='unavailable'&&view.saved?'Reference analysis unavailable for this take. ':''}Text and dictionary cues · not checked in the reference recording.`
+        :`${view.yours.status?`${view.yours.status} `:''}Targets from the same text · not checked in your recording.`}</p>
+      {selected!==null&&selectedVoice===voice?<SoundDetails id={explanationId} view={view} marks={marks} index={selected} markId={selectedMark} allowed={allowed} filter={filter} voice={voice} expanded={expandedMore===`${voice}:${selected}`} onClose={close}/>:null}
+    </div>)}
+    {selected===null?<SoundDetails id={explanationId} view={view} marks={marks} index={null} allowed={allowed} filter={filter}/>:null}
   </div>;
 }

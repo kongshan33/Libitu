@@ -173,7 +173,7 @@
 .slotText { display: grid; flex: 1; gap: 3px; min-width: 0; color: var(--ink); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 .slotText strong { font-weight: 500; }
 .slotText span { color: var(--muted); font-size: 12px; }
-.reference .remove[data-variant][data-size][data-shape] { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 28px; width: 28px; min-width: 28px;   margin: 0 -4px 0 0;  border: 0; border-radius: 50%; }
+.reference .remove[data-variant][data-size][data-shape] { display: inline-flex; align-items: center; justify-content: center;  width: 28px; height:28px; min-height: 28px; min-width: 28px;   margin: 0 -4px 0 0;  border: 0; border-radius: 50%; }
 .previewLogic { display: flex; flex-direction: column; gap: 6px; }
 .logicPreview { display: flex; flex-direction: column; gap: 5px; padding: 10px 12px; border-radius: 10px; background: var(--bg); }
 .logicPreview strong { font-size: 14px; font-weight: 500; }

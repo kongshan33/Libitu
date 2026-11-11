@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import type { PracticeAnalysis, PracticeApi } from '../persistence/practice-api';
 import { matchLabel } from '../practice/flow';
 
-export function PracticeOutcome({data,loading,pendingSave,requested,text,api,takeId,onMarked}:{
-  data:PracticeAnalysis|null;loading:boolean;pendingSave:boolean;requested:boolean;text:string;
+export function PracticeOutcome({data,loading,pendingSave,requested,text,api,takeId,onMarked,concealed=false}:{
+  concealed?:boolean;data:PracticeAnalysis|null;loading:boolean;pendingSave:boolean;requested:boolean;text:string;
   api:PracticeApi|undefined;takeId:string|null;onMarked():void;
 }) {
   const check=data?.word_check;
@@ -29,17 +29,17 @@ export function PracticeOutcome({data,loading,pendingSave,requested,text,api,tak
   const label=matchLabel(data);
   return <div className="shadow-practice-outcome" data-tier={check?.tier??undefined}>
     {check?.status==='reliable'?<>
-      <div className="shadow-word-differences" aria-label="Word matching result">
+      {!concealed?<div className="shadow-word-differences" aria-label="Word matching result">
         {check.operations.map((op,i)=>op.kind==='inserted'?<span className="shadow-diff inserted" key={i}>+ {check.recognized_tokens[op.recognized_index!]?.display}</span>:
           <span className={`shadow-diff ${op.kind}`} key={i}><strong>{check.source_tokens[op.source_index!]?.display}</strong>
             {op.kind==='substituted'?<small>recognized “{check.recognized_tokens[op.recognized_index!]?.display}”</small>:
               op.kind==='omitted'?<small>not recognized</small>:null}</span>)}
-      </div>
+      </div>:<p>Text hidden · reveal words in the Sound layer.</p>}
       <p role="status"><Check size={14} aria-hidden="true"/>{label} · {check.tier==='below_60'?'word check only':check.tier==='partial_60_85'?'Sound on matched words':'three-layer analysis eligible'}</p>
       {differing?<div className="shadow-recognition-feedback">{disagreement?<span>Recognition error marked. Original recognition results are retained.</span>:
         <Button variant="ghost" size="sm" disabled={busy||!takeId} loading={busy} loadingLabel="Saving…" onClick={()=>void mark()}>Recognition error</Button>}</div>:null}
-    </>:check?<><p className="shadow-revealed-text">{text}</p><p role="status">Not enough reliable recognition to check the words. Try another take.</p></>:
-      data?.result?<><p className="shadow-revealed-text">{text}</p><p role="status">Saved take · legacy analysis. No word-matching percentage was recorded.</p></>:
+    </>:check?<><p className="shadow-revealed-text">{concealed?'Text hidden':text}</p><p role="status">Not enough reliable recognition to check the words. Try another take.</p></>:
+      data?.result?<><p className="shadow-revealed-text">{concealed?'Text hidden':text}</p><p role="status">Saved take · legacy analysis. No word-matching percentage was recorded.</p></>:
       pendingSave || loading || data && ['queued','processing','awaiting_upload'].includes(data.state) ? <PendingStatus pending>{pendingSave ? 'Saving your take…' : 'Checking your words…'}</PendingStatus> : <p role="status">{requested?'Word check is unavailable for this take.':'Word check was not requested. Enable recording analysis in Audio settings for your next take.'}</p>}
     {error?<p role="alert">{error}</p>:null}
     {check?.tier==='below_60'?<p>Listen more slowly or try with key words, then record again. Sound, Rhythm and Melody stay locked below 60%.</p>:

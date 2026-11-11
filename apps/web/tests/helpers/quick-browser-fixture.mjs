@@ -16,12 +16,14 @@ function bootstrap(blueprint) {
  const resources={user,session,client:{sessions:[session]},organization:null};
  window.Clerk={loaded:true,...resources,__internal_lastEmittedResources:resources,telemetry:{record(){}},__internal_environment:{},load:async()=>{},addListener(cb,options){if(!options?.skipInitialEmit)cb(resources);return()=>{};},mountUserButton(){},unmountUserButton(){},__internal_updateProps(){}};
  const flags={deny:false,saveFailure:false,pending:false};
+ const activity=window.__quickFixtureActivity={api:[],play:0,pause:0,record:0};
  window.YT={Player:class {
   time=0;rate=1;playing=false;
   constructor(el,{events}){this.events=events;this.timer=setInterval(()=>{if(this.playing)this.time+=.05*this.rate;},50);const node=typeof el==='string'?document.getElementById(el):el;if(node){node.style.cssText='color:white;display:grid;place-items:center;height:100%;font:14px sans-serif';node.textContent='Fixture video · original audio';}queueMicrotask(()=>events.onReady());}
-  getCurrentTime(){return this.time;}seekTo(t){this.time=t;}playVideo(){this.playing=true;this.events.onStateChange({data:1});}pauseVideo(){this.playing=false;this.events.onStateChange({data:2});}getPlaybackRate(){return this.rate;}setPlaybackRate(r){this.rate=r;this.events.onPlaybackRateChange?.({data:r});}getAvailablePlaybackRates(){return[.75,1,1.25];}getPlayerState(){return this.playing?1:2;}getDuration(){return 60;}destroy(){clearInterval(this.timer);}mute(){}unMute(){}isMuted(){return false;}
+  getCurrentTime(){return this.time;}seekTo(t){this.time=t;}playVideo(){activity.play++;this.playing=true;this.events.onStateChange({data:1});}pauseVideo(){activity.pause++;this.playing=false;this.events.onStateChange({data:2});}getPlaybackRate(){return this.rate;}setPlaybackRate(r){this.rate=r;this.events.onPlaybackRateChange?.({data:r});}getAvailablePlaybackRates(){return[.75,1,1.25];}getPlayerState(){return this.playing?1:2;}getDuration(){return 60;}destroy(){clearInterval(this.timer);}mute(){}unMute(){}isMuted(){return false;}
  }};
  navigator.mediaDevices.getUserMedia=async()=>{
+  activity.record++;
   if(flags.deny)throw new DOMException('Fixture denial','NotAllowedError');
   const ctx=new AudioContext(),osc=ctx.createOscillator(),gain=ctx.createGain(),dest=ctx.createMediaStreamDestination();osc.frequency.value=220;gain.gain.value=.1;osc.connect(gain);gain.connect(dest);osc.start();await ctx.resume();
   for(const track of dest.stream.getTracks()){const stop=track.stop.bind(track);track.stop=()=>{stop();void ctx.close();};}return dest.stream;
@@ -52,6 +54,7 @@ function bootstrap(blueprint) {
  window.fetch=async(input,init)=>{
   const url=new URL(typeof input==='string'?input:input.url??String(input),location.href),path=url.pathname;
   if(!path.startsWith('/api/'))return nativeFetch(input,init);
+  activity.api.push({path,method:init?.method??'GET'});
   const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json'}});
   if(path===`/api/content/${content}`)return json({content:{content_id:content,kind:'youtube',source_url:blueprint.source_url,title:blueprint.title,language:'en'},processing:{analysis_version:'mvp-v9',blueprint_available:true,job:{...job,attempt_count:1}}});
   if(path===`/api/blueprints/${content}`)return json(blueprint);
@@ -79,7 +82,7 @@ function bootstrap(blueprint) {
   return json({});
  };
  document.addEventListener('DOMContentLoaded',()=>{
-  const bar=document.createElement('div');bar.style.cssText='position:fixed;bottom:0;left:0;z-index:99999;background:#fff8dc;padding:4px;font:11px sans-serif;display:flex;gap:8px';bar.textContent='LOCAL FIXTURE';
+  const bar=document.createElement('div');bar.dataset.gaFixtureTools='';bar.style.cssText='position:fixed;bottom:0;left:0;z-index:99999;background:#fff8dc;padding:4px;font:11px sans-serif;display:flex;gap:8px';bar.textContent='LOCAL FIXTURE';
   for(const [key,label]of[['deny','Deny microphone'],['saveFailure','Fail saves'],['pending','Hold analysis']]){const button=document.createElement('button');button.textContent=label;button.onclick=()=>{flags[key]=!flags[key];button.textContent=label+(flags[key]?' ON':' OFF');};bar.append(button);}document.body.append(bar);
  });
 }

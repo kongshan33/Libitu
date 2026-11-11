@@ -8,11 +8,10 @@ import { AudioLines, Eye, EyeOff } from "lucide-react";
 import type { SoundAnnotation, SoundCandidate, SoundKind } from "@libitu/types/stage-two";
 import type { AudioAnalysisView } from "./AcousticComparisonPanel";
 import type { useSoundGuide } from "../sound/use-sound-guide";
+import { phenomena } from '../sound/phenomena';
 import { soundObservation, type SoundObservation } from "../sound/evidence";
 
-const labels: Record<SoundKind, string> = {
-  linking: "Linking", weak_form: "Weak form", flap: "Flap", assimilation: "Assimilation", elision: "Elision"
-};
+const labels = Object.fromEntries(phenomena.map(p=>[p.id,p.label])) as Record<SoundKind,string>;
 const kinds = Object.keys(labels) as SoundKind[];
 type Props = {
   sentenceId: string | null;

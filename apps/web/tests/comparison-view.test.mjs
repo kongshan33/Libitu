@@ -18,10 +18,11 @@ test('sound candidates retain exact occurrences and reject stale or misaligned g
    assert.equal(comparisonView({...args,sentence:repeated,guide:invalid}).sound,null);
  }
 });
-test('learner-only vowel evidence produces duration marks without a realization verdict',()=>{
+test('learner-only vowel measurements remain saved data, never reading cues',()=>{
  const learner={...voice,words:voice.words.map(w=>({...w,phones:[{label:'IY1',duration_ms:140}]}))};
  const view=comparisonView({...args,data:{sentence_id:'s',state:'completed',result:{learner,comparison:'unavailable'}}});
- assert.deepEqual(soundMarks(view).map(m=>[m.kind,m.start,m.end]),[['vowel_length',0,1],['vowel_length',1,2]]);
+ assert.deepEqual(soundMarks(view),[]);
+ assert.ok(view.yours.words.every(w=>w.vowel===140));
  assert.ok(view.reference.words.every(w=>w.vowel===null));
 });
 test('saved attempt owns both curves, ignores a newly selected live reference',()=>{

@@ -1,8 +1,8 @@
-import type { SoundAnnotation, SoundKind } from "@libitu/types/stage-two";
+import type { SoundAnnotation, SoundCandidate, SoundAnchor } from "@libitu/types/stage-two";
 
 export type SoundSource = { contentId: string; sentenceId: string; text: string };
-export const SOUND_VERSION = "sound-rules-v1";
-const kinds = new Set<SoundKind>(["linking", "weak_form", "flap", "assimilation", "elision"]);
+export const SOUND_VERSION = "sound-rules-v3";
+import { legacyKind, legacySubtype, phenomenon } from "./phenomena.ts";
 const record = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === "object" && !Array.isArray(value));
 const boundedText = (value: unknown, max = 1000): value is string => typeof value === "string" && value.length > 0 && value.length <= max;
 const texts = (value: unknown, maxItems: number, maxLength = 1000): value is string[] => Array.isArray(value)
@@ -11,11 +11,14 @@ const texts = (value: unknown, maxItems: number, maxLength = 1000): value is str
 /** Reject stale, malformed and non-source spans before they reach interactive highlights. */
 export function parseSoundAnnotation(value: unknown, source: SoundSource): SoundAnnotation {
   const invalid = () => new Error("The sound guide does not match this sentence. Reload the practice and try again.");
-  if (!record(value) || value.version !== SOUND_VERSION || value.content_id !== source.contentId
+  if (!record(value) || !["sound-rules-v1", "sound-rules-v2", SOUND_VERSION].includes(String(value.version)) || value.content_id !== source.contentId
     || value.sentence_id !== source.sentenceId || value.sentence_text !== source.text
     || value.dialect !== "en-US" || value.provider !== "cmudict-rules" || !boundedText(value.lexicon_version, 150)
     || !Array.isArray(value.tokens) || value.tokens.length > 300 || !Array.isArray(value.candidates)
     || value.candidates.length > 80 || !texts(value.warnings, 20) || !record(value.coverage)) throw invalid();
+  const v2 = value.version !== "sound-rules-v1";
+  if (v2 && value.target_accent !== "GA") throw invalid();
+  if (source.text.length > 6000) throw invalid();
   let end = 0;
   let known = 0;
   for (const [index, token] of value.tokens.entries()) {
@@ -24,18 +27,19 @@ export function parseSoundAnnotation(value: unknown, source: SoundSource): Sound
       || (token.start as number) < end || (token.end as number) <= (token.start as number)
       || (token.end as number) > source.text.length || source.text.slice(token.start as number, token.end as number) !== token.text
       || !["known", "unknown", "ambiguous"].includes(String(token.status))
-      || !Array.isArray(token.pronunciations) || token.pronunciations.length > 10
+      || !Array.isArray(token.pronunciations) || token.pronunciations.length > 4
       || !token.pronunciations.every((phones) => texts(phones, 100, 8) && phones.length > 0)
-      || !texts(token.ipa, 10, 400) || token.ipa.length !== token.pronunciations.length
+      || !texts(token.ipa, 4, 400) || token.ipa.length !== token.pronunciations.length
       || (token.status === "unknown" ? token.pronunciations.length !== 0 : token.pronunciations.length === 0)) throw invalid();
     end = token.end as number;
     if (token.status === "known") known++;
   }
   if (value.coverage.total !== value.tokens.length || value.coverage.known !== known) throw invalid();
   const ids = new Set<string>();
+  const candidates: SoundCandidate[] = [];
   for (const candidate of value.candidates) {
     if (!record(candidate) || !boundedText(candidate.id, 250) || ids.has(candidate.id)
-      || !kinds.has(candidate.kind as SoundKind) || candidate.status !== "candidate"
+      || typeof candidate.kind !== "string" || candidate.status !== "candidate"
       || !Number.isInteger(candidate.token_start) || !Number.isInteger(candidate.token_end)
       || (candidate.token_start as number) < 0 || (candidate.token_end as number) <= (candidate.token_start as number)
       || (candidate.token_end as number) > value.tokens.length || !boundedText(candidate.rule_id, 150)
@@ -44,9 +48,28 @@ export function parseSoundAnnotation(value: unknown, source: SoundSource): Sound
     const first = value.tokens[candidate.token_start as number];
     const last = value.tokens[(candidate.token_end as number) - 1];
     if (candidate.source_text !== source.text.slice(first.start, last.end)) throw invalid();
+    const kind = legacyKind(candidate.kind, String(candidate.rule_id));
+    if (!kind || (kind === 'vowel_length' && value.version !== SOUND_VERSION) || (v2 && kind !== candidate.kind)) throw invalid();
+    const subtype = candidate.subtype ?? (v2 ? undefined : legacySubtype(candidate.kind, String(candidate.rule_id)));
+    if ((v2 || subtype !== undefined) && !phenomenon(kind).subtypes.some(item => item.id === subtype)) throw invalid();
+    const anchor = v2 ? candidate.anchor : {type: kind === 'linking' && Number(candidate.token_end)-Number(candidate.token_start)>1 ? 'boundary' : 'word', token_index:candidate.token_start};
+    if (!record(anchor) || !['word','boundary','phone'].includes(String(anchor.type)) || !Number.isInteger(anchor.token_index)
+      || Number(anchor.token_index)<Number(candidate.token_start) || Number(anchor.token_index)>=Number(candidate.token_end)
+      || (anchor.type==='boundary' && Number(anchor.token_index)+1>=Number(candidate.token_end))) throw invalid();
+    if (anchor.type==='phone') {
+      const token = value.tokens[Number(anchor.token_index)];
+      if (!Number.isInteger(anchor.phone_index) || Number(anchor.phone_index)<0 || !token.pronunciations.length
+        || !token.pronunciations.every((phones:string[]) => Number(anchor.phone_index)<phones.length)) throw invalid();
+    } else if (anchor.phone_index != null) throw invalid();
+    if (v2 && candidate.alternative_group != null && !boundedText(candidate.alternative_group,250)) throw invalid();
+    candidates.push({id:candidate.id, kind, subtype:subtype as SoundCandidate['subtype'], anchor:anchor as SoundAnchor,
+      alternative_group:v2 ? candidate.alternative_group as string|null|undefined : null,
+      token_start:Number(candidate.token_start),token_end:Number(candidate.token_end),source_text:String(candidate.source_text),
+      phonemes_before:String(candidate.phonemes_before),phonemes_after:String(candidate.phonemes_after),
+      explanation:String(candidate.explanation),conditions:candidate.conditions as string[],rule_id:String(candidate.rule_id),status:'candidate'});
     ids.add(candidate.id);
   }
-  return value as SoundAnnotation;
+  return { ...value, target_accent: "GA", candidates } as SoundAnnotation;
 }
 
 export async function fetchSoundAnnotation(source: SoundSource, signal: AbortSignal): Promise<SoundAnnotation> {
@@ -77,20 +100,22 @@ export async function fetchSoundAnnotation(source: SoundSource, signal: AbortSig
   }
 }
 
-export const soundSourceKey = (source: SoundSource) => JSON.stringify([SOUND_VERSION, source.contentId, source.sentenceId, source.text]);
+export const soundSourceKey = (source: SoundSource) => JSON.stringify([SOUND_VERSION, "GA", source.contentId, source.sentenceId, source.text]);
 
 /** This cache belongs to one mounted practice, not a browser account or recording. */
 export class SoundGuideCache {
   private entries = new Map<string, SoundAnnotation>();
   get(source: SoundSource) {
-    const key = soundSourceKey(source);
+    const base = soundSourceKey(source);
+    const key = [SOUND_VERSION, 'sound-rules-v2', 'sound-rules-v1'].map(version=>`${base}:${version}`).find(key=>this.entries.has(key));
+    if (!key) return undefined;
     const value = this.entries.get(key);
     if (value) { this.entries.delete(key); this.entries.set(key, value); }
     return value;
   }
   set(source: SoundSource, value: SoundAnnotation) {
     const valid = parseSoundAnnotation(value, source);
-    const key = soundSourceKey(source);
+    const key = `${soundSourceKey(source)}:${valid.version}`;
     this.entries.delete(key);
     this.entries.set(key, valid);
     while (this.entries.size > 20) this.entries.delete(this.entries.keys().next().value!);

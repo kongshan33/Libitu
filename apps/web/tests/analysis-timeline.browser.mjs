@@ -1,6 +1,7 @@
 // Start Next dev on 3000 and helpers/quick-browser-fixture.mjs on 3011. Synthetic account/analysis only.
 import {mkdirSync} from 'node:fs';
-mkdirSync('output/playwright',{recursive:true});
+const artifactRoot=process.env.LIBITU_SCREENSHOT_DIR??'output/playwright';
+mkdirSync(artifactRoot,{recursive:true});
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const {chromium}=createRequire(import.meta.url)(process.env.LIBITU_PLAYWRIGHT_MODULE ?? 'playwright');
@@ -30,16 +31,14 @@ const cueStyles = nodes => Object.fromEntries(nodes.map(node => {
  const css=getComputedStyle(node);
  return [`${node.dataset.phenomenon}:${node.dataset.uncertain}`,Object.fromEntries(['color','backgroundColor','fontFamily','fontSize','fontWeight','borderRadius','padding','outlineStyle'].map(key=>[key,css[key]]))];
 }));
-async function assertReviewSound(timeline,detailedStyles,voiceCount) {
- const badges=timeline.locator('[data-sound-voice] .sound-inline-badge');
+async function assertReviewSound(timeline,detailedStyles) {
+ const badges=timeline.locator('.sound-inline-badge');
  const styles=await badges.evaluateAll(cueStyles);
  for(const [key,value]of Object.entries(styles))assert.deepEqual(value,detailedStyles[key],`Review cue matches Detailed: ${key}`);
- assert.equal(await timeline.locator('.sound-link').count(),voiceCount);
+ assert.equal(await timeline.locator('.sound-link').count(),2);
  assert.equal(await timeline.getByRole('button',{name:'Compare practice, word 2',exact:true}).locator('.sound-link').count(),0,'Do not repeat a linking arc on the end word');
- const learner=timeline.locator('[data-sound-voice=yours]');
- assert.equal(await learner.locator('.sound-link path').first().getAttribute('stroke-dasharray'),'3 2');
- assert.equal(await learner.locator('.sound-link .sound-inline-badge').first().innerText(),'LK?');
- const clipped=await timeline.locator('[data-sound-voice]').evaluateAll(rows=>rows.some(row=>{
+ assert.equal(await timeline.locator('.sound-link [class*=arc]').first().innerText(),'‿');
+ const clipped=await timeline.locator('[data-sound-cues]').evaluateAll(rows=>rows.some(row=>{
   const box=row.getBoundingClientRect();
   return [...row.querySelectorAll('.sound-inline-badge,svg')].some(node=>{const b=node.getBoundingClientRect();return b.left<box.left-1||b.right>box.right+1||b.top<box.top-1||b.bottom>box.bottom+1;});
  }));
@@ -73,13 +72,13 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  await page.goto(base+'&shadowMode=detailed&takeId=older-paired',{waitUntil:'domcontentloaded',timeout:120000});
  const sound=page.getByRole('tab',{name:'Sound',exact:true});
  try{await sound.waitFor({timeout:90000});}catch(error){
-  await page.screenshot({path:`output/playwright/analysis-load-failure-${width}.png`,fullPage:true});
+  await page.screenshot({path:`${artifactRoot}/analysis-load-failure-${width}.png`,fullPage:true});
   console.error({url:page.url(),text:(await page.locator('body').innerText()).slice(0,1800),errors});throw error;
  }
  assert.ok(page.url().includes('takeId=older-paired'));
  await assertActionGeometry(page,width);
  await assertSettingsPosition(page);
- await page.locator('.stage-two-practice-main').evaluate(el=>el.scrollTop=0);await page.screenshot({path:`output/playwright/analysis-detailed-top-${width}.png`,fullPage:true});
+ await page.locator('.stage-two-practice-main').evaluate(el=>el.scrollTop=0);await page.screenshot({path:`${artifactRoot}/analysis-detailed-top-${width}.png`,fullPage:true});
  const soundPanel=page.getByRole('region',{name:'Saved sound word comparison',exact:true});
  const focus=soundPanel.getByRole('complementary',{name:'Sound notes',exact:true});
  assert.equal(await focus.count(),0);
@@ -87,25 +86,23 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  assert.equal(await soundPanel.getByRole('button',{name:'Hide notes',exact:true}).getAttribute('aria-expanded'),'true');
  const feedback=await focus.getByRole('region',{name:'Sound feedback'}).boundingBox(),tip=await focus.getByRole('region',{name:'Sound practice tip'}).boundingBox();
  if(width>600)assert.ok(tip.x>feedback.x+feedback.width);else assert.ok(tip.y>=feedback.y+feedback.height);
- await page.screenshot({path:`output/playwright/sound-prototype-notes-${width}.png`,fullPage:true});
+ await page.screenshot({path:`${artifactRoot}/sound-prototype-notes-${width}.png`,fullPage:true});
  await soundPanel.getByRole('button',{name:'Hide notes',exact:true}).click();assert.equal(await focus.count(),0);
  await soundPanel.locator('.sound-link').first().waitFor();
  assert.equal(await soundPanel.locator('.sound-word-marks [data-phenomenon=vowel_length]').count(),0);
- const colors=await soundPanel.locator('.sound-phenomenon-legend [data-phenomenon]').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.phenomenon,getComputedStyle(n).color])));
- assert.deepEqual(colors,palette);
  const detailedCueStyles=await soundPanel.locator('.sound-word-flow .sound-inline-badge').evaluateAll(cueStyles);
  assert.ok(await soundPanel.getByRole('group',{name:'Sound phenomenon filters'}).evaluate(el=>el.scrollWidth<=el.clientWidth+1));
  assert.equal(await soundPanel.locator('.sound-word-card strong').first().evaluate(el=>getComputedStyle(el).fontSize),'19px');
- assert.equal(await soundPanel.locator('.paired-learner .sound-inline-badge').first().evaluate(el=>getComputedStyle(el).outlineStyle),'dashed');
- assert.equal(await soundPanel.locator('.paired-learner .sound-link path').first().getAttribute('stroke-dasharray'),'3 2');
- const ipa=soundPanel.locator('.paired-reference .sound-word-ipa').first();await ipa.locator('..').focus();
- await page.waitForFunction(()=>getComputedStyle(document.querySelector('.paired-reference .sound-word-ipa')).opacity==='1');
- await soundPanel.getByRole('button',{name:'Vowel len.',exact:true}).click();assert.equal(await soundPanel.locator('[data-evidence=measured]').count(),10);
- await soundPanel.getByRole('button',{name:'Linking',exact:true}).click();assert.equal(await soundPanel.locator('.sound-boundary-pause').count(),2);
- await soundPanel.getByRole('button',{name:'All',exact:true}).click();
+ assert.equal(await soundPanel.locator('.sound-word-flow').count(),2);
+ assert.equal(await soundPanel.locator('.sound-link [class*=arc]').first().innerText(),'‿');
+ const ipa=soundPanel.locator('.sound-word-ipa').first();await ipa.locator('..').focus();
+ await page.waitForFunction(()=>getComputedStyle(document.querySelector('.sound-word-ipa')).opacity==='1');
+ await soundPanel.getByRole('button',{name:'Vowel length',exact:true}).click();assert.equal(await soundPanel.locator('[data-evidence=measured]').count(),0);
+ await soundPanel.getByRole('button',{name:'Linking',exact:true}).click();assert.equal(await soundPanel.locator('.sound-boundary-pause').count(),0);
+ await soundPanel.getByRole('button',{name:'All reading cues',exact:true}).click();
  await soundPanel.getByRole('button',{name:'Hide text',exact:true}).click();assert.equal(await soundPanel.locator('.sound-word-marks [data-phenomenon]').count(),0);
  await soundPanel.getByRole('button',{name:'Show text',exact:true}).click();
- await page.screenshot({path:`output/playwright/analysis-detailed-sound-${width}.png`,fullPage:true});
+ await page.screenshot({path:`${artifactRoot}/analysis-detailed-sound-${width}.png`,fullPage:true});
  await page.getByRole('tab',{name:'Rhythm',exact:true}).click();
  await page.getByRole('button',{name:'Notes',exact:true}).click();assert.equal(await page.getByRole('complementary',{name:'Rhythm notes'}).count(),1);
  await page.getByRole('button',{name:'Notes',exact:true}).click();assert.equal(await page.getByRole('complementary',{name:'Rhythm notes'}).count(),0);
@@ -117,8 +114,8 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  const envelopes=await timeline.locator('svg[class*=envelope] path').evaluateAll(nodes=>nodes.map(p=>p.getAttribute('d')));
  assert.ok(envelopes.every(Boolean));
  assert.equal(await timeline.locator('[data-pause=true]').count(),2);
- assert.equal(await timeline.locator('svg[class*=envelope]').first().evaluate(el=>getComputedStyle(el).fill),'rgb(239, 237, 235)');
- await page.screenshot({path:`output/playwright/analysis-detailed-rhythm-${width}.png`,fullPage:true});
+ assert.ok(await timeline.locator('svg[class*=envelope]').first().evaluate(el=>{const probe=document.createElement('span');probe.style.color='var(--line-soft)';el.parentElement.append(probe);const expected=getComputedStyle(probe).color;probe.remove();return getComputedStyle(el).fill===expected;}));
+ await page.screenshot({path:`${artifactRoot}/analysis-detailed-rhythm-${width}.png`,fullPage:true});
  assert.equal(await page.getByRole('region',{name:'Saved practice',exact:true}).getByText('Analyzed',{exact:true}).count(),2);
  assert.equal(await page.getByLabel('Recording duration',{exact:true}).innerText(),'0:03');
  let word=timeline.getByRole('button',{name:'Compare speaking, word 3',exact:true});await word.click();assert.equal(await word.getAttribute('aria-pressed'),'true');
@@ -133,7 +130,7 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  const pitch=await timeline.locator('[class*=AnalysisTimeline_pitchPlot] path').evaluateAll(nodes=>nodes.map(p=>p.getAttribute('d')));
  assert.ok(pitch.every(Boolean));
  assert.equal(await timeline.locator('[class*=AnalysisTimeline_pitchPlot] path[data-voice=reference]').count(),1);
- await page.screenshot({path:`output/playwright/analysis-detailed-melody-${width}.png`,fullPage:true});
+ await page.screenshot({path:`${artifactRoot}/analysis-detailed-melody-${width}.png`,fullPage:true});
  await page.getByRole('button',{name:'View analysis',exact:true}).last().click();
  await page.getByRole('heading',{name:'Overview',exact:true}).waitFor();assert.ok(page.url().includes('takeId=older-paired'));
  await assertActionGeometry(page,width);
@@ -142,10 +139,9 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  await timeline.getByRole('slider',{name:'Timeline zoom',exact:true}).fill('0.18');
  assert.deepEqual(await timeline.locator('svg[class*=envelope] path').evaluateAll(nodes=>nodes.map(p=>p.getAttribute('d'))),envelopes);
  assert.deepEqual(await timeline.locator('[class*=AnalysisTimeline_pitchPlot] path').evaluateAll(nodes=>nodes.map(p=>p.getAttribute('d'))),pitch);
- assert.equal(await timeline.locator('[data-phenomenon=vowel_length]').count(),0);
- assert.equal(await timeline.locator('[data-phenomenon=linking]').first().evaluate(el=>getComputedStyle(el).color),palette.linking);
+ assert.equal(await timeline.locator('[data-sound-cues] [data-phenomenon=vowel_length]').count(),0);
+ assert.equal(await timeline.locator('.sound-link').first().evaluate(el=>getComputedStyle(el).color),palette.linking);
  await assertReviewSound(timeline,detailedCueStyles,2);
- assert.equal(await timeline.locator('[data-sound-voice=reference] .sound-link path').getAttribute('stroke-dasharray'),null);
  await assertReadable(timeline);
  await assertReviewSound(timeline,detailedCueStyles,2);
  const voices=page.getByRole('group',{name:'Voices',exact:true});await voices.getByRole('button',{name:'Reference',exact:true}).click();assert.equal(await voices.getByRole('button',{name:'Reference',exact:true}).getAttribute('aria-pressed'),'false');
@@ -158,17 +154,17 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  const rect=await scroll.boundingBox();await page.mouse.move(rect.x+rect.width*.8,rect.y+80);await page.mouse.down();await page.mouse.move(rect.x+rect.width*.25,rect.y+80,{steps:12});await page.mouse.up();
  assert.ok(await scroll.evaluate(el=>el.scrollLeft)>0);assert.equal(await timeline.getByRole('button',{name:'Compare speaking, word 3',exact:true}).getAttribute('aria-pressed'),'true');
  await timeline.getByRole('button',{name:'Fit',exact:true}).click();
- await page.screenshot({path:`output/playwright/analysis-review-paired-${width}.png`,fullPage:true});
+ await page.screenshot({path:`${artifactRoot}/analysis-review-paired-${width}.png`,fullPage:true});
  await page.getByRole('group',{name:'Saved take',exact:true}).getByRole('button').first().click();
  await page.waitForFunction(()=>document.querySelector('[aria-label=Voices] button')?.disabled);
  assert.equal(await page.getByText('Reference audio unavailable for this take. Showing your voice only.',{exact:true}).count(),0);
  assert.equal(await voices.getByRole('button',{name:'Reference',exact:true}).isDisabled(),true);
  await assertReviewSound(timeline,detailedCueStyles,1);
- assert.equal(await timeline.locator('[data-sound-voice=reference]').count(),0);
+ assert.equal(await timeline.locator('[data-sound-voice=reference]').count(),tokens.length);
  assert.equal(await page.locator('details.stage-two-audio-settings:visible').count(),0);
  assert.equal(await page.getByRole('region',{name:'Reference preparation'}).count(),0);
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
- await page.screenshot({path:`output/playwright/analysis-review-solo-${width}.png`,fullPage:true});
+ await page.screenshot({path:`${artifactRoot}/analysis-review-solo-${width}.png`,fullPage:true});
  assert.equal(await page.getByRole('region',{name:'Analysis status',exact:true}).count(),0);
  assert.equal(await page.locator('.practice-analysis-status').count(),0);
  assert.equal(await page.getByText('Practice records are saved to your account.',{exact:false}).count(),0);
@@ -177,7 +173,7 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  await page.getByRole('navigation',{name:'Shadow mode',exact:true}).getByRole('button',{name:'Quick',exact:true}).click();
  await page.getByRole('heading',{name:'Quick shadowing',exact:true}).waitFor();
  await assertSettingsPosition(page);
- assert.deepEqual(errors,[]);console.log(`PASS ${width}: equal action heights/centered duration, stable Audio settings, shared Detailed/Review Sound badges/arcs/uncertainty, filters/IPA/folded Notes, separate pauses, shared curves/selection, exact take, zoom/drag, no overflow`);
+ assert.deepEqual(errors,[]);console.log(`PASS ${width}: equal action heights/centered duration, stable Audio settings, shared Detailed/Review candidate badges and lower arcs, filters/IPA/folded Notes, separate pauses, shared curves/selection, exact take, zoom/drag, no overflow`);
  // Exercise wrapping with the supplied prototype's 27-word sentence.
  const longText='A lot of other companies just do one or the other and I think that is what your helming of this company has made it so valuable';
  const longTokens=[...longText.matchAll(/[a-z]+/gi)].map(m=>({display:m[0],normalized:m[0].toLowerCase(),start:m.index,end:m.index+m[0].length}));
@@ -191,10 +187,10 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  await page.addInitScript(take=>sessionStorage.setItem('quick-fixture-takes',JSON.stringify([take])),long);
  await page.goto(base+'&shadowMode=detailed&takeId=newer-solo',{waitUntil:'domcontentloaded',timeout:120000});
  await soundPanel.waitFor({timeout:90000});await soundPanel.locator('.sound-link').first().waitFor();
- assert.equal(await soundPanel.locator('.paired-reference .sound-word-card').count(),27);
+ assert.equal(await soundPanel.locator('[data-sound-voice=reference] .sound-word-card').count(),27);
  assert.ok(await soundPanel.locator('.sound-word-flow').first().evaluate(el=>el.scrollWidth<=el.clientWidth+1));
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
- await soundPanel.screenshot({path:`output/playwright/sound-prototype-long-${width}.png`});
+ await soundPanel.screenshot({path:`${artifactRoot}/sound-prototype-long-${width}.png`});
  console.log(`PASS ${width}: prototype long-sentence wrapping`);
  await page.close();
 }}finally{await browser.close();}

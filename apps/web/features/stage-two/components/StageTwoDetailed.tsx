@@ -488,7 +488,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
                     <span className="stage-two-sentence-number">{index+1}</span>
                     <span className="stage-two-sentence-copy">
                       <small className="shadow-directory-status" data-passed={passed}>{status}</small>
-                      <span className="shadow-directory-text">{sentence.text}</span>
+                      <span className="shadow-directory-text">{soundConcealed&&activeLayer==='sound'&&sentence.id===selected?.id?'Text hidden':sentence.text}</span>
                       <small>~{clock(sentence.startMs)} – {clock(sentence.endMs)}</small>
                     </span>
                   </button>
@@ -561,7 +561,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
             </div>
           </section>
           <section className="shadow-practice-flow" aria-label="Sentence practice">
-            {selected?reviewing&&!practiceBusy?<PracticeOutcome key={analysisAttempt??analysisSelection?.take??'pending'} data={savedAnalysis.data} loading={savedAnalysis.loading}
+            {selected?reviewing&&!practiceBusy?<PracticeOutcome concealed={soundConcealed&&activeLayer==='sound'} key={analysisAttempt??analysisSelection?.take??'pending'} data={savedAnalysis.data} loading={savedAnalysis.loading}
               pendingSave={Boolean(analysisSelection?.take&&!analysisAttempt&&!persistence?.state.errors.some(error=>error.sentenceId===selected.id))} requested={savedClip?.analyze??Boolean(persistence?.analyze)} text={selected.text}
               api={persistence?.api} takeId={analysisAttempt} onMarked={savedAnalysis.reload}/>:
               <PracticePrompt sentence={selected} mode={supportMode} revealed={revealed} onReveal={revealWord} clock={wordClock} disabled={recording.state.phase==='stopping'}/>:<p>Select a sentence to practice.</p>}

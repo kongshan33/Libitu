@@ -8,7 +8,7 @@ import type { PracticeAnalysis } from '../persistence/practice-api';
 import { SoundComparison } from './SoundComparison';
 import { LayerFocus } from './LayerFocus';
 import { AnalysisTimeline } from './AnalysisTimeline';
-import type { Phenomenon } from '../sound/phenomena';
+import { allSound, type SoundFilter } from '../sound/phenomena';
 import type { PracticeLayer } from './PracticeLayers';
 import styles from './LayerAnalysis.module.css';
 export type { ComparisonPlayback } from '../comparison/use-playing-word';
@@ -21,15 +21,15 @@ export function LayerComparison({ layer, view, data = null, sentenceId = '', con
   layer:PracticeLayer; view:ComparisonView; data?:PracticeAnalysis|null; sentenceId?:string; concealed?:boolean;
   onConcealedChange?(v:boolean):void; playback?:ComparisonPlayback; playbackActions?:ReactNode;
 }) {
-  const [soundFilter, setSoundFilter] = useState<Phenomenon|'all'>('all');
+  const [soundFilter, setSoundFilter] = useState<SoundFilter>(allSound);
   const [notes, setNotes] = useState(false);
   const notesId = useId();
   return <section className={`${styles.layer}${layer === 'sound' ? ' layer-comparison-sound' : ''}`} aria-label={`${view.saved?'Saved':'Current'} ${layer} word comparison`}>
     <div className={styles.heading}><div><h2>{layer === 'sound' ? 'Sound layer' : layer[0].toUpperCase()+layer.slice(1)}</h2><p>{descriptions[layer]}</p></div>
       <Button variant="secondary" aria-expanded={notes} aria-controls={notesId} onClick={() => setNotes(v => !v)}>{layer === 'sound' && notes ? 'Hide notes' : 'Notes'}<ChevronDown size={14} style={{ transform:notes?'rotate(180deg)':undefined }}/></Button></div>
-    {notes ? <LayerFocus id={notesId} layer={layer} view={view} soundFilter={soundFilter} concealed={concealed}/> : null}
+    {notes ? <LayerFocus id={notesId} layer={layer} view={view} soundFilter={soundFilter.kind} concealed={concealed}/> : null}
     {layer === 'sound' ? <div className={styles.soundWorkspace}>
-      <SoundComparison filter={soundFilter} onFilterChange={setSoundFilter} view={view} concealed={concealed} onConcealedChange={onConcealedChange}/>
+      <SoundComparison key={`${sentenceId}:${data?.id??"live"}`} filter={soundFilter} onFilterChange={setSoundFilter} view={view} concealed={concealed} onConcealedChange={onConcealedChange}/>
     </div>
       : <>{layer === 'melody' && playbackActions ? <div className={styles.playback}>{playbackActions}</div> : null}<AnalysisTimeline view={view} data={data} layers={[layer]} sentenceId={sentenceId} playback={playback}/></>}
   </section>;

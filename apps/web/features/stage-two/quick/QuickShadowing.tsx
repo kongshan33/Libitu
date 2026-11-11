@@ -61,6 +61,7 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const [skipShort, setSkipShort] = useState(true), [chooseRange, setChooseRange] = useState(false);
   const [rate, setRate] = useState(1), [auto, setAuto] = useState(true), [support, setSupport] = useState<TextSupport['mode']>('hidden');
   const [retain, setRetain] = useState(false), [revealed, setRevealed] = useState<number[]>([]);
+  const [reviewVisibility,setReviewVisibility]=useState<{key:string;hidden:boolean}|null>(null);
   const [error, setError] = useState('');
   const [preparationSeconds, setPreparationSeconds] = useState(2);
   const [time, setTime] = useState(0), [videoReady, setVideoReady] = useState(false);
@@ -277,6 +278,7 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const duration = selected ? repeatDuration(selected) : 1;
   const fraction = phase === 'preparing' ? preparationSeconds / 2 : phase === 'recording' ? Math.max(0,1-recording.state.elapsedMs/duration)
     : phase === 'listening' && selected ? Math.min(1, Math.max(0,(time*1000-selected.startMs)/(selected.endMs-selected.startMs))) : 0;
+  const reviewHidden=Boolean(take&&reviewVisibility?.key===take.key&&reviewVisibility.hidden);
   const showVideo = mode === 'review' ? !references.url && referencePlaying : running && (phase === 'listening' ? listenSource.current === 'video' : !references.url);
 
   return <section hidden={!active} className={`stage-two-shadow ${practiceStyles.workspace} ${styles.workspace}`} aria-label="Stage 2 quick shadowing" data-analysis-mode={mode}>
@@ -293,11 +295,11 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
         <ol id={directoryId}>
           {filtered.map(sentence => {const item = latestTakes.get(sentence.id)!; const number = sentences.indexOf(sentence) + 1; return <li key={sentence.id}>
             <button type="button" aria-current={reviewSentence?.id === sentence.id ? 'true' : undefined}
-              aria-label={`Sentence ${number}`} onClick={() => selectReview(sentence.id)} title={sentence.text} data-practiced="true">
+              aria-label={`Sentence ${number}`} onClick={() => selectReview(sentence.id)} title={reviewHidden&&sentence.id===reviewSentence?.id?undefined:sentence.text} data-practiced="true">
               <span className="stage-two-sentence-number">{number}</span>
               <span className="stage-two-sentence-copy">
                 <small className="shadow-directory-status">{statusOf(item)} · {results.takes.filter(t => t.sentenceId === sentence.id).length} takes</small>
-                <span className="shadow-directory-text">{sentence.text}</span>
+                <span className="shadow-directory-text">{reviewHidden&&sentence.id===reviewSentence?.id?'Text hidden':sentence.text}</span>
                 <span className={styles.heat} aria-label="Word matching overview">{item.analysis?.word_check?.operations.filter(op => op.source_index !== null).map((op,index) => <i key={index} data-kind={op.kind}/>)}</span>
                 <small>~{clock(sentence.startMs)} – {clock(sentence.endMs)}</small>
               </span>
@@ -354,13 +356,13 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
             {take && reviewSentence ? <>
               <div className="stage-two-sentence-navigation"><Button variant="secondary" disabled={filtered.indexOf(reviewSentence) === 0} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)-1].id)}><ChevronLeft size={16}/>Previous</Button><span>Sentence {sentences.indexOf(reviewSentence)+1} · ~{clock(reviewSentence.startMs)}</span><Button variant="secondary" disabled={filtered.indexOf(reviewSentence) === filtered.length-1} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)+1].id)}>Next<ChevronRight size={16}/></Button></div>
               <section className="shadow-practice-flow" aria-label="Take review">
-              <PracticeOutcome key={`outcome:${take.key}`} data={take.analysis ?? null} text={reviewSentence.text} loading={Boolean(take.id && !take.loaded)} pendingSave={!take.id} requested={take.requested} api={persistence?.api} takeId={take.id} onMarked={() => results.refresh(take.key)}/>
+              <PracticeOutcome concealed={reviewHidden} key={`outcome:${take.key}`} data={take.analysis ?? null} text={reviewSentence.text} loading={Boolean(take.id && !take.loaded)} pendingSave={!take.id} requested={take.requested} api={persistence?.api} takeId={take.id} onMarked={() => results.refresh(take.key)}/>
               <div className="shadow-practice-actions ui-button-group"><Button variant="secondary" size="lg" onClick={() => void playReference()} disabled={take.analysis?.result?.comparison !== 'available' || references.loading || !references.url && !sourceUrl}>{referencePlaying ? <Pause size={16}/> : <Play size={16}/>}Reference</Button><Button variant="secondary" size="lg" onClick={() => void playTake()} disabled={!replayUrl && (!take.id || take.recordingState !== 'ready')}><Play size={16}/>My take</Button><Button variant="primary" size="lg" onClick={() => startRun([reviewSentence.id])}>Practice again</Button>{take.durationMs != null ? <span className="stage-two-recording-timer" aria-label="Recording duration">{Math.floor(take.durationMs/60000)}:{String(Math.floor(take.durationMs/1000)%60).padStart(2,'0')}</span> : null}</div>
               {!replayUrl && take.recordingState !== 'ready' ? <p className={styles.muted}>Audio was not retained, or this temporary replay has expired. Enable recording retention before your next run for later playback.</p> : null}
               <audio ref={takeAudio} src={replayUrl ?? undefined} onError={() => setError('Your take could not play. Try again or record a new take.')}/>
 
               </section>
-              <QuickReviewAnalysis key={`analysis:${take.key}`} content={contentId} sentence={reviewSentence} take={take} api={persistence?.api} reload={() => results.refresh(take.key)} playback={{reference:referenceClock,yours:learnerClock,referenceOffsetMs:reviewSentence.startMs}} takeControls={<div className={styles.takes} role="group" aria-label="Saved take">{sentenceTakes.map((item,index) => <button className="analysis-chip" key={item.key} aria-pressed={item.key === take.key} onClick={() => selectTake(item.key)}>Take {sentenceTakes.length-index} · {new Date(item.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}{item.durationMs ? ` · ${(item.durationMs/1000).toFixed(1)}s` : ''}{item.loaded && item.analysis?.result?.comparison !== 'available' ? ' · no Reference' : ''}</button>)}</div>}/>
+              <QuickReviewAnalysis concealed={reviewHidden} onConcealedChange={hidden=>setReviewVisibility({key:take.key,hidden})} key={`analysis:${take.key}`} content={contentId} sentence={reviewSentence} take={take} api={persistence?.api} reload={() => results.refresh(take.key)} playback={{reference:referenceClock,yours:learnerClock,referenceOffsetMs:reviewSentence.startMs}} takeControls={<div className={styles.takes} role="group" aria-label="Saved take">{sentenceTakes.map((item,index) => <button className="analysis-chip" key={item.key} aria-pressed={item.key === take.key} onClick={() => selectTake(item.key)}>Take {sentenceTakes.length-index} · {new Date(item.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}{item.durationMs ? ` · ${(item.durationMs/1000).toFixed(1)}s` : ''}{item.loaded && item.analysis?.result?.comparison !== 'available' ? ' · no Reference' : ''}</button>)}</div>}/>
               <PracticeHistory selectedAnalysis={take.analysis} onAnalysisChanged={()=>results.refresh(take.key)} key={reviewSentence.id} contentId={contentId} sentenceId={reviewSentence.id} selectedAnalysisId={take.id} onAnalysisSelect={id=>{if(id)selectTake(id);}} onViewAnalysis={selectTake} blocked={recording.isBusy()} onPlay={stopPlayback} playbackClock={learnerClock} onRecordDeleted={id=>{results.remove(id);if(take.id===id){const url=new URL(window.location.href);url.searchParams.delete('takeId');window.history.replaceState(null,'',url);window.dispatchEvent(new Event('libitu:stage-two-location'));setSelectedTakeKey(null);}}}/>
             </> : !results.history.loading ? <div className={styles.empty}><h2>{practiced.length ? 'Nothing in this filter' : 'Nothing to review yet'}</h2><p>Run Quick shadowing. Your takes and their analysis will appear here.</p><Button variant="primary" onClick={() => onMode('quick')}>Go to Quick shadowing</Button></div> : null}
           </> : null}

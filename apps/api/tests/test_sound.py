@@ -51,8 +51,8 @@ def test_linking_requires_consonant_vowel_boundary(text, source):
 
 @pytest.mark.parametrize("text", [
     "Red, apple.", "Red—apple.", "Red-apple.", "Red/apple.", "Red. Apple.",
-    "Red (apple).", "Red 😀 apple.", "Red & apple.", "red_apple", "Blue apple.",
-    "Red car.", "Read apple.", "Xqzt apple.", "Red 123 apple.", "Red R2D2 apple.",
+    "Red (apple).", "Red 😀 apple.", "Red & apple.", "red_apple",
+    "Red car.", "Use apple.", "Xqzt apple.", "Red 123 apple.", "Red R2D2 apple.",
 ])
 def test_linking_abstains_at_punctuation_unknown_and_ambiguous_boundaries(text):
     assert of_kind(text, "linking") == []
@@ -83,16 +83,16 @@ def test_flap_rejects_unstressed_preceding_vowel_in_dictionary():
     ("We got you.", "got you", "[tʃ]"), ("We showed you.", "showed you", "[dʒ]"),
 ])
 def test_coalescence_is_conditional_for_pronoun_y(text, source, after):
-    candidate, = of_kind(text, "assimilation")
+    candidate, = of_kind(text, "coalescence")
     assert candidate.source_text == source and candidate.phonemes_after == after
     assert "unstressed" in candidate.conditions[0]
 
 
 @pytest.mark.parametrize("text", [
-    "Got, you.", "Got your book.", "Did you?", "Red yacht.", "Got yogurt.", "Got young.",
+    "Got, you.", "Red yacht.", "Got yogurt.", "Got young.",
 ])
 def test_coalescence_skips_punctuation_non_pronouns_and_ambiguous_pronunciations(text):
-    assert of_kind(text, "assimilation") == []
+    assert of_kind(text, "coalescence") == []
 
 
 @pytest.mark.parametrize("text", ["Best boy.", "Cold milk.", "Left school."])
@@ -103,7 +103,7 @@ def test_elision_is_optional_final_cluster_simplification(text):
     assert "unreleased stop" in " ".join(candidate.conditions)
 
 
-@pytest.mark.parametrize("text", ["Red boy.", "Best apple.", "Best, boy.", "Last week.", "Next week."])
+@pytest.mark.parametrize("text", ["Red boy.", "Best apple.", "Best, boy."])
 def test_elision_requires_cluster_and_unambiguous_following_consonant(text):
     assert not of_kind(text, "elision")
 
@@ -159,10 +159,10 @@ def test_no_guessed_ipa_for_empty_or_unsupported_tokens(text):
     assert all(token.status == "unknown" and token.ipa == [] and token.pronunciations == [] for token in result.tokens)
 
 
-def test_phone_rules_skip_every_ambiguous_variant_instead_of_picking_the_first():
-    result = annotate("Read apple. Last week. Did you?")
-    assert len(next(token for token in result.tokens if token.text == "Read").pronunciations) == 2
-    assert not result.candidates
+def test_phone_rules_abstain_when_relevant_variants_disagree():
+    result = annotate("Use apple. Last, week. Did, you?")
+    assert len(next(token for token in result.tokens if token.text == "Use").pronunciations) == 2
+    assert all(candidate.kind == "vowel_length" and candidate.token_start != 0 for candidate in result.candidates)
     assert any("ambiguous" in warning for warning in result.warnings)
     assert not {"confidence", "score", "observed"}.intersection(result.model_dump())
 
@@ -260,8 +260,8 @@ def test_sound_endpoint_uses_exact_shared_legacy_sentence_view_and_is_read_only(
     assert response.status_code == 200
     result = response.json()
     assert result["sentence_id"] == sentence_id and result["sentence_text"] == "Red apple."
-    assert result["provider"] == "cmudict-rules" and result["version"] == "sound-rules-v1"
-    assert result["candidates"][0]["kind"] == "linking"
+    assert result["provider"] == "cmudict-rules" and result["version"] == "sound-rules-v3"
+    assert any(candidate["kind"] == "linking" for candidate in result["candidates"])
     assert blueprint.model_dump() == before
     assert client.get("/api/blueprints/sound-legacy/sentences/legacy-row/sound").status_code == 404
 
@@ -295,3 +295,130 @@ def test_endpoint_has_no_client_text_or_media_input_and_rejects_oversized_source
     assert client.post(path, json={"text": "Better."}).status_code == 405
     _put_blueprint(monkeypatch, "sound-long", "a" * 6001)
     assert client.get("/api/blueprints/sound-long/sentences/sound-row/sound").status_code == 422
+
+
+@pytest.mark.parametrize("text,kind,subtype,source", [
+    ("Did you?", "coalescence", "yod", "Did you"),
+    ("Miss you.", "coalescence", "yod", "Miss you"),
+    ("As you know.", "coalescence", "yod", "As you"),
+    ("Go away.", "linking", "glide", "Go away"),
+    ("Big game.", "linking", "same_consonant", "Big game"),
+    ("Far away.", "linking", "cv", "Far away"),
+    ("Ten boys.", "assimilation", "place", "Ten boys"),
+    ("Ten cars.", "assimilation", "place", "Ten cars"),
+    ("Tell him.", "elision", "h_drop", "him"),
+    ("Next day.", "elision", "td_drop", "Next day"),
+    ("Stop talking.", "unreleased", "stop_cluster", "Stop talking"),
+    ("Button.", "syllabic", "n", "Button"),
+    ("Bottle.", "syllabic", "l", "Bottle"),
+    ("I'm gonna go.", "reduced_form", "contraction", "I'm"),
+    ("I'm gonna go.", "reduced_form", "casual", "gonna"),
+    ("She has to go.", "voicing", "devoicing", "has to"),
+])
+def test_ga_v2_bounded_rules_have_conditions_and_source_anchors(text, kind, subtype, source):
+    result = annotate(text)
+    assert result.version == "sound-rules-v3" and result.target_accent == "GA"
+    candidate, = [c for c in result.candidates if c.kind == kind and c.subtype == subtype]
+    assert candidate.source_text == source
+    assert candidate.conditions and candidate.status == "candidate"
+    assert candidate.token_start <= candidate.anchor.token_index < candidate.token_end
+    assert not any(c.kind == "assimilation" for c in result.candidates if kind == "coalescence")
+
+
+@pytest.mark.parametrize("text,kind", [
+    ("Stop school.", "voicing"), ("Stop talking.", "elision"),
+    ("He left.", "elision"), ("Tell, him.", "elision"), ("Tell Henry.", "elision"),
+    ("An honest answer.", "elision"), ("Going to school.", "reduced_form"),
+    ("Ten, boys.", "assimilation"), ("Use you.", "coalescence"),
+    ("Go, away.", "linking"), ("Cup.", "glottal"),
+])
+def test_ga_rules_abstain_outside_reviewed_contexts(text, kind):
+    assert not of_kind(text, kind)
+
+
+def test_rhotic_ga_does_not_invent_intrusive_r_or_voicing_from_unaspiration():
+    result = annotate("Law and order. Stop school. Water ladder.")
+    assert not any(c.kind == "voicing" for c in result.candidates)
+    assert not any(c.source_text == "Law and" for c in result.candidates)
+    assert len([c for c in result.candidates if c.kind == "flap"]) == 2
+
+
+def test_button_alternatives_are_one_t_event_but_syllabic_n_is_separate():
+    result = annotate("button")
+    alternatives = [c for c in result.candidates if c.kind in {"flap", "glottal"}]
+    assert {c.subtype for c in alternatives} == {"tap", "replacement", "reinforcement"}
+    assert len({c.alternative_group for c in alternatives}) == 1
+    assert all(c.alternative_group for c in alternatives)
+    assert next(c for c in result.candidates if c.kind == "syllabic").alternative_group is None
+
+
+def test_shared_relevant_edge_is_allowed_without_picking_a_whole_reading():
+    result = annotate("Read apple. Did you?")
+    assert next(t for t in result.tokens if t.text == "Read").status == "ambiguous"
+    assert {c.kind for c in result.candidates} == {"linking", "coalescence"}
+    assert all(c.status == "candidate" for c in result.candidates)
+
+
+def test_schema_rejects_incompatible_subtypes_anchors_and_observation_claims():
+    from pydantic import ValidationError
+    from app.schemas.sound import SentenceSound
+    base = annotate("water").model_dump()
+    for change in [{"subtype": "h_drop"}, {"status": "confirmed"},
+                   {"anchor": {"type": "phone", "token_index": 0, "phone_index": 99}},
+                   {"anchor": {"type": "boundary", "token_index": 0}},
+                   {"source_text": "other"}, {"alternative_group": ""}]:
+        value = {**base, "candidates": [{**base["candidates"][0], **change}]}
+        with pytest.raises(ValidationError):
+            SentenceSound.model_validate(value)
+
+
+def test_python_and_shared_types_keep_identical_kind_and_subtype_contracts():
+    import re
+    from pathlib import Path
+    from typing import get_args
+    from app.schemas.sound import SoundKind, SoundSubtype
+    shared = (Path(__file__).resolve().parents[3] / "packages/types/src/stage-two.ts").read_text()
+    for name, literal in [("SoundKind", SoundKind), ("SoundSubtype", SoundSubtype)]:
+        union = re.search(rf"export type {name}\s*=([\s\S]*?);", shared).group(1)
+        assert set(re.findall(r'[\"\']([^\"\']+)[\"\']', union)) == set(get_args(literal))
+
+
+def test_truncated_dictionary_variants_never_license_consensus_from_a_subset(monkeypatch):
+    lexicon = cmudict_lexicon.get_pronunciation_lexicon()
+    words = {**lexicon.words, "zorb": (("D",), ("R", "D"), ("M", "D"), ("N", "D"), ("S",))}
+    monkeypatch.setattr(sound_service, "get_pronunciation_lexicon", lambda: replace(lexicon, words=words))
+    result = annotate("Zorb apple.")
+    assert not result.candidates
+    assert any("four" in warning for warning in result.warnings)
+
+
+@pytest.mark.parametrize("text,subtype", [
+    ("bit", "before_voiceless"), ("bid", "before_voiced"),
+    ("beat", "before_voiceless"), ("bead", "before_voiced"),
+    ("cap", "before_voiceless"), ("cab", "before_voiced"),
+    ("back", "before_voiceless"), ("bag", "before_voiced"),
+    ("safe", "before_voiceless"), ("save", "before_voiced"),
+    ("face", "before_voiceless"), ("phase", "before_voiced"),
+    ("rich", "before_voiceless"), ("ridge", "before_voiced"),
+    ("about", "before_voiceless"), ("indeed", "before_voiced"),
+])
+def test_vowel_length_is_a_relative_text_rule_with_dictionary_phone_anchor(text, subtype):
+    cue, = of_kind(text, "vowel_length")
+    assert cue.subtype == subtype
+    assert cue.anchor.type == "phone"
+    assert cue.source_text == text and cue.status == "candidate"
+    assert "relatively" in cue.explanation
+    assert any("not a different vowel quality or a measured duration" in c for c in cue.conditions)
+    assert "duration_ms" not in cue.model_dump()
+
+
+@pytest.mark.parametrize("text", ["water", "bottle", "banana", "bee", "all", "next", "act", "read", "live", "A", "XYZ"])
+def test_vowel_length_skips_unknown_ambiguous_unstressed_open_and_complex_codas(text):
+    assert not of_kind(text, "vowel_length")
+
+
+def test_vowel_length_depends_on_final_phone_not_next_word_or_final_letter():
+    assert of_kind("beat up", "vowel_length")[0].subtype == "before_voiceless"
+    assert of_kind("bead shop", "vowel_length")[0].subtype == "before_voiced"
+    assert of_kind("safe", "vowel_length")[0].subtype == "before_voiceless"
+    assert of_kind("save", "vowel_length")[0].subtype == "before_voiced"

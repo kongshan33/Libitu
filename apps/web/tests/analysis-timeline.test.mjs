@@ -72,10 +72,10 @@ test('a long pause stays on the time axis outside the word selection',()=>{
  }
  assert.equal(timelineTicks(columns,.18,[25,25])[3].left,540);
 });
-test('Sound defaults exclude vowel measurements but explicit filters retain them',async()=>{
+test('Sound All includes vowel-length reading cues and filters preserve source marks',async()=>{
  const {visibleSoundMarks}=await import('../features/stage-two/sound/phenomena.ts');
  const marks=[{kind:'linking'},{kind:'weak_form'},{kind:'flap'},{kind:'vowel_length'}];
- assert.deepEqual(visibleSoundMarks(marks).map(m=>m.kind),['linking','weak_form','flap']);
+ assert.deepEqual(visibleSoundMarks(marks).map(m=>m.kind),['linking','weak_form','flap','vowel_length']);
  assert.deepEqual(visibleSoundMarks(marks,'vowel_length').map(m=>m.kind),['vowel_length']);
  assert.equal(marks.length,4);
 });

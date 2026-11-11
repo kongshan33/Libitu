@@ -129,3 +129,38 @@ test("usable pitch and VAD never become positive or negative Sound evidence", ()
     assert.ok(observation.reason.length > 0);
   }
 });
+
+test('v2 validates accent, subtype, anchors and exclusive candidate evidence',()=>{
+  const data={...fixture(),version:'sound-rules-v2',target_accent:'GA'};
+  Object.assign(data.candidates[0],{subtype:'cv',anchor:{type:'boundary',token_index:2},alternative_group:'boundary-2'});
+  assert.equal(parseSoundAnnotation(data,source).candidates[0].anchor.type,'boundary');
+  for(const patch of [{subtype:'tap'},{anchor:{type:'boundary',token_index:3}},{anchor:{type:'phone',token_index:2,phone_index:99}},
+    {anchor:{type:'word',token_index:2,phone_index:1}},{alternative_group:''},{status:'confirmed'}]) {
+    assert.throws(()=>parseSoundAnnotation({...data,candidates:[{...data.candidates[0],...patch}]},source));
+  }
+  assert.throws(()=>parseSoundAnnotation({...data,target_accent:'RP'},source));
+  assert.throws(()=>parseSoundAnnotation({...data,candidates:[{...data.candidates[0],kind:'vowel_length'}]},source));
+});
+
+test('legacy normalization is explicit, idempotent and never upgrades evidence',()=>{
+  for(const [kind,rule_id,expected,subtype] of [
+    ['drop_d','legacy','elision','td_drop'],['h_drop','legacy','elision','h_drop'],
+    ['assimilation','coalescence-pronoun-v1','coalescence','yod'],['assimilation','unknown','assimilation',undefined]]) {
+    const data=fixture();Object.assign(data.candidates[0],{kind,rule_id});
+    const parsed=parseSoundAnnotation(data,source);
+    assert.equal(parsed.candidates[0].kind,expected);assert.equal(parsed.candidates[0].subtype,subtype);
+    const cache=new SoundGuideCache();cache.set(source,parsed);
+    assert.equal(cache.get(source).candidates[0].subtype,subtype);
+    assert.equal(cache.get(source).candidates[0].status,'candidate');
+  }
+});
+
+test('v3 vowel length is a validated candidate; v1/v2 are preserved without invented cues',()=>{
+ const data={...fixture(),version:'sound-rules-v3',target_accent:'GA'};
+ Object.assign(data.candidates[0],{kind:'vowel_length',subtype:'before_voiceless',anchor:{type:'phone',token_index:2,phone_index:0}});
+ assert.equal(parseSoundAnnotation(data,source).candidates[0].kind,'vowel_length');
+ assert.throws(()=>parseSoundAnnotation({...data,version:'sound-rules-v2'},source));
+ assert.throws(()=>parseSoundAnnotation({...data,candidates:[{...data.candidates[0],subtype:'cv'}]},source));
+ const cache=new SoundGuideCache();cache.set(source,data);cache.set(source,fixture());
+ assert.equal(cache.get(source).version,'sound-rules-v3');
+});
