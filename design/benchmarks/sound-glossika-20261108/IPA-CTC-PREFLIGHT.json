@@ -1,0 +1,71 @@
+{
+  "status": "passed",
+  "checkpoint_sha256": "3173bde9e9ce490fa0f989e413c42f25bc1820c020adc1e6b9b87025b3cfcc5e",
+  "base_rows_preserved": true,
+  "encoder_frozen": true,
+  "candidate_rows": 49,
+  "backward_checked_rows": [
+    {
+      "id": "glossika-pron-en-cs-0010",
+      "loss": 4.800175189971924,
+      "frames": 60,
+      "target_tokens": 14,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0009",
+      "loss": 4.305347919464111,
+      "frames": 59,
+      "target_tokens": 14,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0033",
+      "loss": 3.7871460914611816,
+      "frames": 44,
+      "target_tokens": 14,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0001",
+      "loss": 2.4803647994995117,
+      "frames": 49,
+      "target_tokens": 11,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0026",
+      "loss": 4.042995929718018,
+      "frames": 42,
+      "target_tokens": 11,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0007",
+      "loss": 3.273578405380249,
+      "frames": 58,
+      "target_tokens": 13,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0025",
+      "loss": 3.6790308952331543,
+      "frames": 32,
+      "target_tokens": 7,
+      "gradient_finite_nonzero": true
+    }
+  ],
+  "new_symbols": [
+    "ɦ",
+    "ʱ",
+    "ʴ",
+    "ʷ",
+    "ː",
+    "˭",
+    "̪"
+  ],
+  "optimizer_steps": 0,
+  "trained_model_saved": false,
+  "quality_metrics": null,
+  "note": "Finite losses/gradients prove engineering feasibility only; no quality improvement tested."
+}

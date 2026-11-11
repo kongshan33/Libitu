@@ -1,0 +1,51 @@
+{
+  "profile": "glossika-literal-v3",
+  "total_sources": 588,
+  "train_rows": 549,
+  "reviewed_train_rows": 50,
+  "book_train_rows": 499,
+  "review_queue_rows": 39,
+  "audio_clips": 587,
+  "train_seconds": 490.54625,
+  "vocabulary_size": 62,
+  "hold_reasons": {
+    "multiple_book_readings_require_audio_selection": 3,
+    "asr_content_disagreement": 23,
+    "optional_segment_or_unsupported_source_notation": 5,
+    "ambiguous_region_association": 19,
+    "printed_incorrect_example_requires_audio_selection": 1,
+    "missing_sentence_audio": 1,
+    "no_associated_speech_region": 1
+  },
+  "duplicate_prompt_groups": [
+    [
+      "glossika-pron-en-cs-0213",
+      "glossika-pron-en-cs-0447"
+    ],
+    [
+      "glossika-pron-en-cs-0441",
+      "glossika-pron-en-cs-0442"
+    ],
+    [
+      "glossika-pron-en-cs-0444",
+      "glossika-pron-en-cs-0445"
+    ],
+    [
+      "glossika-pron-en-cs-0522",
+      "glossika-pron-en-cs-0523"
+    ],
+    [
+      "glossika-pron-en-cs-0526",
+      "glossika-pron-en-cs-0527"
+    ]
+  ],
+  "duplicate_pcm_groups": [],
+  "validation_rows": 0,
+  "test_rows": 0,
+  "model_updates": 0,
+  "limits": [
+    "Automatic association is not human phonetic verification.",
+    "The source collection has an unverified speaker identity and repeated sentence families.",
+    "Non-sentence chapters remain source inventory, not aligned supervised rows."
+  ]
+}

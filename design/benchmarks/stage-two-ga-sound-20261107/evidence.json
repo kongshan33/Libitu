@@ -1,0 +1,63 @@
+{
+  "checked_at": "2026-11-07T07:22:41.633990+00:00",
+  "base_commit": "8448af0edb5f84a98d32ed63f65c9b3760144ca1",
+  "workspace_changes": "uncommitted",
+  "scope": "GA Sound P1–P5; no detector/deployment",
+  "root_checks": {
+    "lint": "passed",
+    "build": "passed",
+    "test": {
+      "api": 1968,
+      "web": 537,
+      "extension": 124
+    }
+  },
+  "browser": [
+    {
+      "width": 1400,
+      "status": "passed",
+      "checks": [
+        "13 grouped controls",
+        "subtype reset/unsupported",
+        "candidate evidence",
+        "stable words",
+        "keyboard details",
+        "hidden spans",
+        "multi-vowel/pace",
+        "minimum zoom/Fit",
+        "take isolation",
+        "learner-only",
+        "partial word gaps",
+        "no page overflow"
+      ]
+    },
+    {
+      "width": 390,
+      "status": "passed",
+      "checks": [
+        "13 grouped controls",
+        "subtype reset/unsupported",
+        "candidate evidence",
+        "stable words",
+        "keyboard details",
+        "hidden spans",
+        "multi-vowel/pace",
+        "minimum zoom/Fit",
+        "take isolation",
+        "learner-only",
+        "partial word gaps",
+        "no page overflow"
+      ]
+    }
+  ],
+  "shared_timeline_regression": [
+    1400,
+    390
+  ],
+  "density_regression": [
+    "Detailed 390",
+    "Review 390"
+  ],
+  "physical_phone_tested": false,
+  "acoustic_accuracy_evaluated": false
+}

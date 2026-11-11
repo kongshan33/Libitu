@@ -1,0 +1,151 @@
+{
+  "protocol_sha256": "2ea503e2c3bb097d95adaed503ece83e667273a314e507f127324acb0006dde1",
+  "optimizer_steps": 0,
+  "meaning": "real-audio feature/gradient smoke test only; no quality ranking",
+  "models": {
+    "wav2vec2-phoneme": {
+      "layers": [
+        {
+          "layer": 0,
+          "ctc_loss": 22.608003616333008,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 6,
+          "ctc_loss": 35.6639289855957,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 12,
+          "ctc_loss": 45.45124435424805,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 18,
+          "ctc_loss": 83.53058624267578,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 24,
+          "ctc_loss": 14.406161308288574,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        }
+      ],
+      "encoder_trainable_parameters": 0,
+      "checkpoint_sha256": "3173bde9e9ce490fa0f989e413c42f25bc1820c020adc1e6b9b87025b3cfcc5e"
+    },
+    "wavlm-base-plus": {
+      "layers": [
+        {
+          "layer": 0,
+          "ctc_loss": 14.343425750732422,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 85359
+        },
+        {
+          "layer": 3,
+          "ctc_loss": 14.270052909851074,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 85359
+        },
+        {
+          "layer": 6,
+          "ctc_loss": 14.264386177062988,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 85359
+        },
+        {
+          "layer": 9,
+          "ctc_loss": 14.155291557312012,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 85359
+        },
+        {
+          "layer": 12,
+          "ctc_loss": 14.27392578125,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 85359
+        }
+      ],
+      "encoder_trainable_parameters": 0,
+      "checkpoint_sha256": "3bb273a6ace99408b50cfc81afdbb7ef2de02da2eab0234e18db608ce692fe51"
+    },
+    "wavlm-large": {
+      "layers": [
+        {
+          "layer": 0,
+          "ctc_loss": 15.545331001281738,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 6,
+          "ctc_loss": 26.164695739746094,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 12,
+          "ctc_loss": 38.76079177856445,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 18,
+          "ctc_loss": 50.96754455566406,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 24,
+          "ctc_loss": 14.43967342376709,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        }
+      ],
+      "encoder_trainable_parameters": 0,
+      "checkpoint_sha256": "fdee460e529396ddb2f8c8e8ce0ad74cfb747b726bc6f612e666c7c1e1963c9d"
+    },
+    "hubert-large": {
+      "layers": [
+        {
+          "layer": 0,
+          "ctc_loss": 15.840563774108887,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 6,
+          "ctc_loss": 33.5341911315918,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 12,
+          "ctc_loss": 38.291996002197266,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 18,
+          "ctc_loss": 36.58931350708008,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        },
+        {
+          "layer": 24,
+          "ctc_loss": 14.21015453338623,
+          "event_gradient_fixture_only": true,
+          "head_parameters": 113775
+        }
+      ],
+      "encoder_trainable_parameters": 0,
+      "checkpoint_sha256": "45a299050945479a68cffe2ab7a63fd08931718ba18f05a42dbb86a5164178e0"
+    }
+  }
+}

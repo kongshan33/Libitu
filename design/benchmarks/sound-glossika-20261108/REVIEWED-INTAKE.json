@@ -1,0 +1,29 @@
+{
+  "review_sha256": "9eea1c427b2c1b7f0edc46aa60fd4829ec3c669fc6976e53ae88a89fb559c915",
+  "pack_sha256": "d18d71989f9d65071041b0832f5ac0505271358eb81075848774a77d67a2e3c3",
+  "confirmed_sentences": 50,
+  "confirmed_audio_seconds": 47.755875,
+  "ctc_engineering_candidate_rows": 41,
+  "notation_hold_rows": [
+    23,
+    26,
+    30,
+    33,
+    34,
+    39,
+    40,
+    45,
+    46
+  ],
+  "candidate_vocabulary_size_including_reserved": 27,
+  "human_event_observations": 15,
+  "observations_by_kind": {
+    "flap": 9,
+    "coalescence": 5,
+    "weak_form": 1
+  },
+  "localized_training_events": 0,
+  "independent_test_rows": 0,
+  "training_runs": 0,
+  "scope": "review intake and pretraining development baseline; no accuracy or training gain claim"
+}

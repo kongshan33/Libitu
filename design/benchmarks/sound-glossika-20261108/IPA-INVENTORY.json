@@ -1,0 +1,89 @@
+{
+  "version": "glossika-surface-v2",
+  "source_root": "/Users/river/Documents/Libitu/.cache/sound-pilot/glossika-reviewed-v1",
+  "registry_sha256": "b248a323e1e958a9bcd4d7a51e94cfe3b14c415405e7224ba3b6bd87486fd710",
+  "source_review_sha256": "9eea1c427b2c1b7f0edc46aa60fd4829ec3c669fc6976e53ae88a89fb559c915",
+  "source_records_sha256": "ecca6f246fee83f80dcf43f82ecede288ba1d95e3bdd2d6accde89877422c082",
+  "book_notation": {
+    "source": "design/seed/Glossika+你不知道的英文發音.pdf",
+    "sha256": "d15e475279d349eef6852a83f5eef6e95089487f1a8ad3c6dfe67d7a31e2bd09",
+    "pdf_pages_1based": {
+      "unaspirated_vs_unreleased": 5,
+      "vowel_offglides_and_r": 6,
+      "voiced_h_modifier": 12,
+      "tap_h_and_r_modifier": 14
+    },
+    "policy": "⁼ -> ˭ only in this source; retain ʴ, ʱ and vowel ʲ/ʷ without broad-IPA substitution"
+  },
+  "reference_inventory": {
+    "main_chart": 179,
+    "supplementary": 7,
+    "extipa": 1,
+    "placement_variant": 1
+  },
+  "reviewed_records": 50,
+  "previous_candidates": 41,
+  "candidate_rows": 49,
+  "remaining_holds": [
+    23
+  ],
+  "resolved_notation_rows": [
+    26,
+    30,
+    33,
+    34,
+    39,
+    40,
+    45,
+    46
+  ],
+  "base_size": 392,
+  "extended_size": 399,
+  "added_symbols": [
+    "ɦ",
+    "ʱ",
+    "ʴ",
+    "ʷ",
+    "ː",
+    "˭",
+    "̪"
+  ],
+  "all_labels_exact": true,
+  "all_ctc_frame_checks_passed": true,
+  "base_ids_unchanged": true,
+  "symbol_occurrences": {
+    "w": 59,
+    "ʌ": 39,
+    "ɾ": 23,
+    "ː": 110,
+    "z": 25,
+    "ɪ": 40,
+    "ʔ": 19,
+    "d": 62,
+    "u": 28,
+    "ʷ": 26,
+    "a": 25,
+    "ʲ": 41,
+    "i": 18,
+    "ə": 12,
+    "j": 7,
+    "̪": 21,
+    "æ": 21,
+    "t": 26,
+    "s": 24,
+    "ʱ": 5,
+    "ɦ": 4,
+    "ʃ": 2,
+    "ʒ": 2,
+    "˭": 3,
+    "ŋ": 6,
+    "ʴ": 6,
+    "ɑ": 1
+  },
+  "optimizer_steps": 0,
+  "trained_model_saved": false,
+  "accuracy": null,
+  "event_training_rows_added": 0,
+  "independent_test_rows": 0,
+  "coverage_meaning": "Vocabulary expressibility only; composite membership is not standalone support or detector accuracy."
+}

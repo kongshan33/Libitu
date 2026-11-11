@@ -1,0 +1,358 @@
+[
+  {
+    "id": "afrikaans3",
+    "symbols": {
+      "ǝ": 5
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "arabic132",
+    "symbols": {
+      ":": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "arabic14",
+    "symbols": {
+      "ә": 10
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "azerbaijani2",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "belarusan1",
+    "symbols": {
+      "ǝ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "bulgarian7",
+    "symbols": {
+      ":": 3
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "french31",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "french32",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "georgian2",
+    "symbols": {
+      "ǝ": 10,
+      ":": 6
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "greek6",
+    "symbols": {
+      "ӕ": 9
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "hebrew5",
+    "symbols": {
+      "đ": 3
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "icelandic1",
+    "symbols": {
+      "ǝ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "igbo1",
+    "symbols": {
+      "I": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "kambaata1",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "kikuyu1",
+    "symbols": {
+      "ǝ": 10,
+      "ӕ": 3
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "kiswahili4",
+    "symbols": {
+      "": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "korean11",
+    "symbols": {
+      ":": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "krio2",
+    "symbols": {
+      "ǝ": 2,
+      "і": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "lithuanian2",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "maltese1",
+    "symbols": {
+      ":": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "mandarin8",
+    "symbols": {
+      ":": 5
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "mandingo1",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "ngemba1",
+    "symbols": {
+      ":": 12
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "nuer1",
+    "symbols": {
+      "ӕ": 7
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "oromo1",
+    "symbols": {
+      "đ": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "sa'a1",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "somali2",
+    "symbols": {
+      ":": 7
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "somali3",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish10",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish11",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish13",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish16",
+    "symbols": {
+      "đ": 4
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish18",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish189",
+    "symbols": {
+      ":": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish2",
+    "symbols": {
+      "đ": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish20",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish22",
+    "symbols": {
+      "đ": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish23",
+    "symbols": {
+      "đ": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish24",
+    "symbols": {
+      "đ": 3
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish37",
+    "symbols": {
+      ":": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish4",
+    "symbols": {
+      "đ": 3
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish5",
+    "symbols": {
+      "đ": 7
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish8",
+    "symbols": {
+      "đ": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "spanish9",
+    "symbols": {
+      "đ": 2
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "tajiki1",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "tamil2",
+    "symbols": {
+      "ә": 6,
+      "∫": 4,
+      "а": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "tokpisin1",
+    "symbols": {
+      "đ": 5
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "tswana2",
+    "symbols": {
+      ":": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "turkish3",
+    "symbols": {
+      "đ": 3
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  },
+  {
+    "id": "yoruba2",
+    "symbols": {
+      "ⅼ": 1,
+      "а": 1
+    },
+    "status": "needs_source_notation_review; not automatically an acoustic error"
+  }
+]

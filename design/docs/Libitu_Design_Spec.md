@@ -1,8 +1,13 @@
 # Build the Libitu MVP experience
 
-## GA Sound target — accepted 2026-11-07, implementation pending
+## GA Sound — implemented 2026-11-07
 
-Use [STAGE_TWO_GA_SOUND_PLAN.md](STAGE_TWO_GA_SOUND_PLAN.md) for the next Sound increment: GA only, four groups and 12 top-level entries, subtype filtering, explicit candidate/target/measurement states, shared Detailed/Review marks and reliable per-vowel duration display. This target supersedes earlier ten-filter or proposed mixed-US/UK catalogues and the solid Reference-candidate styling only when implemented. Keep current layout containers, concealment, opt-in dense measurements and recording/history gates. GA is a learning target, not a source-accent verdict. R-linking is not a separate entry; T/D and H elision are subtypes. No actual realization or correctness follows from text rules or forced alignment. See PROJECT.MD/TASK.MD for delivery status.
+Latest user scope: postpone audio phenomenon detection/evidence integration. Limit compact word labels to two distinct categories, with an independent `+N` button toggling the complete category list in the explanation card. Keep nonmatching inline marks and arcs at 20% through hover, focus and expansion; do not dim source words, status or explanation content. Detailed and Review share these rules.
+
+
+Follow the latest [v2.1 visual specification](libitu_设计规范_v2_1_统一版_.md), the supplied `Stage 2 · Detailed (three-layer analysis)-html-2` prototype, and [current GA contract](STAGE_TWO_GA_SOUND_PLAN.md). Explicit user overrides: Linking uses the filter’s lower `‿` glyph everywhere and opens the exact boundary explanation; Vowel length means relative vowel length conditioned by the final consonant’s voicing, not measured duration.
+
+Following the user’s later browser feedback, use paired Reference reading cues / Your voice practice targets, native word-width masks and solid soft-color marks, four groups / 12 entries plus All, candidate counts, Elision subfilters and seven-row cards directly below the text/timeline. Use shared Inter for all typography, including IPA. Detailed and Review share semantics; hidden text also conceals source-specific counts and explanations. No reference recording is required for Vowel length. v3 rules retain v1/v2 compatibility and stored acoustic data. Both rows remain text/dictionary candidates; unavailable saved reference analysis stays unavailable. Revealing a word synchronizes both rows and explanations follow the selected row. This overrides the single-flow prototype, dashed candidates and vowel-measurement presentation described in historical entries below; recording/history gates and Rhythm/Melody remain unchanged. GA is a learning target, not a source-accent verdict; no acoustic realization or correctness follows from these candidates. See [acceptance](../benchmarks/stage-two-ga-sound-20261107/PAIRED-CUES.md).
 
 ## Text evidence and report completeness — 2026-11-06
 

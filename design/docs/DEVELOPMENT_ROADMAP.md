@@ -1,5 +1,17 @@
 # Deliver the Libitu MVP
 
+Research isolation (2026-11-11): Speech Phenomena P0/P1 and frozen-baseline reproduction are complete in the independent repository. Automatic candidate/position evaluation E0b precedes further training and reference-only model integration. No online detector was added. See [migration acceptance](/Users/river/Documents/speech-phenomena/docs/migration/REPORT.md).
+
+Offline event-first experiment (2026-11-10): narrow IPA adaptation is not a prerequisite for Sound-event qualification. Buckeye/TIMIT source preparation and a speaker-isolated flap probe are implemented; full four-encoder results remain pending. Same-data, equal-budget frozen probes and text controls precede any partial-unfreeze experiment or production integration. See [source audit and run status](../benchmarks/sound-events-20261109/REPORT.md).
+
+IPA / Sound 模型完整技术方案（2026-11-09）：[实施设计](SOUND_IPA_ACOUSTIC_MODEL_IMPLEMENTATION_PLAN.md)已交付；新增专业语料、结构化音值模型、12 类检测器与证据 API 均属待实施。按数据审计与封存评测 → IPA 适配 → 三子类检测 → 全类别逐项 gate → 产品部署执行，不将既有文本候选或小样本实验当作检测器验收。
+
+Original-checkpoint IPA adaptation (2026-11-09): six head-only runs on reviewed/full Glossika supervision completed, preserving the pretrained checkpoint. Neither arm improves the eight-recording external regression result under the frozen compatible scoring contract; keep the original model as baseline. Further qualification needs consistent independent IPA labels and review of transfer/notation differences, not online replacement or event-head integration. See [adaptation evidence](../benchmarks/sound-glossika-20261108/IPA-ADAPTATION-V1.md).
+
+Offline IPA comparison completed (2026-11-09): 60 fresh-head fits across four frozen encoders, five layers and three seeds now have development-selected, sealed-test results on the 549/5/8 train/dev/test pilot. Wav2Vec2Phoneme leads this conditional comparison at 39.69% base-segment error; the other models, per-sentence outputs, notation limitations and test exposure are documented in [IPA probe v3](../benchmarks/sound-encoder-eval-20261109/IPA-PROBE-V3.md). Next quality gate is broader consistent independent IPA evaluation; event labels, ABX and encoder fine-tuning remain separate work. Earlier preparation statuses below are historical and do not imply the new probes remain untrained.
+
+Offline Glossika data update (2026-11-09): the new source-literal profile exports 549 training rows from 588 short sentences, with 39 held for review. Four encoder adapters pass real-audio CTC preflights without optimizer updates. This preparation does not depend on completing the external listening pack; independent quality evaluation and localized event supervision remain separate. Word/specialist chapters follow as a later data increment. See [dataset v3](../benchmarks/sound-glossika-20261108/DATASET-V3.md).
+
 ```yaml
 meta:
   contentType: How-to
@@ -9,7 +21,9 @@ meta:
 
 This roadmap orders implementation by dependency and product risk. Each phase must produce a testable learner outcome before the next phase expands scope.
 
-GA Sound update (2026-11-07, accepted plan): execute [the bounded GA increment](STAGE_TWO_GA_SOUND_PLAN.md) as P0 scope/documentation → P1 versioned contract and compatibility → P2 conservative candidate rules → P3 shared Detailed/Review presentation → P4 per-vowel duration display → P5 regression and delivery evidence. Only P0 is complete. Target GA with 12 entries; do not add British/non-rhotic R-linking. This work extends the existing learning guide and measurement UI; it does not complete M4b acoustic realization detection or depend on shipping those future detectors.
+Offline Sound evaluation update (2026-11-09): the four-encoder frozen-feature/probe infrastructure and a separate 12-development / 24-reserved-test listening pack are ready. Next: collect recording-specific labels → train shared fresh IPA heads and select layers on development data → freeze the evaluation release → score the project holdout. Localized event-training examples and manual phone/ABX coverage remain separate gates. See [execution evidence](../benchmarks/sound-encoder-eval-20261109/README.md). This does not move M4b or online evidence integration ahead of validation.
+
+GA Sound update (2026-11-07): P0–P5 were delivered locally, then revised by the user’s html-2 / v2.1 design instructions. Current Sound has paired Reference reading cues / Your voice practice targets with explicit unverified evidence, word-width masks, clickable lower linking arcs and v3 text/dictionary Vowel length candidates based on final-consonant voicing. The initial P4 duration-display UI is superseded; stored measurements remain compatible. See [current contract](STAGE_TWO_GA_SOUND_PLAN.md), [initial delivery](../benchmarks/stage-two-ga-sound-20261107/REPORT.md) and [latest acceptance](../benchmarks/stage-two-ga-sound-20261107/PAIRED-CUES.md). Keep GA / 12 entries; this does not complete M4b acoustic realization detection.
 
 Routing architecture update (2026-10-10): R3 directly enables `/practice/import`, `/practice/{contentId}`, `/segments` and `/shadow` with a shared content layout/media host. Main steps push; selection and explicit returns replace. The user removed compatibility requirements: root query learning links and old extension protocols are unsupported, entry links use new paths, continuation uses v2 only, and Web/extension 0.2.0 must update together. R4 entry work is included; R5 cleanup is implemented. See [architecture](ROUTING_AND_RESPONSIBILITY_ARCHITECTURE.md) and TASK.MD for checks and the outstanding real-toolbar capture qualification. No product phase, provider, database schema or consent boundary changes.
 

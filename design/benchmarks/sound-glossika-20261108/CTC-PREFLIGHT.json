@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "checkpoint_sha256": "3173bde9e9ce490fa0f989e413c42f25bc1820c020adc1e6b9b87025b3cfcc5e",
+  "base_rows_preserved": true,
+  "encoder_frozen": true,
+  "candidate_rows": 41,
+  "backward_checked_rows": [
+    {
+      "id": "glossika-pron-en-cs-0010",
+      "loss": 4.754512310028076,
+      "frames": 60,
+      "target_tokens": 14,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0009",
+      "loss": 4.218440055847168,
+      "frames": 59,
+      "target_tokens": 14,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0001",
+      "loss": 2.5067317485809326,
+      "frames": 49,
+      "target_tokens": 11,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0007",
+      "loss": 3.2378389835357666,
+      "frames": 58,
+      "target_tokens": 13,
+      "gradient_finite_nonzero": true
+    },
+    {
+      "id": "glossika-pron-en-cs-0025",
+      "loss": 3.6784768104553223,
+      "frames": 32,
+      "target_tokens": 7,
+      "gradient_finite_nonzero": true
+    }
+  ],
+  "new_symbols": [
+    "ɦ",
+    "ʱ",
+    "ʷ",
+    "ː",
+    "̪"
+  ],
+  "optimizer_steps": 0,
+  "trained_model_saved": false,
+  "quality_metrics": null,
+  "note": "Finite losses/gradients prove engineering feasibility only; no quality improvement tested."
+}

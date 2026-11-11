@@ -1,0 +1,38 @@
+[
+  {
+    "width": 1400,
+    "status": "passed",
+    "checks": [
+      "13 grouped controls",
+      "subtype reset/unsupported",
+      "candidate evidence",
+      "natural word flow and stable word order",
+      "keyboard details",
+      "hidden spans",
+      "multi-vowel/pace",
+      "minimum zoom/Fit",
+      "take isolation",
+      "learner-only",
+      "partial word gaps",
+      "no page overflow"
+    ]
+  },
+  {
+    "width": 390,
+    "status": "passed",
+    "checks": [
+      "13 grouped controls",
+      "subtype reset/unsupported",
+      "candidate evidence",
+      "natural word flow and stable word order",
+      "keyboard details",
+      "hidden spans",
+      "multi-vowel/pace",
+      "minimum zoom/Fit",
+      "take isolation",
+      "learner-only",
+      "partial word gaps",
+      "no page overflow"
+    ]
+  }
+]

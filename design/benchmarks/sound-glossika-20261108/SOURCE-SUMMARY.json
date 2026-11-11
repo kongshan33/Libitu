@@ -1,0 +1,167 @@
+{
+  "status": "source_assessed_not_training_ready",
+  "pdf_pages": 100,
+  "pdf_path": "design/seed/Glossika+你不知道的英文發音.pdf",
+  "pdf_sha256": "d15e475279d349eef6852a83f5eef6e95089487f1a8ad3c6dfe67d7a31e2bd09",
+  "audio_files": 145,
+  "container_seconds": 4116.365667,
+  "decoded_seconds": 4121.6522448979595,
+  "chapter_totals": {
+    "Ch.10-三個音節的單字怎麼發音": {
+      "files": 1,
+      "container_seconds": 101.8815,
+      "decoded_seconds": 102.03428571428572
+    },
+    "Ch.2-英文母音和子音的單字發音訓練": {
+      "files": 126,
+      "container_seconds": 2754.981081999999,
+      "decoded_seconds": 2758.295510204081
+    },
+    "Ch.3-常用英文短句發音訓練": {
+      "files": 12,
+      "container_seconds": 777.686417,
+      "decoded_seconds": 778.7885714285715
+    },
+    "Ch.4-字尾加 -ed 的發音": {
+      "files": 1,
+      "container_seconds": 115.606667,
+      "decoded_seconds": 115.77469387755102
+    },
+    "Ch.5-掌握英文的聲調": {
+      "files": 1,
+      "container_seconds": 101.8815,
+      "decoded_seconds": 102.03428571428572
+    },
+    "Ch.6-Can 的發音": {
+      "files": 1,
+      "container_seconds": 109.367417,
+      "decoded_seconds": 109.53142857142858
+    },
+    "Ch.7-To 的發音": {
+      "files": 1,
+      "container_seconds": 74.546167,
+      "decoded_seconds": 74.65795918367347
+    },
+    "Ch.8-英文字母的發音": {
+      "files": 1,
+      "container_seconds": 35.056,
+      "decoded_seconds": 35.10857142857143
+    },
+    "Ch.9-英文冠詞": {
+      "files": 1,
+      "container_seconds": 45.358917,
+      "decoded_seconds": 45.4269387755102
+    }
+  },
+  "whole_track_pcm_duplicate_groups": [],
+  "subclip_deduplication": "not_performed",
+  "audio_decode_review_paths": [
+    "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-029-U.mp3"
+  ],
+  "short_sentence_source_entries": 588,
+  "short_sentence_entries_with_ipa": 588,
+  "source_issue_counts": {
+    "book_notation_outside_current_zipa_character_inventory": 535,
+    "multiple_book_readings_require_audio_selection": 4,
+    "replacement_character_in_ipa": 180,
+    "book_error_example_separated_from_reference": 1
+  },
+  "raw_unsupported_symbols": [
+    {
+      "character": "(",
+      "codepoint": "U+0028",
+      "name": "LEFT PARENTHESIS"
+    },
+    {
+      "character": ")",
+      "codepoint": "U+0029",
+      "name": "RIGHT PARENTHESIS"
+    },
+    {
+      "character": "õ",
+      "codepoint": "U+00F5",
+      "name": "LATIN SMALL LETTER O WITH TILDE"
+    },
+    {
+      "character": "ɫ",
+      "codepoint": "U+026B",
+      "name": "LATIN SMALL LETTER L WITH MIDDLE TILDE"
+    },
+    {
+      "character": "ʣ",
+      "codepoint": "U+02A3",
+      "name": "LATIN SMALL LETTER DZ DIGRAPH"
+    },
+    {
+      "character": "ʤ",
+      "codepoint": "U+02A4",
+      "name": "LATIN SMALL LETTER DEZH DIGRAPH"
+    },
+    {
+      "character": "ʦ",
+      "codepoint": "U+02A6",
+      "name": "LATIN SMALL LETTER TS DIGRAPH"
+    },
+    {
+      "character": "ʧ",
+      "codepoint": "U+02A7",
+      "name": "LATIN SMALL LETTER TESH DIGRAPH"
+    },
+    {
+      "character": "ʱ",
+      "codepoint": "U+02B1",
+      "name": "MODIFIER LETTER SMALL H WITH HOOK"
+    },
+    {
+      "character": "ʴ",
+      "codepoint": "U+02B4",
+      "name": "MODIFIER LETTER SMALL TURNED R"
+    },
+    {
+      "character": "ˀ",
+      "codepoint": "U+02C0",
+      "name": "MODIFIER LETTER GLOTTAL STOP"
+    },
+    {
+      "character": "̊",
+      "codepoint": "U+030A",
+      "name": "COMBINING RING ABOVE"
+    },
+    {
+      "character": "̠",
+      "codepoint": "U+0320",
+      "name": "COMBINING MINUS SIGN BELOW"
+    },
+    {
+      "character": "͡",
+      "codepoint": "U+0361",
+      "name": "COMBINING DOUBLE INVERTED BREVE"
+    },
+    {
+      "character": "ṇ",
+      "codepoint": "U+1E47",
+      "name": "LATIN SMALL LETTER N WITH DOT BELOW"
+    },
+    {
+      "character": "⁼",
+      "codepoint": "U+207C",
+      "name": "SUPERSCRIPT EQUALS SIGN"
+    },
+    {
+      "character": "ⁿ",
+      "codepoint": "U+207F",
+      "name": "SUPERSCRIPT LATIN SMALL LETTER N"
+    },
+    {
+      "character": "�",
+      "codepoint": "U+FFFD",
+      "name": "REPLACEMENT CHARACTER"
+    }
+  ],
+  "segmented_clips": 0,
+  "audio_verified_ipa_labels": 0,
+  "training_runs": 0,
+  "speaker_count": null,
+  "training_authorized_by_user": true,
+  "authorization_scope": "user-supplied Glossika materials; current conversation 2026-11-08"
+}

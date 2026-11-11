@@ -1,0 +1,150 @@
+{
+  "schema_version": "sound-target-selection-v1",
+  "pack_id": "ga-sound-target-round2-20261107-v1",
+  "items": [
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "slt",
+      "record_id": "arctic_a0008",
+      "text": "Gad, your letter came just in time.",
+      "kind": "flap",
+      "subtype": "t",
+      "word_start": 2,
+      "word_end": 3,
+      "phase": "review",
+      "target_text": "letter"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "slt",
+      "record_id": "arctic_a0007",
+      "text": "And you always want to see it in the superlative degree.",
+      "kind": "coalescence",
+      "subtype": "d_y",
+      "word_start": 0,
+      "word_end": 2,
+      "phase": "review",
+      "target_text": "And you"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "bdl",
+      "record_id": "arctic_a0001",
+      "text": "Author of the danger trail, Philip Steels, etc.",
+      "kind": "flap",
+      "subtype": "t",
+      "word_start": 7,
+      "word_end": 8,
+      "phase": "review",
+      "target_text": "etc."
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "bdl",
+      "record_id": "arctic_a0155",
+      "text": "Won't you draw up, gentlemen.",
+      "kind": "coalescence",
+      "subtype": "t_y",
+      "word_start": 0,
+      "word_end": 2,
+      "phase": "supplement",
+      "target_text": "Won't you"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "slt",
+      "record_id": "arctic_a0184",
+      "text": "Don't you see, I'm chewing this thing in two.",
+      "kind": "coalescence",
+      "subtype": "t_y",
+      "word_start": 0,
+      "word_end": 2,
+      "phase": "supplement",
+      "target_text": "Don't you"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "bdl",
+      "record_id": "arctic_b0348",
+      "text": "Would you be satisfied with that one hundredth part of me.",
+      "kind": "coalescence",
+      "subtype": "d_y",
+      "word_start": 0,
+      "word_end": 2,
+      "phase": "supplement",
+      "target_text": "Would you"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "slt",
+      "record_id": "arctic_a0290",
+      "text": "One by one the boys were captured.",
+      "kind": "assimilation",
+      "subtype": "n_bilabial",
+      "word_start": 0,
+      "word_end": 2,
+      "phase": "supplement",
+      "target_text": "One by"
+    },
+    {
+      "corpus": "speechocean762",
+      "speaker": "1027",
+      "record_id": "010270268",
+      "text": "I WANT TO BE ABLE TO START MY OWN PROJECTS",
+      "kind": "assimilation",
+      "subtype": "n_bilabial",
+      "word_start": 8,
+      "word_end": 10,
+      "phase": "supplement",
+      "target_text": "OWN PROJECTS"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "bdl",
+      "record_id": "arctic_b0462",
+      "text": "One guess will do, Ernest retorted.",
+      "kind": "assimilation",
+      "subtype": "n_velar",
+      "word_start": 0,
+      "word_end": 2,
+      "phase": "supplement",
+      "target_text": "One guess"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "slt",
+      "record_id": "arctic_b0497",
+      "text": "One great drawback to farming in California is our long dry summer.",
+      "kind": "assimilation",
+      "subtype": "n_velar",
+      "word_start": 5,
+      "word_end": 7,
+      "phase": "supplement",
+      "target_text": "in California"
+    },
+    {
+      "corpus": "cmu_arctic",
+      "speaker": "bdl",
+      "record_id": "arctic_a0256",
+      "text": "See the length of the body and that elongated neck.",
+      "kind": "flap",
+      "subtype": "d",
+      "word_start": 5,
+      "word_end": 6,
+      "phase": "supplement",
+      "target_text": "body"
+    },
+    {
+      "corpus": "speechocean762",
+      "speaker": "0036",
+      "record_id": "000360210",
+      "text": "STARTING CAN NOT BE BETTER THAN THIS",
+      "kind": "flap",
+      "subtype": "t",
+      "word_start": 4,
+      "word_end": 5,
+      "phase": "supplement",
+      "target_text": "BETTER"
+    }
+  ]
+}

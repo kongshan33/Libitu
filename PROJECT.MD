@@ -1,8 +1,112 @@
 # Understand the Libitu project
 
-## GA Sound plan accepted — 2026-11-07
+## Speech research P2 dictionary control completed — 2026-11-11
 
-Stage 2's next Sound increment targets General American only: four groups with 12 top-level filters, Elision subtypes for T/D and H loss, explicit candidate/target/measurement evidence, and per-vowel duration display where saved phone evidence exists. The dedicated R-linking proposal is excluded; ordinary GA /r/ connections belong to Linking. See [the execution contract](design/docs/STAGE_TWO_GA_SOUND_PLAN.md). Only planning/documentation is complete: the current ten-filter, five-kind v1 rule implementation remains in place. P1–P5 implementation and validation are pending; acoustic realization detectors remain a separate M4b milestone.
+The paired E0b run changes only MFA dictionary coverage on the same nine complete recordings. It adds 109 compatible CMU words / 114 variants, preserves original dictionary entries and every input waveform, and reruns all four frozen encoders with the same heads and thresholds. Complete-chain F1 means rise from 22.22% to 71.43% (raw Wav2Vec2 Large), 74.29% (WavLM Base+), 77.14% (WavLM Large), and 71.43% (Whisper Small). A control classifications are unchanged; 252 offline research tests pass. Both sealed runs and 1,044 new predictions are retained; no training or API integration occurred.
+
+Timing remains the limiting gate: joint correct-label/100ms F1 is only 40.95–42.86%. Buckeye target-center median error is 1.92 seconds, versus 6.8ms for these TIMIT examples. The cleaned Buckeye transcript has long intervals without listed words; whether it covers the complete recording remains unverified. P2 is still incomplete. Recover professional source metadata or validate automatic localization before expanding the 739-recording pool; keep 26 unexposed TIMIT speakers reserved. These 10 reference opportunities cannot rank backbones. [Paired report](/Users/river/Documents/speech-phenomena/reports/e0b-lexicon-pair.md).
+
+## Speech research P2 first complete-recording diagnostic — 2026-11-11
+
+The independent research repository completed the exposure audit and a fixed nine-recording E0b smoke on raw Wav2Vec2 Large, WavLM Base+/Large and Whisper Small, using all three original frozen heads and thresholds with zero training updates. A/B/C/D results, 444 predictions, source/code snapshots, errors and local compute budget are preserved in `speech-phenomena-store/runs/e0b-dev-v3-20261111`. All 248 research tests pass with Libitu reads blocked and empty data roots.
+
+All 34 Buckeye speakers and 604/630 TIMIT speakers already have local event-experiment exposure; reserve the remaining 26 TIMIT speakers. Automatic candidates cover all 10 conservative reference opportunities in this smoke, but whole-recording rejection from MFA dictionary gaps (`tv's`, `coauthors`) removes 7/8 positive opportunities. All four complete-chain F1 means are 22.22%; this is a shared pipeline failure diagnosis, not evidence for backbone ranking. Expanded P2 remains incomplete: repair dictionary coverage under a new run, then repeat the fixed recordings before expanding the 739-recording development pool. No business API behavior changed. [Report](/Users/river/Documents/speech-phenomena/reports/e0b-first-pass.md).
+
+## Speech research separated — 2026-11-11
+
+P0/P1 of the accepted Speech Phenomena plan are complete locally. Active research is now `/Users/river/Documents/speech-phenomena` (independent Git/Python package/environment/tests); resource snapshots and original code are preserved under `/Users/river/Documents/speech-phenomena-store`. Removed 52 historical Python modules and 21 research test files from API ownership after hash verification; the old scripts directory contains a pointer only. Business Sound, ASR/MFA/worker behavior and original `.cache/sound-pilot` data are unchanged.
+
+Verified 231 independent research tests at migration, including a run with old-checkout reads forbidden and empty data roots; 84 frozen metric rows/25,200 predictions reproduced; 42 reloaded heads give identical probabilities; six encoders pass two-real-clip feature checks with zero real-data optimizer updates. Root lint/build/test passed at migration (API 1,996; Web 540 and Extension 124 via valid cache). Preservation includes 22,497 files plus 29 public-seed resources and 7 remapped links; same-disk copies are not an independent-media backup. Git initialized, not committed or published. The P2 increment is described above; new training/MLflow/serving remain future work. [Acceptance report](/Users/river/Documents/speech-phenomena/docs/migration/REPORT.md).
+
+## Supplemental event encoders — 2026-11-10
+
+Whisper padding repair (2026-11-10): the common `padding=True` call produced 100 mel frames instead of the required 3,000. The Whisper-only adapter now explicitly zero-pads the waveform to the native 480,000-sample input before log-mel extraction, preserving the declared 30-second protocol and the first-50-frame readout. Four padding regressions plus 19 event tests pass. A real training clip passes the pinned encoder with `[1,80,3000]` input, all 13 finite `[1,50,768]` hidden states and finite classification-head gradients (zero optimizer updates). Resumed the supplement from existing data2vec artifacts; Whisper scores subsequently completed; see the verified supplement below and the independent research baseline report. Evidence: `.cache/sound-pilot/events-extra-v3-20261110/PADDING-FIX-PREFLIGHT.json`.
+
+User-authorized supplement: pinned `openai/whisper-small` encoder (supervised ASR/translation) and `facebook/data2vec-audio-large` (raw self-supervised, not `-960h`). Implemented isolated runner `event_extra_probe.py`; queued after the active raw-Wav2Vec2 run to avoid CPU/RAM contention. Same immutable 1,600/600/600 split, five depths, three seeds and fixed probe budget. Whisper retains native 30-second zero padding and uses only the first 50 encoder frames; frame-center bookkeeping is not a physical receptive-field claim. No decoder or transcript prompt. Existing test exposure is disclosed. Supplement completed: pure-audio mean F1 is data2vec 82.85%/94.55% and Whisper 87.76%/94.80% (Buckeye/TIMIT), on the same exposed regression test; not end-to-end quality. Artifacts: `.cache/sound-pilot/events-extra-v3-20261110/`.
+
+## Source-labeled flap benchmark preparation — 2026-11-10
+
+Prepared a separate Buckeye/TIMIT event experiment without new user annotation. Pinned research mirrors contain 6,554 decoded records; 37 identical Buckeye duplicates are removed, one invalid audio/label-tail record quarantined. Buckeye covers 34 speakers and has 62.5 ms quantized timestamps; TIMIT's official sample matches both phone intervals and PCM. The frozen first comparison has 1,600 train / 600 development / 600 test candidate windows with speaker isolation and TIMIT official-test preservation. Conservative source-phone/lexicon mappings separately inventory flap, n-place assimilation and yod coalescence, retaining unknowns. Four frozen-encoder probe execution, test release, text-only control and automatic reports are implemented; the frozen-probe training/test runs have completed; see the immutable reports and the independent baseline index. No online Sound change or IPA-head replacement. See [data and run report](design/benchmarks/sound-events-20261109/REPORT.md).
+
+## Full Glossika preparation v1 — 2026-11-09
+
+All 145 tracks / 68.69 decoded minutes are accounted for and retained in a frozen data package. Exported 661 complete-IPA and 2,075 partial-IPA samples (40.63 clip minutes / 39.64 minutes of unique source coverage), plus 73 text-only auxiliary samples; 383 technical holds remain. The original 549 short-sentence clips are unchanged and 21 prior holds are recovered. Complete labels use CTC; partial phone/ending labels use a tested CTC sequence-presence objective that leaves other phones unknown. The 120-token vocabulary preserves the previous 117 IDs. All 2,736 training rows pass source-frame and label validation; seven real-audio gradient checks and 14 focused tests pass. Root lint/build/test pass (2,192 API tests). No optimizer updates or accuracy claim; SAA remains separate. Professional source labels require no repeated user listening. Remaining association issues, incomplete standalone-phone segmentation and external evaluation are explicit. See [data report and interfaces](design/benchmarks/sound-glossika-20261108/FULL-CORPUS-V1.md).
+
+## Speech Accent Archive intake audit — 2026-11-09
+
+Downloaded and hash-verified the complete pinned 1,242-row SAA research snapshot (9.862 hours). All audio decodes; 67 retrieved official transcriptions match the snapshot, and 21 sampled recordings match official audio. Narrow marks are plentiful, but only 13 complete labels encode under the 117-entry Glossika v4 vocabulary; 66 of 79 source inventory entries occur, with notation differences and 50 rows queued for character review. No independent acoustic IPA adjudication or training was performed. The corpus is a conditional supplemental-training candidate, with fixed-text, accent and noncommercial-license limits. See [audit and local review pack](design/benchmarks/sound-saa-20261109/REPORT.md).
+
+## IPA adaptation diagnosis — 2026-11-09
+
+A read-only audit localizes the 549-row model's regression to its updated output head, with encoder weights unchanged. On the eight exposed recordings, deterministic base-unit alignment gains 8 reference matches and loses 47, with insertions reduced by 1 (58 → 96 errors). Masking new token rows leaves 33.44% error; restoring the original 392 rows while retaining trained new rows returns to 18.69% (a one-unit notation/projection effect, not an improved model claim). The training labels lack several original phone symbols and heavily use Glossika modifiers; training budgets and utterance lengths also differ. Counts of emitted tap/glottal/modifier symbols are label diagnostics, not acoustic-event accuracy. All original inputs/checkpoints are preserved; no further training or online change. See [diagnosis and evidence](design/benchmarks/sound-glossika-20261108/IPA-ADAPTATION-DIAGNOSIS.md).
+
+## Original Wav2Vec2 IPA-head adaptation completed — 2026-11-09
+
+Completed six supervised runs from the pinned pretrained IPA head (50 reviewed / 549 full book-supervised rows, three seeds each, 40 fixed epochs, encoder frozen). Preserved all 392 original token IDs/weight rows at initialization and added 24 literal-label characters. Original model hashes and all 562 baseline predictions remain unchanged; all six trained heads reload exactly. On the eight previously exposed independent regression recordings, base IPA-unit error changes from 19.02% to 19.67% (50-row arm) / 31.48% (549-row arm); compatible CER changes from 26.99% to 27.46% / 48.86%. This run does not improve external performance despite better training fit. Its frozen scoring projection differs from the previous probe's segment metric; broad/narrow label-style mismatches remain explicit. No new blind labels, encoder updates, event heads or online model replacement. Lint/build pass; the full test retry after training passes 2,171 API tests (the first concurrent run hit an existing timing-sensitive heartbeat assertion). See [results, artifacts and limits](design/benchmarks/sound-glossika-20261108/IPA-ADAPTATION-V1.md).
+
+## Completed four-encoder IPA representation pilot — 2026-11-09
+
+The current IPA-only experiment completed all 60 fresh linear CTC probes: four frozen encoders, five depths, three seeds, identical 40-epoch budgets on 549 Glossika clips (490.55 seconds). Five eligible development recordings selected the layers; all selections were sealed before scoring eight independent project test recordings. Mean test base-segment error is 39.69% for Wav2Vec2Phoneme, 59.54% for WavLM Large, 63.60% for WavLM Base+ and 84.32% for HuBERT Large. Every seed's raw before/after IPA, checkpoints, losses, training fit and test metrics are retained. “Before” is a fresh random head, not the original pretrained decoder; encoders received zero updates. Wav2Vec2Phoneme's prior phonetic supervision, single-annotator small test and notation mismatch limit interpretation. The eight test recordings and seven sentence groups are registered as exposed. Root lint/build/test pass (2,161 API tests). See [results and protocol](design/benchmarks/sound-encoder-eval-20261109/IPA-PROBE-V3.md). Earlier preflight statements below are historical; online Sound detection and event supervision remain unchanged.
+
+## Glossika literal-notation training export — 2026-11-09
+
+The user's latest instruction makes Glossika source notation the output authority. A new `glossika-literal-v3` package preserves `⁼`, `ṇ`, legacy affricate ligatures, rhotic/offglide modifiers and combining marks; old v2 mappings and experiments remain unchanged. The 588 short sentences yield 549 training rows (50 previously reviewed audio/text pairs plus 499 book-supervised automatic associations), 490.54625 seconds, and a 62-entry CTC vocabulary. Thirty-nine ambiguous/multivariant/optional-segment rows are held separately. All training audio/label hashes and CTC lengths pass validation; six real examples pass loss/backward preflights on Wav2Vec2Phoneme, WavLM Base+, WavLM Large and HuBERT Large with zero optimizer steps. This is a new data version, not an expanded frozen evaluation, trained model or event supervision. The 8773 review pack is untouched. See [data format and scope](design/benchmarks/sound-glossika-20261108/DATASET-V3.md).
+
+## Unified Sound encoder evaluation and held-out review pack — 2026-11-09
+
+Wav2Vec2Phoneme, WavLM Base+, WavLM Large and HuBERT Large now have pinned local adapters, a shared fresh CTC-head protocol, five-layer feature caches for the same 49 train + 12 development clips, and real-audio backward preflights with zero encoder/optimizer updates. A separate 36-recording blind review page is running at `http://127.0.0.1:8773/`: 12 development recordings and 24 reserved CLB/RMS test recordings, with source/text/PCM isolation, durable autosave and checked export/import. No test features, trained new probe, accuracy ranking or online detector exists. Single-person labels, unknown upstream pretraining overlap and unverified Glossika speaker identity remain explicit. IPA development selection and sealed test scoring commands are implemented; localized event training and sufficient manual phone/ABX coverage remain pending. See [implementation and annotation guide](design/benchmarks/sound-encoder-eval-20261109/README.md).
+
+## First Wav2Vec2 head-only fine-tuning run — 2026-11-08
+
+Completed the user's requested experiment on all 49 reviewed Glossika candidates (46.73 seconds): frozen encoder, 408,975 output-head parameters, 40 epochs / 280 AdamW updates, final fixed checkpoint. Training-set literal character difference falls from 39.85% to 18.63% (655 reference characters), with 46 improved / 3 unchanged rows and 5 exact sequences. Twelve existing external development clips were decoded only after optimization; outputs show potential regression and have no complete IPA gold, so no external accuracy or production improvement is claimed. Original model/input hashes remain unchanged; all 61 original baseline outputs were reproduced and the saved trained head was reloaded exactly. A local playback page is available at `http://127.0.0.1:8772/`. See [experiment report](design/benchmarks/sound-glossika-20261108/FIRST-FINETUNE.md). Earlier zero-update statements below describe the preceding preflight stage.
+
+## IPA reference and Glossika notation v2 — 2026-11-08
+
+The user's official IPA chart now supplies a pinned 188-entry reference catalog, with main-chart, supplementary, extIPA and placement-variant scopes kept distinct. Source-specific Glossika notation maps unaspirated `⁼` to `˭`, preserves `ʴ` / `ʱ` and vowel offglides, and retains raw reviews. Eight notation holds are resolved: 49 CTC candidates remain in development, with sentence 23 still held for compound-affricate review. A new 392→399 vocabulary candidate preserves the original IDs; seven real-clip CTC backward checks pass with zero optimizer steps, and baseline models and metrics are unchanged. Root lint/build/test pass (2,088 API tests). This is label/encoding preparation, not a trained detector or accuracy gain. See [IPA inventory and mappings](design/benchmarks/sound-glossika-20261108/IPA-INVENTORY.md).
+
+## Glossika reviewed intake and pretraining baselines — 2026-11-08
+
+The user completed all 50 first-batch sentence reviews. A final source-bound snapshot is archived unchanged; the four initially incomplete fields were explicitly clarified and the newer saved draft already contains all confirmations. Materialized audio totals 47.756 seconds. There are 41 experimental CTC candidates and 9 notation holds, plus 15 unlocalized human event observations (not event-training labels).
+
+Wav2Vec2Phoneme, ZIPA small and the newly pinned FP32 ZIPA large each completed all 50 originals. Literal IPA character differences are diagnostic only, not PER or accuracy. Wav2Vec2 decoded 17 tap symbols across the clips, both ZIPA variants zero, against 23 in the reviewed labels; these are unlocalized counts. A vocabulary-extension preflight preserves all 392 original Wav2Vec2 entries and head rows, adds 5 symbols, and passes frozen-encoder CTC backward checks with zero optimizer steps. No trained model or independent-test result exists. See [intake and baseline report](design/benchmarks/sound-glossika-20261108/REVIEWED-BASELINE.md).
+
+## Glossika first review batch — 2026-11-08
+
+Prepared all 588 sentence records with reversible IPA normalization candidates and a separate repair queue. The first track now has 50 padded 16 kHz mono sentence candidates, excluding its spoken title; independent local ASR supplies content-check clues. A loopback review page supports boundary/text/IPA review, optional 12-category event records, browser drafts, versioned disk backups and identity-checked export/import. All recordings remain unverified, with zero training-ready rows. Collection-level grouping prevents random within-source test splits. See [batch report](design/benchmarks/sound-glossika-20261108/BATCH-ONE.md).
+
+The current experiment order is shared reviewed data, Wav2Vec2Phoneme IPA SFT, WavLM Base+ frozen-encoder event heads for the three bounded subtypes, and ZIPA large baseline comparison. These experiments are pending, not a claim that any model has won or that fine-tuning is already necessary. This supersedes the initial ZIPA-only adaptation recommendation below.
+
+## Four-model listening comparison — 2026-11-08
+
+Four local baselines completed the same 12 full original recordings (48 outputs). A standalone playback/comparison page exposes raw phones, attributes, hashes and versions; Azure remains unconfigured by user choice. No accuracy or detector claim. See [report](design/benchmarks/sound-model-pilot-20261107/MODEL-COMPARISON.md).
+
+## Glossika training preparation and round-two review — 2026-11-08
+
+The user submitted all 12 second-round target judgments: 8 present / 4 absent, with valid frozen identities and no crop issues. The original export is archived unchanged; this is same-person refinement, not independent gold or model accuracy. See [results](design/benchmarks/sound-model-pilot-20261107/ROUND-TWO-RESULTS.md).
+
+The user explicitly permits training on their supplied Glossika materials. Current source inspection covers 145 MP3s (68.61 container minutes), a 100-page PDF and 588 indexed short-sentence entries. Raw book IPA, recording-specific labels and Sound events remain separate. Extraction damage, notation compatibility, a printed incorrect-pronunciation example and one MP3 decoder warning are recorded. No sentence alignment, acoustic labels, training run or online detector was completed by this inspection. See [dataset and fine-tuning plan](design/benchmarks/sound-glossika-20261108/PLAN.md); retain ZIPA primary / Allophant comparator and the three initial event subtypes while collecting data for all 12 product categories.
+
+## Offline Sound model pilot A+B — 2026-11-07
+
+The user requested another listening round. A separate 12-target pack now contains the original `letter`, `And you`, and `etc.` recordings plus 9 additional licensed human recordings, with four contexts per pilot category. Ten padded playback excerpts use cross-checked corpus autolabelling; two learner clips retain their complete short utterance. Every item preserves full-original playback, carries frozen source/target identity and starts without a human verdict. Draft export and copyable JSON backups are available. This is same-person target refinement, not an independent second annotator or detector evaluation. See [round-two pack](design/benchmarks/sound-model-pilot-20261107/ROUND-TWO.md).
+
+The user authorized an isolated ZIPA / Allophant comparison for coalescence, nasal place assimilation and word-internal T/D taps. Both models ran on the public 16-clip seed. The user's first pass has been recovered and clarified: 7 positive observations (1 single-word, 6 multiword), 41 whole-clip absence screenings, and 2 pending rows. The clip-09 span was corrected only after explicit user confirmation; original entries remain immutable. Whole-clip absence is not an event negative. A reproducible audit verifies source identity and every saved CTC head: neither run decoded a tap phone in any of the 16 clips, and Allophant's tap head decoded no positive. This is a diagnostic finding, not event accuracy or a universal model capability claim. Draft export no longer blocks on incomplete labels. Human adjudication, target localization, missing category coverage and individual detector evaluation remain pending; no online worker/UI/scoring integration is included. See [first-pass findings](design/benchmarks/sound-model-pilot-20261107/FIRST-PASS.md). This authorizes offline research following the earlier presentation-only deferral, not completion of M4b.
+
+## Sound density and filtering — 2026-11-07
+
+`All` now keeps at most two distinct category labels per word; a separate native `+N` button toggles the full category list in the existing explanation card. All candidate events remain in the explanations. Detailed and Review share this behavior. Nonmatching inline marks and linking arcs stay at 20% opacity even while hovered, focused or expanded; source words, status and explanation content remain readable. The user explicitly deferred audio phenomenon detection and evidence integration. See [verification](design/benchmarks/stage-two-ga-sound-20261107/DENSITY.md).
+
+## Sound Reading cues v3 — 2026-11-07
+
+Stage 2 Sound now follows the supplied html-2 prototype and updated v2.1 design specification, with the user’s two explicit corrections: all Linking controls share the filter’s lower `‿` arc and open the exact boundary explanation; Vowel length is a conditional shorter/longer learning cue before word-final voiceless/voiced obstruents, not a duration measurement. Reference reading cues and Your voice practice targets are shown in separate rows in Detailed and Review, with solid category marks, shared counts, Elision subfilters, Inter typography and seven-row explanations. Both rows are text/dictionary candidates, not verified audio realizations. Concealed words retain their native text width; revealing either row synchronizes the same word in both. The v3 dictionary contract retains v1/v2 decoding and saved acoustic adapters. See [current acceptance](design/benchmarks/stage-two-ga-sound-20261107/PAIRED-CUES.md). This supersedes the Sound presentation and vowel-display claims in the two earlier entries below.
+
+## Sound visual alignment — 2026-11-07
+
+Sound now follows the supplied `Stage 2 · Detailed (three-layer analysis)-html-1` prototype: natural-width word flow, plain uppercase group labels, compact cues, word-boundary arcs and surface-backed reading details. Inactive filter descriptions no longer reserve blank space. The 12-category GA content, subtype selection, evidence, concealment, measurements and media/history behavior are unchanged. The existing shared neutral palette and mobile touch targets remain in use. See [visual acceptance](design/benchmarks/stage-two-ga-sound-20261107/STYLE.md).
+
+## GA Sound delivered — 2026-11-07
+
+Stage 2 now targets General American with 12 grouped Sound filters, constrained subtypes, conditional v2 dictionary rules and shared Detailed/Review explanations. Reference and learner reading cues are explicitly unconfirmed; per-vowel measurements and legacy word totals have separate displays. Concealment covers the selected sentence's matching results and directory copy. Historical evidence remains take-bound, with no reanalysis or scoring change. P1–P5 are complete; [delivery evidence](design/benchmarks/stage-two-ga-sound-20261107/REPORT.md) records root checks and 1400px/390px browser acceptance. The [execution contract](design/docs/STAGE_TWO_GA_SOUND_PLAN.md) remains the scope reference. Validated acoustic realization detectors remain separate M4b work.
 
 ## Text quality and completeness — 2026-11-06
 
@@ -1039,3 +1143,38 @@ Remove the duplicate yellow preparation progress bar and amber preparation/analy
 2026-11-06 Corpus selection: Select all filtered results includes every matching record, including unloaded pages. Deselect filtered results removes only matching selections; hidden selections remain. Disable selection while search results are settling or corpus operations are pending. Existing delete confirmation and Stage 1 Saved synchronization apply.
 
 2026-11-06 Corpus Loadout limit: the selection tray states a maximum of five total items including existing selections. More than five currently selected items disables Add to Loadout with an associated explanation; batch deletion stays unrestricted. Existing atomic merge validation still rejects a combined selection over five without truncation.
+
+
+## Glossika vocabulary v4 — 2026-11-09
+
+Prepared Glossika literal vocabulary v4: source inventory plus canonical Unicode closure, 117-token custom / 481-token adapted vocabularies; old IDs and experiments preserved. All 549 labels and 92 source cases pass original/NFC/NFD round trips. No retraining or model switch. See `design/benchmarks/sound-glossika-20261108/vocab-v4/README.md`.
+
+
+## Fresh IPA head v4 — 2026-11-09
+
+Completed 549-row frozen-encoder training with random 117-token IPA heads, 3 seeds × 40 epochs. Same eight exposed regression recordings: base-unit error 32.68% versus previous full-data adaptation 31.48% and original 19.02%. Original model retained; no promotion. All 562 original outputs unchanged, external manifests identical and checkpoints reload-verified. See `design/benchmarks/sound-glossika-20261108/IPA-FRESH-V4.md`.
+
+
+## IPA diagnostic v5 — 2026-11-09
+
+Completed compatible-character localization (80 outputs, 1,434 differences; all acoustic verdicts pending), a source-track-held-out 499/50 split, and three fresh-v4-head 40-epoch trajectories. Validation-only selection chose epochs 40/40/38; selected and final external base-unit error both 31.80%. No demonstrated early-stopping benefit in this setup. Original model preserved; external scoring performed after selection release. Five external development recordings packaged for narrow Glossika review, still pending and excluded from selection. Speaker separation and new blind labels are not established. See `design/benchmarks/sound-glossika-20261108/IPA-DIAGNOSTIC-V5.md`.
+
+
+## IPA listening page — 2026-11-09
+
+Implemented loopback listening UI at localhost:8775 for the five pending external development recordings: playback/speed, exact IPA entry, uncertainty selections with source snapshots and manual playback anchors, browser autosave plus revision-checked atomic disk saves, JSON export and server download fallback. Existing labels/training remain unchanged; review completion is still pending. Backend and real Chromium desktop/mobile-viewport checks passed using a separate QA pack. See `design/benchmarks/sound-glossika-20261108/IPA-LISTENING-PAGE.md`.
+
+
+## Reviewed external IPA intake v6 — 2026-11-09
+
+Ingested all five completed local listening labels (revision 29). User explicitly confirmed take-a tie as linking metadata, drank r as ɹ, and both vacation final n as syllabic ṇ. Raw browser/disk review preserved; adjudicated development-only labels and audio hashes frozen separately. Re-evaluated existing models and 120 v5 checkpoints with a declared stress-excluding compatible selection score. Selected epochs 8/14/9: old eight-recording literal CER 48.01% vs final 51.80%, but base-unit error 36.72% vs 31.80%. No promotion, no optimizer updates; label-style and base-segment tradeoff remains unresolved. See `design/benchmarks/sound-glossika-20261108/IPA-REVIEW-V6.md`.
+
+
+## Matched-label notation control v7 — 2026-11-09
+
+Completed 362/97/90 source-group train/validation/test split from 549 Glossika clips; duplicate text/PCM links union source groups. Two label arms × three seeds × exactly 3,160 updates, identical paired initialization/batches/vocab/settings. Of 50 existing human-confirmed pairs, 26 differ literally and zero differ under explicit compatible notation; this is NOT a genuine acoustic-label repair experiment. Fixed-budget held-out compatible CER: book 31.13%, human-confirmed 30.89%; base-unit error 15.78% vs 15.54%. Small mean change, inconsistent seed direction, no stable benefit established. Test clips were used in older experiments; speaker-disjointness unknown. No further user annotation requested, no model promotion. See `design/benchmarks/sound-glossika-20261108/IPA-PAIRED-LABELS-V7.md`.
+
+
+## IPA and Sound model technical design — 2026-11-09
+
+Delivered the full implementation proposal in `design/docs/SOUND_IPA_ACOUSTIC_MODEL_IMPLEMENTATION_PLAN.md`: shared encoder, surface-phone CTC and source-profile supervision, masked attributes, local event heads plus fine-time acoustic branch, professional-corpus ingestion, all 12 Sound kinds, evaluation gates and worker/API/UI deployment. This is a design deliverable, not implementation or model promotion. New corpora, structured model, detectors and evidence API remain pending. User is not required to supply further annotations; missing event gold requires suitable professional data or independent expert work, not model-generated truth.

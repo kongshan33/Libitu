@@ -1,0 +1,9 @@
+{
+  "synthetic_fixture_only": true,
+  "trials": 15,
+  "epochs_per_trial": 2,
+  "optimizer_steps_per_trial": 2,
+  "test_label_exclusion_asserted": true,
+  "saved_head_changed_and_reloaded": true,
+  "real_corpus_optimizer_steps": 0
+}

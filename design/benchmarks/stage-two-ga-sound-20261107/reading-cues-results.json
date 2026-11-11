@@ -1,0 +1,40 @@
+[
+  {
+    "width": 1400,
+    "status": "passed",
+    "checks": [
+      "single Reading cues",
+      "13 filters with counts",
+      "Elision subtypes",
+      "solid shared palette",
+      "same lower linking arc",
+      "exact boundary explanation and keyboard toggle",
+      "7 explanation rows",
+      "conditional shorter/longer without measurements",
+      "no reference dependency",
+      "hidden spans and counts",
+      "minimum zoom/Fit",
+      "take changes",
+      "no overflow"
+    ]
+  },
+  {
+    "width": 390,
+    "status": "passed",
+    "checks": [
+      "single Reading cues",
+      "13 filters with counts",
+      "Elision subtypes",
+      "solid shared palette",
+      "same lower linking arc",
+      "exact boundary explanation and keyboard toggle",
+      "7 explanation rows",
+      "conditional shorter/longer without measurements",
+      "no reference dependency",
+      "hidden spans and counts",
+      "minimum zoom/Fit",
+      "take changes",
+      "no overflow"
+    ]
+  }
+]

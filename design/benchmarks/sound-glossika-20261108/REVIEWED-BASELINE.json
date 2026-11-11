@@ -1,0 +1,340 @@
+{
+  "profile": {
+    "version": "literal-ipa-char-diagnostic-v1",
+    "unit": "Unicode character, not phone",
+    "normalization": "NFC, expand affricate ligatures, remove whitespace/word boundary marker/tie bars; retain every other mark",
+    "exclusions": "notation-hold rows excluded from aggregate only; all raw outputs retained",
+    "interpretation": "includes transcription-style and label-granularity differences; not model accuracy; do not report 1-CER as accuracy"
+  },
+  "review_sha256": "9eea1c427b2c1b7f0edc46aa60fd4829ec3c669fc6976e53ae88a89fb559c915",
+  "manifest_sha256": "b73551ef4557ac6e50203611702e061b659555e517ee15b14e5f048097608cd7",
+  "models": {
+    "wav2vec2": {
+      "model": "facebook/wav2vec2-lv-60-espeak-cv-ft",
+      "revision": "ae45363bf3413b374fecd9dc8bc1df0e24c3b7f4",
+      "model_sha256": "3173bde9e9ce490fa0f989e413c42f25bc1820c020adc1e6b9b87025b3cfcc5e",
+      "clips_inferred": 50,
+      "literal_metric_clips": 41,
+      "reference_characters": 537,
+      "distance": 214,
+      "substitutions": 94,
+      "deletions": 114,
+      "insertions": 6,
+      "literal_character_error_rate": 0.3985102420856611,
+      "inference_seconds": 65.39001471945085,
+      "reference_tap_symbols_all_50": 23,
+      "predicted_tap_symbols_all_50": 17,
+      "tap_count_scope": "whole-clip symbol counts only; no event localization or accuracy",
+      "common_character_differences": [
+        {
+          "operation": "D",
+          "reference": "ː",
+          "hypothesis": "",
+          "count": 42
+        },
+        {
+          "operation": "D",
+          "reference": "d",
+          "hypothesis": "",
+          "count": 21
+        },
+        {
+          "operation": "S",
+          "reference": "̪",
+          "hypothesis": "ð",
+          "count": 19
+        },
+        {
+          "operation": "D",
+          "reference": "ʷ",
+          "hypothesis": "",
+          "count": 17
+        },
+        {
+          "operation": "S",
+          "reference": "ʲ",
+          "hypothesis": "ɪ",
+          "count": 17
+        },
+        {
+          "operation": "D",
+          "reference": "ʲ",
+          "hypothesis": "",
+          "count": 17
+        },
+        {
+          "operation": "S",
+          "reference": "ʔ",
+          "hypothesis": "t",
+          "count": 16
+        },
+        {
+          "operation": "D",
+          "reference": "s",
+          "hypothesis": "",
+          "count": 7
+        },
+        {
+          "operation": "S",
+          "reference": "ɾ",
+          "hypothesis": "d",
+          "count": 6
+        },
+        {
+          "operation": "S",
+          "reference": "ə",
+          "hypothesis": "ː",
+          "count": 6
+        },
+        {
+          "operation": "S",
+          "reference": "ː",
+          "hypothesis": "ɪ",
+          "count": 6
+        },
+        {
+          "operation": "D",
+          "reference": "t",
+          "hypothesis": "",
+          "count": 6
+        }
+      ]
+    },
+    "zipa-small": {
+      "model": "anyspeech/zipa-small-crctc-500k",
+      "revision": "dfe87c97662606fa6db90ad06f627d4363314744",
+      "model_sha256": "ec62e6f583cc3658c6a28a8841c65a6343e8c4b8b350ce1fd5bd8c717c280d96",
+      "clips_inferred": 50,
+      "literal_metric_clips": 41,
+      "reference_characters": 537,
+      "distance": 277,
+      "substitutions": 131,
+      "deletions": 131,
+      "insertions": 15,
+      "literal_character_error_rate": 0.515828677839851,
+      "inference_seconds": 4.188632803794462,
+      "reference_tap_symbols_all_50": 23,
+      "predicted_tap_symbols_all_50": 0,
+      "tap_count_scope": "whole-clip symbol counts only; no event localization or accuracy",
+      "common_character_differences": [
+        {
+          "operation": "D",
+          "reference": "ː",
+          "hypothesis": "",
+          "count": 64
+        },
+        {
+          "operation": "D",
+          "reference": "d",
+          "hypothesis": "",
+          "count": 19
+        },
+        {
+          "operation": "S",
+          "reference": "̪",
+          "hypothesis": "ð",
+          "count": 19
+        },
+        {
+          "operation": "S",
+          "reference": "ʔ",
+          "hypothesis": "t",
+          "count": 16
+        },
+        {
+          "operation": "D",
+          "reference": "ʷ",
+          "hypothesis": "",
+          "count": 16
+        },
+        {
+          "operation": "S",
+          "reference": "ʲ",
+          "hypothesis": "ɪ",
+          "count": 16
+        },
+        {
+          "operation": "S",
+          "reference": "ɾ",
+          "hypothesis": "t",
+          "count": 10
+        },
+        {
+          "operation": "I",
+          "reference": "",
+          "hypothesis": "ɛ",
+          "count": 10
+        },
+        {
+          "operation": "D",
+          "reference": "ʲ",
+          "hypothesis": "",
+          "count": 10
+        },
+        {
+          "operation": "S",
+          "reference": "ɾ",
+          "hypothesis": "d",
+          "count": 9
+        },
+        {
+          "operation": "D",
+          "reference": "ʌ",
+          "hypothesis": "",
+          "count": 9
+        },
+        {
+          "operation": "D",
+          "reference": "i",
+          "hypothesis": "",
+          "count": 8
+        }
+      ]
+    },
+    "zipa-large": {
+      "model": "anyspeech/zipa-large-crctc-500k",
+      "revision": "62c7a6e31f5035045de2538448a46b037948a206",
+      "model_sha256": "1ea7ea3d0fd85863f5121cd1b729fbb4c41cb804431e780776c48caba3fecdd3",
+      "clips_inferred": 50,
+      "literal_metric_clips": 41,
+      "reference_characters": 537,
+      "distance": 262,
+      "substitutions": 130,
+      "deletions": 129,
+      "insertions": 3,
+      "literal_character_error_rate": 0.48789571694599626,
+      "inference_seconds": 17.471282930695452,
+      "reference_tap_symbols_all_50": 23,
+      "predicted_tap_symbols_all_50": 0,
+      "tap_count_scope": "whole-clip symbol counts only; no event localization or accuracy",
+      "common_character_differences": [
+        {
+          "operation": "D",
+          "reference": "ː",
+          "hypothesis": "",
+          "count": 62
+        },
+        {
+          "operation": "D",
+          "reference": "d",
+          "hypothesis": "",
+          "count": 19
+        },
+        {
+          "operation": "S",
+          "reference": "̪",
+          "hypothesis": "ð",
+          "count": 19
+        },
+        {
+          "operation": "S",
+          "reference": "ʔ",
+          "hypothesis": "t",
+          "count": 16
+        },
+        {
+          "operation": "S",
+          "reference": "ʲ",
+          "hypothesis": "ɪ",
+          "count": 16
+        },
+        {
+          "operation": "D",
+          "reference": "ʷ",
+          "hypothesis": "",
+          "count": 15
+        },
+        {
+          "operation": "S",
+          "reference": "ɾ",
+          "hypothesis": "t",
+          "count": 12
+        },
+        {
+          "operation": "D",
+          "reference": "ʲ",
+          "hypothesis": "",
+          "count": 11
+        },
+        {
+          "operation": "S",
+          "reference": "ɾ",
+          "hypothesis": "d",
+          "count": 8
+        },
+        {
+          "operation": "D",
+          "reference": "i",
+          "hypothesis": "",
+          "count": 8
+        },
+        {
+          "operation": "S",
+          "reference": "ː",
+          "hypothesis": "h",
+          "count": 8
+        },
+        {
+          "operation": "S",
+          "reference": "ʲ",
+          "hypothesis": "i",
+          "count": 8
+        }
+      ]
+    }
+  },
+  "data_status": "single_annotator_development_no_unseen_test",
+  "phoneme_error_rate": null,
+  "phenomenon_metrics": null,
+  "wav2vec2_existing_tokenizer_exactly_unrepresentable_rows": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    28,
+    30,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+  ],
+  "candidate_inventory_sha256": "4a3759a436ce5dd59fd8d758e426a7dccd0f157aadbdb95543e2cb0f0d7a5635",
+  "training_ready": false,
+  "reason": "notation/label contract and independent validation coverage still incomplete"
+}

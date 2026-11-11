@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "counts": {
+    "train": 49,
+    "test": 24,
+    "dev": 12
+  },
+  "test_speakers": [
+    "cmu-arctic-clb",
+    "cmu-arctic-rms"
+  ],
+  "speaker_identity_limit": "Glossika speaker identity unverified; source collection is isolated",
+  "pretraining_overlap": "unknown; project holdout does not imply unseen during upstream pretraining",
+  "review_items": 36,
+  "review_seconds": 114.29068749999999,
+  "counts_by_split_kind": {
+    "test/assimilation": 8,
+    "test/flap": 8,
+    "dev/flap": 4,
+    "dev/assimilation": 4,
+    "test/coalescence": 8,
+    "dev/coalescence": 4
+  },
+  "manifest_sha256": "ed52a6770ec99d1f0914ad49940e9b79beedd9be224fab66bd689a50646bdada",
+  "pack_sha256": "843d4290d6d0028514b7b0c520dda94b827d96ca91e69fdc14bb0a8b052b799f",
+  "human_labels": 0,
+  "quality_scores": null
+}

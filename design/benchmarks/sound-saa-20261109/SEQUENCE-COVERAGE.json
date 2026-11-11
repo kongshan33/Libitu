@@ -1,0 +1,65 @@
+{
+  "method": "literal contiguous NFD substring; no semantic mapping; intervening marks may prevent a match",
+  "sequences": {
+    "lˠ": {
+      "occurrences": 1356,
+      "row_count": 553
+    },
+    "n̩": {
+      "occurrences": 115,
+      "row_count": 105
+    },
+    "m̩": {
+      "occurrences": 24,
+      "row_count": 22
+    },
+    "l̩": {
+      "occurrences": 17,
+      "row_count": 16
+    },
+    "t̚": {
+      "occurrences": 120,
+      "row_count": 105
+    },
+    "d̚": {
+      "occurrences": 162,
+      "row_count": 153
+    },
+    "k̚": {
+      "occurrences": 263,
+      "row_count": 188
+    },
+    "p̚": {
+      "occurrences": 136,
+      "row_count": 126
+    },
+    "b̚": {
+      "occurrences": 47,
+      "row_count": 44
+    },
+    "ɾ̃": {
+      "occurrences": 2,
+      "row_count": 1
+    },
+    "t͡s": {
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "d͡z": {
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "ts": {
+      "occurrences": 447,
+      "row_count": 425
+    },
+    "dz": {
+      "occurrences": 364,
+      "row_count": 359
+    },
+    "˺": {
+      "occurrences": 1101,
+      "row_count": 468
+    }
+  }
+}

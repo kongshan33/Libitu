@@ -1,5 +1,7 @@
 # Libitu 离线声学基准 v1
 
+2026-11-07：另有 [ZIPA / Allophant 离线试验](../../../../../design/benchmarks/sound-model-pilot-20261107/README.md)，两套模型各完成 16 条原始音素识别；单人盲审包已准备。它不生成本 v1 的现象观测或已仲裁金标。以下“模型运行次数 0”为 2026-09-13 本基准交付时的状态，不包含后来独立试验。
+
 这一目录提供可执行的数据/结果契约与评测工具。当前种子集是 **16 条真实录音、4 位成人说话人、49.107 秒，全部 dev**：8 条 CMU ARCTIC 参考录音、8 条 SpeechOcean762 中国英语学习者录音。两边句子未配对，`reference_sample_id=null`；不能拿不同内容直接比较。
 
 64 个目标都是**待人工选取位置的标注任务**（每段各一个 pause、F0、vowel length、linking gap），不是已发现的 64 次现象。当前已仲裁金标为 **0**，模型运行次数为 **0**。尚未达到前期建议的 200–300 条带标注基准规模。`collection_plan.json` 另列 256 条未来控制采集计划；计划录音不计入真实样本数量。
@@ -27,7 +29,7 @@ pnpm --filter @libitu/api benchmark:acoustics evaluate benchmarks/acoustics/v1/p
 
 `--output` 可将 validate/evaluate 报告保存为 JSON。输出文件默认拒绝覆盖；换一个名字保留旧记录。命令不访问在线练习 API。`validate` 不传 `--audio-root` 只校验元数据，明确标为 `metadata_only`；`evaluate` 必须传音频根并检查文件。错误退出码为 2，不把无金标误当解析失败。
 
-音频仅在 `.cache/acoustic-benchmark/public-seed/`，不提交 Git。来源记录、逐文件哈希、许可/完整署名见 [SOURCES.md](SOURCES.md)、[public_seed/LICENSES.json](public_seed/LICENSES.json)。下载器限定确切的 16 个文件和 URL，单文件上限 2 MiB，不解压档案，不追随重定向。CMU 原始站点是 HTTP，校验和锁定本次取得的字节，但不提供传输认证。用户未授权的 Glossika 资料不在此种子集。
+音频仅在 `.cache/acoustic-benchmark/public-seed/`，不提交 Git。来源记录、逐文件哈希、许可/完整署名见 [SOURCES.md](SOURCES.md)、[public_seed/LICENSES.json](public_seed/LICENSES.json)。下载器限定确切的 16 个文件和 URL，单文件上限 2 MiB，不解压档案，不追随重定向。CMU 原始站点是 HTTP，校验和锁定本次取得的字节，但不提供传输认证。Glossika 不在此公开种子集；2026-11-08 用户允许其提供的 Glossika 材料用于训练，后续按独立数据集整理，不改写本种子的来源与用途记录。
 
 需要复现 manifest 时，先恢复音频，再写到一个新路径：
 

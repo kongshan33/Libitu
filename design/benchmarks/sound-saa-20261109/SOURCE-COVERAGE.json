@@ -1,0 +1,1105 @@
+[
+  {
+    "symbol": "a",
+    "codepoint": "U+0061",
+    "name": "LATIN SMALL LETTER A",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 3527,
+    "canonical_sequence_row_count": 1226
+  },
+  {
+    "symbol": "ɑ",
+    "codepoint": "U+0251",
+    "name": "LATIN SMALL LETTER ALPHA",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 2293,
+    "canonical_sequence_row_count": 879
+  },
+  {
+    "symbol": "æ",
+    "codepoint": "U+00E6",
+    "name": "LATIN SMALL LETTER AE",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 8275,
+    "canonical_sequence_row_count": 1227
+  },
+  {
+    "symbol": "e",
+    "codepoint": "U+0065",
+    "name": "LATIN SMALL LETTER E",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 6255,
+    "canonical_sequence_row_count": 1237
+  },
+  {
+    "symbol": "ɛ",
+    "codepoint": "U+025B",
+    "name": "LATIN SMALL LETTER OPEN E",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 8128,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "ə",
+    "codepoint": "U+0259",
+    "name": "LATIN SMALL LETTER SCHWA",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 13995,
+    "canonical_sequence_row_count": 1238
+  },
+  {
+    "symbol": "i",
+    "codepoint": "U+0069",
+    "name": "LATIN SMALL LETTER I",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 15736,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "ɪ",
+    "codepoint": "U+026A",
+    "name": "LATIN LETTER SMALL CAPITAL I",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 20723,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "o",
+    "codepoint": "U+006F",
+    "name": "LATIN SMALL LETTER O",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 4493,
+    "canonical_sequence_row_count": 1235
+  },
+  {
+    "symbol": "u",
+    "codepoint": "U+0075",
+    "name": "LATIN SMALL LETTER U",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 3868,
+    "canonical_sequence_row_count": 1240
+  },
+  {
+    "symbol": "ʌ",
+    "codepoint": "U+028C",
+    "name": "LATIN SMALL LETTER TURNED V",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 3088,
+    "canonical_sequence_row_count": 1191
+  },
+  {
+    "symbol": "ʊ",
+    "codepoint": "U+028A",
+    "name": "LATIN SMALL LETTER UPSILON",
+    "group": "main_vowels",
+    "pdf_pages": [
+      6,
+      7,
+      8
+    ],
+    "exact_nfc_occurrences": 1966,
+    "canonical_sequence_row_count": 949
+  },
+  {
+    "symbol": "p",
+    "codepoint": "U+0070",
+    "name": "LATIN SMALL LETTER P",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 6717,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "b",
+    "codepoint": "U+0062",
+    "name": "LATIN SMALL LETTER B",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 10610,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "t",
+    "codepoint": "U+0074",
+    "name": "LATIN SMALL LETTER T",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 14994,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "d",
+    "codepoint": "U+0064",
+    "name": "LATIN SMALL LETTER D",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 7756,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "c",
+    "codepoint": "U+0063",
+    "name": "LATIN SMALL LETTER C",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 3,
+    "canonical_sequence_row_count": 17
+  },
+  {
+    "symbol": "ɟ",
+    "codepoint": "U+025F",
+    "name": "LATIN SMALL LETTER DOTLESS J WITH STROKE",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "k",
+    "codepoint": "U+006B",
+    "name": "LATIN SMALL LETTER K",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 13417,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "ɡ",
+    "codepoint": "U+0261",
+    "name": "LATIN SMALL LETTER SCRIPT G",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 4069,
+    "canonical_sequence_row_count": 1239
+  },
+  {
+    "symbol": "ʔ",
+    "codepoint": "U+0294",
+    "name": "LATIN LETTER GLOTTAL STOP",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 460,
+    "canonical_sequence_row_count": 279
+  },
+  {
+    "symbol": "f",
+    "codepoint": "U+0066",
+    "name": "LATIN SMALL LETTER F",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 9581,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "v",
+    "codepoint": "U+0076",
+    "name": "LATIN SMALL LETTER V",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 2493,
+    "canonical_sequence_row_count": 1036
+  },
+  {
+    "symbol": "θ",
+    "codepoint": "U+03B8",
+    "name": "GREEK SMALL LETTER THETA",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 4088,
+    "canonical_sequence_row_count": 1078
+  },
+  {
+    "symbol": "ð",
+    "codepoint": "U+00F0",
+    "name": "LATIN SMALL LETTER ETH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 4107,
+    "canonical_sequence_row_count": 1084
+  },
+  {
+    "symbol": "s",
+    "codepoint": "U+0073",
+    "name": "LATIN SMALL LETTER S",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 25991,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "z",
+    "codepoint": "U+007A",
+    "name": "LATIN SMALL LETTER Z",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 8192,
+    "canonical_sequence_row_count": 1211
+  },
+  {
+    "symbol": "ʃ",
+    "codepoint": "U+0283",
+    "name": "LATIN SMALL LETTER ESH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 4771,
+    "canonical_sequence_row_count": 1235
+  },
+  {
+    "symbol": "ʒ",
+    "codepoint": "U+0292",
+    "name": "LATIN SMALL LETTER EZH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 21,
+    "canonical_sequence_row_count": 19
+  },
+  {
+    "symbol": "ç",
+    "codepoint": "U+00E7",
+    "name": "LATIN SMALL LETTER C WITH CEDILLA",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 16,
+    "canonical_sequence_row_count": 14
+  },
+  {
+    "symbol": "ʝ",
+    "codepoint": "U+029D",
+    "name": "LATIN SMALL LETTER J WITH CROSSED-TAIL",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 4,
+    "canonical_sequence_row_count": 4
+  },
+  {
+    "symbol": "ʧ",
+    "codepoint": "U+02A7",
+    "name": "LATIN SMALL LETTER TESH DIGRAPH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 354,
+    "canonical_sequence_row_count": 327
+  },
+  {
+    "symbol": "ʤ",
+    "codepoint": "U+02A4",
+    "name": "LATIN SMALL LETTER DEZH DIGRAPH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 1,
+    "canonical_sequence_row_count": 1
+  },
+  {
+    "symbol": "ʦ",
+    "codepoint": "U+02A6",
+    "name": "LATIN SMALL LETTER TS DIGRAPH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "ʣ",
+    "codepoint": "U+02A3",
+    "name": "LATIN SMALL LETTER DZ DIGRAPH",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "h",
+    "codepoint": "U+0068",
+    "name": "LATIN SMALL LETTER H",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 4180,
+    "canonical_sequence_row_count": 1194
+  },
+  {
+    "symbol": "ɦ",
+    "codepoint": "U+0266",
+    "name": "LATIN SMALL LETTER H WITH HOOK",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 2,
+    "canonical_sequence_row_count": 2
+  },
+  {
+    "symbol": "m",
+    "codepoint": "U+006D",
+    "name": "LATIN SMALL LETTER M",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 5149,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "ɱ",
+    "codepoint": "U+0271",
+    "name": "LATIN SMALL LETTER M WITH HOOK",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 2,
+    "canonical_sequence_row_count": 2
+  },
+  {
+    "symbol": "n",
+    "codepoint": "U+006E",
+    "name": "LATIN SMALL LETTER N",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 16485,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "ɲ",
+    "codepoint": "U+0272",
+    "name": "LATIN SMALL LETTER N WITH LEFT HOOK",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 5,
+    "canonical_sequence_row_count": 5
+  },
+  {
+    "symbol": "ŋ",
+    "codepoint": "U+014B",
+    "name": "LATIN SMALL LETTER ENG",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 3554,
+    "canonical_sequence_row_count": 1222
+  },
+  {
+    "symbol": "ɾ",
+    "codepoint": "U+027E",
+    "name": "LATIN SMALL LETTER R WITH FISHHOOK",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 763,
+    "canonical_sequence_row_count": 480
+  },
+  {
+    "symbol": "ɹ",
+    "codepoint": "U+0279",
+    "name": "LATIN SMALL LETTER TURNED R",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 11771,
+    "canonical_sequence_row_count": 1214
+  },
+  {
+    "symbol": "l",
+    "codepoint": "U+006C",
+    "name": "LATIN SMALL LETTER L",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 10923,
+    "canonical_sequence_row_count": 1242
+  },
+  {
+    "symbol": "ɫ",
+    "codepoint": "U+026B",
+    "name": "LATIN SMALL LETTER L WITH MIDDLE TILDE",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "ʎ",
+    "codepoint": "U+028E",
+    "name": "LATIN SMALL LETTER TURNED Y",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 2,
+    "canonical_sequence_row_count": 2
+  },
+  {
+    "symbol": "w",
+    "codepoint": "U+0077",
+    "name": "LATIN SMALL LETTER W",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 5488,
+    "canonical_sequence_row_count": 1186
+  },
+  {
+    "symbol": "j",
+    "codepoint": "U+006A",
+    "name": "LATIN SMALL LETTER J",
+    "group": "consonants",
+    "pdf_pages": [
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "exact_nfc_occurrences": 26,
+    "canonical_sequence_row_count": 25
+  },
+  {
+    "symbol": "ʍ",
+    "codepoint": "U+028D",
+    "name": "LATIN SMALL LETTER TURNED W",
+    "group": "dialect_wh",
+    "pdf_pages": [
+      14
+    ],
+    "exact_nfc_occurrences": 5,
+    "canonical_sequence_row_count": 4
+  },
+  {
+    "symbol": "ɔ",
+    "codepoint": "U+0254",
+    "name": "LATIN SMALL LETTER OPEN O",
+    "group": "comparison_vowels",
+    "pdf_pages": [
+      6,
+      31
+    ],
+    "exact_nfc_occurrences": 7921,
+    "canonical_sequence_row_count": 1238
+  },
+  {
+    "symbol": "ɚ",
+    "codepoint": "U+025A",
+    "name": "LATIN SMALL LETTER SCHWA WITH HOOK",
+    "group": "comparison_vowels",
+    "pdf_pages": [
+      6,
+      31
+    ],
+    "exact_nfc_occurrences": 1721,
+    "canonical_sequence_row_count": 560
+  },
+  {
+    "symbol": "ɝ",
+    "codepoint": "U+025D",
+    "name": "LATIN SMALL LETTER REVERSED OPEN E WITH HOOK",
+    "group": "comparison_vowels",
+    "pdf_pages": [
+      6,
+      31
+    ],
+    "exact_nfc_occurrences": 541,
+    "canonical_sequence_row_count": 236
+  },
+  {
+    "symbol": "ʉ",
+    "codepoint": "U+0289",
+    "name": "LATIN SMALL LETTER U BAR",
+    "group": "comparison_vowels",
+    "pdf_pages": [
+      6,
+      31
+    ],
+    "exact_nfc_occurrences": 125,
+    "canonical_sequence_row_count": 61
+  },
+  {
+    "symbol": "̼",
+    "codepoint": "U+033C",
+    "name": "COMBINING SEAGULL BELOW",
+    "group": "source_marks",
+    "pdf_pages": [
+      5,
+      10,
+      11,
+      13,
+      14,
+      26
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "̬",
+    "codepoint": "U+032C",
+    "name": "COMBINING CARON BELOW",
+    "group": "source_marks",
+    "pdf_pages": [
+      5,
+      10,
+      11,
+      13,
+      14,
+      26
+    ],
+    "exact_nfc_occurrences": 447,
+    "canonical_sequence_row_count": 290
+  },
+  {
+    "symbol": "̍",
+    "codepoint": "U+030D",
+    "name": "COMBINING VERTICAL LINE ABOVE",
+    "group": "source_marks",
+    "pdf_pages": [
+      5,
+      10,
+      11,
+      13,
+      14,
+      26
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "̝",
+    "codepoint": "U+031D",
+    "name": "COMBINING UP TACK BELOW",
+    "group": "source_marks",
+    "pdf_pages": [
+      5,
+      10,
+      11,
+      13,
+      14,
+      26
+    ],
+    "exact_nfc_occurrences": 1340,
+    "canonical_sequence_row_count": 592
+  },
+  {
+    "symbol": "ṇ",
+    "codepoint": "U+1E47",
+    "name": "LATIN SMALL LETTER N WITH DOT BELOW",
+    "group": "source_syllabic_spelling",
+    "pdf_pages": [
+      73,
+      92
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "ṃ",
+    "codepoint": "U+1E43",
+    "name": "LATIN SMALL LETTER M WITH DOT BELOW",
+    "group": "source_syllabic_spelling",
+    "pdf_pages": [
+      73,
+      92
+    ],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "g",
+    "codepoint": "U+0067",
+    "name": "LATIN SMALL LETTER G",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 8,
+    "canonical_sequence_row_count": 8
+  },
+  {
+    "symbol": "õ",
+    "codepoint": "U+00F5",
+    "name": "LATIN SMALL LETTER O WITH TILDE",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 82,
+    "canonical_sequence_row_count": 72
+  },
+  {
+    "symbol": "ʰ",
+    "codepoint": "U+02B0",
+    "name": "MODIFIER LETTER SMALL H",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 3926,
+    "canonical_sequence_row_count": 1001
+  },
+  {
+    "symbol": "ʱ",
+    "codepoint": "U+02B1",
+    "name": "MODIFIER LETTER SMALL H WITH HOOK",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "ʲ",
+    "codepoint": "U+02B2",
+    "name": "MODIFIER LETTER SMALL J",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 249,
+    "canonical_sequence_row_count": 117
+  },
+  {
+    "symbol": "ʴ",
+    "codepoint": "U+02B4",
+    "name": "MODIFIER LETTER SMALL TURNED R",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "ʷ",
+    "codepoint": "U+02B7",
+    "name": "MODIFIER LETTER SMALL W",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 148,
+    "canonical_sequence_row_count": 97
+  },
+  {
+    "symbol": "ˀ",
+    "codepoint": "U+02C0",
+    "name": "MODIFIER LETTER GLOTTAL STOP",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 18,
+    "canonical_sequence_row_count": 18
+  },
+  {
+    "symbol": "ː",
+    "codepoint": "U+02D0",
+    "name": "MODIFIER LETTER TRIANGULAR COLON",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 7272,
+    "canonical_sequence_row_count": 1148
+  },
+  {
+    "symbol": "̃",
+    "codepoint": "U+0303",
+    "name": "COMBINING TILDE",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 11049,
+    "canonical_sequence_row_count": 1217
+  },
+  {
+    "symbol": "̊",
+    "codepoint": "U+030A",
+    "name": "COMBINING RING ABOVE",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "̚",
+    "codepoint": "U+031A",
+    "name": "COMBINING LEFT ANGLE ABOVE",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 1057,
+    "canonical_sequence_row_count": 462
+  },
+  {
+    "symbol": "̠",
+    "codepoint": "U+0320",
+    "name": "COMBINING MINUS SIGN BELOW",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 177,
+    "canonical_sequence_row_count": 99
+  },
+  {
+    "symbol": "̥",
+    "codepoint": "U+0325",
+    "name": "COMBINING RING BELOW",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 6558,
+    "canonical_sequence_row_count": 1183
+  },
+  {
+    "symbol": "̩",
+    "codepoint": "U+0329",
+    "name": "COMBINING VERTICAL LINE BELOW",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 391,
+    "canonical_sequence_row_count": 280
+  },
+  {
+    "symbol": "̪",
+    "codepoint": "U+032A",
+    "name": "COMBINING BRIDGE BELOW",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 4620,
+    "canonical_sequence_row_count": 1077
+  },
+  {
+    "symbol": "͡",
+    "codepoint": "U+0361",
+    "name": "COMBINING DOUBLE INVERTED BREVE",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 2,
+    "canonical_sequence_row_count": 2
+  },
+  {
+    "symbol": "⁼",
+    "codepoint": "U+207C",
+    "name": "SUPERSCRIPT EQUALS SIGN",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  },
+  {
+    "symbol": "ⁿ",
+    "codepoint": "U+207F",
+    "name": "SUPERSCRIPT LATIN SMALL LETTER N",
+    "group": "existing_short_sentence_alphabet",
+    "pdf_pages": [],
+    "exact_nfc_occurrences": 0,
+    "canonical_sequence_row_count": 0
+  }
+]

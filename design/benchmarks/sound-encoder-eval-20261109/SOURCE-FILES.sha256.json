@@ -1,0 +1,11 @@
+{
+  "apps/api/scripts/sound_pilot/encoder_benchmark.py": "4e6cc67697b5bd5e70cca3321975530810ecf859fbb4606b875232560dfd61de",
+  "apps/api/scripts/sound_pilot/encoder_dataset.py": "ae21902e6bee336d69cc01217cf9fb7bf50ff92302fdc0db8e7066a817a74b76",
+  "apps/api/scripts/sound_pilot/encoder_evaluate.py": "aad0bcb7306bdfc82eba690a1710f5649d02cb10c68328712ad95a83d5329b05",
+  "apps/api/scripts/sound_pilot/encoder_metrics.py": "1c29497981e3f600ad3f07d06fdca8ed6cac3f3f17a5d2570f583314c8de1540",
+  "apps/api/scripts/sound_pilot/encoder_models.py": "b2cf70ec71a1f9948181e2dd7db1da99a5edf51bfe90f4386ad474969f17acf3",
+  "apps/api/scripts/sound_pilot/encoder_review.html": "80d5d2a0e93a5d7a81c1ef2944b6004c3b1f16ead106f58dbbc5bb6429490fb3",
+  "apps/api/scripts/sound_pilot/encoder_review.js": "c5fcca329df6b117d3bc20e4a3da62d94a45218e08a30dda348c1a4abb328b2f",
+  "apps/api/scripts/sound_pilot/encoder_review.py": "b3d92489ac38b31df38021d6205686a391942e6aa232d7753a77979b0bd14aae",
+  "apps/api/tests/test_encoder_benchmark.py": "b2d92ca2b4d540182212d918a49a43bf70c042c179e64fa5602cfe633a7640ed"
+}

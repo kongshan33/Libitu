@@ -1,0 +1,6 @@
+{
+  "apps/api/benchmarks/acoustics/v1/public_seed/manifest.json": "e8d6d4c3256d076e2dafd0aaa0864965c81930f5c3bfb31575cf6bcd18d4f29b",
+  ".cache/sound-pilot/round-two/inference-manifest.json": "35720f7c411099318a56a4d3b2320e4a55b62f245065c9b7fa5702c6e9804304",
+  ".cache/sound-pilot/glossika-assessment-20261108/sentence-source-index.jsonl": "8aec603d114962c785399264e5941c096a11fa60cc317a20fffbc0c110151e11",
+  ".cache/sound-pilot/glossika-ipa-v2-20261108/wav2vec2-training-candidate.jsonl": "88014485bd400c5b4cb34278669086b6e6f7bfcd5fa63ec76ca56fdef1f4d03f"
+}

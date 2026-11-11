@@ -1,0 +1,151 @@
+{
+  "records": 3192,
+  "tracks": 145,
+  "source_decoded_seconds": 4121.652244897959,
+  "status_counts": {
+    "train": 2736,
+    "held": 383,
+    "auxiliary": 73
+  },
+  "types": {
+    "full_ipa": {
+      "rows": 661,
+      "clip_seconds_sum": 640.6931250000005
+    },
+    "partial_ipa": {
+      "rows": 2075,
+      "clip_seconds_sum": 1796.8623750000022
+    },
+    "text_only": {
+      "rows": 73,
+      "clip_seconds_sum": 94.0630625
+    }
+  },
+  "vocab_entries": 120,
+  "initial_vocab_entries": 117,
+  "supervised_unique_source_seconds": 2378.19825,
+  "tracks_with_supervised_slices": 140,
+  "tracks_without_supervised_slices": [
+    "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-024-O.mp3",
+    "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-056-T.mp3",
+    "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-057-D.mp3",
+    "design/seed/Glossika 你不知道的英文發音/Ch.5-掌握英文的聲調/PRON-EN-140-Tones.mp3",
+    "design/seed/Glossika 你不知道的英文發音/Ch.8-英文字母的發音/PRON-EN-143-ABC.mp3"
+  ],
+  "all_previous_token_ids_preserved": true,
+  "held_reasons": {
+    "asr_content_disagreement": 17,
+    "ambiguous_region_association": 7,
+    "printed_incorrect_example_requires_audio_selection": 1,
+    "no_lexical_association": 261,
+    "content_or_order_uncertain": 96,
+    "implausible_clip_duration": 1,
+    "no_corresponding_source_audio": 5,
+    "intervening_unassigned_asr_word": 1,
+    "internal_asr_gap_in_complete_transcription": 1
+  },
+  "training_optimizer_steps": 0,
+  "user_relistening_required": false,
+  "partial_objective": "probability collapsed CTC sequence contains annotated target; other phones remain unconstrained",
+  "limits": [
+    "clip sum may include small padding overlap; not unique voice duration",
+    "partial targets do not become full word labels",
+    "automatic association is not manual timing gold",
+    "train-only collection; no fabricated random test split"
+  ],
+  "dataset_path": "/Users/river/Documents/Libitu/.cache/sound-pilot/glossika-full-v1-20261109",
+  "artifact_manifest_sha256": "2e3c3ecf75cc3de28e742055d3051d822b6b28fd586c13f55e123abbf331f68e",
+  "original_mp3s_reverified": 145,
+  "chapters": {
+    "Ch.10-三個音節的單字怎麼發音": {
+      "tracks": 1,
+      "source_seconds": 102.03428571428572,
+      "full_ipa": 30,
+      "partial_ipa": 0,
+      "text_only": 24,
+      "held": 0
+    },
+    "Ch.2-英文母音和子音的單字發音訓練": {
+      "tracks": 126,
+      "source_seconds": 2758.295510204081,
+      "full_ipa": 18,
+      "partial_ipa": 2010,
+      "text_only": 0,
+      "held": 352
+    },
+    "Ch.3-常用英文短句發音訓練": {
+      "tracks": 12,
+      "source_seconds": 778.7885714285715,
+      "full_ipa": 570,
+      "partial_ipa": 0,
+      "text_only": 0,
+      "held": 18
+    },
+    "Ch.4-字尾加 -ed 的發音": {
+      "tracks": 1,
+      "source_seconds": 115.77469387755102,
+      "full_ipa": 0,
+      "partial_ipa": 61,
+      "text_only": 0,
+      "held": 3
+    },
+    "Ch.5-掌握英文的聲調": {
+      "tracks": 1,
+      "source_seconds": 102.03428571428572,
+      "full_ipa": 0,
+      "partial_ipa": 0,
+      "text_only": 25,
+      "held": 2
+    },
+    "Ch.6-Can 的發音": {
+      "tracks": 1,
+      "source_seconds": 109.53142857142858,
+      "full_ipa": 14,
+      "partial_ipa": 0,
+      "text_only": 0,
+      "held": 1
+    },
+    "Ch.7-To 的發音": {
+      "tracks": 1,
+      "source_seconds": 74.65795918367347,
+      "full_ipa": 10,
+      "partial_ipa": 4,
+      "text_only": 0,
+      "held": 0
+    },
+    "Ch.8-英文字母的發音": {
+      "tracks": 1,
+      "source_seconds": 35.10857142857143,
+      "full_ipa": 0,
+      "partial_ipa": 0,
+      "text_only": 24,
+      "held": 2
+    },
+    "Ch.9-英文冠詞": {
+      "tracks": 1,
+      "source_seconds": 45.4269387755102,
+      "full_ipa": 19,
+      "partial_ipa": 0,
+      "text_only": 0,
+      "held": 0
+    }
+  },
+  "training_origins": {
+    "frozen_v3_import": 549,
+    "v3_hold_reassociated": 21,
+    "full_book_extraction": 2166
+  },
+  "new_association_methods": {
+    "lexical_or_homophone_match": 2122,
+    "bracketed_source_order_match": 55,
+    "source_order_with_partial_lexical_anchor": 10
+  },
+  "observed_target_characters": "abcdefghijklmnoprstuvwzãæçðõŋɑəɛɟɡɦɪɫɱɲɹɾʃʊʌʍʎʒʔʝʣʤʦʧʰʱʲʴʷˀː̝̠̥̩̪̬̼̃̊̍̚͡θṇ⁼ⁿ",
+  "held_track_029": 65,
+  "track_029_decode_messages": "[mp3float @ 0x7fbb3f81ac40] Header missing\n[aist#0:0/mp3 @ 0x7fbb3f80e580] [dec:mp3float @ 0x7fbb3ef06e80] Error submitting packet to decoder: Invalid data found when processing input\n",
+  "duplicate_groups": {
+    "exact_pcm_groups": 0,
+    "repeated_orthographic_text_groups": 167
+  },
+  "frozen_file_count": 3197
+}

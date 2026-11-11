@@ -1,0 +1,23 @@
+{
+  "root_lint": "passed",
+  "root_build": "passed",
+  "root_tests": "passed; API 2123 at root run, web/extension cached",
+  "final_focused_encoder_tests": 26,
+  "desktop_viewport": [
+    1400,
+    1000
+  ],
+  "mobile_emulated_viewport": [
+    390,
+    844
+  ],
+  "mobile_scroll_width": 390,
+  "playback_progressed_past_seconds": 0.15,
+  "disk_autosave_reload": true,
+  "actual_json_download": true,
+  "reimport": true,
+  "keyboard_navigation": true,
+  "qa_pack_separate": true,
+  "production_annotation_revision": null,
+  "physical_phone_test": false
+}

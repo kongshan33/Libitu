@@ -1,0 +1,42 @@
+{
+  "targets": 12,
+  "categories": {
+    "flap": 4,
+    "coalescence": 4,
+    "assimilation": 4
+  },
+  "phases": {
+    "review": 3,
+    "supplement": 9
+  },
+  "full_audio_seconds": 34.8884375,
+  "context_audio_seconds": 16.517875,
+  "pack_sha256": "9d39c47813ba555d5f3e8549f05ff73a43df334f2067d1def84d5c598156e922",
+  "builder_sha256": "15fad28ddd2be14d74627759acb97221a96a643238342e0a4921e0c6670debe9",
+  "template_sha256": "ebbba60ea551b241bac3478852098cd195bf9c03d38990fcbc2994538b0fc1c4",
+  "schema_version": "sound-round-two-delivery-v1",
+  "human_labels": "not_collected_in_this_delivery",
+  "eligible_gold": 0,
+  "event_metrics": null,
+  "source_lock_sha256": "7c2161b495d5f3c4cadfa21645ae6b79df4f3001913842906a854d7fead51e47",
+  "zip_sha256": "ca148e558e1d9d191fe7ab297728b9d35307b2af14893c1b4d9bad01085d9a46",
+  "validation": {
+    "pilot_tests": 43,
+    "final_api_tests": 2039,
+    "browser_viewports": [
+      [
+        1400,
+        1000
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "original_and_context_playback_checks": 24,
+    "loaded_page_offline_audio_and_download": true,
+    "copy_backup_when_download_fails": true,
+    "physical_mobile_test": false,
+    "direct_file_protocol_test": false
+  }
+}

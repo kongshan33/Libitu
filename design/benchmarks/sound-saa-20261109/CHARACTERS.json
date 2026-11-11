@@ -1,0 +1,2348 @@
+[
+  {
+    "symbol": "s",
+    "codepoint": "U+0073",
+    "name": "LATIN SMALL LETTER S",
+    "occurrences": 25991,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ɪ",
+    "codepoint": "U+026A",
+    "name": "LATIN LETTER SMALL CAPITAL I",
+    "occurrences": 20723,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "n",
+    "codepoint": "U+006E",
+    "name": "LATIN SMALL LETTER N",
+    "occurrences": 16485,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "i",
+    "codepoint": "U+0069",
+    "name": "LATIN SMALL LETTER I",
+    "occurrences": 15736,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "t",
+    "codepoint": "U+0074",
+    "name": "LATIN SMALL LETTER T",
+    "occurrences": 14994,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ə",
+    "codepoint": "U+0259",
+    "name": "LATIN SMALL LETTER SCHWA",
+    "occurrences": 13995,
+    "row_count": 1238,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "k",
+    "codepoint": "U+006B",
+    "name": "LATIN SMALL LETTER K",
+    "occurrences": 13417,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ɹ",
+    "codepoint": "U+0279",
+    "name": "LATIN SMALL LETTER TURNED R",
+    "occurrences": 11771,
+    "row_count": 1214,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "̃",
+    "codepoint": "U+0303",
+    "name": "COMBINING TILDE",
+    "occurrences": 11049,
+    "row_count": 1203,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1",
+      "albanian1"
+    ]
+  },
+  {
+    "symbol": "l",
+    "codepoint": "U+006C",
+    "name": "LATIN SMALL LETTER L",
+    "occurrences": 10923,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "b",
+    "codepoint": "U+0062",
+    "name": "LATIN SMALL LETTER B",
+    "occurrences": 10610,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "f",
+    "codepoint": "U+0066",
+    "name": "LATIN SMALL LETTER F",
+    "occurrences": 9581,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "æ",
+    "codepoint": "U+00E6",
+    "name": "LATIN SMALL LETTER AE",
+    "occurrences": 8275,
+    "row_count": 1227,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "z",
+    "codepoint": "U+007A",
+    "name": "LATIN SMALL LETTER Z",
+    "occurrences": 8192,
+    "row_count": 1211,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ɛ",
+    "codepoint": "U+025B",
+    "name": "LATIN SMALL LETTER OPEN E",
+    "occurrences": 8128,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ɔ",
+    "codepoint": "U+0254",
+    "name": "LATIN SMALL LETTER OPEN O",
+    "occurrences": 7921,
+    "row_count": 1238,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "d",
+    "codepoint": "U+0064",
+    "name": "LATIN SMALL LETTER D",
+    "occurrences": 7756,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ː",
+    "codepoint": "U+02D0",
+    "name": "MODIFIER LETTER TRIANGULAR COLON",
+    "occurrences": 7272,
+    "row_count": 1148,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "p",
+    "codepoint": "U+0070",
+    "name": "LATIN SMALL LETTER P",
+    "occurrences": 6717,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "̥",
+    "codepoint": "U+0325",
+    "name": "COMBINING RING BELOW",
+    "occurrences": 6558,
+    "row_count": 1183,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "e",
+    "codepoint": "U+0065",
+    "name": "LATIN SMALL LETTER E",
+    "occurrences": 6255,
+    "row_count": 1237,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "w",
+    "codepoint": "U+0077",
+    "name": "LATIN SMALL LETTER W",
+    "occurrences": 5488,
+    "row_count": 1186,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "m",
+    "codepoint": "U+006D",
+    "name": "LATIN SMALL LETTER M",
+    "occurrences": 5149,
+    "row_count": 1242,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ʃ",
+    "codepoint": "U+0283",
+    "name": "LATIN SMALL LETTER ESH",
+    "occurrences": 4771,
+    "row_count": 1235,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "̪",
+    "codepoint": "U+032A",
+    "name": "COMBINING BRIDGE BELOW",
+    "occurrences": 4620,
+    "row_count": 1077,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans5",
+      "akan1",
+      "albanian2"
+    ]
+  },
+  {
+    "symbol": "o",
+    "codepoint": "U+006F",
+    "name": "LATIN SMALL LETTER O",
+    "occurrences": 4493,
+    "row_count": 1235,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "h",
+    "codepoint": "U+0068",
+    "name": "LATIN SMALL LETTER H",
+    "occurrences": 4180,
+    "row_count": 1194,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ð",
+    "codepoint": "U+00F0",
+    "name": "LATIN SMALL LETTER ETH",
+    "occurrences": 4107,
+    "row_count": 1084,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "θ",
+    "codepoint": "U+03B8",
+    "name": "GREEK SMALL LETTER THETA",
+    "occurrences": 4088,
+    "row_count": 1078,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ɡ",
+    "codepoint": "U+0261",
+    "name": "LATIN SMALL LETTER SCRIPT G",
+    "occurrences": 4069,
+    "row_count": 1239,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ʰ",
+    "codepoint": "U+02B0",
+    "name": "MODIFIER LETTER SMALL H",
+    "occurrences": 3926,
+    "row_count": 1001,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "u",
+    "codepoint": "U+0075",
+    "name": "LATIN SMALL LETTER U",
+    "occurrences": 3868,
+    "row_count": 1234,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ŋ",
+    "codepoint": "U+014B",
+    "name": "LATIN SMALL LETTER ENG",
+    "occurrences": 3554,
+    "row_count": 1222,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "a",
+    "codepoint": "U+0061",
+    "name": "LATIN SMALL LETTER A",
+    "occurrences": 3527,
+    "row_count": 1223,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ʌ",
+    "codepoint": "U+028C",
+    "name": "LATIN SMALL LETTER TURNED V",
+    "occurrences": 3088,
+    "row_count": 1191,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "v",
+    "codepoint": "U+0076",
+    "name": "LATIN SMALL LETTER V",
+    "occurrences": 2493,
+    "row_count": 1036,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "albanian2"
+    ]
+  },
+  {
+    "symbol": "ɑ",
+    "codepoint": "U+0251",
+    "name": "LATIN SMALL LETTER ALPHA",
+    "occurrences": 2293,
+    "row_count": 879,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans3",
+      "afrikaans4",
+      "akan1",
+      "albanian6",
+      "albanian7"
+    ]
+  },
+  {
+    "symbol": "r",
+    "codepoint": "U+0072",
+    "name": "LATIN SMALL LETTER R",
+    "occurrences": 2144,
+    "row_count": 560,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans3",
+      "albanian1",
+      "albanian2",
+      "albanian4",
+      "albanian7"
+    ]
+  },
+  {
+    "symbol": "ʊ",
+    "codepoint": "U+028A",
+    "name": "LATIN SMALL LETTER UPSILON",
+    "occurrences": 1966,
+    "row_count": 949,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ɜ",
+    "codepoint": "U+025C",
+    "name": "LATIN SMALL LETTER REVERSED OPEN E",
+    "occurrences": 1740,
+    "row_count": 639,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans5",
+      "albanian1",
+      "albanian4"
+    ]
+  },
+  {
+    "symbol": "ɚ",
+    "codepoint": "U+025A",
+    "name": "LATIN SMALL LETTER SCHWA WITH HOOK",
+    "occurrences": 1721,
+    "row_count": 560,
+    "example_ids": [
+      "afrikaans4",
+      "albanian2",
+      "albanian5",
+      "albanian6",
+      "amharic14",
+      "amharic15"
+    ]
+  },
+  {
+    "symbol": "̆",
+    "codepoint": "U+0306",
+    "name": "COMBINING BREVE",
+    "occurrences": 1637,
+    "row_count": 712,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1"
+    ]
+  },
+  {
+    "symbol": "ˠ",
+    "codepoint": "U+02E0",
+    "name": "MODIFIER LETTER SMALL GAMMA",
+    "occurrences": 1367,
+    "row_count": 557,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans4",
+      "afrikaans5",
+      "akan1",
+      "albanian1",
+      "albanian5"
+    ]
+  },
+  {
+    "symbol": "̝",
+    "codepoint": "U+031D",
+    "name": "COMBINING UP TACK BELOW",
+    "occurrences": 1340,
+    "row_count": 592,
+    "example_ids": [
+      "afrikaans5",
+      "akan1",
+      "albanian5",
+      "amazigh1",
+      "amazigh2",
+      "amharic11"
+    ]
+  },
+  {
+    "symbol": "˺",
+    "codepoint": "U+02FA",
+    "name": "MODIFIER LETTER END HIGH TONE",
+    "occurrences": 1101,
+    "row_count": 468,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans3",
+      "albanian1",
+      "amazigh1",
+      "amharic2",
+      "amharic3"
+    ]
+  },
+  {
+    "symbol": "̚",
+    "codepoint": "U+031A",
+    "name": "COMBINING LEFT ANGLE ABOVE",
+    "occurrences": 1057,
+    "row_count": 462,
+    "example_ids": [
+      "afrikaans4",
+      "afrikaans5",
+      "akan1",
+      "albanian4",
+      "albanian5",
+      "albanian6"
+    ]
+  },
+  {
+    "symbol": "ũ",
+    "codepoint": "U+0169",
+    "name": "LATIN SMALL LETTER U WITH TILDE",
+    "occurrences": 913,
+    "row_count": 904,
+    "example_ids": [
+      "afrikaans4",
+      "afrikaans5",
+      "akan1",
+      "albanian1",
+      "albanian2",
+      "albanian4"
+    ]
+  },
+  {
+    "symbol": "ɾ",
+    "codepoint": "U+027E",
+    "name": "LATIN SMALL LETTER R WITH FISHHOOK",
+    "occurrences": 763,
+    "row_count": 480,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans5",
+      "albanian5",
+      "albanian6",
+      "amazigh1",
+      "amharic12"
+    ]
+  },
+  {
+    "symbol": "̞",
+    "codepoint": "U+031E",
+    "name": "COMBINING DOWN TACK BELOW",
+    "occurrences": 722,
+    "row_count": 375,
+    "example_ids": [
+      "afrikaans5",
+      "albanian6",
+      "amazigh1",
+      "amazigh2",
+      "amharic11",
+      "amharic12"
+    ]
+  },
+  {
+    "symbol": "ɝ",
+    "codepoint": "U+025D",
+    "name": "LATIN SMALL LETTER REVERSED OPEN E WITH HOOK",
+    "occurrences": 541,
+    "row_count": 236,
+    "example_ids": [
+      "afrikaans4",
+      "albanian5",
+      "albanian6",
+      "amharic10",
+      "amharic11",
+      "amharic12"
+    ]
+  },
+  {
+    "symbol": "ẽ",
+    "codepoint": "U+1EBD",
+    "name": "LATIN SMALL LETTER E WITH TILDE",
+    "occurrences": 491,
+    "row_count": 443,
+    "example_ids": [
+      "afrikaans4",
+      "afrikaans5",
+      "albanian4",
+      "amazigh2",
+      "amharic1",
+      "amharic11"
+    ]
+  },
+  {
+    "symbol": "ĩ",
+    "codepoint": "U+0129",
+    "name": "LATIN SMALL LETTER I WITH TILDE",
+    "occurrences": 481,
+    "row_count": 289,
+    "example_ids": [
+      "amharic1",
+      "amharic10",
+      "amharic15",
+      "amharic9",
+      "arabic12",
+      "arabic132"
+    ]
+  },
+  {
+    "symbol": "˞",
+    "codepoint": "U+02DE",
+    "name": "MODIFIER LETTER RHOTIC HOOK",
+    "occurrences": 474,
+    "row_count": 226,
+    "example_ids": [
+      "albanian6",
+      "albanian7",
+      "amharic11",
+      "amharic12",
+      "amharic13",
+      "amharic7"
+    ]
+  },
+  {
+    "symbol": "ʔ",
+    "codepoint": "U+0294",
+    "name": "LATIN LETTER GLOTTAL STOP",
+    "occurrences": 460,
+    "row_count": 279,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "albanian6",
+      "albanian8",
+      "amharic1"
+    ]
+  },
+  {
+    "symbol": "ŭ",
+    "codepoint": "U+016D",
+    "name": "LATIN SMALL LETTER U WITH BREVE",
+    "occurrences": 460,
+    "row_count": 342,
+    "example_ids": [
+      "afrikaans2",
+      "afrikaans3",
+      "afrikaans4",
+      "akan1",
+      "amazigh1",
+      "amazigh2"
+    ]
+  },
+  {
+    "symbol": "̬",
+    "codepoint": "U+032C",
+    "name": "COMBINING CARON BELOW",
+    "occurrences": 447,
+    "row_count": 290,
+    "example_ids": [
+      "albanian1",
+      "albanian7",
+      "albanian8",
+      "amazigh2",
+      "amharic5",
+      "arabic11"
+    ]
+  },
+  {
+    "symbol": "x",
+    "codepoint": "U+0078",
+    "name": "LATIN SMALL LETTER X",
+    "occurrences": 436,
+    "row_count": 221,
+    "example_ids": [
+      "akan1",
+      "albanian1",
+      "amharic5",
+      "arabic12",
+      "arabic16",
+      "arabic18"
+    ]
+  },
+  {
+    "symbol": "̩",
+    "codepoint": "U+0329",
+    "name": "COMBINING VERTICAL LINE BELOW",
+    "occurrences": 391,
+    "row_count": 280,
+    "example_ids": [
+      "albanian4",
+      "albanian6",
+      "albanian8",
+      "amazigh1",
+      "amharic10",
+      "amharic13"
+    ]
+  },
+  {
+    "symbol": "ʧ",
+    "codepoint": "U+02A7",
+    "name": "LATIN SMALL LETTER TESH DIGRAPH",
+    "occurrences": 354,
+    "row_count": 327,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans2",
+      "afrikaans3",
+      "albanian1",
+      "albanian2",
+      "amharic1"
+    ]
+  },
+  {
+    "symbol": "ĭ",
+    "codepoint": "U+012D",
+    "name": "LATIN SMALL LETTER I WITH BREVE",
+    "occurrences": 274,
+    "row_count": 206,
+    "example_ids": [
+      "afrikaans3",
+      "albanian7",
+      "amazigh1",
+      "amazigh2",
+      "amharic14",
+      "amharic15"
+    ]
+  },
+  {
+    "symbol": "ʲ",
+    "codepoint": "U+02B2",
+    "name": "MODIFIER LETTER SMALL J",
+    "occurrences": 249,
+    "row_count": 117,
+    "example_ids": [
+      "amharic5",
+      "amharic9",
+      "armenian1",
+      "armenian5",
+      "armenian6",
+      "azerbaijani1"
+    ]
+  },
+  {
+    "symbol": "ã",
+    "codepoint": "U+00E3",
+    "name": "LATIN SMALL LETTER A WITH TILDE",
+    "occurrences": 225,
+    "row_count": 133,
+    "example_ids": [
+      "amharic11",
+      "amharic13",
+      "amharic4",
+      "arabic12",
+      "arabic15",
+      "arabic18"
+    ]
+  },
+  {
+    "symbol": "ɒ",
+    "codepoint": "U+0252",
+    "name": "LATIN SMALL LETTER TURNED ALPHA",
+    "occurrences": 221,
+    "row_count": 151,
+    "example_ids": [
+      "afrikaans3",
+      "afrikaans5",
+      "arabic11",
+      "arabic16",
+      "arabic17",
+      "arabic3"
+    ]
+  },
+  {
+    "symbol": "ŏ",
+    "codepoint": "U+014F",
+    "name": "LATIN SMALL LETTER O WITH BREVE",
+    "occurrences": 199,
+    "row_count": 152,
+    "example_ids": [
+      "afrikaans1",
+      "afrikaans4",
+      "albanian8",
+      "amazigh1",
+      "amazigh2",
+      "amharic14"
+    ]
+  },
+  {
+    "symbol": "̟",
+    "codepoint": "U+031F",
+    "name": "COMBINING PLUS SIGN BELOW",
+    "occurrences": 196,
+    "row_count": 133,
+    "example_ids": [
+      "afrikaans4",
+      "afrikaans5",
+      "arabic21",
+      "arabic32",
+      "arabic33",
+      "arabic40"
+    ]
+  },
+  {
+    "symbol": "̠",
+    "codepoint": "U+0320",
+    "name": "COMBINING MINUS SIGN BELOW",
+    "occurrences": 177,
+    "row_count": 99,
+    "example_ids": [
+      "afrikaans5",
+      "arabic46",
+      "arabic49",
+      "bari1",
+      "bavarian2",
+      "bengali9"
+    ]
+  },
+  {
+    "symbol": "β",
+    "codepoint": "U+03B2",
+    "name": "GREEK SMALL LETTER BETA",
+    "occurrences": 157,
+    "row_count": 114,
+    "example_ids": [
+      "amharic1",
+      "arabic15",
+      "arabic37",
+      "arabic40",
+      "bambara1",
+      "bambara4"
+    ]
+  },
+  {
+    "symbol": "ʷ",
+    "codepoint": "U+02B7",
+    "name": "MODIFIER LETTER SMALL W",
+    "occurrences": 148,
+    "row_count": 97,
+    "example_ids": [
+      "amazigh2",
+      "amharic15",
+      "amharic8",
+      "arabic39",
+      "arabic93",
+      "bai1"
+    ]
+  },
+  {
+    "symbol": "ʈ",
+    "codepoint": "U+0288",
+    "name": "LATIN SMALL LETTER T WITH RETROFLEX HOOK",
+    "occurrences": 144,
+    "row_count": 51,
+    "example_ids": [
+      "amharic1",
+      "bengali10",
+      "bengali4",
+      "bengali5",
+      "bengali7",
+      "bengali8"
+    ]
+  },
+  {
+    "symbol": "ʁ",
+    "codepoint": "U+0281",
+    "name": "LATIN LETTER SMALL CAPITAL INVERTED R",
+    "occurrences": 140,
+    "row_count": 29,
+    "example_ids": [
+      "amazigh2",
+      "arabic43",
+      "bafang2",
+      "dutch4",
+      "french20",
+      "french22"
+    ]
+  },
+  {
+    "symbol": "ʉ",
+    "codepoint": "U+0289",
+    "name": "LATIN SMALL LETTER U BAR",
+    "occurrences": 125,
+    "row_count": 61,
+    "example_ids": [
+      "cantonese16",
+      "cantonese20",
+      "cantonese6",
+      "cantonese7",
+      "cantonese9",
+      "dutch20"
+    ]
+  },
+  {
+    "symbol": "ĕ",
+    "codepoint": "U+0115",
+    "name": "LATIN SMALL LETTER E WITH BREVE",
+    "occurrences": 96,
+    "row_count": 68,
+    "example_ids": [
+      "afrikaans1",
+      "amharic4",
+      "arabic15",
+      "arabic42",
+      "arabic52",
+      "armenian1"
+    ]
+  },
+  {
+    "symbol": "ɐ",
+    "codepoint": "U+0250",
+    "name": "LATIN SMALL LETTER TURNED A",
+    "occurrences": 83,
+    "row_count": 35,
+    "example_ids": [
+      "amharic2",
+      "cantonese9",
+      "dutch20",
+      "dutch3",
+      "dutch31",
+      "dutch36"
+    ]
+  },
+  {
+    "symbol": "õ",
+    "codepoint": "U+00F5",
+    "name": "LATIN SMALL LETTER O WITH TILDE",
+    "occurrences": 82,
+    "row_count": 73,
+    "example_ids": [
+      "amharic10",
+      "amharic3",
+      "amharic4",
+      "arabic3",
+      "arabic36",
+      "arabic4"
+    ]
+  },
+  {
+    "symbol": "ɭ",
+    "codepoint": "U+026D",
+    "name": "LATIN SMALL LETTER L WITH RETROFLEX HOOK",
+    "occurrences": 72,
+    "row_count": 24,
+    "example_ids": [
+      "arabic27",
+      "arabic3",
+      "arabic53",
+      "baga1",
+      "bambara1",
+      "gujarati1"
+    ]
+  },
+  {
+    "symbol": "̰",
+    "codepoint": "U+0330",
+    "name": "COMBINING TILDE BELOW",
+    "occurrences": 72,
+    "row_count": 43,
+    "example_ids": [
+      "arabic30",
+      "arabic41",
+      "arabic42",
+      "arabic45",
+      "arabic47",
+      "arabic52"
+    ]
+  },
+  {
+    "symbol": "ɸ",
+    "codepoint": "U+0278",
+    "name": "LATIN SMALL LETTER PHI",
+    "occurrences": 55,
+    "row_count": 42,
+    "example_ids": [
+      "arabic17",
+      "bengali9",
+      "bulgarian12",
+      "cantonese20",
+      "english169",
+      "farsi6"
+    ]
+  },
+  {
+    "symbol": ":",
+    "codepoint": "U+003A",
+    "name": "COLON",
+    "occurrences": 52,
+    "row_count": 19,
+    "example_ids": [
+      "arabic132",
+      "azerbaijani2",
+      "bulgarian7",
+      "french31",
+      "french32",
+      "georgian2"
+    ]
+  },
+  {
+    "symbol": "ɨ",
+    "codepoint": "U+0268",
+    "name": "LATIN SMALL LETTER I WITH STROKE",
+    "occurrences": 52,
+    "row_count": 23,
+    "example_ids": [
+      "bosnian6",
+      "english57",
+      "english58",
+      "english73",
+      "english77",
+      "english79"
+    ]
+  },
+  {
+    "symbol": "œ",
+    "codepoint": "U+0153",
+    "name": "LATIN SMALL LIGATURE OE",
+    "occurrences": 48,
+    "row_count": 26,
+    "example_ids": [
+      "amazigh2",
+      "balantaganja1",
+      "english109",
+      "french13",
+      "french21",
+      "french23"
+    ]
+  },
+  {
+    "symbol": "đ",
+    "codepoint": "U+0111",
+    "name": "LATIN SMALL LETTER D WITH STROKE",
+    "occurrences": 45,
+    "row_count": 19,
+    "example_ids": [
+      "hebrew5",
+      "mandingo1",
+      "oromo1",
+      "spanish10",
+      "spanish11",
+      "spanish13"
+    ]
+  },
+  {
+    "symbol": "ɖ",
+    "codepoint": "U+0256",
+    "name": "LATIN SMALL LETTER D WITH TAIL",
+    "occurrences": 44,
+    "row_count": 22,
+    "example_ids": [
+      "bengali4",
+      "english37",
+      "gujarati1",
+      "gujarati2",
+      "gujarati4",
+      "gujarati6"
+    ]
+  },
+  {
+    "symbol": "̘",
+    "codepoint": "U+0318",
+    "name": "COMBINING LEFT TACK BELOW",
+    "occurrences": 43,
+    "row_count": 31,
+    "example_ids": [
+      "bengali6",
+      "dutch8",
+      "english110",
+      "english115",
+      "english133",
+      "english143"
+    ]
+  },
+  {
+    "symbol": "ă",
+    "codepoint": "U+0103",
+    "name": "LATIN SMALL LETTER A WITH BREVE",
+    "occurrences": 42,
+    "row_count": 39,
+    "example_ids": [
+      "afrikaans1",
+      "arabic42",
+      "azerbaijani2",
+      "bulgarian1",
+      "bulgarian2",
+      "czech6"
+    ]
+  },
+  {
+    "symbol": "ʀ",
+    "codepoint": "U+0280",
+    "name": "LATIN LETTER SMALL CAPITAL R",
+    "occurrences": 42,
+    "row_count": 12,
+    "example_ids": [
+      "amazigh2",
+      "baga1",
+      "french23",
+      "french8",
+      "german18",
+      "german24"
+    ]
+  },
+  {
+    "symbol": "ʋ",
+    "codepoint": "U+028B",
+    "name": "LATIN SMALL LETTER V WITH HOOK",
+    "occurrences": 42,
+    "row_count": 23,
+    "example_ids": [
+      "bosnian1",
+      "cantonese1",
+      "czech6",
+      "estonian3",
+      "farsi4",
+      "german26"
+    ]
+  },
+  {
+    "symbol": "ɣ",
+    "codepoint": "U+0263",
+    "name": "LATIN SMALL LETTER GAMMA",
+    "occurrences": 40,
+    "row_count": 35,
+    "example_ids": [
+      "amharic1",
+      "amharic14",
+      "baga1",
+      "czech2",
+      "english154",
+      "english177"
+    ]
+  },
+  {
+    "symbol": "ɽ",
+    "codepoint": "U+027D",
+    "name": "LATIN SMALL LETTER R WITH TAIL",
+    "occurrences": 40,
+    "row_count": 17,
+    "example_ids": [
+      "bengali7",
+      "english17",
+      "gujarati2",
+      "gujarati4",
+      "hindi5",
+      "hindi6"
+    ]
+  },
+  {
+    "symbol": "ṉ",
+    "codepoint": "U+1E49",
+    "name": "LATIN SMALL LETTER N WITH LINE BELOW",
+    "occurrences": 38,
+    "row_count": 23,
+    "example_ids": [
+      "arabic10",
+      "basque2",
+      "cantonese4",
+      "catalan1",
+      "ebira1",
+      "fang1"
+    ]
+  },
+  {
+    "symbol": "ɵ",
+    "codepoint": "U+0275",
+    "name": "LATIN SMALL LETTER BARRED O",
+    "occurrences": 31,
+    "row_count": 20,
+    "example_ids": [
+      "arabic52",
+      "cantonese6",
+      "english8",
+      "english84",
+      "english87",
+      "english93"
+    ]
+  },
+  {
+    "symbol": "ɤ",
+    "codepoint": "U+0264",
+    "name": "LATIN SMALL LETTER RAMS HORN",
+    "occurrences": 31,
+    "row_count": 24,
+    "example_ids": [
+      "azerbaijani2",
+      "balantaganja1",
+      "cantonese20",
+      "chaldean2",
+      "english32",
+      "estonian2"
+    ]
+  },
+  {
+    "symbol": "̜",
+    "codepoint": "U+031C",
+    "name": "COMBINING LEFT HALF RING BELOW",
+    "occurrences": 30,
+    "row_count": 22,
+    "example_ids": [
+      "arabic15",
+      "arabic47",
+      "arabic53",
+      "cantonese21",
+      "dari3",
+      "english177"
+    ]
+  },
+  {
+    "symbol": "ǝ",
+    "codepoint": "U+01DD",
+    "name": "LATIN SMALL LETTER TURNED E",
+    "occurrences": 29,
+    "row_count": 6,
+    "example_ids": [
+      "afrikaans3",
+      "belarusan1",
+      "georgian2",
+      "icelandic1",
+      "kikuyu1",
+      "krio2"
+    ]
+  },
+  {
+    "symbol": "ɓ",
+    "codepoint": "U+0253",
+    "name": "LATIN SMALL LETTER B WITH HOOK",
+    "occurrences": 28,
+    "row_count": 15,
+    "example_ids": [
+      "cantonese2",
+      "fanti1",
+      "khmer3",
+      "krio5",
+      "lao1",
+      "lao2"
+    ]
+  },
+  {
+    "symbol": "j",
+    "codepoint": "U+006A",
+    "name": "LATIN SMALL LETTER J",
+    "occurrences": 26,
+    "row_count": 25,
+    "example_ids": [
+      "albanian1",
+      "armenian5",
+      "cantonese3",
+      "chittagonian1",
+      "english19",
+      "estonian16"
+    ]
+  },
+  {
+    "symbol": "̹",
+    "codepoint": "U+0339",
+    "name": "COMBINING RIGHT HALF RING BELOW",
+    "occurrences": 23,
+    "row_count": 21,
+    "example_ids": [
+      "arabic46",
+      "arabic50",
+      "cantonese21",
+      "croatian7",
+      "english134",
+      "english141"
+    ]
+  },
+  {
+    "symbol": "̱",
+    "codepoint": "U+0331",
+    "name": "COMBINING MACRON BELOW",
+    "occurrences": 22,
+    "row_count": 16,
+    "example_ids": [
+      "basque1",
+      "basque2",
+      "catalan1",
+      "dutch1",
+      "english26",
+      "english5"
+    ]
+  },
+  {
+    "symbol": "ʒ",
+    "codepoint": "U+0292",
+    "name": "LATIN SMALL LETTER EZH",
+    "occurrences": 21,
+    "row_count": 19,
+    "example_ids": [
+      "amharic4",
+      "arabic42",
+      "bari1",
+      "basque1",
+      "cantonese2",
+      "dutch13"
+    ]
+  },
+  {
+    "symbol": "ӕ",
+    "codepoint": "U+04D5",
+    "name": "CYRILLIC SMALL LIGATURE A IE",
+    "occurrences": 19,
+    "row_count": 3,
+    "example_ids": [
+      "greek6",
+      "kikuyu1",
+      "nuer1"
+    ]
+  },
+  {
+    "symbol": "ˀ",
+    "codepoint": "U+02C0",
+    "name": "MODIFIER LETTER GLOTTAL STOP",
+    "occurrences": 18,
+    "row_count": 18,
+    "example_ids": [
+      "akan1",
+      "arabic51",
+      "arabic52",
+      "english122",
+      "english132",
+      "english135"
+    ]
+  },
+  {
+    "symbol": "ø",
+    "codepoint": "U+00F8",
+    "name": "LATIN SMALL LETTER O WITH STROKE",
+    "occurrences": 17,
+    "row_count": 12,
+    "example_ids": [
+      "afrikaans1",
+      "amazigh2",
+      "arabic43",
+      "cantonese14",
+      "chichewa1",
+      "estonian16"
+    ]
+  },
+  {
+    "symbol": "ç",
+    "codepoint": "U+00E7",
+    "name": "LATIN SMALL LETTER C WITH CEDILLA",
+    "occurrences": 16,
+    "row_count": 14,
+    "example_ids": [
+      "amharic9",
+      "bari1",
+      "bari2",
+      "danish5",
+      "english51",
+      "french31"
+    ]
+  },
+  {
+    "symbol": "ә",
+    "codepoint": "U+04D9",
+    "name": "CYRILLIC SMALL LETTER SCHWA",
+    "occurrences": 16,
+    "row_count": 2,
+    "example_ids": [
+      "arabic14",
+      "tamil2"
+    ]
+  },
+  {
+    "symbol": "ɯ",
+    "codepoint": "U+026F",
+    "name": "LATIN SMALL LETTER TURNED M",
+    "occurrences": 13,
+    "row_count": 9,
+    "example_ids": [
+      "azerbaijani2",
+      "cantonese14",
+      "japanese2",
+      "japanese3",
+      "japanese5",
+      "japanese9"
+    ]
+  },
+  {
+    "symbol": "ɳ",
+    "codepoint": "U+0273",
+    "name": "LATIN SMALL LETTER N WITH RETROFLEX HOOK",
+    "occurrences": 12,
+    "row_count": 9,
+    "example_ids": [
+      "bengali4",
+      "cantonese6",
+      "gujarati4",
+      "gujarati6",
+      "hindko1",
+      "konkani2"
+    ]
+  },
+  {
+    "symbol": "ɻ",
+    "codepoint": "U+027B",
+    "name": "LATIN SMALL LETTER TURNED R WITH HOOK",
+    "occurrences": 12,
+    "row_count": 8,
+    "example_ids": [
+      "english24",
+      "faroese1",
+      "hindko1",
+      "poonchi1",
+      "punjabi2",
+      "sinhala7"
+    ]
+  },
+  {
+    "symbol": "ɘ",
+    "codepoint": "U+0258",
+    "name": "LATIN SMALL LETTER REVERSED E",
+    "occurrences": 12,
+    "row_count": 6,
+    "example_ids": [
+      "english84",
+      "english85",
+      "hungarian1",
+      "konkani2",
+      "spanish207",
+      "vietnamese1"
+    ]
+  },
+  {
+    "symbol": "y",
+    "codepoint": "U+0079",
+    "name": "LATIN SMALL LETTER Y",
+    "occurrences": 11,
+    "row_count": 11,
+    "example_ids": [
+      "amharic15",
+      "english89",
+      "french18",
+      "french29",
+      "french9",
+      "khmer2"
+    ]
+  },
+  {
+    "symbol": "ʂ",
+    "codepoint": "U+0282",
+    "name": "LATIN SMALL LETTER S WITH HOOK",
+    "occurrences": 11,
+    "row_count": 6,
+    "example_ids": [
+      "amharic2",
+      "mandarin12",
+      "poonchi1",
+      "quechua2",
+      "urdu7",
+      "vietnamese5"
+    ]
+  },
+  {
+    "symbol": "̌",
+    "codepoint": "U+030C",
+    "name": "COMBINING CARON",
+    "occurrences": 11,
+    "row_count": 7,
+    "example_ids": [
+      "bulgarian12",
+      "finnish6",
+      "lithuanian2",
+      "maltese1",
+      "nepali9",
+      "pashto5"
+    ]
+  },
+  {
+    "symbol": "ˑ",
+    "codepoint": "U+02D1",
+    "name": "MODIFIER LETTER HALF TRIANGULAR COLON",
+    "occurrences": 11,
+    "row_count": 10,
+    "example_ids": [
+      "french22",
+      "hindi4",
+      "italian15",
+      "korean13",
+      "mandarin17",
+      "mandarin9"
+    ]
+  },
+  {
+    "symbol": "ǀ",
+    "codepoint": "U+01C0",
+    "name": "LATIN LETTER DENTAL CLICK",
+    "occurrences": 10,
+    "row_count": 4,
+    "example_ids": [
+      "arabic14",
+      "arabic15",
+      "korean48",
+      "twi2"
+    ]
+  },
+  {
+    "symbol": "χ",
+    "codepoint": "U+03C7",
+    "name": "GREEK SMALL LETTER CHI",
+    "occurrences": 9,
+    "row_count": 4,
+    "example_ids": [
+      "bengali7",
+      "kurdish2",
+      "luba-kasai1",
+      "mandarin14"
+    ]
+  },
+  {
+    "symbol": "g",
+    "codepoint": "U+0067",
+    "name": "LATIN SMALL LETTER G",
+    "occurrences": 8,
+    "row_count": 8,
+    "example_ids": [
+      "afrikaans4",
+      "albanian2",
+      "azerbaijani1",
+      "dutch36",
+      "english122",
+      "icelandic2"
+    ]
+  },
+  {
+    "symbol": "̻",
+    "codepoint": "U+033B",
+    "name": "COMBINING SQUARE BELOW",
+    "occurrences": 7,
+    "row_count": 5,
+    "example_ids": [
+      "english80",
+      "haitiancreolefrench2",
+      "haitiancreolefrench5",
+      "russian13",
+      "turkish24"
+    ]
+  },
+  {
+    "symbol": "ɗ",
+    "codepoint": "U+0257",
+    "name": "LATIN SMALL LETTER D WITH HOOK",
+    "occurrences": 7,
+    "row_count": 6,
+    "example_ids": [
+      "khmer3",
+      "mandarin23",
+      "thai7",
+      "vietnamese3",
+      "vietnamese6",
+      "vietnamese8"
+    ]
+  },
+  {
+    "symbol": "ñ",
+    "codepoint": "U+00F1",
+    "name": "LATIN SMALL LETTER N WITH TILDE",
+    "occurrences": 6,
+    "row_count": 6,
+    "example_ids": [
+      "cantonese4",
+      "english528",
+      "german5",
+      "german6",
+      "japanese22",
+      "portuguese1"
+    ]
+  },
+  {
+    "symbol": "̙",
+    "codepoint": "U+0319",
+    "name": "COMBINING RIGHT TACK BELOW",
+    "occurrences": 6,
+    "row_count": 5,
+    "example_ids": [
+      "english129",
+      "english141",
+      "english156",
+      "gujarati6",
+      "spanish57"
+    ]
+  },
+  {
+    "symbol": "ɞ",
+    "codepoint": "U+025E",
+    "name": "LATIN SMALL LETTER CLOSED REVERSED OPEN E",
+    "occurrences": 6,
+    "row_count": 5,
+    "example_ids": [
+      "english56",
+      "polish8",
+      "rotuman1",
+      "rotuman2",
+      "tigrigna1"
+    ]
+  },
+  {
+    "symbol": "ɲ",
+    "codepoint": "U+0272",
+    "name": "LATIN SMALL LETTER N WITH LEFT HOOK",
+    "occurrences": 5,
+    "row_count": 5,
+    "example_ids": [
+      "bafang2",
+      "mandarin6",
+      "spanish34",
+      "turkish8",
+      "turkish9"
+    ]
+  },
+  {
+    "symbol": "ʍ",
+    "codepoint": "U+028D",
+    "name": "LATIN SMALL LETTER TURNED W",
+    "occurrences": 5,
+    "row_count": 4,
+    "example_ids": [
+      "cantonese4",
+      "danish3",
+      "macedonian2",
+      "portuguese1"
+    ]
+  },
+  {
+    "symbol": "ʏ",
+    "codepoint": "U+028F",
+    "name": "LATIN LETTER SMALL CAPITAL Y",
+    "occurrences": 5,
+    "row_count": 5,
+    "example_ids": [
+      "dutch25",
+      "german8",
+      "greek4",
+      "japanese9",
+      "portuguese36"
+    ]
+  },
+  {
+    "symbol": "ɬ",
+    "codepoint": "U+026C",
+    "name": "LATIN SMALL LETTER L WITH BELT",
+    "occurrences": 5,
+    "row_count": 3,
+    "example_ids": [
+      "mandarin16",
+      "polish8",
+      "spanish207"
+    ]
+  },
+  {
+    "symbol": "̺",
+    "codepoint": "U+033A",
+    "name": "COMBINING INVERTED BRIDGE BELOW",
+    "occurrences": 4,
+    "row_count": 3,
+    "example_ids": [
+      "arabic53",
+      "cantonese21",
+      "french23"
+    ]
+  },
+  {
+    "symbol": "ḛ",
+    "codepoint": "U+1E1B",
+    "name": "LATIN SMALL LETTER E WITH TILDE BELOW",
+    "occurrences": 4,
+    "row_count": 4,
+    "example_ids": [
+      "arabic53",
+      "croatian7",
+      "french38",
+      "luba-kasai1"
+    ]
+  },
+  {
+    "symbol": "ʝ",
+    "codepoint": "U+029D",
+    "name": "LATIN SMALL LETTER J WITH CROSSED-TAIL",
+    "occurrences": 4,
+    "row_count": 4,
+    "example_ids": [
+      "baga1",
+      "korean15",
+      "nepali6",
+      "vietnamese3"
+    ]
+  },
+  {
+    "symbol": "ᵊ",
+    "codepoint": "U+1D4A",
+    "name": "MODIFIER LETTER SMALL SCHWA",
+    "occurrences": 4,
+    "row_count": 4,
+    "example_ids": [
+      "dutch24",
+      "hindi7",
+      "romanian12",
+      "tigrigna6"
+    ]
+  },
+  {
+    "symbol": "ř",
+    "codepoint": "U+0159",
+    "name": "LATIN SMALL LETTER R WITH CARON",
+    "occurrences": 4,
+    "row_count": 2,
+    "example_ids": [
+      "lithuanian2",
+      "maltese1"
+    ]
+  },
+  {
+    "symbol": "∫",
+    "codepoint": "U+222B",
+    "name": "INTEGRAL",
+    "occurrences": 4,
+    "row_count": 1,
+    "example_ids": [
+      "tamil2"
+    ]
+  },
+  {
+    "symbol": "ˤ",
+    "codepoint": "U+02E4",
+    "name": "MODIFIER LETTER SMALL REVERSED GLOTTAL STOP",
+    "occurrences": 3,
+    "row_count": 2,
+    "example_ids": [
+      "arabic33",
+      "vietnamese1"
+    ]
+  },
+  {
+    "symbol": "ʕ",
+    "codepoint": "U+0295",
+    "name": "LATIN LETTER PHARYNGEAL VOICED FRICATIVE",
+    "occurrences": 3,
+    "row_count": 2,
+    "example_ids": [
+      "cantonese3",
+      "english27"
+    ]
+  },
+  {
+    "symbol": "͉",
+    "codepoint": "U+0349",
+    "name": "COMBINING LEFT ANGLE BELOW",
+    "occurrences": 3,
+    "row_count": 2,
+    "example_ids": [
+      "german3",
+      "tibetan2"
+    ]
+  },
+  {
+    "symbol": "ɺ",
+    "codepoint": "U+027A",
+    "name": "LATIN SMALL LETTER TURNED R WITH LONG LEG",
+    "occurrences": 3,
+    "row_count": 2,
+    "example_ids": [
+      "gusii1",
+      "spanish7"
+    ]
+  },
+  {
+    "symbol": "c",
+    "codepoint": "U+0063",
+    "name": "LATIN SMALL LETTER C",
+    "occurrences": 3,
+    "row_count": 3,
+    "example_ids": [
+      "korean17",
+      "luo1",
+      "vietnamese2"
+    ]
+  },
+  {
+    "symbol": "̤",
+    "codepoint": "U+0324",
+    "name": "COMBINING DIAERESIS BELOW",
+    "occurrences": 3,
+    "row_count": 2,
+    "example_ids": [
+      "russian10",
+      "spanish95"
+    ]
+  },
+  {
+    "symbol": "ɱ",
+    "codepoint": "U+0271",
+    "name": "LATIN SMALL LETTER M WITH HOOK",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "afrikaans1",
+      "german3"
+    ]
+  },
+  {
+    "symbol": "ǐ",
+    "codepoint": "U+01D0",
+    "name": "LATIN SMALL LETTER I WITH CARON",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "afrikaans4",
+      "maltese1"
+    ]
+  },
+  {
+    "symbol": ",",
+    "codepoint": "U+002C",
+    "name": "COMMA",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "amazigh2",
+      "nepali6"
+    ]
+  },
+  {
+    "symbol": "ʎ",
+    "codepoint": "U+028E",
+    "name": "LATIN SMALL LETTER TURNED Y",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "arabic11",
+      "basque1"
+    ]
+  },
+  {
+    "symbol": "ṵ",
+    "codepoint": "U+1E75",
+    "name": "LATIN SMALL LETTER U WITH TILDE BELOW",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "arabic37",
+      "sesotho1"
+    ]
+  },
+  {
+    "symbol": "ɦ",
+    "codepoint": "U+0266",
+    "name": "LATIN SMALL LETTER H WITH HOOK",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "basque1",
+      "slovak2"
+    ]
+  },
+  {
+    "symbol": "ᶴ",
+    "codepoint": "U+1DB4",
+    "name": "MODIFIER LETTER SMALL ESH",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "bavarian1",
+      "mandarin23"
+    ]
+  },
+  {
+    "symbol": "ṯ",
+    "codepoint": "U+1E6F",
+    "name": "LATIN SMALL LETTER T WITH LINE BELOW",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "danish2",
+      "vietnamese4"
+    ]
+  },
+  {
+    "symbol": "ǔ",
+    "codepoint": "U+01D4",
+    "name": "LATIN SMALL LETTER U WITH CARON",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "danish3",
+      "maltese1"
+    ]
+  },
+  {
+    "symbol": "͡",
+    "codepoint": "U+0361",
+    "name": "COMBINING DOUBLE INVERTED BREVE",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "french42",
+      "thai8"
+    ]
+  },
+  {
+    "symbol": "ˡ",
+    "codepoint": "U+02E1",
+    "name": "MODIFIER LETTER SMALL L",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "korean3",
+      "spanish21"
+    ]
+  },
+  {
+    "symbol": "і",
+    "codepoint": "U+0456",
+    "name": "CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I",
+    "occurrences": 2,
+    "row_count": 1,
+    "example_ids": [
+      "krio2"
+    ]
+  },
+  {
+    "symbol": "ǂ",
+    "codepoint": "U+01C2",
+    "name": "LATIN LETTER ALVEOLAR CLICK",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "punjabi3",
+      "tagalog5"
+    ]
+  },
+  {
+    "symbol": "а",
+    "codepoint": "U+0430",
+    "name": "CYRILLIC SMALL LETTER A",
+    "occurrences": 2,
+    "row_count": 2,
+    "example_ids": [
+      "tamil2",
+      "yoruba2"
+    ]
+  },
+  {
+    "symbol": "̮",
+    "codepoint": "U+032E",
+    "name": "COMBINING BREVE BELOW",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "amharic5"
+    ]
+  },
+  {
+    "symbol": "˳",
+    "codepoint": "U+02F3",
+    "name": "MODIFIER LETTER LOW RING",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "armenian1"
+    ]
+  },
+  {
+    "symbol": "ʑ",
+    "codepoint": "U+0291",
+    "name": "LATIN SMALL LETTER Z WITH CURL",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "bambara4"
+    ]
+  },
+  {
+    "symbol": "ȗ",
+    "codepoint": "U+0217",
+    "name": "LATIN SMALL LETTER U WITH INVERTED BREVE",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "bulgarian9"
+    ]
+  },
+  {
+    "symbol": "ˈ",
+    "codepoint": "U+02C8",
+    "name": "MODIFIER LETTER VERTICAL LINE",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "cantonese3"
+    ]
+  },
+  {
+    "symbol": "ḭ",
+    "codepoint": "U+1E2D",
+    "name": "LATIN SMALL LETTER I WITH TILDE BELOW",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "english47"
+    ]
+  },
+  {
+    "symbol": "ḏ",
+    "codepoint": "U+1E0F",
+    "name": "LATIN SMALL LETTER D WITH LINE BELOW",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "fang1"
+    ]
+  },
+  {
+    "symbol": "ʤ",
+    "codepoint": "U+02A4",
+    "name": "LATIN SMALL LETTER DEZH DIGRAPH",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "gujarati1"
+    ]
+  },
+  {
+    "symbol": "͂",
+    "codepoint": "U+0342",
+    "name": "COMBINING GREEK PERISPOMENI",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "hungarian2"
+    ]
+  },
+  {
+    "symbol": "I",
+    "codepoint": "U+0049",
+    "name": "LATIN CAPITAL LETTER I",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "igbo1"
+    ]
+  },
+  {
+    "symbol": "ḻ",
+    "codepoint": "U+1E3B",
+    "name": "LATIN SMALL LETTER L WITH LINE BELOW",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "indonesian3"
+    ]
+  },
+  {
+    "symbol": "ẵ",
+    "codepoint": "U+1EB5",
+    "name": "LATIN SMALL LETTER A WITH BREVE AND TILDE",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "japanese14"
+    ]
+  },
+  {
+    "symbol": "ʐ",
+    "codepoint": "U+0290",
+    "name": "LATIN SMALL LETTER Z WITH RETROFLEX HOOK",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "kambaata3"
+    ]
+  },
+  {
+    "symbol": "ɕ",
+    "codepoint": "U+0255",
+    "name": "LATIN SMALL LETTER C WITH CURL",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "khmer3"
+    ]
+  },
+  {
+    "symbol": "͎",
+    "codepoint": "U+034E",
+    "name": "COMBINING UPWARDS ARROW BELOW",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "kikuyu1"
+    ]
+  },
+  {
+    "symbol": "",
+    "codepoint": "U+F1C8",
+    "name": "UNNAMED",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "kiswahili4"
+    ]
+  },
+  {
+    "symbol": "ɰ",
+    "codepoint": "U+0270",
+    "name": "LATIN SMALL LETTER TURNED M WITH LONG LEG",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "mandarin27"
+    ]
+  },
+  {
+    "symbol": "ʟ",
+    "codepoint": "U+029F",
+    "name": "LATIN LETTER SMALL CAPITAL L",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "polish15"
+    ]
+  },
+  {
+    "symbol": "ɮ",
+    "codepoint": "U+026E",
+    "name": "LATIN SMALL LETTER LEZH",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "portuguese10"
+    ]
+  },
+  {
+    "symbol": "ě",
+    "codepoint": "U+011B",
+    "name": "LATIN SMALL LETTER E WITH CARON",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "rundi1"
+    ]
+  },
+  {
+    "symbol": "͆",
+    "codepoint": "U+0346",
+    "name": "COMBINING BRIDGE ABOVE",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "spanish42"
+    ]
+  },
+  {
+    "symbol": "ˢ",
+    "codepoint": "U+02E2",
+    "name": "MODIFIER LETTER SMALL S",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "turkish20"
+    ]
+  },
+  {
+    "symbol": "ⅼ",
+    "codepoint": "U+217C",
+    "name": "SMALL ROMAN NUMERAL FIFTY",
+    "occurrences": 1,
+    "row_count": 1,
+    "example_ids": [
+      "yoruba2"
+    ]
+  }
+]

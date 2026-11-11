@@ -1,0 +1,31 @@
+{
+  "status": "preparation_not_training",
+  "date": "2026-11-09",
+  "training_profile": "glossika-literal-v3",
+  "training_rows": 549,
+  "experiments": {
+    "A": "Wav2Vec2Phoneme CTC adaptation: frozen-head control versus limited encoder unfreezing",
+    "B": "WavLM Base+ localized three-event heads; requires localized positive and negative training labels",
+    "C": "ZIPA large frozen baseline comparator; not a fine-tuning run"
+  },
+  "comparison_requirements": [
+    "Freeze identical independent evaluation audio and labels before scoring",
+    "Keep raw pretrained IPA and Glossika-literal predictions; report literal differences separately from notation-compatible segment scores",
+    "Compare A frozen-head control and encoder adaptation using identical vocabulary, seeds and budgets",
+    "Report per-recording before/after IPA, edits, mark precision/recall/F1, regressions and latency",
+    "Report B per-class TP FP FN precision recall F1 and sample counts; unavailable without both classes",
+    "Keep C fixed for all comparisons",
+    "Use development labels for selection only; test labels never select checkpoints"
+  ],
+  "missing": [
+    "Audit and freeze latest external listening annotations and label-profile compatibility",
+    "Prepare localized event training windows with positives, negatives and confounders",
+    "Create a new run configuration for the 549-row/62-token profile; do not overwrite the old 49-row protocol",
+    "Expand source and speaker diversity before generalization claims"
+  ],
+  "proposed_event_pilot_target_per_class": {
+    "positive": 30,
+    "matched_negative": 30,
+    "meaning": "collection target, not a statistical sufficiency guarantee"
+  }
+}

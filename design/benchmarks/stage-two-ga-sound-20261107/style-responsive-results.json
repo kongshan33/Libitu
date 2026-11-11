@@ -1,0 +1,26 @@
+[
+  {
+    "width": 320,
+    "filters": 13,
+    "status": "passed",
+    "checks": "filter/word overflow; focused IPA within viewport"
+  },
+  {
+    "width": 390,
+    "filters": 13,
+    "status": "passed",
+    "checks": "filter/word overflow; focused IPA within viewport"
+  },
+  {
+    "width": 768,
+    "filters": 13,
+    "status": "passed",
+    "checks": "filter/word overflow; focused IPA within viewport"
+  },
+  {
+    "width": 1400,
+    "filters": 13,
+    "status": "passed",
+    "checks": "filter/word overflow; focused IPA within viewport"
+  }
+]

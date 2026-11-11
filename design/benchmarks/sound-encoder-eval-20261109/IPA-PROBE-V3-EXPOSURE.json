@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "experiment": "ipa-probe-v3-20261109",
+  "date": "2026-11-09",
+  "status": "scored_and_outputs_inspected",
+  "source_pack_sha256": "843d4290d6d0028514b7b0c520dda94b827d96ca91e69fdc14bb0a8b052b799f",
+  "source_manifest_sha256": "d380e934f4275c38552266ebe4d1269120df3bf8650000cbb9e76cfd339fd3f0",
+  "protocol_sha256": "c40e7cc9d7d6e0caaa9d99c93576813aad6d69536890ec9e60879675235fb0ac",
+  "test_release_sha256": "5fa20795c28eca2190f92f67b73a697883a068683d41b35f26e909bbc23237e4",
+  "comparison_sha256": "0eb7266fea776946ad5242f95b771edce66eabccfb036f50773aa11d5306b00d",
+  "records": [
+    {
+      "id": "listen-01",
+      "recording_group": "cmu-rms-arctic_a0044",
+      "sentence_group": "her own betrayal of herself was like tonic to philip",
+      "speaker_id": "cmu-arctic-rms",
+      "audio_sha256": "a7ca8476bdc696acc7fac54e37953fad79a3af298f0ca5d31f5bf40c4b40c30e",
+      "pcm_sha256": "485dbb7bb2a10cffa1892cb1593fc2db0e5cd0812f9a60b25cf2522665293c73"
+    },
+    {
+      "id": "listen-02",
+      "recording_group": "cmu-clb-arctic_a0178",
+      "sentence_group": "every bone in her aged body seemed broken or dislocated",
+      "speaker_id": "cmu-arctic-clb",
+      "audio_sha256": "506f8a416a6f3a97155ced0890669fac2372c0bbe10d53d68a7b9d343353827a",
+      "pcm_sha256": "3e2f6f4cec10851571315938954264c8f5238110cac6cd0eab839b1663be4c21"
+    },
+    {
+      "id": "listen-05",
+      "recording_group": "cmu-clb-arctic_a0025",
+      "sentence_group": "i was about to do this when cooler judgment prevailed",
+      "speaker_id": "cmu-arctic-clb",
+      "audio_sha256": "c6d3993b158dd4fb7b95bd1accc0753e160addd4ebafd0658418edddb5b8533c",
+      "pcm_sha256": "162e7c0b8e4156f7a9243704877825759243b29b335e3072a782239c9c93e582"
+    },
+    {
+      "id": "listen-06",
+      "recording_group": "cmu-rms-arctic_b0017",
+      "sentence_group": "everything was working smoothly better than i had expected",
+      "speaker_id": "cmu-arctic-rms",
+      "audio_sha256": "c7f5df056859a9548af5039510654b039f658f5768b39831896b4e765061e241",
+      "pcm_sha256": "86b45bdbc506020ddc5809c571913fa7f1bb1135473b9a678bc59c81b1cd26c4"
+    },
+    {
+      "id": "listen-07",
+      "recording_group": "cmu-rms-arctic_a0025",
+      "sentence_group": "i was about to do this when cooler judgment prevailed",
+      "speaker_id": "cmu-arctic-rms",
+      "audio_sha256": "f73a96e2bb65debbe49be1e66ef336f2b6ac9b70efe24f32449852a332d8757f",
+      "pcm_sha256": "013465a39187c88d3a5b39d08f769df31b31d6792be61acf52f99f3c81a20618"
+    },
+    {
+      "id": "listen-08",
+      "recording_group": "cmu-clb-arctic_a0074",
+      "sentence_group": "and now down there eileen was waiting for him",
+      "speaker_id": "cmu-arctic-clb",
+      "audio_sha256": "a14fdc1688b687fc9ca6e2df620705065b5d5e73dafac4602d492924f4b7064c",
+      "pcm_sha256": "608cbc426c2d36c91f582bff2f1a5077e7dcf63486df1ab6c1fd7b03e145986c"
+    },
+    {
+      "id": "listen-09",
+      "recording_group": "cmu-rms-arctic_a0328",
+      "sentence_group": "the fire people like ourselves lived in caves",
+      "speaker_id": "cmu-arctic-rms",
+      "audio_sha256": "b8b8c0a959ee84ad96cada9448447fefe859f103af446fddfa9f9cc9730e2527",
+      "pcm_sha256": "c2d7d8c62922f06ad1103bb301118400eb71c9eb40fc68291651725e160827d2"
+    },
+    {
+      "id": "listen-10",
+      "recording_group": "cmu-rms-arctic_a0037",
+      "sentence_group": "i was the only one who remained sitting",
+      "speaker_id": "cmu-arctic-rms",
+      "audio_sha256": "9052b51f68588aa7763615b290231182c2fd28938a7b7138887bf932ae3af664",
+      "pcm_sha256": "f45517ca9d299a0aa598dfa7574d7ca1b7b07c36f5fa20162c7c52fe5d132956"
+    }
+  ],
+  "future_policy": "These recordings, PCM duplicates and sentence groups must not be called unseen after this experiment. Original drafts and unused recordings are preserved; applying this ledger at sentence-group level may also exclude unscored recordings of the same sentence."
+}

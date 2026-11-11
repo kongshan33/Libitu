@@ -1,0 +1,81 @@
+{
+  "profile": "glossika-literal-v3",
+  "artifact_manifest_sha256": "13fb5428f4795136b75ee1048ca25209b6f5ef024829ef3977bf2acd969114bc",
+  "rows_validated": 549,
+  "vocab_size": 62,
+  "sample_ids": [
+    "glossika-pron-en-cs-0001",
+    "glossika-pron-en-cs-0009",
+    "glossika-pron-en-cs-0023",
+    "glossika-pron-en-cs-0026",
+    "glossika-pron-en-cs-0083",
+    "glossika-pron-en-cs-0116"
+  ],
+  "optimizer_steps": 0,
+  "models": {
+    "wav2vec2-phoneme": {
+      "encoder_sha256": "3173bde9e9ce490fa0f989e413c42f25bc1820c020adc1e6b9b87025b3cfcc5e",
+      "ctc_loss": 11.7064847946167,
+      "encoder_frames": [
+        49,
+        59,
+        51,
+        42,
+        54,
+        36
+      ],
+      "head_parameters": 63550,
+      "finite_nonzero_head_gradients": true,
+      "encoder_gradients": false,
+      "optimizer_steps": 0
+    },
+    "wavlm-base-plus": {
+      "encoder_sha256": "3bb273a6ace99408b50cfc81afdbb7ef2de02da2eab0234e18db608ce692fe51",
+      "ctc_loss": 11.692054748535156,
+      "encoder_frames": [
+        49,
+        59,
+        51,
+        42,
+        54,
+        36
+      ],
+      "head_parameters": 47678,
+      "finite_nonzero_head_gradients": true,
+      "encoder_gradients": false,
+      "optimizer_steps": 0
+    },
+    "wavlm-large": {
+      "encoder_sha256": "fdee460e529396ddb2f8c8e8ce0ad74cfb747b726bc6f612e666c7c1e1963c9d",
+      "ctc_loss": 11.734123229980469,
+      "encoder_frames": [
+        49,
+        59,
+        51,
+        42,
+        54,
+        36
+      ],
+      "head_parameters": 63550,
+      "finite_nonzero_head_gradients": true,
+      "encoder_gradients": false,
+      "optimizer_steps": 0
+    },
+    "hubert-large": {
+      "encoder_sha256": "45a299050945479a68cffe2ab7a63fd08931718ba18f05a42dbb86a5164178e0",
+      "ctc_loss": 11.593857765197754,
+      "encoder_frames": [
+        49,
+        59,
+        51,
+        42,
+        54,
+        36
+      ],
+      "head_parameters": 63550,
+      "finite_nonzero_head_gradients": true,
+      "encoder_gradients": false,
+      "optimizer_steps": 0
+    }
+  }
+}

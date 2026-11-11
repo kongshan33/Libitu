@@ -1,0 +1,63 @@
+{
+  "repo": "changelinglab/speechaccentarchive-pr",
+  "revision": "00a47d76d3a4f476cd6275fc10dc34f7ca635f6b",
+  "retrieved_date": "2026-11-09",
+  "license": "CC-BY-NC-SA-2.0 (this pinned HF release)",
+  "scope": "Full 1242-row HF research snapshot; not every entry of the growing official archive",
+  "files": [
+    {
+      "path": "source/.gitattributes",
+      "bytes": 2504,
+      "sha256": "9e75dd981de037ec3769f24f790e126bc5a160b6871f510214e68dc70649aeeb",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "source/README.md",
+      "bytes": 2641,
+      "sha256": "da63cce3344bdd4daf72be5f795eab4a1cbe09273885c6a065ce80c644da82d7",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "source/data/test-00000-of-00007.parquet",
+      "bytes": 479415259,
+      "sha256": "142789a98e55667e43fcf4729d68c8e3509ba87eb623f0ac00290ed8b69d8e9f",
+      "upstream_lfs_sha256": "142789a98e55667e43fcf4729d68c8e3509ba87eb623f0ac00290ed8b69d8e9f"
+    },
+    {
+      "path": "source/data/test-00001-of-00007.parquet",
+      "bytes": 373306260,
+      "sha256": "1581845ddabfc750e61f2e13c959095b05a5a0451e1386e4fb7eadf796a7eb32",
+      "upstream_lfs_sha256": "1581845ddabfc750e61f2e13c959095b05a5a0451e1386e4fb7eadf796a7eb32"
+    },
+    {
+      "path": "source/data/test-00002-of-00007.parquet",
+      "bytes": 394951016,
+      "sha256": "f47c774d635cfeab64239572ae2f045b36ee3f72026459f8c8651ec0135b79dd",
+      "upstream_lfs_sha256": "f47c774d635cfeab64239572ae2f045b36ee3f72026459f8c8651ec0135b79dd"
+    },
+    {
+      "path": "source/data/test-00003-of-00007.parquet",
+      "bytes": 442050797,
+      "sha256": "e4140c4cb3d67c25e9caa7be3512f859cb778b98ada926ca08b54e56e6bacd81",
+      "upstream_lfs_sha256": "e4140c4cb3d67c25e9caa7be3512f859cb778b98ada926ca08b54e56e6bacd81"
+    },
+    {
+      "path": "source/data/test-00004-of-00007.parquet",
+      "bytes": 471263534,
+      "sha256": "7ebf4dc4d2b7700f54babb88b14bbb5e917029aeff34f808f11348015da96e1d",
+      "upstream_lfs_sha256": "7ebf4dc4d2b7700f54babb88b14bbb5e917029aeff34f808f11348015da96e1d"
+    },
+    {
+      "path": "source/data/test-00005-of-00007.parquet",
+      "bytes": 451895796,
+      "sha256": "86e0410d754e002f34be2ffefe8fc666e82762795053dfd2768e25e407bc035d",
+      "upstream_lfs_sha256": "86e0410d754e002f34be2ffefe8fc666e82762795053dfd2768e25e407bc035d"
+    },
+    {
+      "path": "source/data/test-00006-of-00007.parquet",
+      "bytes": 451798045,
+      "sha256": "b07e5f2818e6a9dfe4fef24685b13196c5898737b91405a854beefda7cb66a7e",
+      "upstream_lfs_sha256": "b07e5f2818e6a9dfe4fef24685b13196c5898737b91405a854beefda7cb66a7e"
+    }
+  ]
+}

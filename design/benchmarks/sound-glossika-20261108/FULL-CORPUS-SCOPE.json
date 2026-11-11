@@ -1,0 +1,1412 @@
+{
+  "date": "2026-11-09",
+  "scope": "existing source inventory and frozen v3 export reconciliation; not a new training-data export",
+  "accepted_label_policy": "professional SAA annotations and supplied Glossika labels need no user relistening; technical source/audio association and completeness checks remain",
+  "input_sha256": {
+    "audio_inventory": "b8004d10d3874bc75a4f8495c9b285a343dc8770142112aa8c84d45ee2ff06a2",
+    "v3_manifest": "40dc5e178d7bbd838e7bbc0899d3cc9c1a6643d3ae447e8d2fef45485e44db80"
+  },
+  "all_source_mp3_files": 145,
+  "all_source_decoded_seconds": 4121.6522448979595,
+  "chapters": [
+    {
+      "chapter": "Ch.2-英文母音和子音的單字發音訓練",
+      "files": 126,
+      "decoded_seconds": 2758.2955102040814,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 126
+    },
+    {
+      "chapter": "Ch.3-常用英文短句發音訓練",
+      "files": 12,
+      "decoded_seconds": 778.7885714285715,
+      "exported_train_rows": 549,
+      "exported_train_seconds": 490.54625,
+      "source_only_files": 0
+    },
+    {
+      "chapter": "Ch.4-字尾加 -ed 的發音",
+      "files": 1,
+      "decoded_seconds": 115.77469387755102,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    },
+    {
+      "chapter": "Ch.5-掌握英文的聲調",
+      "files": 1,
+      "decoded_seconds": 102.03428571428572,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    },
+    {
+      "chapter": "Ch.6-Can 的發音",
+      "files": 1,
+      "decoded_seconds": 109.53142857142858,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    },
+    {
+      "chapter": "Ch.7-To 的發音",
+      "files": 1,
+      "decoded_seconds": 74.65795918367347,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    },
+    {
+      "chapter": "Ch.8-英文字母的發音",
+      "files": 1,
+      "decoded_seconds": 35.10857142857143,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    },
+    {
+      "chapter": "Ch.9-英文冠詞",
+      "files": 1,
+      "decoded_seconds": 45.4269387755102,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    },
+    {
+      "chapter": "Ch.10-三個音節的單字怎麼發音",
+      "files": 1,
+      "decoded_seconds": 102.03428571428572,
+      "exported_train_rows": 0,
+      "exported_train_seconds": 0,
+      "source_only_files": 1
+    }
+  ],
+  "short_sentence_accounting": {
+    "source_decoded_seconds": 778.7885714285715,
+    "train_rows": 549,
+    "train_seconds": 490.54625,
+    "held_rows": 39,
+    "held_candidate_seconds": 41.6383125,
+    "outside_exported_candidate_intervals_seconds": 246.6040089285715,
+    "unassigned_interval_interpretation": "includes pauses, introduction and unresolved material; not classified as all silence",
+    "held_reasons": {
+      "multiple_book_readings_require_audio_selection": 3,
+      "asr_content_disagreement": 23,
+      "optional_segment_or_unsupported_source_notation": 5,
+      "ambiguous_region_association": 19,
+      "printed_incorrect_example_requires_audio_selection": 1,
+      "missing_sentence_audio": 1,
+      "no_associated_speech_region": 1
+    }
+  },
+  "source_only_files": 133,
+  "source_only_decoded_seconds": 3342.863673469388,
+  "records": [
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.10-三個音節的單字怎麼發音/PRON-EN-145-3Syll.mp3",
+      "source_sha256": "2ce37c5e7b79897e38071c076ed816c86311552d794db4b4dcea35f75a7a1394",
+      "decoded_seconds": 102.03428571428572,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-001-A.mp3",
+      "source_sha256": "e6639e20128e59d62834f8fee65d8506b81c3d2f92baa04c9acd79ba5f9deff0",
+      "decoded_seconds": 23.980408163265306,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-002-A.mp3",
+      "source_sha256": "de63f75df9347af1334f620232199037e05dec2d0e0a16d5389e9ae51c63f0d7",
+      "decoded_seconds": 136.2808163265306,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-003-A.mp3",
+      "source_sha256": "c4f25c2db6b03bbdc01e569394ba7c14b119aa439fe6e73f2c19fd8c0d105e44",
+      "decoded_seconds": 11.284897959183674,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-004-A.mp3",
+      "source_sha256": "770bc017f4db1c0b7d39cfb2e8b93055f0777e440f30378c0603e25233e1a688",
+      "decoded_seconds": 53.89061224489796,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-005-A.mp3",
+      "source_sha256": "397ad60f5ca91073bf94f0d97109e666995ea4379b14ea28760f0e17e69e0b45",
+      "decoded_seconds": 12.303673469387755,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-006-A.mp3",
+      "source_sha256": "1964b4cef2b8f5ae4f8b1503682041e59dad7a69b0a905d90882a49b93c75a4e",
+      "decoded_seconds": 107.52,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-007-A.mp3",
+      "source_sha256": "4555af1116823c2da5b6f3a35350c2818ff38654d1a523c7bb6ea110faa74a78",
+      "decoded_seconds": 7.314285714285714,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-008-A.mp3",
+      "source_sha256": "25cc04b0516f3db73d17f8fbb68fc01ad4fdf470f4a7b2dec147c8b10950daa3",
+      "decoded_seconds": 23.90204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-009-A.mp3",
+      "source_sha256": "0c6d93c7b03b0baa993cd1fb8db65a76c6661b045bce56ce47f637f91e6343b2",
+      "decoded_seconds": 85.52489795918368,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-010-A.mp3",
+      "source_sha256": "ba7fca65809e11b34cb9de066d0116fabbb7198902f9d9d759087e4f9049f421",
+      "decoded_seconds": 10.37061224489796,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-011-E.mp3",
+      "source_sha256": "1e77bc1db91bad46ac115918e11240d7d318d4bf37f0db933bca24ebfe156329",
+      "decoded_seconds": 193.07102040816326,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-012-E.mp3",
+      "source_sha256": "f0e0b2298b7b66ab70bf583908cafbc957bffb2506ef7166cc986b282eeefc8a",
+      "decoded_seconds": 21.394285714285715,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-013-E.mp3",
+      "source_sha256": "ce5f17f556767a3832e22b369ab4813397328b47fba95a7e27fa74e32f377261",
+      "decoded_seconds": 113.65877551020408,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-014-E.mp3",
+      "source_sha256": "449d4428f6a5d1af57e9af3becad40319bb02b3e9e272e15e34235f3220bfa0d",
+      "decoded_seconds": 8.150204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-015-E.mp3",
+      "source_sha256": "aef27a4e4ed95aeebaef234effe7736952a787a6d0760b989c91452856ce9916",
+      "decoded_seconds": 6.426122448979592,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-016-E.mp3",
+      "source_sha256": "a298c1b693b5dcc46d4d629701fdc31c1b915cb7af3d2ac4a0afd41daa0db765",
+      "decoded_seconds": 80.24816326530612,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-017-E.mp3",
+      "source_sha256": "a22239ef06f2a2d012b3144733f03b3be8156a27a722f822776c514549daa58a",
+      "decoded_seconds": 4.362448979591837,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-018-E.mp3",
+      "source_sha256": "e51e4c70cf7b221c6ebeb7ab7fd23f805e77160db1f10b26b1a3d2e6d8a63dca",
+      "decoded_seconds": 89.05142857142857,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-019-I.mp3",
+      "source_sha256": "e85d4d971ae3369a9cc2b1e164d60815b712c9deb45c6f017d6f5602a83395de",
+      "decoded_seconds": 187.2195918367347,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-020-I.mp3",
+      "source_sha256": "fe7698b4b6e749c81634199fb5d9eb7d74ea815d28a6b86b2bbb81bc5c7f4b50",
+      "decoded_seconds": 28.708571428571428,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-021-I.mp3",
+      "source_sha256": "a1955ca332894455fe7227d67ab765782d4b04a76ae555eb863c4dac0c89444f",
+      "decoded_seconds": 104.48979591836735,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-022-I.mp3",
+      "source_sha256": "8d25a151a9ff2af5e8457b23fa3400e0b2be358628a48999e8c60db38511afb1",
+      "decoded_seconds": 7.026938775510204,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-023-O.mp3",
+      "source_sha256": "946f6af980a4381a289011de84c22f028ff262b94d75cccde3c3d849ef57ba93",
+      "decoded_seconds": 158.9551020408163,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-024-O.mp3",
+      "source_sha256": "a5ef3322d14f0e9859d84176c3d3caa26772eaa64119fad782b8a24ddb6aa583",
+      "decoded_seconds": 4.310204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-025-O.mp3",
+      "source_sha256": "c1f16a7e953d96d06ae5b3a03debff3dbbf72507f6c8e05311c8234e982027c8",
+      "decoded_seconds": 43.049795918367344,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-026-O.mp3",
+      "source_sha256": "6e44cc7e80cac7fc8be49aa723a3b65f1ef52ca1330c9c09120062052850773e",
+      "decoded_seconds": 33.462857142857146,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-027-U.mp3",
+      "source_sha256": "748035e52c907cd448eece69e2a2792b7cfd29f179d92db0dfd2ee70bdf32960",
+      "decoded_seconds": 118.96163265306123,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-028-U.mp3",
+      "source_sha256": "d6565671a37681b32cc61e45e4429a53257b0598f730996985c6cde41e469f6f",
+      "decoded_seconds": 35.39591836734694,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-029-U.mp3",
+      "source_sha256": "96c525c86bdea8b8ff8ab42a78bf4dcb17a90bc56e3d46da0e7d3b364e6d13f4",
+      "decoded_seconds": 48.43102040816326,
+      "source_hash_verified": true,
+      "decode_warning": "[mp3float @ 0x7fe79fa14bc0] Header missing\n[aist#0:0/mp3 @ 0x7fe79fa12180] [dec:mp3float @ 0x7fe79fa13400] Error submitting packet to decoder: Invalid data found when processing input",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-030-U.mp3",
+      "source_sha256": "3ad2266731181c0a1c156ccabe62800a68d104f5062967ca8d03cb41767b079d",
+      "decoded_seconds": 7.862857142857143,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-031-O.mp3",
+      "source_sha256": "4ceb2897ec76e44a7e18a2ef413c584af214e1a4f688d1a3eec4b7be13b89cbb",
+      "decoded_seconds": 29.335510204081633,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-032-P.mp3",
+      "source_sha256": "d8ed8e00ff221d2ca67854932a271da4fd5fa23b0201ce2a7b0e4ad95cd37f72",
+      "decoded_seconds": 12.016326530612245,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-033-P.mp3",
+      "source_sha256": "fe16da341d03147bdba8731f13a99a4f65d4c5ff42683ff5290468078d1b55e8",
+      "decoded_seconds": 6.791836734693877,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-034-P.mp3",
+      "source_sha256": "d6ab215d30b9c237e26a4be864452e2b6be13a47884c1083347a9d32c043fa2d",
+      "decoded_seconds": 16.117551020408165,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-035-P.mp3",
+      "source_sha256": "5b0969a2b438b21fb1a7536a6316592c163f6040ceec23223a7676b5e53067fa",
+      "decoded_seconds": 9.430204081632652,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-036-P.mp3",
+      "source_sha256": "57f0d4d8e95b00a74a2d588c56290c64cffea1da658a4de1eca15c54a99983fe",
+      "decoded_seconds": 1.3061224489795917,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-037-B.mp3",
+      "source_sha256": "eb6f4348e98a9b80449ad3461f7edb9de283403f526a1ac57531f9edcfadc995",
+      "decoded_seconds": 8.672653061224489,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-038-B.mp3",
+      "source_sha256": "1e027bfe8c42dd95f4a5ace0f15c76ab05b6b97478b262d98b43a992a62c270d",
+      "decoded_seconds": 2.873469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-039-B.mp3",
+      "source_sha256": "1d2c123f7012806b03c546f457a25a3d15aa9e4ef83d56a7ecbc683d8a0bc983",
+      "decoded_seconds": 3.0040816326530613,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-040-F.mp3",
+      "source_sha256": "12938fd45d84b0b26b561bcf63c6bebcf099d591cb015dab55228a339caa8f7a",
+      "decoded_seconds": 11.96408163265306,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-041-F.mp3",
+      "source_sha256": "f190796245eba9fb63bdc2e156984a40c2e27dd4dd6811f7430a15afe0feb65e",
+      "decoded_seconds": 3.4481632653061225,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-042-V.mp3",
+      "source_sha256": "b93bde37887dc5cf8b3610d35fbd9aa57fdd1483c14bb85387612adca08ca148",
+      "decoded_seconds": 16.35265306122449,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-043-V.mp3",
+      "source_sha256": "ff3ff11018c2b4d6e9bbbd428402a60b17c6733ffae66025da2e0fa99d2211bc",
+      "decoded_seconds": 7.706122448979592,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-044-TH.mp3",
+      "source_sha256": "1cd4dcd231b52375008881da55f392a77ac78f3a17e86a3c2dee183e739a8648",
+      "decoded_seconds": 16.744489795918366,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-045-TH.mp3",
+      "source_sha256": "c405fd6c323c511d1bcd9d32c819cd43827cc942c5c517f3f3301f092096bafd",
+      "decoded_seconds": 21.62938775510204,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-046-TH.mp3",
+      "source_sha256": "3f665098df253d91e597a54085162a505141c1392ddfeb29c6acb39a4b5dacfd",
+      "decoded_seconds": 16.06530612244898,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-047-TH.mp3",
+      "source_sha256": "728656d5ccfe1b38efdf57fbd48c0444c6a3df893f959227c215a048e180c2dd",
+      "decoded_seconds": 6.243265306122449,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-048-TH.mp3",
+      "source_sha256": "cb1a89f0d8ab9472413dff1f923b806dd55c10205aa30a0820c4205680f7fe02",
+      "decoded_seconds": 7.81061224489796,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-049-TH.mp3",
+      "source_sha256": "fa1b1e7d9cf9e409d33f66cae1fa629907730438124c592e7de57d4ae1146a34",
+      "decoded_seconds": 16.06530612244898,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-050-TH.mp3",
+      "source_sha256": "64c53f60ea6ef240346e226048dda62f2c872861d56622ccefe364eda1c03aab",
+      "decoded_seconds": 7.471020408163265,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-051-T.mp3",
+      "source_sha256": "8109d4083975caa351ef406039134dc1c9b4fd83400fda0ee9d9d8fd4724fda9",
+      "decoded_seconds": 13.557551020408162,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-052-T.mp3",
+      "source_sha256": "a7ba41e9d1c7633702aa222807b92453c40e7a9fd08a07de875646f71b89bd5d",
+      "decoded_seconds": 6.243265306122449,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-053-T.mp3",
+      "source_sha256": "feacb3d61316222560425d7a9465d402d163df8c06d06a02b8cd82175fc20477",
+      "decoded_seconds": 12.277551020408163,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-054-T.mp3",
+      "source_sha256": "ea6dc9f87c3f6fc746e6ff36d7ec62bf733ee48b1de0ac0dde1cacc022ed42d8",
+      "decoded_seconds": 8.25469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-055-T.mp3",
+      "source_sha256": "e8dda39bdfbb5e9f90d93816a2abb39f036ef11e969ecde9ae022a3f533091df",
+      "decoded_seconds": 3.5526530612244898,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-056-T.mp3",
+      "source_sha256": "0eb0e632094ebdb6f16fcfe77775182d09fab8568e0da17d66ba7c92bb330ecc",
+      "decoded_seconds": 1.8024489795918368,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-057-D.mp3",
+      "source_sha256": "b6e57d6b07ec73eebcc9db981ab996f7e8bfb877486b5ecbbc0239d30e54b452",
+      "decoded_seconds": 6.870204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-058-D.mp3",
+      "source_sha256": "a130c836bce693678e6aa2730d9bb3ae5a93d352efb4aabb8de64b5fa2248de9",
+      "decoded_seconds": 9.848163265306123,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-059-D.mp3",
+      "source_sha256": "066557443c08b13f626ce0b5235dc28ec41872a65cc51c134059c4443c582f57",
+      "decoded_seconds": 5.015510204081632,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-060-D.mp3",
+      "source_sha256": "73e609bcc03cd222aa51198529ca7289c28234b39cec3412b5de768322eae455",
+      "decoded_seconds": 6.870204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-061-TR.mp3",
+      "source_sha256": "1314795507b89976d78a3e22040b8a36b28e3dd16c58cf1043202a8b3946b532",
+      "decoded_seconds": 10.997551020408164,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-062-TR.mp3",
+      "source_sha256": "f543e381f3176c508d662a4996a0fe887bd4dcdbd68957c410f2dce98d804f2c",
+      "decoded_seconds": 7.993469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-063-DR.mp3",
+      "source_sha256": "af62aa576abd779f6263305ad328261972604169dd96d96ecc868bd2ae480f1f",
+      "decoded_seconds": 8.82938775510204,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-064-K.mp3",
+      "source_sha256": "922bb85e018ab1fb93f190557ce8e154cedf7c68bb444e68badd090525fdb58a",
+      "decoded_seconds": 10.710204081632654,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-065-K.mp3",
+      "source_sha256": "3c4ae84ae632421a0d79998cb7a473f0f449ef2fc6748f95ea71fabe772eadf0",
+      "decoded_seconds": 13.871020408163265,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-066-K.mp3",
+      "source_sha256": "a23e1301f4d6337ddfe4809248ea3a1e1df020d8c68f830c9a3926cdd1905920",
+      "decoded_seconds": 8.437551020408163,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-067-G.mp3",
+      "source_sha256": "265ac09c0fd693f13305b4c68c8ecf52cf42ba14f958dab1adbec9075cc3ef55",
+      "decoded_seconds": 18.573061224489795,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-068-G.mp3",
+      "source_sha256": "d02f39f0301500e75bb0d36b395b99bd5a246829caf5119114a7a9b43db3dfa1",
+      "decoded_seconds": 6.870204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-069-T.mp3",
+      "source_sha256": "46179184a6b0ad356a9c67a087d02f439022d67611d73543c37c816ca65faa37",
+      "decoded_seconds": 25.73061224489796,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-070-S.mp3",
+      "source_sha256": "842b0056944689b377dbd3026b663741b05baadcbb61cb1b3d9c71c6ed03fab0",
+      "decoded_seconds": 11.441632653061225,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-071-S.mp3",
+      "source_sha256": "ed91d0d13d6dbfa6e0152c258d7b00b2d7aa11ad089631cc5f62b84d22469d77",
+      "decoded_seconds": 41.586938775510205,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-072-Z.mp3",
+      "source_sha256": "89f8abbc1c48042bab4a6482ef63bf20f56a56d4e8116ab18e827e09dcb690f1",
+      "decoded_seconds": 6.452244897959184,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-073-Z.mp3",
+      "source_sha256": "aa2827a249836669dea88fa72b7cce9e5a7745f6dd1cd1e7ad03832fff034e5e",
+      "decoded_seconds": 7.366530612244898,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-074-Z.mp3",
+      "source_sha256": "031963cb798d86377c3c72510790907b0108e9c030e7f0aa1a3f834fcf703ae8",
+      "decoded_seconds": 3.5787755102040815,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-075-SH.mp3",
+      "source_sha256": "62df5892980b8dba5026114652019e0bc72d6fe0f52ef335281359f6040bb2e6",
+      "decoded_seconds": 17.6065306122449,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-076-SH.mp3",
+      "source_sha256": "175abaa556df4e0108d2ebf747845bee36dc95835c23000ffa6700ea05bdf704",
+      "decoded_seconds": 9.142857142857142,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-077-ZH.mp3",
+      "source_sha256": "f016495ee825ebd2b51dc41008c6c1cf0fc892e4190f15583d8629e62d41e0c3",
+      "decoded_seconds": 11.80734693877551,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-078-ZH.mp3",
+      "source_sha256": "59d46865eb45de5e6e5629d2c8838713d578d5fb03d190652177c78bcceecbd8",
+      "decoded_seconds": 1.906938775510204,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-079-ZH.mp3",
+      "source_sha256": "c4d6a6d969e24c19ccfb5a98694c7a3032562303e7fc80d5d559ebcdc2dacc5b",
+      "decoded_seconds": 6.2693877551020405,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-080-CH.mp3",
+      "source_sha256": "a84634fe69f10aa3d47b3f07e1180217c2789db86c6607ff58ab725642b44823",
+      "decoded_seconds": 10.004897959183673,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-081-CH.mp3",
+      "source_sha256": "937a91dbe2794e20cb238c60d144a89526ca70cdf35a2db150e342b80fa30c4d",
+      "decoded_seconds": 11.96408163265306,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-082-J.mp3",
+      "source_sha256": "18934eb6a113d174e8228178d5f550083220d8a69b610f0d0190ee4044ab9a7b",
+      "decoded_seconds": 8.150204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-083-J.mp3",
+      "source_sha256": "1c0f4c23dd4c19d4ea8c5e4727568ae46fa7297c4bc548f84d018d46551819a1",
+      "decoded_seconds": 7.9412244897959186,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-084-TS.mp3",
+      "source_sha256": "508f3feee77f75e73c5121fae310033c615fac189badebaff53a97098268deba",
+      "decoded_seconds": 5.459591836734694,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-085-TS.mp3",
+      "source_sha256": "b88c2b22950530fe3b7ab991bb0b2adb8664eb8ed6871d34c6deb68623b0a086",
+      "decoded_seconds": 6.347755102040816,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-086-DZ.mp3",
+      "source_sha256": "b83bd09481d0f11a5b9c33430852dd53feeef85f8d2d20c7c75105827e07c258",
+      "decoded_seconds": 10.422857142857143,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-087-H.mp3",
+      "source_sha256": "fdc12ba4770a9586bcfc255d9636c9721c100b9b4cc797195e45d9b1a1c8292d",
+      "decoded_seconds": 8.437551020408163,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-088-H.mp3",
+      "source_sha256": "978cb87b087df301a73d40a8f85f0b10a6fb15b8bdac94835f5c0b7e13c9f676",
+      "decoded_seconds": 5.773061224489796,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-089-H.mp3",
+      "source_sha256": "d747d42fab579c5f84b71a626fb10ca4df055ea06d2a16be4e002ed1ad46b91e",
+      "decoded_seconds": 6.2693877551020405,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-090-M.mp3",
+      "source_sha256": "973b07e4c3c35ff78834aa3d335b8b7c5c2ffc93428b19090e78a146f761bce9",
+      "decoded_seconds": 12.721632653061224,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-091-M.mp3",
+      "source_sha256": "98888fa8bd44cd66bec08114d8c2a87bf1849cbbc3f34435de2b56ab11effc20",
+      "decoded_seconds": 11.755102040816327,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-092-M.mp3",
+      "source_sha256": "15f26be039c0ad12559fcda31fe87bbb5d3acf8bd8f8e0facb09d4e3214752ea",
+      "decoded_seconds": 8.51591836734694,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-093-M.mp3",
+      "source_sha256": "a2b982645611926042b63548b2179b5eac745b2e146fcb872d714627a451e65f",
+      "decoded_seconds": 5.12,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-094-M.mp3",
+      "source_sha256": "30e0b6dfba22b3098051d6cfd8944d2a30e0dd9f54a501834d11aebec5fb544f",
+      "decoded_seconds": 7.575510204081633,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-095-M.mp3",
+      "source_sha256": "2832f0982e223847afcfacb52a8ccb5c200ca4f16fe92d89d098ef881014e149",
+      "decoded_seconds": 8.385306122448979,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-096-M.mp3",
+      "source_sha256": "f72e90f806589efd662bc66b0e283dc66004dcad56dcd5c95ea18fe99cdc13e5",
+      "decoded_seconds": 3.5526530612244898,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-097-N.mp3",
+      "source_sha256": "707a97a885229a1d32cc4f0dea6de04e6491ec7963be5139bb452c196609ca68",
+      "decoded_seconds": 31.89551020408163,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-098-N.mp3",
+      "source_sha256": "48a289d2e936e1906c088d29ea44da12c63f6b4064ce883f458d4af2d1b2e5f2",
+      "decoded_seconds": 8.306938775510204,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-099-N.mp3",
+      "source_sha256": "5dfd27bd44c55fc4f4ebc9778545b84d988f14692e9b0a22b9b55ac492e85605",
+      "decoded_seconds": 9.900408163265306,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-100-N.mp3",
+      "source_sha256": "368efed755f1bb180cc06d8524f8ee929ce65803b75c13c58fcc95527e5f156c",
+      "decoded_seconds": 2.115918367346939,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-101-N.mp3",
+      "source_sha256": "903ab3cd21ae2064a827735f4b1dfef4b6ebf996a5102337da089652dd75e4c7",
+      "decoded_seconds": 14.915918367346938,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-102-N.mp3",
+      "source_sha256": "0e4022778457b675f9c072980663db8bade7a2431cac68e4e8bf63b0a1053bb3",
+      "decoded_seconds": 5.433469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-103-N.mp3",
+      "source_sha256": "081e0106f0dd48c8e2684660133602aa12568ee108e9db79ca9aa353ccf143ee",
+      "decoded_seconds": 18.834285714285713,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-104-N.mp3",
+      "source_sha256": "5c40c400304d8e79c42fa6f97b3e3d2a4cca2b53656a1709ba914320bc053c76",
+      "decoded_seconds": 9.874285714285714,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-105-N.mp3",
+      "source_sha256": "bbd3806d35134636923067f5cd53fa071edd41f03aa08b06fd16d275cc292544",
+      "decoded_seconds": 9.168979591836734,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-106-NG.mp3",
+      "source_sha256": "7600e603d87774d9fba79d9dab05fe90891f76b73f7a94c9713b62621daaef69",
+      "decoded_seconds": 22.648163265306124,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-107-NG.mp3",
+      "source_sha256": "a453582f9eb53f94886014aa1fb8c1eb8f19a95c3afe8ef7e361f86464425a61",
+      "decoded_seconds": 8.80326530612245,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-108-NG.mp3",
+      "source_sha256": "e92d83346479ec0a264990e9a51a02816dad938c049236a357a5049685f35a68",
+      "decoded_seconds": 3.5526530612244898,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-109-T.mp3",
+      "source_sha256": "91784fbf14c4203457375414910117903db98e7371cca51f13e34bcb8e4421ad",
+      "decoded_seconds": 41.221224489795915,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-110-T.mp3",
+      "source_sha256": "9438386a80c6d63be3b348d8640e10187f96c0a2f908fee3d00138fb7530d1e5",
+      "decoded_seconds": 11.650612244897959,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-111-T.mp3",
+      "source_sha256": "313c0ed21780c63ad644a815c86699a66c65b11ccec9e19033645151b88ba8ba",
+      "decoded_seconds": 7.471020408163265,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-112-R.mp3",
+      "source_sha256": "d47b170c6c6a27ed294b23b561aacdb276afa0d9d5bd7b6df14cb3e93caf975a",
+      "decoded_seconds": 5.877551020408164,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-113-R.mp3",
+      "source_sha256": "e49acad294fc930d01ed424980a1137fe3fd51d8e407a44117f0691f664fe713",
+      "decoded_seconds": 7.6538775510204085,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-114-R.mp3",
+      "source_sha256": "e1afefea72027da99b91c1d4b440310f63d6e7e7448ffcfd6bbb91a5d3832121",
+      "decoded_seconds": 6.373877551020408,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-115-R.mp3",
+      "source_sha256": "c7afe19f4114d42713c8869f551d28cb781c69d56a626fcd78feeefab4a8fec1",
+      "decoded_seconds": 6.321632653061225,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-116-L.mp3",
+      "source_sha256": "7c040ba4fe1121458e5ca2d70f792469d606139226499597b30081373aa8b780",
+      "decoded_seconds": 7.471020408163265,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-117-L.mp3",
+      "source_sha256": "dcb8381e20f860f41b561259e4f70cb22ec869b3dc65440b0eee24389c799531",
+      "decoded_seconds": 7.053061224489796,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-118-L.mp3",
+      "source_sha256": "f7e6948aac67e5f5428a73f2f19ef85999af56227d70d72df9a9b7bd584bf303",
+      "decoded_seconds": 10.81469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-119-L.mp3",
+      "source_sha256": "1eef93142961fb0a7f14be73a2c638376bcfd98a204895abcb3ea5389527fd5f",
+      "decoded_seconds": 7.706122448979592,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-120-L.mp3",
+      "source_sha256": "61db6042b517ac262e2226fb2150dc3efe0da5fea70bac63f6613a42a934712e",
+      "decoded_seconds": 12.38204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-121-L.mp3",
+      "source_sha256": "e8ad6e8e6d7ddbdf2f05d89c2135b5227d56cc27e9b8641ec3201281f56421bb",
+      "decoded_seconds": 5.642448979591837,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-122-W.mp3",
+      "source_sha256": "85077112d8d2d9532859f81d9d882902f9faccc06bcf9ba94cdaa6d9f84cc576",
+      "decoded_seconds": 12.434285714285714,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-123-W.mp3",
+      "source_sha256": "70c43e965b64a52fffe3a3c72f282c6eced0b9bdde8c3006c84f6a3ddd9645a1",
+      "decoded_seconds": 10.292244897959185,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-124-W.mp3",
+      "source_sha256": "6374fa6b475b299b18c71158ab80f61282aad3c0370bf35fe8612ab3032d4354",
+      "decoded_seconds": 5.381224489795918,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-125-Y.mp3",
+      "source_sha256": "8953f6379e1ad7ea061188d0f41b149ca82afd29e1bd4e455ac6bf7156562b0e",
+      "decoded_seconds": 5.746938775510204,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.2-英文母音和子音的單字發音訓練/PRON-EN-126-Y.mp3",
+      "source_sha256": "46c2e7fa388a409209690d925be6e8fa11b73859bea1ed7942d1b5424082f3fc",
+      "decoded_seconds": 11.833469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-127-CS001-050.mp3",
+      "source_sha256": "23cb1409435b145a63bef34105c1c2c0e8849b9b2b55ee11fb9e1718f661132a",
+      "decoded_seconds": 67.65714285714286,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 50
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-128-CS051-100.mp3",
+      "source_sha256": "fb62629e41adca8e9c2ff4c6359074b544565e2eed8b3c073dd1efdf222d4cbc",
+      "decoded_seconds": 72.72489795918368,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 50
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-129-CS101-150.mp3",
+      "source_sha256": "2f05b080dd7d3bd3ce2963cb021efcf64a0f2cc0e5c7c05ce308f6dac9d38e1c",
+      "decoded_seconds": 57.88734693877551,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 47
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-130-CS151-200.mp3",
+      "source_sha256": "f5ce9af69c7fa44d0e681922f5f047e928e01de84dec18d0085eb303d1b2010f",
+      "decoded_seconds": 56.137142857142855,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 48
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-131-CS201-250.mp3",
+      "source_sha256": "bcffe055f49b1377b052024fa50db91a03118181d6b5fe8674b2bfbc7b4f3f09",
+      "decoded_seconds": 63.6865306122449,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 45
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-132-CS251-300.mp3",
+      "source_sha256": "a903e91cafe9ce271c08118f66d6b123f93777592393e4369aa768bf37668acd",
+      "decoded_seconds": 63.58204081632653,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 48
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-133-CS301-350.mp3",
+      "source_sha256": "1259474a20509046b57b0cfc27c940987f6d5b6d83f5e90fd6e82281f6720d98",
+      "decoded_seconds": 65.33224489795919,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 49
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-134-CS351-400.mp3",
+      "source_sha256": "46b04ff864f19e3121f21da0074aca6a5fb20665c25c00a7bc2e436955d26371",
+      "decoded_seconds": 63.477551020408164,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 45
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-135-CS401-450.mp3",
+      "source_sha256": "d909aeeb7ac354f30bf6bb6e98cf03a2a28bbc22933d12f60137431faffef813",
+      "decoded_seconds": 62.87673469387755,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 36
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-136-CS451-500.mp3",
+      "source_sha256": "3e35aa0895c092b7c92326564b1ca291d0101d6c72e35305a9d9427e4bd292e2",
+      "decoded_seconds": 72.15020408163265,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 48
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-137-CS501-550.mp3",
+      "source_sha256": "68b10217edae106c9f3bc240578cbd096a7ef952ea19f581a59865817aa0c32a",
+      "decoded_seconds": 76.32979591836735,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 45
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.3-常用英文短句發音訓練/PRON-EN-138-CS551-588.mp3",
+      "source_sha256": "a22e07f23a9d068d064c76645e18091318b77e5de1e3ce8bb16296783a84b97d",
+      "decoded_seconds": 56.946938775510205,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "short_sentence_export",
+      "exported_train_rows": 38
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.4-字尾加 -ed 的發音/PRON-EN-139-ed.mp3",
+      "source_sha256": "683f7f0615a24680572a5b9c5467aba6c8d79ba2e8fea4dd084ccbb74bb91a22",
+      "decoded_seconds": 115.77469387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.5-掌握英文的聲調/PRON-EN-140-Tones.mp3",
+      "source_sha256": "1851d4d25acd437dcf05c6522a2c7ae5bfc21b875b17e1bfe6355316326ff924",
+      "decoded_seconds": 102.03428571428572,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.6-Can 的發音/PRON-EN-141-Can.mp3",
+      "source_sha256": "bd0ffe016f859a52a0560a1dc65d7f085f094fa818a6c701d9e0847f8e70a2b3",
+      "decoded_seconds": 109.53142857142858,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.7-To 的發音/PRON-EN-142-To.mp3",
+      "source_sha256": "4a9d6cfb57a1308c5fa024a4af91c90043039d58d6e2e61d137e134c10e4ed4a",
+      "decoded_seconds": 74.65795918367347,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.8-英文字母的發音/PRON-EN-143-ABC.mp3",
+      "source_sha256": "0c09f3373bdc6d4a0ba32056075253ab36a399d7592ac042f754bcb04d6a30d4",
+      "decoded_seconds": 35.10857142857143,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    },
+    {
+      "source_path": "design/seed/Glossika 你不知道的英文發音/Ch.9-英文冠詞/PRON-EN-144-Articles.mp3",
+      "source_sha256": "008c6cf0fa00dfcaf093ea8baa9b1783b18e2c0d455876fa26618d34912c0605",
+      "decoded_seconds": 45.4269387755102,
+      "source_hash_verified": true,
+      "decode_warning": "",
+      "current_scope": "inventoried_not_exported",
+      "exported_train_rows": 0
+    }
+  ]
+}

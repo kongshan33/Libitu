@@ -1,0 +1,982 @@
+{
+  "version": "glossika-literal-v4",
+  "normalization": "NFC; strip whitespace and transcription delimiters []/ only; canonical closure of output alphabet",
+  "aliases": {},
+  "unknown_policy": "raise, never silently substitute",
+  "comparison_and_dialect": "representable, not automatically GA training targets",
+  "generated_closure_symbols": "encoding support, not evidence of source occurrence or training examples",
+  "checkpoint_policy": "new vocab requires new head dimensions; never load onto old head without explicit migration",
+  "inventory": [
+    {
+      "symbol": "a",
+      "codepoint": "U+0061",
+      "name": "LATIN SMALL LETTER A",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "ɑ",
+      "codepoint": "U+0251",
+      "name": "LATIN SMALL LETTER ALPHA",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "æ",
+      "codepoint": "U+00E6",
+      "name": "LATIN SMALL LETTER AE",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "e",
+      "codepoint": "U+0065",
+      "name": "LATIN SMALL LETTER E",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "ɛ",
+      "codepoint": "U+025B",
+      "name": "LATIN SMALL LETTER OPEN E",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "ə",
+      "codepoint": "U+0259",
+      "name": "LATIN SMALL LETTER SCHWA",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "i",
+      "codepoint": "U+0069",
+      "name": "LATIN SMALL LETTER I",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "ɪ",
+      "codepoint": "U+026A",
+      "name": "LATIN LETTER SMALL CAPITAL I",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "o",
+      "codepoint": "U+006F",
+      "name": "LATIN SMALL LETTER O",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "u",
+      "codepoint": "U+0075",
+      "name": "LATIN SMALL LETTER U",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "ʌ",
+      "codepoint": "U+028C",
+      "name": "LATIN SMALL LETTER TURNED V",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "ʊ",
+      "codepoint": "U+028A",
+      "name": "LATIN SMALL LETTER UPSILON",
+      "group": "main_vowels",
+      "pdf_pages": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "symbol": "p",
+      "codepoint": "U+0070",
+      "name": "LATIN SMALL LETTER P",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "b",
+      "codepoint": "U+0062",
+      "name": "LATIN SMALL LETTER B",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "t",
+      "codepoint": "U+0074",
+      "name": "LATIN SMALL LETTER T",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "d",
+      "codepoint": "U+0064",
+      "name": "LATIN SMALL LETTER D",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "c",
+      "codepoint": "U+0063",
+      "name": "LATIN SMALL LETTER C",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɟ",
+      "codepoint": "U+025F",
+      "name": "LATIN SMALL LETTER DOTLESS J WITH STROKE",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "k",
+      "codepoint": "U+006B",
+      "name": "LATIN SMALL LETTER K",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɡ",
+      "codepoint": "U+0261",
+      "name": "LATIN SMALL LETTER SCRIPT G",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʔ",
+      "codepoint": "U+0294",
+      "name": "LATIN LETTER GLOTTAL STOP",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "f",
+      "codepoint": "U+0066",
+      "name": "LATIN SMALL LETTER F",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "v",
+      "codepoint": "U+0076",
+      "name": "LATIN SMALL LETTER V",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "θ",
+      "codepoint": "U+03B8",
+      "name": "GREEK SMALL LETTER THETA",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ð",
+      "codepoint": "U+00F0",
+      "name": "LATIN SMALL LETTER ETH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "s",
+      "codepoint": "U+0073",
+      "name": "LATIN SMALL LETTER S",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "z",
+      "codepoint": "U+007A",
+      "name": "LATIN SMALL LETTER Z",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʃ",
+      "codepoint": "U+0283",
+      "name": "LATIN SMALL LETTER ESH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʒ",
+      "codepoint": "U+0292",
+      "name": "LATIN SMALL LETTER EZH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ç",
+      "codepoint": "U+00E7",
+      "name": "LATIN SMALL LETTER C WITH CEDILLA",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʝ",
+      "codepoint": "U+029D",
+      "name": "LATIN SMALL LETTER J WITH CROSSED-TAIL",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʧ",
+      "codepoint": "U+02A7",
+      "name": "LATIN SMALL LETTER TESH DIGRAPH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʤ",
+      "codepoint": "U+02A4",
+      "name": "LATIN SMALL LETTER DEZH DIGRAPH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʦ",
+      "codepoint": "U+02A6",
+      "name": "LATIN SMALL LETTER TS DIGRAPH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʣ",
+      "codepoint": "U+02A3",
+      "name": "LATIN SMALL LETTER DZ DIGRAPH",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "h",
+      "codepoint": "U+0068",
+      "name": "LATIN SMALL LETTER H",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɦ",
+      "codepoint": "U+0266",
+      "name": "LATIN SMALL LETTER H WITH HOOK",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "m",
+      "codepoint": "U+006D",
+      "name": "LATIN SMALL LETTER M",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɱ",
+      "codepoint": "U+0271",
+      "name": "LATIN SMALL LETTER M WITH HOOK",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "n",
+      "codepoint": "U+006E",
+      "name": "LATIN SMALL LETTER N",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɲ",
+      "codepoint": "U+0272",
+      "name": "LATIN SMALL LETTER N WITH LEFT HOOK",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ŋ",
+      "codepoint": "U+014B",
+      "name": "LATIN SMALL LETTER ENG",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɾ",
+      "codepoint": "U+027E",
+      "name": "LATIN SMALL LETTER R WITH FISHHOOK",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɹ",
+      "codepoint": "U+0279",
+      "name": "LATIN SMALL LETTER TURNED R",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "l",
+      "codepoint": "U+006C",
+      "name": "LATIN SMALL LETTER L",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ɫ",
+      "codepoint": "U+026B",
+      "name": "LATIN SMALL LETTER L WITH MIDDLE TILDE",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʎ",
+      "codepoint": "U+028E",
+      "name": "LATIN SMALL LETTER TURNED Y",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "w",
+      "codepoint": "U+0077",
+      "name": "LATIN SMALL LETTER W",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "j",
+      "codepoint": "U+006A",
+      "name": "LATIN SMALL LETTER J",
+      "group": "consonants",
+      "pdf_pages": [
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "symbol": "ʍ",
+      "codepoint": "U+028D",
+      "name": "LATIN SMALL LETTER TURNED W",
+      "group": "dialect_wh",
+      "pdf_pages": [
+        14
+      ]
+    },
+    {
+      "symbol": "ɔ",
+      "codepoint": "U+0254",
+      "name": "LATIN SMALL LETTER OPEN O",
+      "group": "comparison_vowels",
+      "pdf_pages": [
+        6,
+        31
+      ]
+    },
+    {
+      "symbol": "ɚ",
+      "codepoint": "U+025A",
+      "name": "LATIN SMALL LETTER SCHWA WITH HOOK",
+      "group": "comparison_vowels",
+      "pdf_pages": [
+        6,
+        31
+      ]
+    },
+    {
+      "symbol": "ɝ",
+      "codepoint": "U+025D",
+      "name": "LATIN SMALL LETTER REVERSED OPEN E WITH HOOK",
+      "group": "comparison_vowels",
+      "pdf_pages": [
+        6,
+        31
+      ]
+    },
+    {
+      "symbol": "ʉ",
+      "codepoint": "U+0289",
+      "name": "LATIN SMALL LETTER U BAR",
+      "group": "comparison_vowels",
+      "pdf_pages": [
+        6,
+        31
+      ]
+    },
+    {
+      "symbol": "̼",
+      "codepoint": "U+033C",
+      "name": "COMBINING SEAGULL BELOW",
+      "group": "source_marks",
+      "pdf_pages": [
+        5,
+        10,
+        11,
+        13,
+        14,
+        26
+      ]
+    },
+    {
+      "symbol": "̬",
+      "codepoint": "U+032C",
+      "name": "COMBINING CARON BELOW",
+      "group": "source_marks",
+      "pdf_pages": [
+        5,
+        10,
+        11,
+        13,
+        14,
+        26
+      ]
+    },
+    {
+      "symbol": "̍",
+      "codepoint": "U+030D",
+      "name": "COMBINING VERTICAL LINE ABOVE",
+      "group": "source_marks",
+      "pdf_pages": [
+        5,
+        10,
+        11,
+        13,
+        14,
+        26
+      ]
+    },
+    {
+      "symbol": "̝",
+      "codepoint": "U+031D",
+      "name": "COMBINING UP TACK BELOW",
+      "group": "source_marks",
+      "pdf_pages": [
+        5,
+        10,
+        11,
+        13,
+        14,
+        26
+      ]
+    },
+    {
+      "symbol": "ṇ",
+      "codepoint": "U+1E47",
+      "name": "LATIN SMALL LETTER N WITH DOT BELOW",
+      "group": "source_syllabic_spelling",
+      "pdf_pages": [
+        73,
+        92
+      ]
+    },
+    {
+      "symbol": "ṃ",
+      "codepoint": "U+1E43",
+      "name": "LATIN SMALL LETTER M WITH DOT BELOW",
+      "group": "source_syllabic_spelling",
+      "pdf_pages": [
+        73,
+        92
+      ]
+    },
+    {
+      "symbol": "g",
+      "codepoint": "U+0067",
+      "name": "LATIN SMALL LETTER G",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "õ",
+      "codepoint": "U+00F5",
+      "name": "LATIN SMALL LETTER O WITH TILDE",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ʰ",
+      "codepoint": "U+02B0",
+      "name": "MODIFIER LETTER SMALL H",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ʱ",
+      "codepoint": "U+02B1",
+      "name": "MODIFIER LETTER SMALL H WITH HOOK",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ʲ",
+      "codepoint": "U+02B2",
+      "name": "MODIFIER LETTER SMALL J",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ʴ",
+      "codepoint": "U+02B4",
+      "name": "MODIFIER LETTER SMALL TURNED R",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ʷ",
+      "codepoint": "U+02B7",
+      "name": "MODIFIER LETTER SMALL W",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ˀ",
+      "codepoint": "U+02C0",
+      "name": "MODIFIER LETTER GLOTTAL STOP",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ː",
+      "codepoint": "U+02D0",
+      "name": "MODIFIER LETTER TRIANGULAR COLON",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̃",
+      "codepoint": "U+0303",
+      "name": "COMBINING TILDE",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̊",
+      "codepoint": "U+030A",
+      "name": "COMBINING RING ABOVE",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̚",
+      "codepoint": "U+031A",
+      "name": "COMBINING LEFT ANGLE ABOVE",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̠",
+      "codepoint": "U+0320",
+      "name": "COMBINING MINUS SIGN BELOW",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̥",
+      "codepoint": "U+0325",
+      "name": "COMBINING RING BELOW",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̩",
+      "codepoint": "U+0329",
+      "name": "COMBINING VERTICAL LINE BELOW",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "̪",
+      "codepoint": "U+032A",
+      "name": "COMBINING BRIDGE BELOW",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "͡",
+      "codepoint": "U+0361",
+      "name": "COMBINING DOUBLE INVERTED BREVE",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "⁼",
+      "codepoint": "U+207C",
+      "name": "SUPERSCRIPT EQUALS SIGN",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    },
+    {
+      "symbol": "ⁿ",
+      "codepoint": "U+207F",
+      "name": "SUPERSCRIPT LATIN SMALL LETTER N",
+      "group": "existing_short_sentence_alphabet",
+      "pdf_pages": []
+    }
+  ],
+  "validation": {
+    "custom": {
+      "old_size": 62,
+      "new_size": 117,
+      "preserved_ids": true,
+      "training_labels_checked": 549,
+      "source_cases_checked": 92,
+      "normalization_forms_checked": [
+        "original",
+        "NFD",
+        "NFC"
+      ]
+    },
+    "adapted": {
+      "old_size": 416,
+      "new_size": 481,
+      "preserved_ids": true,
+      "training_labels_checked": 549,
+      "source_cases_checked": 92,
+      "normalization_forms_checked": [
+        "original",
+        "NFD",
+        "NFC"
+      ]
+    }
+  }
+}

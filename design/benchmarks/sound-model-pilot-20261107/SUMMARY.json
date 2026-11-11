@@ -1,0 +1,59 @@
+{
+  "schema_version": "sound-pilot-summary-v1",
+  "completed_human_reviews": 0,
+  "eligible_gold": 0,
+  "event_accuracy": null,
+  "release_ready": false,
+  "models": [
+    {
+      "run": "zipa-fp32-01",
+      "model": "anyspeech/zipa-small-crctc-500k",
+      "revision": "dfe87c97662606fa6db90ad06f627d4363314744",
+      "model_sha256": "ec62e6f583cc3658c6a28a8841c65a6343e8c4b8b350ce1fd5bd8c717c280d96",
+      "result_sha256": "ee01a920e4e9b6bd0d187816c2db481d4347f0c9fcccc8286f183a8e3698c13a",
+      "samples": 16,
+      "audio_seconds": 49.107437499999996,
+      "load_seconds": 14.99637747099041,
+      "mean_inference_seconds": 0.16437235837111075,
+      "median_inference_seconds": 0.16165072649891954,
+      "min_inference_seconds": 0.0881829259742517,
+      "max_inference_seconds": 0.22318771199206822,
+      "peak_rss_bytes": 769474560
+    },
+    {
+      "run": "allophant-final",
+      "model": "kgnlp/allophant",
+      "revision": "ad69d315e4c42991cb3faecd294476515195237d",
+      "model_sha256": "0a1a28183544199e82c0d3574968d5518fc4fbaa10efe9f6ab467110de474dcb",
+      "result_sha256": "51ee2e1dd507bc9c80730224903a5cdca9091aaecac8b444c1551de2d4d59ddc",
+      "samples": 16,
+      "audio_seconds": 49.107437499999996,
+      "load_seconds": 599.6288992019836,
+      "mean_inference_seconds": 2.761607491500399,
+      "median_inference_seconds": 1.7987914194964105,
+      "min_inference_seconds": 0.9484850759909023,
+      "max_inference_seconds": 16.6799691930064,
+      "peak_rss_bytes": 2715193344
+    }
+  ],
+  "timing_caveat": "Local CPU exploratory runs, not controlled latency benchmark. Final Allophant run experienced severe local load; do not compare throughput rankings.",
+  "candidate_counts": {
+    "coalescence": 1,
+    "nasal_place_assimilation": 0,
+    "word_internal_tap": 2
+  },
+  "captured_first_passes": 1,
+  "first_pass": {
+    "status": "screening_captured_target_refinement_pending",
+    "counts": {
+      "present": 7,
+      "absent_whole_clip": 41,
+      "pending": 2
+    },
+    "single_word_positive_observations": 1,
+    "multiword_positive_observations": 6,
+    "independent_second_reviews": 0,
+    "audit_sha256": "19505ace1356b4f43911f03643870299d8a0371bc3dae3e3484827ce6aa3a0ea",
+    "audit_path": ".cache/sound-pilot/audits/A-first-pass-20261107-v2/audit.json"
+  }
+}

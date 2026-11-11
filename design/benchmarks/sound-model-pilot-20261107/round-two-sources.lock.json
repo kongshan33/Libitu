@@ -1,0 +1,236 @@
+{
+  "schema_version": "sound-source-lock-v1",
+  "selection_sha256": "5b14a12ae42abc08a89e604edf1a321c2eba6c10805edddd45a7a6be375e8da8",
+  "usage": "benchmark_only",
+  "training_allowed": false,
+  "files": [
+    {
+      "path": "cmu_arctic/bdl/arctic_a0001.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/lab/arctic_a0001.lab",
+      "sha256": "557073411fca0cb54c215eeafc1d19a228bce31298edd82e39b666779e51fb9d",
+      "bytes": 550
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0001.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/festival/utts/arctic_a0001.utt",
+      "sha256": "b2d73c3c99eb48156b99bd85371e2fbb1ebf884d9def066417f9f68ebf76789d",
+      "bytes": 15665
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0001.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/wav/arctic_a0001.wav",
+      "sha256": "2594562568c97203d6c3c2c2ff87b9a7c62389100a014934ab0ad39d15af0384",
+      "bytes": 103566,
+      "frames": 51761,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 3.2350625
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0155.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/lab/arctic_a0155.lab",
+      "sha256": "91920d0ee6f038d345a48946f97472ee031909776cb926f4b49f46501230f241",
+      "bytes": 346
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0155.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/festival/utts/arctic_a0155.utt",
+      "sha256": "383c58cfc9b941398443fb14a1016183136e24f99bf1b73fcfed4e07dafab10c",
+      "bytes": 9678
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0155.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/wav/arctic_a0155.wav",
+      "sha256": "a466f9380fdd7056dfe948a7e34e9c99c4bc92a8eecc7eb66a45feff9746b761",
+      "bytes": 55884,
+      "frames": 27920,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 1.745
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0256.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/lab/arctic_a0256.lab",
+      "sha256": "a914ac04f441afac489f262307c8dac03e31ba0e71de5ceb155e795a5da0d7c3",
+      "bytes": 583
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0256.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/festival/utts/arctic_a0256.utt",
+      "sha256": "50de34160b9560c0e29c171c6ad6c50d70b0c92569586736d33d6434d110f175",
+      "bytes": 16419
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_a0256.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/wav/arctic_a0256.wav",
+      "sha256": "bac49486179b51dc89d5a36cd3892e8512b9af49d2c0d5c6f642e4bd9b9461ac",
+      "bytes": 93966,
+      "frames": 46961,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 2.9350625
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_b0348.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/lab/arctic_b0348.lab",
+      "sha256": "3e162d9564dad4d5e4f2c72d1b04b4b00a4d9abace1332655898f0e50abe7441",
+      "bytes": 656
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_b0348.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/festival/utts/arctic_b0348.utt",
+      "sha256": "cbe8a61d9a0e003f341b2a1df2ef4adece6a829cb1473d47c19dfe4c0088d87c",
+      "bytes": 18022
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_b0348.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/wav/arctic_b0348.wav",
+      "sha256": "4abd03646aae1180c19409a14cd8208d53b8bc8f6cf430ab4f9415d0c6f37776",
+      "bytes": 86606,
+      "frames": 43281,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 2.7050625
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_b0462.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/lab/arctic_b0462.lab",
+      "sha256": "9a2dd6bbf4e2c921c24269eeffe7beb5449caa1ab04c0153dbd467c3610fea33",
+      "bytes": 407
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_b0462.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/festival/utts/arctic_b0462.utt",
+      "sha256": "3b43ef05783e719723d85d9e1dcd0f73700986fe335a8d7f3246017df3adc7a3",
+      "bytes": 11714
+    },
+    {
+      "path": "cmu_arctic/bdl/arctic_b0462.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_bdl_arctic/wav/arctic_b0462.wav",
+      "sha256": "186384b7dc8e56840fcc8469c18458e9635017d2822d2ad910ead908cf76864d",
+      "bytes": 66446,
+      "frames": 33201,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 2.0750625
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0007.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/lab/arctic_a0007.lab",
+      "sha256": "8aa781d0b9c18398900dacec61097e3f1de8da251af7d732e6b1e9e46623e072",
+      "bytes": 599
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0007.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/festival/utts/arctic_a0007.utt",
+      "sha256": "7e04b0bcf205d7bb7d719fefe933ced47dce8d85384c33a31c32ba0c94909c53",
+      "bytes": 17949
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0007.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/wav/arctic_a0007.wav",
+      "sha256": "3c10caa9c2b5434f64c393a85a70aba57adf2858628d7983a8fd4f98a19a83d6",
+      "bytes": 96206,
+      "frames": 48081,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 3.0050625
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0008.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/lab/arctic_a0008.lab",
+      "sha256": "f69e76439656520956cc3ab9b637e27d48e5c93ce54a9732e05a0fb4ab5816aa",
+      "bytes": 367
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0008.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/festival/utts/arctic_a0008.utt",
+      "sha256": "3cf3500cdb52747ebfb4cc0330eae36b314036b4361df2c57930c180149f1359",
+      "bytes": 11259
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0008.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/wav/arctic_a0008.wav",
+      "sha256": "603ac9585ddb5022d9c973bde867d7957fa1b8c1f44b2ee40fbbafedde8b5f0e",
+      "bytes": 73164,
+      "frames": 36560,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 2.285
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0184.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/lab/arctic_a0184.lab",
+      "sha256": "d7fb3323ae9a4ad576782ee96afaaa8fd4dfeae7c94cf752cf81a906cdf363da",
+      "bytes": 401
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0184.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/festival/utts/arctic_a0184.utt",
+      "sha256": "5b9c4d6339d05330c091c525b0ce5254490a9977aa239e501277e47e1662b2bd",
+      "bytes": 12979
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0184.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/wav/arctic_a0184.wav",
+      "sha256": "ef91d35085c6612c65bc4fabbbd9af6f17df9e3f279d3ea0cfdb5af140d21fa4",
+      "bytes": 91724,
+      "frames": 45840,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 2.865
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0290.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/lab/arctic_a0290.lab",
+      "sha256": "b75d1de3bdb3d50a6b6f591f391ad5e8a59557b71ffd1d4379f0156b347d0f34",
+      "bytes": 338
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0290.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/festival/utts/arctic_a0290.utt",
+      "sha256": "d77b278465f077906d20187a0c0d3ebe1b22fca36a5eafd2f0fc75bdd218d613",
+      "bytes": 10623
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_a0290.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/wav/arctic_a0290.wav",
+      "sha256": "1d9747ea31eec3ffcf4c0b9e67bdef998e2f951e54abb407b556b65a3edcaad3",
+      "bytes": 70606,
+      "frames": 35281,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 2.2050625
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_b0497.lab",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/lab/arctic_b0497.lab",
+      "sha256": "b03e4df6cd2a661a8bd81dd2f848f005e96cd2a8e427d59fc90f088486473002",
+      "bytes": 729
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_b0497.utt",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/festival/utts/arctic_b0497.utt",
+      "sha256": "994e79f6538b35b9665879080112e94c6723154d5d4a7589a71350ff5a938357",
+      "bytes": 21199
+    },
+    {
+      "path": "cmu_arctic/slt/arctic_b0497.wav",
+      "url": "http://festvox.org/cmu_arctic/cmu_arctic/cmu_us_slt_arctic/wav/arctic_b0497.wav",
+      "sha256": "e5f09cca514101828d710c6be5477441c5ba24ad687f72316c850acb152e60ad",
+      "bytes": 160526,
+      "frames": 80241,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 5.0150625
+    },
+    {
+      "path": "speechocean762/0036/000360210.wav",
+      "url": "https://raw.githubusercontent.com/jimbozhang/speechocean762/613968e3b0b789fc33936fb5eba1973176ba7d11/WAVE/SPEAKER0036/000360210.WAV",
+      "sha256": "1633756c43ff7d40b131bf6548384587463d6427483f9a8c9cecfc706bbcad85",
+      "bytes": 104620,
+      "frames": 52288,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 3.268
+    },
+    {
+      "path": "speechocean762/1027/010270268.wav",
+      "url": "https://raw.githubusercontent.com/jimbozhang/speechocean762/613968e3b0b789fc33936fb5eba1973176ba7d11/WAVE/SPEAKER1027/010270268.WAV",
+      "sha256": "d71ededfaf7ee423ece5b5efcd7499cd617415b69b4127cf255555cef1acb306",
+      "bytes": 113644,
+      "frames": 56800,
+      "sample_rate_hz": 16000,
+      "duration_seconds": 3.55
+    }
+  ]
+}

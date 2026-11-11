@@ -1,0 +1,240 @@
+{
+  "config_sha256": "c110de8fca83abfc5fd9dcc81c11a16ab8f2b978b6471d591f4a51951b319d14",
+  "baseline": {
+    "train_reviewed": {
+      "literal_cer": {
+        "errors": 293,
+        "reference_units": 642,
+        "rate": 0.45638629283489096
+      },
+      "compatible_cer": {
+        "errors": 300,
+        "reference_units": 702,
+        "rate": 0.42735042735042733
+      },
+      "base_unit_error": {
+        "errors": 128,
+        "reference_units": 457,
+        "rate": 0.2800875273522976
+      }
+    },
+    "train_all": {
+      "literal_cer": {
+        "errors": 4700,
+        "reference_units": 8900,
+        "rate": 0.5280898876404494
+      },
+      "compatible_cer": {
+        "errors": 4742,
+        "reference_units": 9176,
+        "rate": 0.5167829119442022
+      },
+      "base_unit_error": {
+        "errors": 1972,
+        "reference_units": 5551,
+        "rate": 0.3552513060709782
+      }
+    },
+    "dev": {
+      "literal_cer": {
+        "errors": 44,
+        "reference_units": 172,
+        "rate": 0.2558139534883721
+      },
+      "compatible_cer": {
+        "errors": 44,
+        "reference_units": 172,
+        "rate": 0.2558139534883721
+      },
+      "base_unit_error": {
+        "errors": 25,
+        "reference_units": 151,
+        "rate": 0.16556291390728478
+      }
+    },
+    "external_regression": {
+      "literal_cer": {
+        "errors": 95,
+        "reference_units": 352,
+        "rate": 0.26988636363636365
+      },
+      "compatible_cer": {
+        "errors": 95,
+        "reference_units": 352,
+        "rate": 0.26988636363636365
+      },
+      "base_unit_error": {
+        "errors": 58,
+        "reference_units": 305,
+        "rate": 0.1901639344262295
+      }
+    }
+  },
+  "arms": [
+    {
+      "arm": "reviewed",
+      "train_count": 50,
+      "scores": {
+        "train_reviewed": {
+          "literal_cer": {
+            "mean": 0.3136033229491173,
+            "seed_std": 0.00237932279073512
+          },
+          "compatible_cer": {
+            "mean": 0.30009496676163344,
+            "seed_std": 0.004351923736900146
+          },
+          "base_unit_error": {
+            "mean": 0.1400437636761488,
+            "seed_std": 0.004376367614879653
+          }
+        },
+        "train_all": {
+          "literal_cer": {
+            "mean": 0.4847940074906367,
+            "seed_std": 0.0003432640970004349
+          },
+          "compatible_cer": {
+            "mean": 0.4774774774774775,
+            "seed_std": 0.000846496672314077
+          },
+          "base_unit_error": {
+            "mean": 0.3141776256530355,
+            "seed_std": 0.000900738605656648
+          }
+        },
+        "dev": {
+          "literal_cer": {
+            "mean": 0.23837209302325582,
+            "seed_std": 0.0
+          },
+          "compatible_cer": {
+            "mean": 0.23837209302325582,
+            "seed_std": 0.0
+          },
+          "base_unit_error": {
+            "mean": 0.15894039735099338,
+            "seed_std": 0.0
+          }
+        },
+        "external_regression": {
+          "literal_cer": {
+            "mean": 0.2746212121212121,
+            "seed_std": 0.0016401996283796332
+          },
+          "compatible_cer": {
+            "mean": 0.2746212121212121,
+            "seed_std": 0.0016401996283796332
+          },
+          "base_unit_error": {
+            "mean": 0.19672131147540983,
+            "seed_std": 0.0
+          }
+        }
+      }
+    },
+    {
+      "arm": "full",
+      "train_count": 549,
+      "scores": {
+        "train_reviewed": {
+          "literal_cer": {
+            "mean": 0.15316718587746625,
+            "seed_std": 0.0017985989694380867
+          },
+          "compatible_cer": {
+            "mean": 0.14007597340930675,
+            "seed_std": 0.0016448725617938104
+          },
+          "base_unit_error": {
+            "mean": 0.04814004376367615,
+            "seed_std": 0.0021881838074398266
+          }
+        },
+        "train_all": {
+          "literal_cer": {
+            "mean": 0.20142322097378276,
+            "seed_std": 0.0010195249130199324
+          },
+          "compatible_cer": {
+            "mean": 0.1964545190351642,
+            "seed_std": 0.00098885916803373
+          },
+          "base_unit_error": {
+            "mean": 0.10046237915090374,
+            "seed_std": 0.0007280583470234842
+          }
+        },
+        "dev": {
+          "literal_cer": {
+            "mean": 0.5717054263565892,
+            "seed_std": 0.00888096064913924
+          },
+          "compatible_cer": {
+            "mean": 0.560077519379845,
+            "seed_std": 0.00888096064913924
+          },
+          "base_unit_error": {
+            "mean": 0.304635761589404,
+            "seed_std": 0.0
+          }
+        },
+        "external_regression": {
+          "literal_cer": {
+            "mean": 0.4990530303030303,
+            "seed_std": 0.0016401996283796332
+          },
+          "compatible_cer": {
+            "mean": 0.48863636363636365,
+            "seed_std": 0.0
+          },
+          "base_unit_error": {
+            "mean": 0.31475409836065577,
+            "seed_std": 0.0
+          }
+        }
+      }
+    }
+  ],
+  "encoder_updates": 0,
+  "original_model_preserved": true,
+  "checkpoint_reload_verified": true,
+  "counts": {
+    "train_reviewed": 50,
+    "train_full": 549,
+    "dev": 5,
+    "external_regression": 8
+  },
+  "contract": {
+    "version": "ipa-adaptation-score-v1",
+    "aliases": {
+      "⁼": "˭",
+      "ṇ": "n̩",
+      "ʧ": "t͡ʃ",
+      "ʤ": "d͡ʒ",
+      "ʦ": "t͡s",
+      "ʣ": "d͡z",
+      "g": "ɡ"
+    },
+    "literal": "NFC, strip whitespace and transcription brackets only",
+    "compatible": "explicit aliases, NFD; retain diacritics, stress, length and ties",
+    "base_units": "compatible form minus combining marks, ties, length/modifiers and prosody; affricates count as two units",
+    "no_equivalence": [
+      "d̪/ð",
+      "t̪/θ",
+      "r/ɹ",
+      "ɫ/l",
+      "ʴ/ɚ",
+      "eʲ/eɪ",
+      "oʷ/oʊ"
+    ],
+    "limits": "Diagnostic common projection, not universal PER. Narrow marks omitted from broad references are unknown, not verified negatives. No sound-event accuracy."
+  },
+  "test_status": "previously exposed external regression; no newly labeled blind items",
+  "notes": [
+    "Single annotator; incomplete external IPA labels.",
+    "Broad external references cannot verify narrow Glossika marks.",
+    "Equal epochs, not equal optimizer steps: data-size comparison is conditional on this budget.",
+    "No new blind score. No encoder fine-tuning or event detection."
+  ]
+}

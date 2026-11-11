@@ -1,0 +1,45 @@
+{
+  "source_sentences": 588,
+  "candidate_clips": 50,
+  "clip_seconds_with_padding": 47.756,
+  "reference_ipa_damaged_rows": 180,
+  "notation_review_rows": 466,
+  "affricate_normalized_rows": 117,
+  "multiple_book_form_rows": [
+    10,
+    110,
+    120,
+    130
+  ],
+  "printed_error_example_rows": [
+    459
+  ],
+  "exact_text_duplicate_groups": [
+    [
+      "glossika-pron-en-cs-0173",
+      "glossika-pron-en-cs-0439"
+    ],
+    [
+      "glossika-pron-en-cs-0213",
+      "glossika-pron-en-cs-0447"
+    ],
+    [
+      "glossika-pron-en-cs-0259",
+      "glossika-pron-en-cs-0425"
+    ]
+  ],
+  "batch_exact_pcm_duplicate_groups": [],
+  "near_duplicates": "not_yet_checked_collection_kept_together",
+  "batch_lexical_coalescence_targets": 5,
+  "all_sentence_lexical_coalescence_targets": 25,
+  "event_scope": {
+    "word_internal_tap": "word_chapter_pending",
+    "nasal_place_assimilation": "can_chapter_pending",
+    "alveolar_plus_j": "text_candidates_only"
+  },
+  "verified_ipa_rows": 0,
+  "verified_events": 0,
+  "training_ready_rows": 0,
+  "pack_sha256": "d18d71989f9d65071041b0832f5ac0505271358eb81075848774a77d67a2e3c3",
+  "next": "human_boundary_text_IPA_review_then_inventory_and_split_freeze"
+}

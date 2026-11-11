@@ -1,0 +1,411 @@
+{
+  "status": "professional source annotations accepted by user; technical label preparation remains; no independent acoustic accuracy estimate",
+  "user_relistening_required": false,
+  "source_revision": "00a47d76d3a4f476cd6275fc10dc34f7ca635f6b",
+  "audio": {
+    "rows": 1242,
+    "decode_ok": 1242,
+    "duration_seconds": 35504.087605158726,
+    "rates": {
+      "44100": 1179,
+      "22050": 25,
+      "48000": 35,
+      "32000": 3
+    },
+    "channels": {
+      "1": 1239,
+      "2": 3
+    },
+    "duration_range": [
+      15.76827664399093,
+      77.73789115646258
+    ],
+    "source_duplicates": [],
+    "decoded_pcm_duplicates": [],
+    "over_1pct_near_full_scale": [],
+    "rms_below_0_001": [],
+    "sample_exports": 21,
+    "limits": "Signal checks do not establish transcription or narrow-IPA correctness. Resampled samples are review copies only."
+  },
+  "labels": {
+    "rows": 1242,
+    "vocab_entries": 117,
+    "nfc_unique_characters": 172,
+    "nfc_character_count": 330904,
+    "known_character_count": 318115,
+    "encodable_rows": 13,
+    "source_inventory_groups": {
+      "comparison_vowels": {
+        "total": 4,
+        "canonical_present": 4,
+        "missing": []
+      },
+      "consonants": {
+        "total": 37,
+        "canonical_present": 33,
+        "missing": [
+          "ɟ",
+          "ʦ",
+          "ʣ",
+          "ɫ"
+        ]
+      },
+      "dialect_wh": {
+        "total": 1,
+        "canonical_present": 1,
+        "missing": []
+      },
+      "existing_short_sentence_alphabet": {
+        "total": 19,
+        "canonical_present": 14,
+        "missing": [
+          "ʱ",
+          "ʴ",
+          "̊",
+          "⁼",
+          "ⁿ"
+        ]
+      },
+      "main_vowels": {
+        "total": 12,
+        "canonical_present": 12,
+        "missing": []
+      },
+      "source_marks": {
+        "total": 4,
+        "canonical_present": 2,
+        "missing": [
+          "̼",
+          "̍"
+        ]
+      },
+      "source_syllabic_spelling": {
+        "total": 2,
+        "canonical_present": 0,
+        "missing": [
+          "ṇ",
+          "ṃ"
+        ]
+      }
+    },
+    "transcripts_with_whitespace": 15,
+    "limits": [
+      "symbol occurrence is annotation coverage, not acoustic accuracy",
+      "prefix is a source ID hint, not verified speaker identity or GA accent",
+      "missing mark is unknown, not an acoustic negative",
+      "no semantic IPA conversion or source label edits",
+      "source inventory contains symbols, not all phone+diacritic combinations"
+    ]
+  },
+  "character_occurrence_coverage": 0.9613513284819767,
+  "unknown_nfc_characters": 101,
+  "nfd_unknown_to_decomposed_vocab": 84,
+  "source_inventory_present": 66,
+  "source_inventory_total": 79,
+  "features": {
+    "aspiration": {
+      "symbol": "ʰ",
+      "occurrences": 3926,
+      "row_count": 1001
+    },
+    "unreleased": {
+      "symbol": "̚",
+      "occurrences": 1057,
+      "row_count": 462
+    },
+    "nasalization": {
+      "symbol": "̃",
+      "occurrences": 13248,
+      "row_count": 1217
+    },
+    "syllabic_below": {
+      "symbol": "̩",
+      "occurrences": 391,
+      "row_count": 280
+    },
+    "syllabic_above": {
+      "symbol": "̍",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "tap": {
+      "symbol": "ɾ",
+      "occurrences": 763,
+      "row_count": 480
+    },
+    "glottal_stop": {
+      "symbol": "ʔ",
+      "occurrences": 460,
+      "row_count": 279
+    },
+    "dark_l": {
+      "symbol": "ɫ",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "velarization": {
+      "symbol": "ˠ",
+      "occurrences": 1367,
+      "row_count": 557
+    },
+    "devoicing_below": {
+      "symbol": "̥",
+      "occurrences": 6558,
+      "row_count": 1183
+    },
+    "devoicing_above": {
+      "symbol": "̊",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "dental": {
+      "symbol": "̪",
+      "occurrences": 4620,
+      "row_count": 1077
+    },
+    "voicing": {
+      "symbol": "̬",
+      "occurrences": 447,
+      "row_count": 290
+    },
+    "rhotacization": {
+      "symbol": "˞",
+      "occurrences": 474,
+      "row_count": 226
+    },
+    "length": {
+      "symbol": "ː",
+      "occurrences": 7272,
+      "row_count": 1148
+    },
+    "half_length": {
+      "symbol": "ˑ",
+      "occurrences": 11,
+      "row_count": 10
+    },
+    "palatalization": {
+      "symbol": "ʲ",
+      "occurrences": 249,
+      "row_count": 117
+    },
+    "labialization": {
+      "symbol": "ʷ",
+      "occurrences": 148,
+      "row_count": 97
+    },
+    "breathy_voice": {
+      "symbol": "̤",
+      "occurrences": 3,
+      "row_count": 2
+    },
+    "creaky_voice": {
+      "symbol": "̰",
+      "occurrences": 79,
+      "row_count": 47
+    },
+    "raised": {
+      "symbol": "̝",
+      "occurrences": 1340,
+      "row_count": 592
+    },
+    "linguolabial": {
+      "symbol": "̼",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "nasal_release": {
+      "symbol": "ⁿ",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "lateral_release": {
+      "symbol": "ˡ",
+      "occurrences": 2,
+      "row_count": 2
+    },
+    "glossika_no_aspiration": {
+      "symbol": "⁼",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "glossika_r": {
+      "symbol": "ʴ",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "glossika_syllabic_n": {
+      "symbol": "ṇ",
+      "occurrences": 0,
+      "row_count": 0
+    },
+    "glossika_syllabic_m": {
+      "symbol": "ṃ",
+      "occurrences": 0,
+      "row_count": 0
+    }
+  },
+  "encoding": {
+    "custom_v4": {
+      "vocab_entries": 117,
+      "source_path": "design/benchmarks/sound-glossika-20261108/vocab-v4/custom.vocab.json",
+      "source_sha256": "cb833e6f9b81bf29e075b0e169da61bd82339eb7be479101340689d6e36e0eda",
+      "encoder": "ipa_adapt.encode; no aliases",
+      "encodable_rows": 13,
+      "not_encodable_rows": 1229
+    },
+    "adapted_v4_candidate": {
+      "vocab_entries": 481,
+      "source_path": "design/benchmarks/sound-glossika-20261108/vocab-v4/adapted.vocab.json",
+      "source_sha256": "55b761cbe414d8c92e88662ac471def155f3c8fd32824bc2f84e2c011c75b31b",
+      "encoder": "ipa_adapt.encode; no aliases",
+      "encodable_rows": 69,
+      "not_encodable_rows": 1173
+    },
+    "original_pretrained": {
+      "vocab_entries": 392,
+      "source_path": ".cache/sound-pilot/models/wav2vec2-phoneme/vocab.json",
+      "source_sha256": "d732ab2456c0c017930001dc9af0b41b3b93d25b2eb9740bf9d925508d7d87d0",
+      "encoder": "ipa_adapt.encode; no aliases",
+      "encodable_rows": 0,
+      "not_encodable_rows": 1242
+    },
+    "trained_adaptation_v1": {
+      "vocab_entries": 416,
+      "source_path": ".cache/sound-pilot/wav2vec2-ipa-adapt-v1-20261109/CONFIG.json",
+      "source_sha256": "1992878285f286b727176f51d2283e6708a186d03e68bd50e2cb245b1a33f1c0",
+      "encoder": "ipa_adapt.encode; no aliases",
+      "encodable_rows": 7,
+      "not_encodable_rows": 1235
+    }
+  },
+  "notation_review_rows": 50,
+  "official_crosscheck": {
+    "canonical_equal_without_spacing": 67,
+    "fetch_failed": 2
+  },
+  "official_fetch_failed_ids": [
+    "sa'a1",
+    "tokpisin1"
+  ],
+  "identity": {
+    "rows": 21,
+    "minimum_correlation": 0.991998413145753,
+    "maximum_correlation": 0.9998906082710046,
+    "minimum_overlap_fraction": 1.0,
+    "maximum_absolute_lag_seconds": 0.0
+  },
+  "asr": {
+    "model_weight_sha256": "62b2a45b05ee59acb4a5341b33ee35e041395d378d418a18acfe4c9e768ee37a",
+    "purpose": "paragraph association; not narrow IPA quality or annotation accuracy",
+    "text_normalization": "lowercase alphanumeric tokens; digits 0..12 spelled as English words",
+    "rows": [
+      {
+        "id": "arabic22",
+        "prompt_word_edits": 2,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "arabic3",
+        "prompt_word_edits": 4,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "catalan3",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "english1",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "english121",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "english132",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "english161",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "english47",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "english51",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "farsi15",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "french38",
+        "prompt_word_edits": 0,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "greek6",
+        "prompt_word_edits": 1,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "igbo1",
+        "prompt_word_edits": 22,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "kiswahili4",
+        "prompt_word_edits": 2,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "mandarin22",
+        "prompt_word_edits": 3,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "serbian9",
+        "prompt_word_edits": 2,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "spanish60",
+        "prompt_word_edits": 2,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "spanish62",
+        "prompt_word_edits": 1,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "spanish80",
+        "prompt_word_edits": 9,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "taiwanese3",
+        "prompt_word_edits": 3,
+        "prompt_word_count": 69
+      },
+      {
+        "id": "wolof1",
+        "prompt_word_edits": 1,
+        "prompt_word_count": 69
+      }
+    ]
+  },
+  "human_acoustically_adjudicated_rows": 0,
+  "training_optimizer_steps": 0
+}

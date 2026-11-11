@@ -1,0 +1,44 @@
+{
+  "model": "wav2vec2-phoneme",
+  "samples": [
+    {
+      "id": "glossika-pron-en-cs-0001",
+      "objective": "full_ctc",
+      "loss": 189.25808715820312
+    },
+    {
+      "id": "glossika-pron-en-cs-0002",
+      "objective": "full_ctc",
+      "loss": 183.96542358398438
+    },
+    {
+      "id": "glossika-full-001-0001",
+      "objective": "contains_ipa_sequence",
+      "loss": 1.3285996913909912
+    },
+    {
+      "id": "glossika-full-001-0002",
+      "objective": "contains_ipa_sequence",
+      "loss": 1.4722838401794434
+    },
+    {
+      "id": "glossika-pron-en-cs-0116",
+      "objective": "full_ctc",
+      "loss": 136.16436767578125
+    },
+    {
+      "id": "glossika-full-007-0001",
+      "objective": "full_ctc",
+      "loss": 265.2975769042969
+    },
+    {
+      "id": "glossika-pron-en-cs-0083",
+      "objective": "full_ctc",
+      "loss": 208.2621307373047
+    }
+  ],
+  "finite_nonzero_head_gradients": true,
+  "encoder_gradients": false,
+  "optimizer_steps": 0,
+  "artifact_manifest_sha256": "2e3c3ecf75cc3de28e742055d3051d822b6b28fd586c13f55e123abbf331f68e"
+}

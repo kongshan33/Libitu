@@ -1,10 +1,10 @@
 # Stage 2 Sound guide
 
-Updated: 2026-09-09
+Updated: 2026-11-07
 
-## Accepted next increment — 2026-11-07
+## Delivered GA increment — 2026-11-07
 
-[The GA-only execution plan](STAGE_TWO_GA_SOUND_PLAN.md) defines the next version: 12 entries, subtypes, evidence-aware marks, bounded v2 candidates and per-vowel duration display. It is planned, not implemented. The five-kind v1 catalogue documented below remains the current rule-engine baseline; the new plan does not authorize treating candidate rules or measurements as observed sound realization. Use PROJECT.MD/TASK.MD for implementation progress.
+[The GA execution contract](STAGE_TWO_GA_SOUND_PLAN.md) covers the implemented 12-entry guide. The latest html-2 / v2.1 follow-up uses paired Reference reading cues / Your voice practice targets, natural word-width concealment and solid candidate marks, lower `‿` linking buttons and seven-row explanations in Detailed/Review. Vowel length now means relative shortening/lengthening before word-final voiceless/voiced obstruents under stated conditions, not an acoustic measurement. New rules use v3, with v1/v2 reading compatibility and saved timing adapters retained. See [current acceptance](../benchmarks/stage-two-ga-sound-20261107/PAIRED-CUES.md). The catalogue and paired-measurement descriptions below are historical implementation context; they do not define the current Sound interface.
 
 ## Delivered scope
 
@@ -35,7 +35,7 @@ Hide text covers the words and their IPA and hides source-revealing sentence cop
 
 Saved results now use paired Rhythm text, solid dictionary-stress dots, word durations and inline pause bars; Melody overlays word-aligned relative pitch with gaps preserved. The duplicate Rhythm speech/pause timeline is removed. Empty plots contain no illustrative measurements. Actual sentence emphasis and nuclear stress remain unevaluated. Local-only measurements retain their fallback views; see `STAGE_TWO_SOUND_COMPARISON.md` for the current comparison contract.
 
-## Initial rule catalogue
+## Historical v1 rule catalogue (superseded by GA v2)
 
 Every result is `status: candidate`, conditional on the listed context. Dictionary stress is lexical stress, not prominence measured in the utterance. Punctuation between words prevents cross-word candidates. Phone rules skip unknown or ambiguous dictionary readings.
 

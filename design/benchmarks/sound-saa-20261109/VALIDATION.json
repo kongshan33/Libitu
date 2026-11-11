@@ -1,0 +1,23 @@
+{
+  "cross_artifact_checks": "passed",
+  "sample_audio_hashes_checked": 21,
+  "vocab_and_contract_unchanged_from_label_audit": true,
+  "independent_phonetic_adjudication": "not performed",
+  "source_artifact_sha256": {
+    "ACOUSTIC-REVIEW.json": "91802d7258f7d3657a6227b22274fdc2dc96d07cc2f72a1732c2f9a0c272d126",
+    "ACOUSTIC-REVIEW.template.json": "91802d7258f7d3657a6227b22274fdc2dc96d07cc2f72a1732c2f9a0c272d126",
+    "ASR-SAMPLE-CHECK.json": "4685141909d50720cc003fa157c69ea96cdf61041c018dccc88ad69c28b0bbae",
+    "AUDIO-AUDIT.json": "1e50e275619363f80c996d3a4df3b0441fc878b1b2781ee6b2c911d1c0c432ac",
+    "AUDIO-IDENTITY-SAMPLE.json": "925153188725827db03eb5198b0eab2c613cd95782c8b3cdf96acddad9186157",
+    "AUDIO-ROWS.json": "5cd7b07414c8abc6e17e806e5a16afa7dbae25f9becd69d75daca6e4d3d82d4e",
+    "CHARACTERS.json": "4159527ec8662122b8363da0376e81f3c2bcafa16a540abf7e5556dcd7aec542",
+    "DOWNLOAD-LOCK.json": "7d011f97b6395119f3ef52d475f78848556f57b74549ab19be31d822061a05df",
+    "ENCODER-CHECK.json": "87953b3c55ccc19c8466464309097de532a329ac20a408f082a9a453baf413ad",
+    "LABEL-AUDIT.json": "661d49ec0c051cc5b9cd83c150161ba8ef5f7fb75a3df24fc33c3168a696ed8b",
+    "NOTATION-REVIEW-QUEUE.json": "506df905167358141af3a198953b67a49320a7262074abe131ef83ed4eea965e",
+    "OFFICIAL-CROSSCHECK.json": "ff1618c8d5d7045fbc3565439a6d874d7d57ed50f546f8ad4fec17a3956a8570",
+    "SAMPLE-SELECTION.json": "5ac7bdec032fa76745bf0bc0b8c10f3357402545a62b94291fd36070c07cd49f",
+    "SEQUENCE-COVERAGE.json": "be5ba8a5cad76de2867ee9b7e4499ddbc07b915b4cd38a99e15ffcffc87e5d42",
+    "SOURCE-COVERAGE.json": "f4268194754234006b9cbe2f9280e8f5324e0d775cb18ce09f9aa7bd4ef12ba0"
+  }
+}

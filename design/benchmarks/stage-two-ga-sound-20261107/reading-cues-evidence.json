@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-07",
+  "rule_version": "sound-rules-v3",
+  "status": "passed",
+  "reference": "Stage 2 · Detailed (three-layer analysis)-html-2; updated v2.1 spec; explicit user overrides",
+  "root_checks": {
+    "pnpm lint": "passed",
+    "pnpm build": "passed",
+    "pnpm test": "passed"
+  },
+  "unit_tests": {
+    "api": 1996,
+    "web": 540,
+    "extension": 124,
+    "sound_api_subset": 143
+  },
+  "browser_checks": [
+    {
+      "script": "apps/web/tests/ga-sound.browser.mjs",
+      "viewports": [
+        1400,
+        390
+      ],
+      "modes": [
+        "detailed",
+        "review"
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "apps/web/tests/ga-sound-density.browser.mjs",
+      "viewports": [
+        390
+      ],
+      "modes": [
+        "detailed",
+        "review"
+      ],
+      "status": "passed"
+    },
+    {
+      "script": "apps/web/tests/analysis-timeline.browser.mjs",
+      "viewports": [
+        1192,
+        390
+      ],
+      "status": "passed"
+    }
+  ],
+  "visual_inspection": [
+    "desktop filters and single cues",
+    "mobile filters and wrapping",
+    "exact boundary explanation",
+    "relative vowel-length explanation",
+    "Review shared typography",
+    "mobile close button and stacked details"
+  ],
+  "limitations": [
+    "Synthetic saved timing and local API fixtures",
+    "390px touch emulation, not a physical phone",
+    "No new real-audio detector validation, teaching-effect validation or deployment"
+  ],
+  "unrelated_work": "Existing local changes, including Loadout styling, were retained"
+}
