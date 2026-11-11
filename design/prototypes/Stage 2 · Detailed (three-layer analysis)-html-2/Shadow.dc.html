@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shadow · Detailed</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+:root{--ink:#0C0A09;--ink-2:#44403C;--ink-3:#57534E;--muted:#78716C;--line-strong:#D6D3D1;--line:#E7E5E4;--line-soft:#F0EEEC;--surface:#FAFAF9;--bg:#FFFFFF;--brand:#5A43D6;--font:Inter,system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace}
+.pg{font-family:var(--font);color:var(--ink);background:var(--bg);min-height:100%}
+.pg *{box-sizing:border-box}
+.pg h1,.pg h2,.pg h3,.pg p{margin:0}
+.pg button{font-family:var(--font);cursor:pointer}
+.pg a{text-decoration:none}
+.lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.btn-p{background:var(--ink);color:#fff;border:0;border-radius:999px;padding:14px 26px;font-size:15px;font-weight:500;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
+.btn-s{background:transparent;color:var(--ink);border:1px solid var(--line-strong);border-radius:999px;padding:8px 14px;font-size:13px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;flex:none;transition:background .15s ease-out}
+.btn-s:hover{background:var(--surface)}
+.btn-s[disabled]{color:var(--muted);border-color:var(--line);background:transparent;cursor:not-allowed}
+.link{background:none;border:0;color:var(--ink-2);font-size:13px;padding:8px 10px;white-space:nowrap;transition:color .15s ease-out}
+.link:hover{color:var(--ink)}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.gb{height:64px;display:flex;align-items:center;gap:8px;padding:0 32px;border-bottom:1px solid var(--line-soft)}
+.fb{height:52px;display:flex;align-items:center;gap:16px;padding:0 32px;border-bottom:1px solid var(--line-soft)}
+.logo{font-size:20px;font-weight:600;color:var(--brand);letter-spacing:-.02em;margin-right:24px;flex:none}
+.nav{padding:8px 14px;border-radius:999px;font-size:14px;color:var(--ink-3)}
+.nav.on{background:var(--line-soft);color:var(--ink);font-weight:500}
+.sp{flex:1}
+.av{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center}
+.st{padding:6px 12px;border-radius:999px;font-size:13px;color:var(--muted);display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.st.on{background:var(--ink);color:#fff}
+.st.done{color:var(--ink-3)}
+.cn{width:14px;height:1px;background:var(--line-strong)}
+.seg{display:inline-flex;background:var(--surface);border-radius:999px;padding:4px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:7px 16px;font-size:14px;color:var(--muted)}
+.seg button.on{background:var(--ink);color:#fff}
+.srow{padding:12px 16px;border-radius:12px;display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;color:var(--ink-3);font-size:14px;line-height:1.45}
+.srow.cur{background:var(--line-soft);color:var(--ink)}
+.srow .n{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px}
+.card{background:var(--surface);border-radius:14px;padding:20px 24px}
+.tab{background:none;border:0;border-bottom:2px solid transparent;padding:14px 0;margin-right:32px;font-size:15px;color:var(--muted);display:inline-flex;gap:8px;align-items:center;transition:color .15s ease-out}
+.tab.on{color:var(--ink);font-weight:500;border-bottom-color:var(--brand)}
+.chip{border:0;border-radius:999px;background:var(--line-soft);color:var(--ink-2);font-size:13px;padding:7px 14px;transition:background .15s ease-out,color .15s ease-out}
+.chip:hover{background:var(--line)}
+.chip.on{background:var(--ink);color:#fff}
+.chip{display:inline-flex;align-items:center}.chip .dot{width:7px;height:7px;border-radius:50%;margin-right:7px;flex:none}.chip.on .dot{box-shadow:0 0 0 1.5px #fff}.chip .cnt{margin-left:6px;font-size:11px;opacity:.65;font-family:var(--mono)}.chip.z{color:var(--muted)}.chip[disabled]{opacity:.45;cursor:not-allowed}
+.wd{display:inline-flex;flex-direction:column;align-items:center;gap:6px;min-width:36px;padding:2px 0;border:0;background:transparent;font-size:19px;line-height:1.3;color:var(--ink);text-align:center}
+.wd.hid{color:transparent;background:var(--line-soft);border-radius:8px;user-select:none}
+.tg{font-family:var(--mono);font-size:10.5px;line-height:1;background:var(--line-soft);color:var(--ink-2);border-radius:5px;padding:3px 5px;transition:opacity .15s ease-out}
+.tg.c-LK{background:#E3ECFF;color:#1D4ED8}.tg.c-WK{background:#EFEBE3;color:#57534E}.tg.c-FT{background:#D9F2EC;color:#0F766E}.tg.c-EL{background:#EAE4FB;color:#5B3FC7}.tg.c-AS{background:#E0E6FA;color:#3C4FA8}.tg.c-GT{background:#FDE8D7;color:#B45309}.tg.c-TD{background:#FBF0C9;color:#92700C}.tg.c-RF{background:#F1E7D9;color:#7C4A03}.tg.c-CO{background:#F5DFF3;color:#A21CAF}.tg.c-UR{background:#E4E4E7;color:#3F3F46}.tg.c-HD{background:#FADDE8;color:#BE185D}.tg.c-VL{background:#DDF1DC;color:#2E7D32}.tg.c-VC{background:#EDE3FA;color:#7E3FBF}
+.tg.q{background:transparent;outline:1px dashed currentColor;outline-offset:-1px}
+.tg.c-SY{background:#E0F0F5;color:#0E6B8A}.wd.selw{background:var(--surface);border-radius:8px}
+.tg.off,.lk.off{opacity:.2}
+.lk{display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:13px;min-width:22px;transition:opacity .15s ease-out}
+.cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;border:0;background:transparent;border-radius:10px;padding:6px 0;height:112px;font-size:13px;color:var(--ink-2)}
+.cell.sel{background:var(--surface);outline:1.5px solid var(--brand);outline-offset:-1.5px}
+.bar{width:14px;border-radius:4px;background:var(--ink-3);position:relative}
+.bar.u{background:transparent;outline:1px dashed var(--muted);outline-offset:-1px}
+.pcol{flex:none;width:56px;border:0;background:transparent;padding:0;display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--ink-2)}
+.pcol.sel{background:var(--surface);border-radius:8px;outline:1.5px solid var(--brand);outline-offset:-1.5px}
+.take{border-radius:14px;padding:16px 20px;background:var(--surface)}
+.take.cur{background:#fff;outline:1.5px solid var(--brand);outline-offset:-1.5px}
+.hr{border:0;border-top:1px solid var(--line-soft);margin:0}
+.rcol{display:flex;flex-direction:column;flex:none;border:0;background:transparent;padding:0;border-radius:8px;color:var(--ink)}
+.rcol.sel{background:var(--surface);outline:1.5px solid var(--brand);outline-offset:-1.5px}
+</style>
+</helmet>
+<div class="pg" style="width:100%">
+
+<div class="gb"><span class="logo">libitu.</span><a class="nav on" aria-current="page" href="#">Practice</a><a class="nav" href="#">Mission</a><a class="nav" href="#">Corpus</a><a class="nav" href="#">My learning</a><span class="sp"></span><span class="av" role="img" aria-label="Shanshan Kong">S</span></div>
+<div class="fb"><span style="font-size:14px;color:var(--muted)">Untitled YouTube video</span><span class="sp"></span><span class="st done"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="m5 12 5 5 9-10"></path></svg>Ingest</span><i class="cn"></i><span class="st on">Shadow</span></div>
+
+<div style="max-width:1280px;margin:0 auto;padding:32px 32px 64px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div style="min-width:0"><p class="lbl">Shadow</p><h1 style="font-size:30px;line-height:1.25;font-weight:500;letter-spacing:-.02em;margin-top:8px">Deflecting praise to focus on engineering purpose · Part 2</h1><p class="mono" style="margin-top:8px">Untitled YouTube video · 1:04 – 2:32</p></div>
+<div style="display:flex;align-items:center;gap:12px"><div class="seg" role="group" aria-label="Mode"><sc-for list="{{modes}}" as="m" hint-placeholder-count="3"><button class="{{m.cls}}" type="button" aria-pressed="{{m.on}}" onClick="{{m.pick}}">{{m.label}}</button></sc-for></div><button class="btn-s" type="button" style="padding:10px 16px;font-size:14px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back to segments</button></div>
+</div>
+
+<div style="display:grid;grid-template-columns:280px minmax(0,1fr);gap:40px;margin-top:32px;align-items:start">
+
+<aside aria-label="Sentences" style="position:sticky;top:24px">
+<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:17px;font-weight:500;letter-spacing:-.01em">Sentences</h2><button class="btn-s" type="button" aria-label="Collapse sentence list" style="width:32px;height:32px;padding:0;justify-content:center"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 17-5-5 5-5"></path><path d="m18 17-5-5 5-5"></path></svg></button></div>
+<p class="mono" style="margin-top:4px">13 in this segment</p>
+<label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink-3);margin:12px 0 16px"><input type="checkbox" checked="" style="margin:0;accent-color:#0C0A09">Skip sentences under 4 words</label>
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="5"><div class="srow {{r.cls}}"><span class="n">{{r.n}}</span><div><p>{{r.t}}</p><p class="mono" style="margin-top:4px">{{r.m}}</p></div></div></sc-for>
+</div>
+</aside>
+
+<main style="min-width:0;max-width:820px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:28px">
+
+<div style="display:flex;justify-content:space-between;align-items:center"><button class="btn-s" type="button" style="padding:9px 16px;font-size:14px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Previous</button><span style="font-size:14px;color:var(--muted)">Sentence 13 of 13</span><button class="btn-s" type="button" disabled="" style="padding:9px 16px;font-size:14px">Next<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>
+
+<section class="card" aria-label="Reference audio">
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="mono">Video · ~2:24 – 2:32</span><button class="link" type="button" style="margin-right:-10px;color:var(--ink)">Show video</button></div>
+<hr class="hr" style="margin:12px 0 16px">
+<p style="font-size:15px;font-weight:500">Reference update interrupted</p>
+<p style="font-size:14px;line-height:1.55;color:var(--ink-3);margin-top:4px">Reference storage is unavailable. Please retry.</p>
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:16px"><button class="btn-s" type="button">Retry reference upload</button><button class="link" type="button">Delete captured reference</button><button class="link" type="button">Turn off</button><span class="sp"></span><button class="link" type="button">Audio settings</button><button class="link" type="button" style="margin-right:-10px">How it works</button></div>
+</section>
+
+<section aria-label="Your sentence" style="text-align:center">
+<p style="font-size:26px;line-height:1.75;letter-spacing:-.01em">I’m gonna tell him we have to stop talking about that button, did you order ten bottles of water for next day <span style="display:inline-block;border-bottom:1.5px dashed var(--ink);line-height:1.2;position:relative;margin:0 2px">delivery<span class="mono" style="position:absolute;left:50%;top:100%;transform:translateX(-50%);white-space:nowrap;margin-top:4px;font-size:11px">recognized “every”</span></span></p>
+<p class="mono" style="margin-top:36px;display:inline-flex;gap:8px;align-items:center;font-size:13px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="m5 12 5 5 9-10"></path></svg>95.7% of words matched · three-layer analysis eligible</p>
+<div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap"><button class="btn-s" type="button" style="padding:12px 20px;font-size:14px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3 20 12 6 21Z"></path></svg>Listen</button><button class="btn-p" type="button"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg>Record again</button><button class="btn-s" type="button" style="padding:12px 20px;font-size:14px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3 20 12 6 21Z"></path></svg>Replay mine</button><button class="link" type="button" aria-label="Delete take" style="padding:10px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path></svg></button><span class="mono">0:17</span></div>
+<p style="font-size:13px;color:var(--muted);margin-top:12px">Your take is ready to replay · <button class="link" type="button" style="padding:0;font-size:13px">1× · loop</button></p>
+</section>
+
+<section class="card" aria-label="Saved take">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px"><div><p style="font-size:15px;font-weight:500">Your recording · selected saved take</p><p style="font-size:14px;line-height:1.55;color:var(--ink-3);margin-top:6px">Analysis saved. Available evidence appears in the three layers.</p><p style="font-size:14px;line-height:1.55;color:var(--ink-3);margin-top:2px">Content check: recognized words differ from the practice text, so recognition can be mistaken.</p></div><button class="link" type="button" style="margin-right:-10px">Delete analysis</button></div>
+</section>
+
+<sc-if value="{{isDetailed}}" hint-placeholder-val="{{ true }}"><section aria-label="Three-layer analysis">
+<div role="tablist" aria-label="Layers" style="border-bottom:1px solid var(--line-soft)">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3"><button class="tab {{t.cls}}" role="tab" aria-selected="{{t.on}}" type="button" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-top:24px"><div><h2 style="font-size:22px;line-height:1.3;font-weight:500;letter-spacing:-.01em">{{layerTitle}}</h2><p style="font-size:15px;line-height:1.55;color:var(--ink-3);margin-top:4px">{{layerLead}}</p></div><button class="btn-s" type="button" aria-expanded="{{notesOpen}}" onClick="{{toggleNotes}}">{{notesLabel}}<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="transform:{{notesRot}}"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+
+<sc-if value="{{notesOpen}}" hint-placeholder-val="{{ false }}"><div class="card" style="margin-top:16px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:32px"><div><p class="lbl">Feedback</p><div style="display:flex;flex-direction:column;gap:10px;margin-top:10px"><sc-for list="{{notes.items}}" as="n" hint-placeholder-count="3"><p style="font-size:14px;line-height:1.55;color:var(--ink-3)"><b style="font-weight:500;color:var(--ink)">{{n.k}}</b> {{n.v}}</p></sc-for></div></div><div><p class="lbl">Tip</p><p style="font-size:14px;line-height:1.55;color:var(--ink-3);margin-top:10px">{{notes.tip}}</p></div></div></sc-if>
+
+<sc-if value="{{isSound}}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:24px">
+<div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-start"><button class="chip {{allc.cls}}" type="button" aria-pressed="{{allc.on}}" onClick="{{allc.pick}}">All</button><sc-for list="{{cgroups}}" as="g" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="lbl">{{g.name}}</span><sc-for list="{{g.chips}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" type="button" title="{{c.tip}}" aria-pressed="{{c.on}}" disabled="{{c.dis}}" onClick="{{c.pick}}"><i class="dot" style="background:{{c.dot}}"></i>{{c.t}}<span class="cnt">{{c.n}}</span></button></sc-for></div></sc-for></div>
+<sc-if value="{{isEl}}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="Elision subtype" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:12px"><span class="lbl" style="margin-right:4px">Subtype</span><sc-for list="{{subs}}" as="s" hint-placeholder-count="4"><button class="chip {{s.cls}}" type="button" aria-pressed="{{s.on}}" onClick="{{s.pick}}">{{s.t}}</button></sc-for></div></sc-if>
+<sc-if value="{{hasTip}}" hint-placeholder-val="{{ false }}"><p class="mono" style="margin-top:12px">{{tipLine}}</p></sc-if>
+<sc-for list="{{empLines}}" as="e" hint-placeholder-count="0"><p class="mono" style="margin-top:10px">{{e.t}}</p></sc-for>
+<sc-if value="{{isVL}}" hint-placeholder-val="{{ false }}"><div class="card" style="margin-top:16px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><p class="lbl">Measured · You vs Reference</p><span class="mono">Aligned vowel label, not detected vowel quality</span></div><div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><sc-for list="{{durs}}" as="d" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:96px 84px minmax(0,1fr) 210px;gap:12px;align-items:center;font-size:14px"><span>{{d.w}}</span><span class="mono">{{d.lab}}</span><span style="display:flex;flex-direction:column;gap:3px;min-width:0"><i style="display:block;height:6px;border-radius:3px;background:var(--line-strong);width:{{d.pxR}}px;max-width:100%"></i><i style="display:block;height:6px;border-radius:3px;background:var(--ink-3);width:{{d.pxU}}px;max-width:100%"></i></span><span class="mono" style="text-align:right">{{d.txt}}</span></div></sc-for></div><p class="mono" style="margin-top:12px;line-height:1.7">Light bar = Reference, dark bar = You. Raw milliseconds are measured; “adj.” rescales yours by the speech-rate ratio (0.93). “Word total” is the total vowel duration in this word, shown when a saved take has no per-vowel data, so it is not compared. Rate, stress, position and vowel quality all affect duration; no “correct” length is judged.</p></div></sc-if>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px"><span class="mono">Learning target · General American · select a reference word for its explanation</span><button class="btn-s" type="button" aria-pressed="{{hide}}" onClick="{{toggleHide}}">{{hideLabel}}</button></div>
+<div style="margin-top:24px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><p class="lbl">Reading cues</p><span class="mono">Possible reading · GA conditions</span></div><div style="display:flex;flex-wrap:wrap;gap:12px 6px;margin-top:12px"><sc-for list="{{refWords}}" as="w" hint-placeholder-count="8"><button class="wd {{w.cls}}" type="button" onClick="{{w.pick}}"><span>{{w.w}}</span><span style="display:flex;gap:4px;min-height:16px"><sc-for list="{{w.tags}}" as="t" hint-placeholder-count="1"><span class="tg {{t.cls}}" title="{{t.n}}">{{t.t}}</span></sc-for></span></button><sc-if value="{{w.link}}" hint-placeholder-val="{{ false }}"><span class="lk {{w.lkOff}}"><svg viewBox="0 0 22 12" width="22" height="12" aria-hidden="true" style="color:#1D4ED8"><path d="M1 10 Q11 -2 21 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="{{w.lkd}}"></path></svg><span class="tg {{w.lkcls}}">{{w.lkt}}</span></span></sc-if></sc-for></div><p class="mono" style="margin-top:12px">Not checked in your recording yet. Choose Vowel duration for measured values.</p></div>
+<div class="card" style="margin-top:16px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><p class="lbl">Explanation</p><span class="mono">{{ex.src}}</span></div><sc-if value="{{ex.on}}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:8px 16px;margin-top:12px;font-size:14px;line-height:1.55"><sc-for list="{{ex.rows}}" as="r" hint-placeholder-count="7"><span class="lbl" style="padding-top:3px">{{r.k}}</span><span style="color:var(--ink-3)">{{r.v}}</span></sc-for></div></sc-if><sc-if value="{{ex.off}}" hint-placeholder-val="{{ false }}"><p class="mono" style="margin-top:12px">{{ex.msg}}</p></sc-if></div>
+</div>
+</sc-if>
+
+</section></sc-if>
+<sc-if value="{{isReview}}" hint-placeholder-val="{{ false }}">
+<section aria-label="Overview">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap"><div><h2 style="font-size:22px;line-height:1.3;font-weight:500;letter-spacing:-.01em">Overview</h2><p style="font-size:15px;line-height:1.55;color:var(--ink-3);margin-top:4px">Words, rhythm and pitch on one shared timeline, phrase by phrase.</p></div>
+<div role="group" aria-label="Layers" style="display:flex;gap:4px"><sc-for list="{{lyr}}" as="l" hint-placeholder-count="3"><button class="chip {{l.cls}}" type="button" aria-pressed="{{l.on}}" onClick="{{l.pick}}">{{l.label}}</button></sc-for></div></div>
+<div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="lbl">Take</span><div role="group" aria-label="Saved take" style="display:flex;gap:4px;flex-wrap:wrap"><sc-for list="{{takeChips}}" as="t" hint-placeholder-count="2"><button class="chip {{t.cls}}" type="button" aria-pressed="{{t.on}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for></div></div><sc-if value="{{hasRef}}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px"><span class="lbl">Voices</span><div role="group" aria-label="Voices" style="display:flex;gap:4px"><sc-for list="{{voiceChips}}" as="v" hint-placeholder-count="2"><button class="chip {{v.cls}}" type="button" aria-pressed="{{v.on}}" onClick="{{v.pick}}">{{v.label}}</button></sc-for></div></div></sc-if></div>
+<sc-if value="{{showSnd}}" hint-placeholder-val="{{ false }}"><div style="margin-top:20px"><div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-start"><button class="chip {{allc.cls}}" type="button" aria-pressed="{{allc.on}}" onClick="{{allc.pick}}">All</button><sc-for list="{{cgroups}}" as="g" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="lbl">{{g.name}}</span><sc-for list="{{g.chips}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" type="button" title="{{c.tip}}" aria-pressed="{{c.on}}" disabled="{{c.dis}}" onClick="{{c.pick}}"><i class="dot" style="background:{{c.dot}}"></i>{{c.t}}<span class="cnt">{{c.n}}</span></button></sc-for></div></sc-for></div>
+<sc-if value="{{isEl}}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="Elision subtype" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:12px"><span class="lbl" style="margin-right:4px">Subtype</span><sc-for list="{{subs}}" as="s" hint-placeholder-count="4"><button class="chip {{s.cls}}" type="button" aria-pressed="{{s.on}}" onClick="{{s.pick}}">{{s.t}}</button></sc-for></div></sc-if>
+<sc-if value="{{hasTip}}" hint-placeholder-val="{{ false }}"><p class="mono" style="margin-top:12px">{{tipLine}}</p></sc-if>
+<sc-for list="{{empLines}}" as="e" hint-placeholder-count="0"><p class="mono" style="margin-top:10px">{{e.t}}</p></sc-for>
+<sc-if value="{{isVL}}" hint-placeholder-val="{{ false }}"><div class="card" style="margin-top:16px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><p class="lbl">Measured · You vs Reference</p><span class="mono">Aligned vowel label, not detected vowel quality</span></div><div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><sc-for list="{{durs}}" as="d" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:96px 84px minmax(0,1fr) 210px;gap:12px;align-items:center;font-size:14px"><span>{{d.w}}</span><span class="mono">{{d.lab}}</span><span style="display:flex;flex-direction:column;gap:3px;min-width:0"><i style="display:block;height:6px;border-radius:3px;background:var(--line-strong);width:{{d.pxR}}px;max-width:100%"></i><i style="display:block;height:6px;border-radius:3px;background:var(--ink-3);width:{{d.pxU}}px;max-width:100%"></i></span><span class="mono" style="text-align:right">{{d.txt}}</span></div></sc-for></div><p class="mono" style="margin-top:12px;line-height:1.7">Light bar = Reference, dark bar = You. Raw milliseconds are measured; “adj.” rescales yours by the speech-rate ratio (0.93). “Word total” is the total vowel duration in this word, shown when a saved take has no per-vowel data, so it is not compared. Rate, stress, position and vowel quality all affect duration; no “correct” length is judged.</p></div></sc-if></div></sc-if>
+</section>
+</sc-if>
+<sc-if value="{{showTL}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Timeline">
+<div style="display:flex;gap:24px;font-size:13px;color:var(--ink-2);margin-bottom:12px;flex-wrap:wrap"><sc-for list="{{voices}}" as="v" hint-placeholder-count="2"><span style="display:inline-flex;gap:8px;align-items:center;opacity:{{v.op}}"><i style="width:22px;height:0;border-top:{{v.bd}};display:block"></i>{{v.label}}</span></sc-for></div>
+<sc-if value="{{capM}}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px"><button class="btn-s" type="button" disabled="{{noRef}}">Play reference</button><button class="btn-s" type="button">Play your voice</button></div></sc-if>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span class="mono">{{refNote}}</span>
+<div style="display:flex;align-items:center;gap:8px"><span class="mono" style="min-width:40px;text-align:right">{{zoomLabel}}</span><button class="btn-s" type="button" aria-label="Zoom out" onClick="{{zoomOut}}" style="width:32px;height:32px;padding:0;justify-content:center"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg></button><input type="range" min="6" max="60" value="{{zoom}}" onInput="{{onZoom}}" aria-label="Zoom" style="width:140px;accent-color:#0C0A09"><button class="btn-s" type="button" aria-label="Zoom in" onClick="{{zoomIn}}" style="width:32px;height:32px;padding:0;justify-content:center"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button><button class="btn-s" type="button" onClick="{{zoomFit}}" style="height:32px;padding:0 12px">Fit</button></div></div>
+<sc-if value="{{noLayer}}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed var(--line-strong);border-radius:14px;padding:32px 24px;margin-top:16px;text-align:center;font-size:14px;color:var(--ink-3)">Turn on at least one layer to see it here.</div></sc-if>
+<div style="display:flex;margin-top:16px;background:var(--bg)">
+<div style="flex:none;width:72px"><span style="display:block;height:24px"></span>
+<span style="display:{{dS}};height:{{hS}}px;position:relative"><span class="lbl" style="position:absolute;left:0;top:6px">Sound</span><sc-for list="{{laneS}}" as="l" hint-placeholder-count="2"><span class="mono" style="position:absolute;right:10px;top:{{l.y}}px;font-size:10px;line-height:12px">{{l.t}}</span></sc-for></span>
+<span style="display:{{dR}};height:{{hRh}}px;position:relative;border-top:1px solid var(--line-soft)"><span class="lbl" style="position:absolute;left:0;top:8px">Rhythm</span><sc-for list="{{laneR}}" as="l" hint-placeholder-count="2"><span class="mono" style="position:absolute;right:10px;top:{{l.y}}px;font-size:10px;line-height:12px">{{l.t}}</span></sc-for></span>
+<span style="display:{{dM}};height:112px;border-top:1px solid var(--line-soft);position:relative"><span class="lbl" style="position:absolute;left:0;top:50%;transform:translateY(-50%)">Melody</span><span class="mono" style="position:absolute;right:10px;top:2px;font-size:10px;line-height:12px">+12</span><span class="mono" style="position:absolute;right:10px;top:50px;font-size:10px;line-height:12px">0</span><span class="mono" style="position:absolute;right:10px;top:98px;font-size:10px;line-height:12px">−12</span></span><span style="display:{{dW}};height:28px"></span></div>
+<div onPointerDown="{{onDown}}" onPointerMove="{{onMove}}" onPointerUp="{{onUp}}" onPointerLeave="{{onUp}}" style="flex:1;min-width:0;overflow-x:auto;cursor:grab;user-select:none;touch-action:pan-x">
+<div style="position:relative;width:{{tw}}px;padding-right:8px">
+<div style="position:relative;height:24px"><sc-for list="{{ticks}}" as="k" hint-placeholder-count="10"><span class="mono" style="position:absolute;left:{{k.x}}px;top:0;height:24px;border-left:1px solid var(--line);padding:2px 0 0 4px;font-size:10px">{{k.t}}</span></sc-for></div>
+<div style="display:flex">
+<sc-for list="{{tl}}" as="c" hint-placeholder-count="12"><button class="rcol {{c.cls}}" type="button" aria-pressed="{{c.sel}}" aria-label="{{c.aria}}" onClick="{{c.pick}}" style="width:{{c.px}}px;overflow:hidden">
+<span style="display:{{dS}};flex-direction:column;height:{{hS}}px;white-space:nowrap"><span style="display:flex;align-items:center;justify-content:center;height:28px;font-size:16px">{{c.w}}</span><span style="display:flex;gap:3px;height:22px;align-items:center;justify-content:center"><sc-for list="{{c.tags}}" as="t" hint-placeholder-count="1"><span class="tg {{t.cls}}" title="{{t.n}}">{{t.t}}</span></sc-for></span></span>
+<span style="display:{{dR}};flex-direction:column;height:{{hRh}}px;border-top:1px solid var(--line-soft)"><span style="display:{{dLR}};height:64px;position:relative;align-items:flex-end;justify-content:center;width:{{c.pR}}px;padding-bottom:6px;border-bottom:2px solid var(--line-strong)"><svg viewBox="0 0 {{c.pR}} 52" width="{{c.pR}}" height="52" aria-hidden="true" style="position:absolute;left:0;bottom:6px;pointer-events:none"><path d="{{c.envR}}" fill="#EFEDEB"></path></svg><span class="bar" style="height:{{c.hR}}px;width:{{c.bwR}}px;background:var(--line-strong)"></span></span><span style="display:{{dLU}};height:64px;position:relative;align-items:flex-end;justify-content:center;width:{{c.pU}}px;padding-bottom:6px;border-bottom:2px solid var(--ink)"><svg viewBox="0 0 {{c.pU}} 52" width="{{c.pU}}" height="52" aria-hidden="true" style="position:absolute;left:0;bottom:6px;pointer-events:none"><path d="{{c.env}}" fill="#E7E5E4"></path></svg><span class="bar {{c.bcls}}" style="height:{{c.h}}px;width:{{c.bw}}px"></span></span></span>
+<span style="display:{{dM}};height:112px;border-top:1px solid var(--line-soft);background:linear-gradient(var(--line-strong),var(--line-strong)) 0 56px/100% 1px no-repeat"><svg viewBox="0 0 {{c.px}} 112" width="{{c.px}}" height="112" aria-hidden="true"><path d="{{c.dR}}" fill="none" stroke="#78716C" stroke-width="1.5" stroke-dasharray="4 3" stroke-linecap="round" stroke-linejoin="round"></path><path d="{{c.d}}" fill="none" stroke="#0C0A09" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="display:{{dW}};height:28px;align-items:center;justify-content:center;font-size:13px;color:var(--ink-2);white-space:nowrap">{{c.w}}</span></button></sc-for>
+</div></div></div></div>
+<p style="font-size:14px;margin-top:20px;min-height:22px;color:var(--ink-2)">{{osel}}</p>
+<p class="mono" style="margin-top:8px;line-height:1.7">{{legend}}</p>
+<p style="font-size:13px;line-height:1.6;color:var(--muted);margin-top:8px">{{disc}}</p>
+<sc-if value="{{showSnd}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="margin-top:20px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><p class="lbl">Explanation</p><span class="mono">{{ex.src}}</span></div><sc-if value="{{ex.on}}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:8px 16px;margin-top:12px;font-size:14px;line-height:1.55"><sc-for list="{{ex.rows}}" as="r" hint-placeholder-count="7"><span class="lbl" style="padding-top:3px">{{r.k}}</span><span style="color:var(--ink-3)">{{r.v}}</span></sc-for></div></sc-if><sc-if value="{{ex.off}}" hint-placeholder-val="{{ false }}"><p class="mono" style="margin-top:12px">{{ex.msg}}</p></sc-if></div></sc-if>
+</section>
+</sc-if>
+
+<section aria-labelledby="tk">
+<h2 id="tk" style="font-size:22px;line-height:1.3;font-weight:500;letter-spacing:-.01em">Takes</h2>
+<p style="font-size:13px;line-height:1.6;color:var(--muted);margin-top:6px">Practice records are saved to your account. Retained recordings stay private until you delete them; they are not used for model training.</p>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+<div class="take {{t0}}"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:15px;font-weight:500">11/2/2026, 9:05:21 PM</span><span class="mono">17.3s · 1× · Key words · peeked 6</span><span class="sp"></span><span class="mono">No retained audio</span><button class="btn-s" type="button" onClick="{{v0}}">View analysis</button><button class="link" type="button" style="margin-right:-10px">Delete practice record</button></div></div>
+<div class="take {{t1}}"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:15px;font-weight:500">11/2/2026, 9:04:31 PM</span><span class="mono">21.0s · 1× · Key words · peeked 12</span><span class="sp"></span><span class="mono">No retained audio</span><button class="btn-s" type="button" onClick="{{v1}}">View analysis</button><button class="link" type="button" style="margin-right:-10px">Delete practice record</button></div></div>
+</div>
+</section>
+
+</main>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2500}}'>
+class Component extends DCLogic {
+renderVals() {
+const st = this.state || {};
+const tab = st.tab || 'sound', filter = st.filter || 'all', notes = !!st.notes, hide = !!st.hide, rev = st.rev || {};
+const selR = st.selR == null ? 11 : st.selR, selP = st.selP == null ? 11 : st.selP;
+const W = ['I’m','gonna','tell','him','we','have','to','stop','talking','about','that','button','did','you','order','ten','bottles','of','water','for','next','day','delivery'];
+const R = [.2,.3,.18,.12,.1,.6,.2,.7,.5,.14,.3,.8,.12,.35,.44,.16,.5,.1,.76,.15,.45,.62,null];
+const UNC = { 1: 1, 12: 1, 17: 1 };
+const M = { 0: ['RF'], 1: ['RF'], 3: ['EL'], 5: ['VC'], 6: ['WK'], 7: ['UR'], 8: ['LK'], 11: ['GT', 'SY'], 12: ['CO'], 15: ['AS'], 16: ['SY', 'LK'], 17: ['WK'], 18: ['FT'], 19: ['WK'], 20: ['EL'] };
+const codeOf = { Linking: 'LK', Coalescence: 'CO', Assimilation: 'AS', Weakening: 'WK', 'Reduced forms': 'RF', Elision: 'EL', 'T/D tap': 'FT', Glottalization: 'GT', Unreleased: 'UR', Syllabic: 'SY', 'Voicing change': 'VC', 'Vowel duration': 'VL' };
+const sub = st.sub || 'all', SUB = { 3: 'h', 20: 'td' }, selW = st.selW == null ? 11 : st.selW;
+const gl = { Linking: '‿', Coalescence: 't͡ʃ', Assimilation: '≈', Weakening: 'ə', 'Reduced forms': '’', Elision: '∅', 'T/D tap': 'ɾ', Glottalization: 'ʔ', Unreleased: 'p̚', Syllabic: 'n̩', 'Voicing change': '◐', 'Vowel duration': 'ː' };
+const nameOf = Object.fromEntries(Object.entries(codeOf).map(([k, v]) => [v, k]));
+const tags = (i, q) => (M[i] || []).map((c) => ({ t: LB[i + c] || c, n: nameOf[c], cls: 'c-' + c + (filter !== 'all' && (codeOf[filter] !== c || (c === 'EL' && sub !== 'all' && SUB[i] !== sub)) ? ' off' : '') }));
+const noLK = (i, q) => tags(i, q).filter((x) => x.cls.indexOf('c-LK') < 0);
+const lk = (i, q) => { const o = (M[i] || []).includes('LK'); const off = filter !== 'all' && filter !== 'Linking'; return { link: o, lkt: LB[i + 'LK'] || 'LK', lkcls: 'c-LK', lkd: '', lkOff: off ? 'off' : '' }; };
+const set = (o) => this.setState(o);
+const LB = { '0RF': '= I am', '1RF': '= going to', '3EL': 'h→∅', '5VC': 'v→f', '6WK': '[tə]', '7UR': 'p̚', '8LK': 'ŋ‿ə', '11GT': '[ʔ]', '11SY': 'n̩', '12CO': 'd+j→dʒ', '15AS': 'n→m', '16SY': 'l̩', '16LK': 'z‿ə', '17WK': '[əv]', '18FT': '[ɾ]', '19WK': '[fɚ]', '20EL': 't→∅' };
+const COL = { LK: '#1D4ED8', CO: '#A21CAF', AS: '#3C4FA8', WK: '#57534E', RF: '#7C4A03', EL: '#5B3FC7', FT: '#0F766E', GT: '#B45309', UR: '#3F3F46', SY: '#0E6B8A', VC: '#7E3FBF', VL: '#2E7D32' };
+const TIP = { Linking: 'Linking: a final sound joins the next word’s vowel · talking about → ŋ‿ə', Coalescence: 'Coalescence: two sounds blend into one · did you → dʒ', Assimilation: 'Assimilation: a sound shifts toward its neighbor · ten bottles → tem bottles', Weakening: 'Weakening: an unstressed word loses vowel strength · of → [əv]', 'Reduced forms': 'Reduced forms: a common spoken short form · going to → gonna', Elision: 'Elision: a sound is left out · next day → nex day · tell him → tell ’im', 'T/D tap': 'T/D tap: inside a word, /t/ becomes a quick tap · water → [ɾ]', Glottalization: 'Glottalization: a throat stop stands in for /t/ · button → [ʔ]', Unreleased: 'Unreleased: a stop closes without a burst · stop talking', Syllabic: 'Syllabic: a consonant carries the syllable · button, bottle', 'Voicing change': 'Voicing change: voiced ↔ voiceless shift · have to → hæf tə', 'Vowel duration': 'Vowel duration: measured vowel lengths, You vs Reference' };
+const CNT = (c) => Object.keys(M).filter((k) => M[k].includes(c)).length;
+const hasM = filter !== 'all' && Object.keys(M).some((k) => M[k].includes(codeOf[filter]) && (filter !== 'Elision' || sub === 'all' || SUB[k] === sub));
+const durs = [['talking', 'ɔ', 118, 132], ['talking', 'ɪ', 62, 55], ['water', 'ɔ', 104, 117], ['water', 'ɚ', 71, 80], ['order', 'ɔ', 96, 101], ['order', 'ɚ', 88, 74], ['bottles', 'Word total', 187, null]].map(([w, lab, u, r]) => ({ w: hide ? '••••' : w, lab: hide ? '•' : lab, pxU: Math.round(u * 1.1), pxR: r ? Math.round(r * 1.1) : 0, txt: r ? 'You ' + u + ' · Ref ' + r + ' ms · adj. ' + Math.round(u * .93) : 'You ' + u + ' ms' }));
+const EX = { 1: { n: 1, dict: '/ˈɡʌnə/', read: 'Written as “gonna”: a reduced form of “going to”', cond: 'Future “going to” + verb; the text already uses this form', hear: 'Listen for “gunna” instead of “going to”.', say: 'Fine in casual speech; “going to” is equally correct.' }, 3: { n: 1, dict: '/hɪm/', read: 'The /h/ may drop: [ɪm]', cond: 'Unstressed pronoun, not at the start of a phrase', hear: 'Listen for “tellim”.', say: 'Soften “him”. Keeping /h/ is also fine.' }, 5: { n: 2, dict: '/hæv/ · /tu/', read: '/v/ may become [f]: [hæf tə]', cond: 'Obligation “have to”, no stress or pause', hear: 'Listen for “hafta”.', say: 'Say it as one unit. Keeping /v/ is also fine.' }, 7: { n: 2, dict: '/stɑp/ · /ˈtɔkɪŋ/', read: 'The /p/ may be unreleased: [stɑp̚ ˈtɔkɪŋ]', cond: 'Stop + stop across words', hear: 'The lips close but no burst is heard.', say: 'Close your lips and move straight to “talking”.' }, 11: { n: 1, dict: '/ˈbʌtn/', read: 'May combine: [ˈbʌʔn̩] (glottal /t/ + syllabic n)', cond: 'GA: /t/ before a weak syllable /n/', hear: 'A short stop in the throat, then a syllabic “n”.', say: 'Hold the stop, then let “n” carry the syllable.' }, 12: { n: 2, dict: '/dɪd/ · /ju/', read: '/d/ + /j/ may merge into [dʒ]', cond: '“you” unstressed, no pause', hear: 'A “j” sound where the words meet.', say: 'Say them in one breath. Keeping them apart is also fine.' }, 15: { n: 2, dict: '/tɛn/ · /ˈbɑtlz/', read: '/n/ may become [m]: [tɛm ˈbɑtlz]', cond: '/n/ before /b/ across words', hear: 'Listen for “tem bottles”.', say: 'Close your lips early on “ten”.' }, 18: { n: 1, dict: '/ˈwɔtɚ/', read: 'The /t/ may be a tap: [ˈwɔɾɚ]', cond: 'Between a stressed and an unstressed vowel, inside one word', hear: 'A quick tap, close to a fast /d/.', say: 'Keep the tap light and quick.' }, 20: { n: 2, dict: '/nɛkst/ · /deɪ/', read: 'The /t/ may drop: [nɛks deɪ]', cond: 'Consonant + t/d + consonant, no pause', hear: 'Listen for “nex day”.', say: 'Try it once. The full /t/ is also correct.' } };
+const ex0 = EX[selW], exOk = !!ex0 && (!hide || !!rev[selW]);
+const ex = { on: exOk, off: !exOk, msg: ex0 ? 'Reveal this word to read its explanation.' : 'Select a marked word to see its conditions.', src: 'Text rule · sound-rules-v2', rows: exOk ? [['Text position', '“' + W.slice(selW, selW + ex0.n).join(' ') + '” · word' + (ex0.n > 1 ? 's ' + (selW + 1) + '–' + (selW + ex0.n) : ' ' + (selW + 1))], ['Dictionary', ex0.dict], ['Possible reading', ex0.read], ['Conditions', ex0.cond], ['Listen for', ex0.hear], ['Shadowing tip', ex0.say], ['Evidence', 'Candidate from text and dictionary · not checked in your recording']].map(([k, v]) => ({ k, v })) : [] };
+const names = { sound: ['Sound', 'Notice how the marked sounds connect in the sentence.'], rhythm: ['Rhythm layer', 'Compare word timing and the spaces between phrases.'], melody: ['Melody layer', 'Follow the rise and fall of both voices on the same chart.'] };
+const nts = {
+sound: { items: [{ k: 'of', v: 'This function word may use a weak form in connected speech.' }, { k: 'bottles of', v: 'The final consonant may connect directly to the following vowel sound.' }, { k: 'water', v: 'GA: the /t/ between a stressed and an unstressed vowel inside a word may be a tap [ɾ].' }, { k: 'next day', v: 'Elision · T–D: the final /t/ in a consonant cluster may drop before the next consonant. The full /t/ is also fine.' }, { k: 'did you', v: 'Coalescence: /d/ + /j/ may merge into /dʒ/ when “you” is unstressed. Saying them apart is also fine.' }, { k: 'button', v: 'Glottalization and a syllabic /n/ may combine: [ˈbʌʔn̩].' }], tip: 'Choose a phenomenon above, listen to its marked words, then replay your voice. Optional readings: you do not need to use every one.' },
+rhythm: { items: [{ k: 'Dots and bars.', v: 'Dictionary syllable stress, with durations and pause bars from available audio measurements.' }, { k: 'Not evaluated.', v: 'Sentence emphasis.' }], tip: 'Listen to one phrase at a time. Follow its pace and pauses, then record the whole sentence again.' },
+melody: { items: [{ k: 'Shared axis.', v: 'Each voice’s median pitch is the baseline. Highlight a word to compare its curve interval.' }, { k: 'Not evaluated.', v: 'Nuclear stress.' }], tip: 'Listen for the direction of the pitch movement. Follow the shape of the reference without trying to copy its absolute pitch.' }
+};
+const nm = names[tab];
+const top = Math.max(...R.filter((v) => v != null));
+let tAcc = 0;
+const PC = W.map((w, i) => {
+const ms = Math.round(160 + ((i * 37) % 11) * 30 + (R[i] == null ? .2 : R[i]) * 200);
+const px = Math.round(ms * .14), n = Math.max(6, Math.round(ms / 20));
+const t = (tAcc / 1000).toFixed(2); tAcc += ms;
+let d = '', pen = false, lo = 99, hi = -99;
+if (i !== 22) {
+const amp = (R[i] == null ? .2 : R[i]) * 6, decl = 3 - i * .25 + Math.sin(i * .9) * 2, sl = Math.cos(i * 1.7) * 2;
+for (let f = 0; f <= n; f++) {
+const u = f / n;
+const voiced = u > .08 && u < .94 && !(i % 5 === 3 && u > .35 && u < .5);
+if (!voiced) { pen = false; continue; }
+const v = decl + sl * (u - .5) + amp * Math.exp(-Math.pow((u - .55) / .22, 2)) + Math.sin(f * 1.3 + i) * .25;
+lo = Math.min(lo, v); hi = Math.max(hi, v);
+d += (pen ? ' L' : ' M') + (u * px).toFixed(1) + ' ' + (116 - v * (100 / 12)).toFixed(1);
+pen = true;
+}
+}
+return { w, px, ms, t, d: d.trim(), range: hi > lo ? (hi - lo).toFixed(1) : null };
+});
+const ENV = (i, wd, ht) => {
+const a = Math.min(1, .3 + ((R[i] == null ? .2 : R[i]) / top) * .6);
+let d = 'M0 ' + ht;
+for (let k = 0; k <= 12; k++) { const u = k / 12; const e = Math.max(0, Math.min(1, a * (.25 + .75 * Math.pow(Math.sin(Math.PI * u), .7)) * (1 + .12 * Math.sin(u * 9 + i)))); d += ' L' + (u * wd).toFixed(1) + ' ' + (ht - e * ht).toFixed(1); }
+return d + ' L' + wd + ' ' + ht + ' Z';
+};
+const mode = st.mode || 'detailed', layers = st.layers || { sound: true, rhythm: true, melody: true };
+const F = (i, px) => {
+if (i === 22) return '';
+const ms = PC[i].ms, n = Math.max(6, Math.round(ms / 20));
+const amp = (R[i] == null ? .2 : R[i]) * 6, decl = 3 - i * .25 + Math.sin(i * .9) * 2, sl = Math.cos(i * 1.7) * 2;
+let d = '', pen = false;
+for (let f = 0; f <= n; f++) { const u = f / n; const vc = u > .08 && u < .94 && !(i % 5 === 3 && u > .35 && u < .5); if (!vc) { pen = false; continue; } const v = decl + sl * (u - .5) + amp * Math.exp(-Math.pow((u - .55) / .22, 2)) + Math.sin(f * 1.3 + i) * .25; d += (pen ? ' L' : ' M') + (u * px).toFixed(1) + ' ' + (56 - v * 4).toFixed(1); pen = true; }
+return d.trim();
+};
+const PH = [[0, 5], [6, 11], [12, 17], [18, 22]];
+const phrases = PH.map(([a, b], pi) => ({ label: 'Phrase ' + (pi + 1), time: PC[a].t + ' – ' + (parseFloat(PC[b].t) + PC[b].ms / 1000).toFixed(2) + ' s', cols: W.map((w, i) => i).filter((i) => i >= a && i <= b).map((i) => { const px = Math.round(PC[i].ms * .18), v = R[i], u = !!UNC[i]; return { w: W[i], px, env: ENV(i, px, 52), val: selR === i && v != null ? v.toFixed(2) : '', tags: tags(i, false), h: v == null ? 0 : Math.max(4, Math.round(v / top * 52)), bcls: u ? 'u' : '', d: F(i, px), cls: selR === i ? 'sel' : '', sel: selR === i, aria: W[i] + ', ' + PC[i].ms + ' milliseconds', pick: () => set({ selR: i, selP: i }) }; }) }));
+const rv = mode === 'review';
+const fS = rv && layers.sound, fR = rv ? layers.rhythm : tab === 'rhythm', fM = rv ? layers.melody : tab === 'melody';
+const showTL = rv || tab !== 'sound';
+const zoom = st.zoom || 18, K = zoom / 100;
+const TAKES = [{ l: '9:05 PM', m: '17.3s', ref: false }, { l: '9:04 PM', m: '21.0s', ref: true }];
+const take = st.take == null ? 1 : st.take;
+const hasRef = TAKES[take].ref;
+const showRef = hasRef && st.showRef !== false, showYou = st.showYou !== false;
+const isVL = filter === 'Vowel duration' && hasRef;
+const empLines = filter === 'all' || isVL || hasM ? [] : filter === 'Vowel duration' ? [{ t: 'Vowel duration measurements are not available for these words.' }] : [{ t: filter === 'Elision' && sub === 'other' ? 'Suggestions for this subtype are not available yet.' : 'No suggestions of this type were found for this sentence.' }, { t: 'This sound has not been checked in the recording.' }];
+const tipLine = filter !== 'all' ? (TIP[filter] || '') : (hasRef ? '' : 'Vowel duration is available when a take has a reference recording.');
+const REF = W.map((w, i) => { const base = R[i] == null ? .2 : R[i]; return { ms: Math.round(PC[i].ms * (.82 + .28 * (.5 + .5 * Math.sin(i * 1.9 + 1)))), pr: Math.max(.06, Math.min(.88, base * (.85 + .3 * Math.cos(i * 1.3)))) }; });
+const FR = (i, px) => {
+const ms = REF[i].ms, n = Math.max(6, Math.round(ms / 20));
+const amp = REF[i].pr * 6, decl = 2.5 - i * .2 + Math.sin(i * .9 + .4) * 2.2, sl = Math.cos(i * 1.7 + .5) * 1.6;
+let d = '', pen = false;
+for (let f = 0; f <= n; f++) { const u = f / n; const vc = u > .08 && u < .94 && !(i % 5 === 3 && u > .3 && u < .45); if (!vc) { pen = false; continue; } const v = decl + sl * (u - .5) + amp * Math.exp(-Math.pow((u - .55) / .22, 2)) + Math.sin(f * 1.1 + i) * .2; d += (pen ? ' L' : ' M') + (u * px).toFixed(1) + ' ' + (56 - v * 4).toFixed(1); pen = true; }
+return d.trim();
+};
+const ENVR = (i, wd, ht) => {
+const a = Math.min(1, .3 + (REF[i].pr / top) * .6);
+let d = 'M0 ' + ht;
+for (let k = 0; k <= 12; k++) { const u = k / 12; const e = Math.max(0, Math.min(1, a * (.25 + .75 * Math.pow(Math.sin(Math.PI * u), .7)) * (1 + .1 * Math.sin(u * 7 + i + 1)))); d += ' L' + (u * wd).toFixed(1) + ' ' + (ht - e * ht).toFixed(1); }
+return d + ' L' + wd + ' ' + ht + ' Z';
+};
+const bwf = (p) => Math.max(3, Math.min(14, Math.round(p - 4)));
+const tlCols = W.map((w, i) => {
+const pU = PC[i].ms * K, pR = REF[i].ms * K, px = Math.max(pU, hasRef ? pR : 0, fS ? 64 : 0), v = R[i], u = !!UNC[i];
+return { w, px: px.toFixed(1), pU: pU.toFixed(1), pR: pR.toFixed(1), bw: bwf(pU), bwR: bwf(pR), env: ENV(i, pU, 52), envR: ENVR(i, pR, 52), tags: tags(i, false), h: v == null ? 0 : Math.max(4, Math.round(v / top * 52)), hR: Math.max(4, Math.round(REF[i].pr / top * 52)), bcls: u ? 'u' : '', d: showYou ? F(i, pU) : '', dR: showRef ? FR(i, pR) : '', cls: selR === i ? 'sel' : '', sel: selR === i, aria: w + ', ' + PC[i].ms + ' milliseconds', pick: () => { if (this._moved) return; set({ selR: i, selP: i, selW: i }); } };
+});
+const totalMs = W.reduce((a, w, i) => a + Math.max(PC[i].ms, hasRef ? REF[i].ms : 0), 0);
+const tw = tlCols.reduce((a, c) => a + parseFloat(c.px), 0);
+const fitZ = Math.max(6, Math.min(60, Math.floor(700 / totalMs * 100)));
+const ticks = []; if (!hasRef) for (let t = 0; t * 1000 <= totalMs; t++) ticks.push({ x: Math.round(t * 1000 * K), t: t + 's' });
+const nR = showRef ? 1 : 0, nU = showYou ? 1 : 0, nL = nR + nU;
+const hS = 50, hRh = 64 * nL;
+const lanes = (base, hh) => (hasRef ? [nR ? { t: 'Ref', y: base + hh / 2 - 6 } : null, nU ? { t: 'You', y: base + hh * nR + hh / 2 - 6 } : null].filter(Boolean) : []);
+const laneS = [], laneR = lanes(0, 64);
+const legend = [fS && 'Sound marks: possible readings from the text.', fR && 'Bars: relative prominence on a shared 0–0.88 scale, dashed = uncertain; light shape behind them = loudness.', fM && 'Line: F0 in semitones from median; gaps are unvoiced sounds or pauses.'].filter(Boolean).join(' ') + (hasRef ? ' Words are aligned; each voice is drawn at its own timing, and column width follows the longer of the two. Drag to pan.' : ' Word width follows duration. Drag to pan.');
+const disc = fR ? 'Continuous relative prominence, not a stress label or a correctness score. Uncertainty includes boundary sensitivity, limited pitch and sentence edges. These estimates have not been calibrated against human stress labels. Illustrative data.' : fM ? 'Pitch (F0) in semitones relative to each voice’s median, at 20 ms frames. Illustrative contour, not measured data.' : 'Illustrative data, not measured.';
+return {
+isDetailed: mode === 'detailed', isReview: mode === 'review',
+modes: [['quick', 'Quick'], ['detailed', 'Detailed'], ['review', 'Review']].map(([k, label]) => ({ label, on: mode === k, cls: mode === k ? 'on' : '', pick: () => (k === 'quick' ? null : set({ mode: k })) })),
+lyr: [['sound', 'Sound'], ['rhythm', 'Rhythm'], ['melody', 'Melody']].map(([k, label]) => ({ label, on: layers[k], cls: layers[k] ? 'on' : '', pick: () => set({ layers: { ...layers, [k]: !layers[k] } }) })),
+noLayer: rv && !layers.sound && !layers.rhythm && !layers.melody,
+showSnd: fS, dS: fS ? 'flex' : 'none', dR: fR ? 'flex' : 'none', dM: fM ? 'flex' : 'none', dW: fS ? 'none' : 'flex',
+dLR: showRef ? 'flex' : 'none', dLU: showYou ? 'flex' : 'none', hS, hRh, laneS, laneR,
+showTL, tl: tlCols, tw: Math.round(tw), ticks, capM: !rv && tab === 'melody', noRef: !hasRef, hasRef,
+refNote: hasRef ? 'Aligned by word. Reference is drawn dashed and light; your voice is solid and dark.' : (rv ? 'Reference audio unavailable for this take. Showing your voice only.' : 'Reference unavailable for this take.'),
+voices: [{ label: 'Reference' + (hasRef ? '' : ' · unavailable'), bd: '2px dashed #78716C', op: hasRef ? (showRef ? 1 : .35) : .4 }, { label: 'You', bd: '2px solid #0C0A09', op: showYou ? 1 : .35 }],
+takeChips: TAKES.map((t, i) => ({ label: t.l + ' · ' + t.m + (t.ref ? ' · Reference' : ' · No reference'), on: take === i, cls: take === i ? 'on' : '', pick: () => set({ take: i }) })),
+voiceChips: [['ref', 'Reference', showRef], ['you', 'You', showYou]].map(([k, label, on]) => ({ label, on, cls: on ? 'on' : '', pick: () => { if (on && !(k === 'ref' ? showYou : showRef)) return; set(k === 'ref' ? { showRef: !showRef } : { showYou: !showYou }); } })),
+v0: () => set({ take: 0, mode: 'review' }), v1: () => set({ take: 1, mode: 'review' }), t0: take === 0 ? 'cur' : '', t1: take === 1 ? 'cur' : '',
+zoom, zoomLabel: Math.round(zoom / 18 * 100) + '%',
+onZoom: (e) => set({ zoom: Number(e.target.value) }),
+zoomIn: () => set({ zoom: Math.min(60, zoom + 4) }), zoomOut: () => set({ zoom: Math.max(6, zoom - 4) }), zoomFit: () => set({ zoom: fitZ }),
+onDown: (e) => { if (e.pointerType && e.pointerType !== 'mouse') return; this._drag = { x: e.clientX, left: e.currentTarget.scrollLeft }; this._moved = false; },
+onMove: (e) => { const d = this._drag; if (!d || e.buttons !== 1) return; const dx = e.clientX - d.x; if (Math.abs(dx) > 4) this._moved = true; e.currentTarget.scrollLeft = d.left - dx; },
+onUp: () => { this._drag = null; setTimeout(() => { this._moved = false; }, 0); },
+legend, disc,
+osel: showRef ? W[selR] + ' · You ' + PC[selR].ms + ' ms · ' + (R[selR] == null ? 'not compared' : R[selR].toFixed(2)) + ' · Reference ' + REF[selR].ms + ' ms · ' + REF[selR].pr.toFixed(2) + ' · Δ ' + (PC[selR].ms - REF[selR].ms >= 0 ? '+' : '') + (PC[selR].ms - REF[selR].ms) + ' ms · ' + ((M[selR] || []).map((c) => LB[selR + c] || c).join(', ') || 'no sound marks') : W[selR] + ' · ' + PC[selR].ms + ' ms · ' + (R[selR] == null ? 'not compared' : 'prominence ' + R[selR].toFixed(2) + (UNC[selR] ? ' (uncertain)' : '')) + ' · ' + (PC[selR].range ? 'pitch range ' + PC[selR].range + ' st' : 'no pitch') + ' · ' + ((M[selR] || []).map((c) => LB[selR + c] || c).join(', ') || 'no sound marks'),
+rows: [
+{ n: '1', t: 'First femaleled company.', m: 'Not practiced · ~1:04 – 1:05', cls: '' },
+{ n: '2', t: 'I I would say thank you very much for the comments.', m: 'Practiced · Best 63.6% words · ~1:05 – 1:08', cls: '' },
+{ n: '3', t: 'It’s it’s it’s really quite special.', m: 'Practiced · Not checked · ~1:08 – 1:11', cls: '' },
+{ n: '4', t: 'But look, I’m an engineer.', m: 'Not practiced · ~1:11 – 1:13', cls: '' },
+{ n: '5', t: 'Like I started out as an engineer.', m: 'Not practiced · ~1:13 – 1:15', cls: '' },
+{ n: '13', t: 'I’m gonna tell him we have to stop talking about that button…', m: 'Practiced · 95.7% words · ~2:24 – 2:32', cls: 'cur' }
+],
+tabs: [['sound', 'Sound'], ['rhythm', 'Rhythm'], ['melody', 'Melody']].map(([k, label]) => ({ label, on: tab === k, cls: tab === k ? 'on' : '', pick: () => set({ tab: k }) })),
+layerTitle: tab === 'sound' ? 'Sound layer' : nm[0], layerLead: nm[1],
+notesOpen: notes, notesLabel: notes ? 'Hide notes' : 'Notes', notesRot: notes ? 'rotate(180deg)' : 'none', toggleNotes: () => set({ notes: !notes }), notes: nts[tab],
+isSound: tab === 'sound', isRhythm: tab === 'rhythm', isMelody: tab === 'melody',
+cgroups: [['Connect', ['Linking', 'Coalescence', 'Assimilation']], ['Reduce', ['Weakening', 'Reduced forms', 'Elision']], ['Consonant', ['T/D tap', 'Glottalization', 'Unreleased', 'Syllabic', 'Voicing change']], ['Vowel', ['Vowel duration']]].map(([name, list]) => ({ name, chips: list.map((t) => { const vl = t === 'Vowel duration', c = codeOf[t], n = CNT(c); return { t: gl[t] + ' ' + t, n: vl ? '' : n, dot: COL[c], tip: TIP[t], dis: vl && !hasRef, on: filter === t, cls: (filter === t ? 'on' : '') + (!vl && !n ? ' z' : ''), pick: () => set({ filter: t, sub: 'all' }) }; }) })),
+allc: { on: filter === 'all', cls: filter === 'all' ? 'on' : '', pick: () => set({ filter: 'all' }) },
+isEl: filter === 'Elision', subs: [['all', 'All elision'], ['td', 'T–D'], ['h', 'H'], ['other', 'Other']].map(([k, t]) => ({ t, on: sub === k, cls: sub === k ? 'on' : '', pick: () => set({ sub: k }) })), empLines, isVL, durs, ex, tipLine, hasTip: !!tipLine,
+hide, hideLabel: hide ? 'Show text' : 'Hide text', toggleHide: () => set({ hide: !hide, rev: {} }),
+refWords: W.map((w, i) => ({ w, tags: noLK(i, false), ...lk(i, false), cls: (hide && !rev[i] ? 'hid' : '') + (selW === i ? ' selw' : ''), pick: () => set(hide ? { rev: { ...rev, [i]: true }, selW: i } : { selW: i }) })),
+rcells: W.map((w, i) => { const v = R[i], u = !!UNC[i]; return { w, env: ENV(i, 100, 56), val: selR === i && v != null ? v.toFixed(2) : '', h: v == null ? 0 : Math.max(4, Math.round(v / top * 56)), bcls: u ? 'u' : '', cls: selR === i ? 'sel' : '', sel: selR === i, aria: v == null ? w + ', not compared' : w + ', ' + v.toFixed(2) + (u ? ', uncertain' : ''), pick: () => set({ selR: i, selP: i }) }; }),
+rsel: R[selR] == null ? W[selR] + ' · not compared' : W[selR] + ' · ' + R[selR].toFixed(2) + ' · ' + (UNC[selR] ? 'Uncertain' : 'Relative estimate'),
+pcols: PC.map((c, i) => ({ ...c, cls: selP === i ? 'sel' : '', sel: selP === i, aria: c.w + (c.d ? ', ' + c.ms + ' milliseconds' : ', not compared'), pick: () => set({ selR: i, selP: i }) })),
+psel: PC[selP].d ? W[selP] + ' · ' + PC[selP].ms + ' ms · range ' + PC[selP].range + ' st · no reference to compare' : W[selP] + ' · unmatched, not compared'
+};
+}
+}
+</script>
+</body>
+</html>
