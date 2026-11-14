@@ -1,5 +1,33 @@
 # Track Libitu decisions
 
+## Select MIT and plan paid hosting — 2026-11-14
+
+The user explicitly selected MIT for Libitu after discussing commercial hosting and requested a README presentation similar to `calcom/cal.diy`, with the generated video removed. Apply the standard MIT text to project-owned code and documentation with `Copyright (c) 2026 kongshan33 and contributors`, matching the repository author identity. Preserve third-party license notices and terms. MIT permits commercial reuse; it does not reserve commercial hosting to the project owner. Future community/commercial-module boundaries, repository visibility changes and publishing actions are not decided by this license selection.
+
+## Freeze a fresh pure-TIMIT linear baseline before intervention — 2026-11-14
+
+Use all 1,268 eligible TIMIT train events with the original speaker split; do not turn 2,940 unknowns or 2,263 out-of-context known events into extra negatives. Reinitialize linear heads and fit normalization on train only. Freeze raw Wav2Vec2 Large / WavLM Base+ / WavLM Large readout depths at 6/6/24, disclosing their historical exposed-development origin; run three seeds with 400 updates each and one fixed optimizer setting. Select checkpoints and thresholds on automatic clean-C dev, while source-boundary dev remains diagnostic. Test access is forbidden.
+
+Keep professional source windows for this first training baseline. Predicted-window training is a separate future arm, not combined silently with a new head. Fixed speaker partitions contain repeated prompts, so report seen/unseen-prompt slices rather than claiming text-disjoint generalization. Buckeye/Whisper prior results remain archived; no new training occurred in the freeze task. [Config and audit](/Users/river/Documents/speech-phenomena/reports/timit-baseline-freeze-20261114.md).
+
+## Prioritize TIMIT and retain Buckeye for later domain validation — 2026-11-14
+
+The user accepts TIMIT-first development and future training. Preserve existing speaker partitions and holdouts; defer Buckeye ASR repair without deleting its data or historical failures. A TIMIT-only training experiment requires a fresh baseline with identical source examples, update steps, seeds and selection budget. Historical mixed-corpus probes evaluated on TIMIT are reference slices, not a TIMIT-only trained baseline.
+
+The completed repair is an opt-in canonical dictionary bridge, requiring registered same-length vowel variants, unchanged consonant positions and a unique target, followed by the original neighbor/pause checks. It changes localization correspondence only, not professional surface labels or IPA equivalence. All 16 known TIMIT positive rejections are recovered in a separate paired clean-C run. Existing model/head/threshold and prior successful locations stay unchanged; unknowns remain unknown. New training and product integration have not started. [Decision and evidence](/Users/river/Documents/speech-phenomena/docs/decisions/timit-first-20261114.md).
+
+## Accept complete Whisper tracks and prioritize localization — 2026-11-13
+
+Per the user's instruction to accept current Whisper results, stop remaining inference and retain the source run. Score only tracks whose required feature jobs are complete across the full 739-recording development pool: all four backbones have C/noise/reverb; Whisper A/B/MP3 remain unavailable. Never treat unfinished computation as a detection failure or substitute old localized-test scores for missing complete-recording tracks. The revised-scope P2 acceptance is a separate sealed supplement, with `full_matrix_complete=false`.
+
+Prioritize automatic localization and target matching: 172/735 reference positives are rejected before classification. Keep source times evaluation-only and retain unknown labels. WavLM Large's C mean leads this development comparison, but paired intervals, source-domain limits and cost remain part of selection; preserve raw Wav2Vec2 as the required control. The 6 new Buckeye and 26 TIMIT reserved speakers are excluded, and no E1/E2/E3 or service release starts from this acceptance. [Evidence and next-step decision](/Users/river/Documents/speech-phenomena/docs/decisions/p2-acceptance-20261113.md).
+
+## Expand E0b after source recovery and automatic localization validation — 2026-11-12
+
+Use the same fixed 739 exposed development recordings after verifying the official Buckeye audio/lexical projection and the bounded automatic locator. Buckeye uses ASR-derived unique text anchors before MFA; source event/phone/word times remain evaluation-only. Keep the frozen conservative opportunity set and quantized mirror boundaries for this paired evaluation; newly recovered precise annotations remain distinct rather than silently changing scores.
+
+Run all four required frozen backbones with original heads/seeds/thresholds and zero optimizer updates. The selected-layer early stop is allowed only because a real-window equivalence check gives zero feature/probability difference for all four models; Whisper keeps native 30-second waveform padding. Immutable source snapshots and verified feature shards protect the long local run. Do not infer release readiness from the nine-recording check; complete P2 only after full artifacts and error/cost audit. [Evidence](/Users/river/Documents/speech-phenomena/reports/e0b-automatic-localization.md).
+
 ## Validate transcript coverage and timing after dictionary repair — 2026-11-11
 
 The single-variable dictionary experiment confirms a shared pipeline failure: the same four frozen models improve complete-chain F1 from 22.22% to 71.43–77.14%, with unchanged A control classifications. Do not attribute this change to learned representations. The same outputs only reach 40.95–42.86% joint correct-label/100ms F1; Buckeye timing drift remains substantial despite all recordings returning alignment outputs.

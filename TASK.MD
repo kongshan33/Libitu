@@ -1,5 +1,11 @@
 # Complete the next Libitu milestone
 
+## Public README and release scope — 2026-11-14
+
+- [x] Remove the generated overview video and its supporting files; restructure both READMEs around the product, local setup and architecture.
+- [x] Apply the user-selected MIT license to project-owned code; update root package metadata and bilingual README presentation with centered branding, navigation and badges.
+- [ ] Before production distribution, complete the dependency, model and dataset license review. A paid hosted service is intended; future commercial-module boundaries, pricing and deployment remain separate work.
+
 ## Speech Phenomena P0/P1 acceptance — 2026-11-11
 
 - [x] P0: preserve research code, labels, weights and outputs with SHA256 verification and sampled recovery; retain originals because independent-media backup is still absent.
@@ -8,8 +14,12 @@
 - [x] Research tests 231 passed, including isolated roots/blocked old checkout; Libitu lint/build/test pass.
 - [x] P2 first increment: exposure/label/lexicon audit, reserved-speaker ledger, nine complete recordings through four frozen backbones and A/B/C/D, 248 isolated research tests. [Report](/Users/river/Documents/speech-phenomena/reports/e0b-first-pass.md).
 - [x] P2 dictionary control: new sealed run on identical recordings/waveforms/heads; complete-chain F1 improves while A classifications stay unchanged; 252 research tests pass. [Paired report](/Users/river/Documents/speech-phenomena/reports/e0b-lexicon-pair.md).
-- [ ] P2 completion: recover complete professional transcript metadata or validate automatic localization without source times; resolve Buckeye timing drift before expanding the budgeted development pool. Preserve the 26 reserved TIMIT speakers and original exposed test results.
-- [ ] D1/P3/P4/P5: evidence-based experiment selection, tracking, bounded training and reference-only release when gates pass.
+- [x] P2 recovery/localization: recover official metadata for all 35 Buckeye development recordings; verify lexical/audio identity; validate automatic localization on the fixed nine-recording control without source times. 264 isolated offline tests pass. [Report](/Users/river/Documents/speech-phenomena/reports/e0b-automatic-localization.md).
+- [x] P2 revised acceptance: sealed 739-recording four-backbone C/noise/reverb comparison and source/error/cost audit. User stopped remaining Whisper computation; its A/B/MP3 are explicitly unaccepted, so the original full matrix is not complete. Other three backbones complete all tracks. 282 isolated tests pass; 6 Buckeye + 26 TIMIT reserved test speakers remain excluded. [Report](/Users/river/Documents/speech-phenomena/reports/e0b-p2-accepted.md).
+- [x] D1 TIMIT matching control: fix all 16 positive rejections through an opt-in canonical dictionary bridge; same 704 dev recordings, unchanged models/heads/thresholds, 293 tests and 2,136 metric-row replay checks pass. Buckeye ASR and old Whisper A/B/MP3 gaps remain untouched. [Report](/Users/river/Documents/speech-phenomena/reports/timit-variant-control-20261114.md).
+- [x] TIMIT-only baseline preparation: verify 2,880 train sources; freeze 750 positive / 518 negative windows, complete dev manifests and the fresh three-model, three-seed, 400-step linear config. 309 isolated tests pass; zero encoder forwards/updates. [Report](/Users/river/Documents/speech-phenomena/reports/timit-baseline-freeze-20261114.md).
+- [ ] Execute the frozen TIMIT-only baseline under a new run ID after pretraining verification; implement its config contract, retain unknowns and prompt-overlap diagnostics, keep tests sealed. Subsequent interventions require new configs with identical data/steps/seeds/selection budget. No new training has started.
+- [ ] P3/P4/P5: tracking, bounded training and reference-only release when gates pass.
 - [ ] Establish an independent-media backup before clearing retained original data.
 
 Evidence: [migration report](/Users/river/Documents/speech-phenomena/docs/migration/REPORT.md). Learner events and unqualified phenomena remain unsupported; no new user annotation requested.

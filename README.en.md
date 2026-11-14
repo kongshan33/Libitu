@@ -1,10 +1,38 @@
-# Libitu
+<h1 align="center">libitu.</h1>
 
-[中文](README.md) | **English**
+<p align="center">
+  Turn authentic English into language you can use.<br />
+  An open-source AI English-practice app
+</p>
 
-Libitu is an AI English-learning app that turns authentic expressions from YouTube videos into a personal language collection, shadowing exercises, and scenario-based conversations—helping you put the English you understand into practice.
+<p align="center">
+  <a href="README.md">中文</a> · <strong>English</strong>
+</p>
 
-> Currently in local development; not yet launched. English videos are supported, and caption availability depends on the source.
+<p align="center">
+  <a href="design/docs/GETTING_STARTED.en.md"><strong>Get started</strong></a> ·
+  <a href="#system-architecture">Architecture</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="https://github.com/kongshan33/libitu/issues">Issues</a> ·
+  <a href="#contributing">Contributing</a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-5a43d6" alt="MIT License" /></a>
+  <a href="https://github.com/kongshan33/libitu/stargazers"><img src="https://img.shields.io/github/stars/kongshan33/libitu?style=flat&amp;color=5a43d6" alt="GitHub Stars" /></a>
+  <a href="TASK.MD"><img src="https://img.shields.io/badge/status-in_development-6b6b6b" alt="In development" /></a>
+</p>
+
+---
+
+## About Libitu
+
+Libitu is an AI English-practice app connecting YouTube videos, a personal corpus, sentence shadowing, and scenario conversations. Save a useful expression, then bring it into your next conversation to turn input into active speaking practice.
+
+The project code is [MIT-licensed](LICENSE), allowing self-hosting and commercial use.
+
+> [!NOTE]
+> Libitu is in development, with a paid hosted service planned. It has not launched; hosted-service pricing and features have not been announced.
 
 ## Features
 
@@ -16,118 +44,111 @@ Libitu is an AI English-learning app that turns authentic expressions from YouTu
 
 Move straight from saved expressions to a conversation, or practice shadowing first. Acoustic feedback and session scores are still being evaluated; they are not calibrated pronunciation diagnostics or general English proficiency assessments.
 
-## Tech stack
+### Learning flow
 
-Next.js 15 · React 19 · TypeScript · FastAPI · Supabase · Clerk · Upstash Redis · Doubao text · Gemini Live
+```mermaid
+flowchart LR
+  VIDEO["Video and captions"] --> BLUEPRINT["Understand and extract expressions"]
+  BLUEPRINT --> CORPUS["Personal corpus"]
+  BLUEPRINT --> SHADOW["Optional: sentence shadowing"]
+  SHADOW --> CORPUS
+  CORPUS --> LOADOUT["Choose up to 5 target expressions"]
+  LOADOUT --> SPEAK["AI scenario conversation"]
+  SPEAK --> REPORT["Feedback grounded in the conversation"]
+  REPORT --> CORPUS
+```
 
-The monorepo uses pnpm and Turborepo. Server-side shadowing analysis uses faster-whisper, MFA, Silero VAD, and Praat.
+## Built with
 
-## Run locally
+| Layer | Technology |
+| --- | --- |
+| Web | Next.js 15, React 19, TypeScript |
+| Browser extension | Chrome Manifest V3 |
+| API and workers | FastAPI, Python |
+| Identity and data | Clerk, Supabase Postgres / Storage, Upstash Redis |
+| AI | DeepSeek text analysis, OpenAI Realtime voice |
+| Shadowing analysis | faster-whisper, MFA, Silero VAD, Praat |
+| Tooling | pnpm, Turborepo, uv |
 
-### 1. Prerequisites
+## Getting started
 
-- Node.js 22.18+ (22.x) and pnpm 10.19.0
-- Python 3.11–3.14 and [uv](https://docs.astral.sh/uv/)
-- A Clerk development application for the current Web authentication integration
-- Chrome for the extension and reference-audio capture
+The current way to explore Libitu is through a local development environment. You need Node.js 22.18+ (22.x), pnpm 10.19.0, Python 3.11–3.14, uv, and a Clerk development application for sign-in.
 
 ```bash
 git clone https://github.com/kongshan33/libitu.git
 cd libitu
 pnpm install
-
 cd apps/api
 uv sync --extra dev --extra acoustics
-cd ../..
 ```
 
-### 2. Configure environment variables
+Follow the [local development guide](design/docs/GETTING_STARTED.en.md) to configure environment variables and start the API and Web separately. Development mode uses deterministic data; real video analysis, live conversations, and persistence require additional services. Model calls use your own credentials and may incur charges.
 
-Copy the templates on first setup. If configuration files already exist, edit them instead of overwriting them:
+See the [extension guide](apps/extension/README.md) for Chrome setup. Production deployment requires separate configuration and validation; a running local environment does not establish production readiness.
+
+## System architecture
+
+This diagram shows the implemented paths with external services configured. The `inline` development mode uses in-memory adapters and deterministic data.
+
+```mermaid
+flowchart TB
+  subgraph clients["Clients"]
+    YT["English YouTube video"] --> EXT["Chrome extension · MV3"]
+    EXT -->|Captions and lightweight handoff| WEB["Next.js / React Web"]
+    URL["Pasted video link"] --> WEB
+    CLERK["Clerk sign-in"] -->|Identity token| WEB
+  end
+  WEB <-->|HTTP / WebSocket| API["FastAPI · Identity and orchestration"]
+  subgraph background["Background jobs"]
+    REDIS["Upstash Redis · Blueprint queue"] --> BLUEPRINT["Blueprint worker"]
+    FEEDBACK["Feedback worker · Session reports"]
+    FAST["Acoustic fast lane · ASR / VAD / F0 / Rhythm"] --> FINE["Acoustic fine lane · MFA / Fine comparison"]
+  end
+  API --> REDIS
+  API <-->|Real-time voice| OPENAI["OpenAI Realtime"]
+  API -->|Corpus / Planning / Async conversation analysis| DEEPSEEK["DeepSeek · Text analysis"]
+  BLUEPRINT --> DEEPSEEK
+  FEEDBACK --> DEEPSEEK
+  DB[("Supabase Postgres · Content / Corpus / Sessions / Jobs")]
+  STORAGE[("Supabase Storage · Private practice audio")]
+  API <--> DB
+  API <--> STORAGE
+  BLUEPRINT <--> DB
+  FEEDBACK <-->|Durable jobs and leases| DB
+  FAST <-->|Durable jobs and checkpoints| DB
+  FINE <--> DB
+  FAST <--> STORAGE
+  FINE <--> STORAGE
+```
+
+- **Three processing paths**: video blueprints use the Redis queue. Shadowing analysis and session reports use durable Postgres jobs and leases; they do not share the Redis queue.
+- **Separate voice and text responsibilities**: the API manages real-time conversations and finalized turns. Asynchronous DeepSeek analysis does not block the current voice reply. Corpus pronunciation uses separate OpenAI voice settings.
+- **Data boundaries**: the server verifies identity for private corpus and session access. Audio analysis and recording retention have separate user controls.
+- **Optional adapters**: Ark/Doubao text analysis and Gemini voice remain explicit configuration options. The diagram shows the defaults.
+
+## Documentation
+
+- [Local development guide](design/docs/GETTING_STARTED.en.md): environment, services, workers, and extension setup.
+- [Product design](design/docs/Libitu_Design_Spec.md): learning flows and interaction contracts.
+- [Project status](PROJECT.MD) and [task plan](TASK.MD): implemented capabilities and remaining work.
+- [Real-time conversation implementation](design/docs/STAGE_FOUR_IMPLEMENTATION.md): voice, turn ownership, and recovery.
+- [Shadowing analysis contract](design/docs/STAGE_TWO_PRACTICE_ANALYSIS.md): acoustic jobs, audio retention, and data boundaries.
+
+The current focus is the English-video learning loop; caption availability depends on the source. Article and pasted-text reading remain planned. Independent speech-phenomena research is not integrated into the business API.
+
+## Contributing
+
+Use [Issues](https://github.com/kongshan33/libitu/issues) to report bugs or discuss features. Read the [development conventions](CLAUDE.MD) and agree on the scope before contributing code.
 
 ```bash
-cp apps/web/.env.example apps/web/.env.local
-cp apps/api/.env.example apps/api/.env
-```
-
-For basic development, configure:
-
-| File | Configuration |
-| --- | --- |
-| `apps/web/.env.local` | Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`; keep `NEXT_PUBLIC_LIBITU_API_BASE_URL=http://localhost:8000` |
-| `apps/api/.env` | Set `CLERK_SECRET_KEY` from the same Clerk application; keep `CLERK_AUTHORIZED_PARTIES=http://localhost:3000` and `PROCESSING_MODE=inline` |
-
-`inline` uses deterministic development data and in-memory storage for exploring the UI and API. It does not run real AI video analysis or provide the complete persistence, speech analysis, and live conversation experience.
-
-### 3. Start the Web app and API
-
-Open two terminals at the repository root:
-
-```bash
-# Terminal 1: API
-pnpm --filter @libitu/api dev:server
-```
-
-```bash
-# Terminal 2: Web
-pnpm --filter @libitu/web dev
-```
-
-Open the [Web app](http://localhost:3000) or [API documentation](http://localhost:8000/docs).
-
-### 4. Enable additional features
-
-Add the relevant settings to `apps/api/.env`. See the [API environment template](apps/api/.env.example) for variable names:
-
-| Feature | Additional setup |
-| --- | --- |
-| Persistent data and practice history | Configure your own Supabase project, apply the migrations in `supabase/migrations` in order, and set `SUPABASE_URL` and `SUPABASE_SECRET_KEY` |
-| Real video analysis | With persistence configured, set `PROCESSING_MODE=queue`, the Upstash REST URL / token, and `ARK_API_KEY`; run `pnpm --filter @libitu/api setup:punctuation` to prepare the subtitle punctuation model |
-| AI voice conversations and session reports | With persistence configured, set `GEMINI_API_KEY` and `ARK_API_KEY`, and keep `SPEAKING_REALTIME_PROVIDER=gemini`; check that your provider account has access to the configured models |
-| Server-side shadowing analysis | With persistence configured, install FFmpeg and MFA, prepare the ASR model, acoustic model, and dictionary, and configure their paths and checksums; see the [acoustic runtime guide](apps/api/deploy/README.md) |
-
-Text analysis uses `ARK_API_KEY` and defaults to `ARK_MODEL=doubao-seed-2-1-lite-260915`. Voice retains its separate `GEMINI_API_KEY` and `GEMINI_LIVE_MODEL`.
-
-For video analysis or conversations, start the workers you need alongside the Web app and API:
-
-```bash
-pnpm --filter @libitu/api worker
-pnpm --filter @libitu/api worker:feedback
-```
-
-Run each worker in a separate terminal. Once all services and acoustic models are configured, use `pnpm dev` at the root to start the Web app, API, video analysis, session reports, and both acoustic workers together. **Until the database and acoustic models are configured, use the separate startup commands above.**
-
-AI features require your own provider accounts and credentials and may incur usage charges. Keep secrets in local environment files and out of Git.
-
-### 5. Install the Chrome extension (optional)
-
-1. Open `chrome://extensions` in Chrome and enable Developer mode.
-2. Click **Load unpacked** and select `apps/extension` from the repository.
-3. Open an English YouTube video and click the Libitu player button or toolbar icon.
-
-The extension connects to `http://localhost:3000` by default. Reference-audio capture requires explicit permission through the on-screen setup. After updating the Web app or extension, reload the extension and refresh the relevant pages. See the [extension guide](apps/extension/README.md).
-
-## Development
-
-```text
-apps/web        Web application
-apps/api        API and background workers
-apps/extension  Chrome extension
-packages        Shared types, business utilities, and UI configuration
-supabase        Database migrations
-design/docs     Product and implementation documentation
-```
-
-```bash
-# Start from the repository root
-cd apps/api
-uv sync --extra dev --extra acoustics
-
-# Run from the repository root
-cd ../..
+# Run at the repository root after setting up the local environment.
 pnpm lint
 pnpm test
 pnpm build
 ```
 
-Issues and pull requests are welcome. Read the [development conventions](CLAUDE.MD) before contributing; see [PROJECT.MD](PROJECT.MD) and [TASK.MD](TASK.MD) for current progress and planned work.
+## License
+
+This project is licensed under the [MIT License](LICENSE). You may use, modify, distribute, and commercialize it while retaining the copyright and permission notices required by the license.
+
+Third-party code, dependencies, models, and data remain subject to their respective licenses. The MIT license does not include access to third-party APIs, hosting resources, or usage credits.

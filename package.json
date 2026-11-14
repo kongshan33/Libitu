@@ -1,5 +1,6 @@
 {
   "name": "libitu",
+  "license": "MIT",
   "private": true,
   "packageManager": "pnpm@10.19.0",
   "scripts": {

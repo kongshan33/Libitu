@@ -1,5 +1,33 @@
 # Understand the Libitu project
 
+## Public presentation and commercial intent — 2026-11-14
+
+The user intends to launch Libitu as a paid hosted product and has selected MIT for this repository. The root `LICENSE`, package metadata and bilingual READMEs declare MIT; third-party code, models and data retain their own terms. Launch, pricing and future hosted-service features remain undecided. The READMEs use a centered brand heading, navigation and badges inspired by cal.diy, followed by product capabilities, setup, architecture and contribution guidance. Detailed setup lives in `design/docs/GETTING_STARTED.zh.md` and `GETTING_STARTED.en.md`. The generated overview video and its assets were removed at the user's request. No deployment or commercial-module split is implied.
+
+## Pure-TIMIT baseline data and configuration frozen — 2026-11-14
+
+Verified all 2,880 admitted TIMIT train source recordings and prepared 1,268 eligible flap windows: 750 positive / 518 negative, from 1,016 recordings across 360 speakers. Unknown and out-of-context events are separately excluded. Prepared 310 dev source diagnostic windows and 672 automatic dev windows; train/dev speaker and PCM identities are disjoint, but 157/310 known dev events share utterance text with fitted-source recordings, so seen/unseen-prompt diagnostics are required.
+
+Frozen fresh linear heads on raw Wav2Vec2 Large, WavLM Base+ and WavLM Large: three seeds, 400 steps each, train-only standardization, fixed readout layers and automatic-dev-only checkpoint/threshold selection. 2,250 clips, 2,275 dataset artifacts, 2,144 source inputs and 309 isolated tests pass checks. Zero encoder forward passes/optimizer updates; no test audio decoded, no business API change. This is preparation, not a trained result. [Frozen config and data report](/Users/river/Documents/speech-phenomena/reports/timit-baseline-freeze-20261114.md).
+
+## TIMIT matching repair and TIMIT-first research — 2026-11-14
+
+User-approved scope: defer Buckeye ASR/segmentation repair, preserve all Buckeye data/failures, and constrain future training to the frozen TIMIT partitions. The opt-in canonical dictionary bridge restores all 16 TIMIT positive rejections, plus 5 negative and 11 unknown candidates, without changing existing successful locations. The four unchanged frozen models improve clean-C F1 on the same 704 TIMIT dev recordings: raw Wav2Vec2 92.45→96.66%, Base+ 92.92→97.13%, Large 93.24→97.45%, Whisper 92.38→96.55%.
+
+Verified 2,877 frozen inputs, 2,136 replayed metric rows and 293 isolated offline tests. This is a matching-pipeline improvement on a known reference subset, not new training or full-output accuracy. The 2,880-recording TIMIT training source allowlist is checked; the next experiment needs a fresh equal-data/equal-step baseline, not a relabeled mixed-corpus baseline. Reserved tests and old Whisper A/B/MP3 gaps remain untouched. No business API change. [Report](/Users/river/Documents/speech-phenomena/reports/timit-variant-control-20261114.md).
+
+## Speech research P2 accepted on completed tracks — 2026-11-13
+
+The user accepted current Whisper results and stopped the remaining computation. All four frozen backbones have complete C/noise/reverb evaluation over the same 739 development recordings; Whisper A/B/MP3 remain explicitly unaccepted and are not backfilled. C F1 means: raw Wav2Vec2 Large 76.63%, WavLM Base+ 76.85%, WavLM Large 78.19%, Whisper Small 77.46%. This completes P2 under the revised scope, not the original entire matrix or a product release gate.
+
+The separate sealed supplement verifies 29,693 input hashes, 134,595 predictions and 6,048 recomputed metric rows; 282 isolated offline tests pass. Buckeye 6 / TIMIT 26 reserved test speakers remain untouched. Of 735 reference positives, 172 are rejected before classification; the next research step is controlled localization repair before training. No new training, user annotation or business API integration occurred. [Results and explicit gaps](/Users/river/Documents/speech-phenomena/reports/e0b-p2-accepted.md) · [Decision](/Users/river/Documents/speech-phenomena/docs/decisions/p2-acceptance-20261113.md).
+
+## Speech research source recovery and full E0b launch — 2026-11-12
+
+Recovered official Buckeye word/phone/log/text metadata from the user's local downloads. All 40 speaker ZIPs pass CRC checks (255 recording archives). The 35 exposed development recordings have exact lexical correspondence and exact PCM correspondence under the mirror's documented 32767 normalization; no time shift or resampling. The nine-recording ASR-anchor/MFA control resolves the observed timing failure: all eight conservative positive targets localize within 100ms; A control classifications remain unchanged. 264 isolated offline tests pass.
+
+The fixed 739-recording development run is now executing in the independent research repository with immutable source snapshot, single writer, heartbeat and verified resumable artifacts. Four original frozen backbones and all A/B/C/D tracks remain mandatory; 26 unexposed TIMIT speakers stay reserved. P2 is not yet complete, and these small diagnostic scores do not qualify release or backbone ranking. Libitu business API behavior is unchanged. [Recovery and localization report](/Users/river/Documents/speech-phenomena/reports/e0b-automatic-localization.md).
+
 ## Speech research P2 dictionary control completed — 2026-11-11
 
 The paired E0b run changes only MFA dictionary coverage on the same nine complete recordings. It adds 109 compatible CMU words / 114 variants, preserves original dictionary entries and every input waveform, and reruns all four frozen encoders with the same heads and thresholds. Complete-chain F1 means rise from 22.22% to 71.43% (raw Wav2Vec2 Large), 74.29% (WavLM Base+), 77.14% (WavLM Large), and 71.43% (Whisper Small). A control classifications are unchanged; 252 offline research tests pass. Both sealed runs and 1,044 new predictions are retained; no training or API integration occurred.
