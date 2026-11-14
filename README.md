@@ -1,4 +1,4 @@
-<h1 align="center">libitu.</h1>
+<h1 align="center">Libitu</h1>
 
 <p align="center">
   把真实英语内容，变成你能用出来的表达。<br />

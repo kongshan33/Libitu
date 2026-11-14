@@ -1,4 +1,4 @@
-<h1 align="center">libitu.</h1>
+<h1 align="center">Libitu</h1>
 
 <p align="center">
   Turn authentic English into language you can use.<br />
