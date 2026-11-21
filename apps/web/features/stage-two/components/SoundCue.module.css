@@ -10,7 +10,7 @@
 .palette[data-phenomenon=syllabic] { --cue-bg:#E0F0F5;--cue-fg:#0E6B8A; }
 .palette[data-phenomenon=voicing] { --cue-bg:#EDE3FA;--cue-fg:#7E3FBF; }
 .palette[data-phenomenon=vowel_length] { --cue-bg:#DDF1DC;--cue-fg:#2E7D32; }
-.badge:global(.sound-inline-badge)[data-phenomenon] { display:inline-block;flex:none;background:var(--cue-bg);color:var(--cue-fg);font:400 11px/1.35 var(--font-ui),'Noto Sans','Arial Unicode MS',sans-serif;border-radius:5px;padding:3px 5px;white-space:nowrap;transition:opacity 150ms ease-out; }
+.badge:global(.sound-inline-badge)[data-phenomenon] { display:inline-block;flex:none;background:var(--cue-bg);color:var(--cue-fg);font:400 var(--text-label)/1.35 var(--font-ui),'Noto Sans','Arial Unicode MS',sans-serif;border-radius:5px;padding:3px 5px;white-space:nowrap;transition:opacity 150ms ease-out; }
 .dot { display:inline-block;inline-size:7px;block-size:7px;flex:none;border-radius:50%;background:var(--cue-fg); }
 :global(button[aria-pressed=true]) .dot { outline:1.5px solid white; }
 .arc { display:inline-flex;align-items:center;justify-content:center;inline-size:22px;block-size:16px;font:24px/1 var(--font-ui);padding-block-end:8px;box-sizing:border-box;flex:none; }
@@ -18,7 +18,7 @@
 .link:hover,.link[aria-expanded=true] { background:var(--surface); }
 .link:focus-visible { outline:var(--focus-ring);outline-offset:var(--focus-offset); }
 .badge[data-muted=true],.link[data-muted=true] { opacity:.2; }
-.more { font:11px/1.4 var(--font-ui);color:var(--ink-2);white-space:nowrap;border:0;border-radius:6px;background:transparent;min-inline-size:24px;min-block-size:24px;padding:2px;cursor:pointer;align-self:flex-end; }
+.more { font:var(--text-label)/1.4 var(--font-ui);color:var(--ink-2);white-space:nowrap;border:0;border-radius:6px;background:transparent;min-inline-size:24px;min-block-size:24px;padding:2px;cursor:pointer;align-self:flex-end; }
 .more:hover,.more[aria-expanded=true] { background:var(--line-soft); }
 .more:focus-visible { outline:var(--focus-ring);outline-offset:var(--focus-offset); }
 @media(max-width:600px),(pointer:coarse) { .link { min-inline-size:44px;min-block-size:44px; } }

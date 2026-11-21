@@ -1,4 +1,4 @@
-.notice { display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:8px 0;color:var(--ink-3);font-size:13px;line-height:1.5; }
+.notice { display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:8px 0;color:var(--ink-3);font-size:var(--text-help);line-height:1.5; }
 .message { display:flex;align-items:center;gap:8px;flex:1;min-width:160px; }
 .message svg { flex:none; }
 .spinner { animation:analysis-spin 1s linear infinite; }

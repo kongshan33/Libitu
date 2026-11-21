@@ -33,7 +33,7 @@
   min-height: var(--button-height-md);
   margin: 0;
   padding: 9px 14px;
-  font-size: 13px;
+  font-size: var(--text-help);
   line-height: 20px;
   --button-icon-size: 16px;
 }

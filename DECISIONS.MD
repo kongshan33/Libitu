@@ -1,5 +1,9 @@
 # Track Libitu decisions
 
+## Use a compact token-owned type scale — 2026-11-20
+
+The user found application text too large and accepted the proposed scale: H1 24, H2 18, H3 15, reading 16, body 14, help 13, meta 12, label 11. This supersedes the 30/22/17/18/15 rows in v2.1 section 5; the Landing display, closing and marketing heading sizes stay. Font sizes are referenced only through `packages/ui/src/tokens.css` `--text-*` variables; 11px is the minimum for HTML text. SVG chart text (viewBox-scaled), icon glyphs, avatar initials and the 20px wordmark are explicit exceptions.
+
 ## Select MIT and plan paid hosting — 2026-11-14
 
 The user explicitly selected MIT for Libitu after discussing commercial hosting and requested a README presentation similar to `calcom/cal.diy`, with the generated video removed. Apply the standard MIT text to project-owned code and documentation with `Copyright (c) 2026 kongshan33 and contributors`, matching the repository author identity. Preserve third-party license notices and terms. MIT permits commercial reuse; it does not reserve commercial hosting to the project owner. Future community/commercial-module boundaries, repository visibility changes and publishing actions are not decided by this license selection.

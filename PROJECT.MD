@@ -1,5 +1,9 @@
 # Understand the Libitu project
 
+## Compact application type scale — 2026-11-20
+
+At the user's request, application pages use one step smaller type: H1 30→24, H2 22→18, H3 17→15, transcript/conversation 18→16, body 15→14; Stage 2 practice prompts 23–27→22 (narrow 19), metrics 30→24. About 790 literal `font-size`/`font` sizes across 25 Web CSS files now reference `--text-*` tokens; HTML text below 11px (8.5–10px, mostly Stage 2/Loadout metadata and Sound badges) is raised to 11. Landing marketing display sizes, SVG chart text, icon glyphs and avatar initials are unchanged; the wordmark is 20px everywhere. Layout, color and behavior are unchanged. Root lint/build/test pass (API 1,996 cached; Web 540; Extension 124 cached). Measured at 1440px and 390px on Landing, Stage 1, segments, Stage 2 Quick/Detailed top and Corpus via local fixtures; Loadout, My learning, history, Stage 4/5 and the Detailed Sound guide body were not visually rechecked because the fixtures cannot render them. See `design/docs/VISUAL_SYSTEM.md`.
+
 ## Public presentation and commercial intent — 2026-11-14
 
 The user intends to launch Libitu as a paid hosted product and has selected MIT for this repository. The root `LICENSE`, package metadata and bilingual READMEs declare MIT; third-party code, models and data retain their own terms. Launch, pricing and future hosted-service features remain undecided. The READMEs use a centered brand heading, navigation and badges inspired by cal.diy, followed by product capabilities, setup, architecture and contribution guidance. Detailed setup lives in `design/docs/GETTING_STARTED.zh.md` and `GETTING_STARTED.en.md`. The generated overview video and its assets were removed at the user's request. No deployment or commercial-module split is implied.

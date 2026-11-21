@@ -1,5 +1,12 @@
 # Complete the next Libitu milestone
 
+## Compact type scale — 2026-11-20
+
+- [x] Revise v2.1 section 5 and related component sizes; add `--text-*` tokens for every application text role.
+- [x] Replace literal Web CSS font sizes with tokens and raise HTML text below 11px; root lint/build/test pass.
+- [x] Browser-check Landing, Stage 1, segments, Stage 2 Quick and Corpus at 1440px / 390px.
+- [ ] Visually recheck Loadout, My learning, Practice history, Stage 4, Stage 5 and the Stage 2 Detailed/Review Sound body with signed-in data; the existing `stage-two-sound.browser.mjs` already fails before this change (non-UUID fixture content ID returns 404).
+
 ## Public README and release scope — 2026-11-14
 
 - [x] Remove the generated overview video and its supporting files; restructure both READMEs around the product, local setup and architecture.

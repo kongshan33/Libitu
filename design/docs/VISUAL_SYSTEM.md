@@ -8,6 +8,8 @@ Base gray tokens are owned by `packages/ui/src/tokens.css`. Their RGB channels m
 
 ## Typography
 
+Type scale (2026-11-20): application pages use one step smaller sizes, owned by `--text-*` tokens in `packages/ui/src/tokens.css`: H1 24, H2 18, H3 15, reading/transcript 16, body 14, help 13, meta 12, label and minimum HTML text 11, metrics 24, Review score 32, Stage 2 practice prompt 22 (19 on narrow screens). Web CSS references these tokens instead of literal pixel sizes; exceptions are the Landing marketing display sizes, SVG chart text scaled by its viewBox, icon glyphs, avatar initials and the 20px wordmark. Section 5 of `libitu_设计规范_v2_1_统一版_.md` holds the role table.
+
 The user approved loading Inter on 2026-10-04. The root layout loads the locally bundled Inter 4.1 normal and italic variable fonts with `next/font/local`, `display: swap` and an adjusted Arial fallback. The `--font-ui` token selects this family across headers, body text and controls. Fonts and their OFL license live in `apps/web/app/fonts`; there are no remote font requests at runtime or build time. Unsupported glyphs fall back to system fonts. Metadata, pronunciation marks, IPA and structure templates also use `--font-ui`; `--font-mono` is a compatibility alias, not a monospace stack.
 
 Existing grids, ordering, spacing, control dimensions and responsive breakpoints remain. Font metrics can change text wrapping; check narrow viewports after typography changes. The shared landing wordmark keeps its proportions, purple color and dot.

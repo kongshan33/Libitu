@@ -133,16 +133,21 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 | Display(仅 Landing 首屏) | 60 / 1.08 | 500 | -0.035em | `--ink` |
 | 结尾标题(仅 Landing) | 40 / 1.2 | 500 | -0.03em | `--ink` |
 | 营销区块 H2(仅 Landing) | 32 / 1.2 | 500 | -0.025em | `--ink` |
-| 页面标题 H1 | 30 / 1.25 | 500 | -0.02em | `--ink` |
-| 区块标题 H2 | 22 / 1.3 | 500 | -0.01em | `--ink` |
-| 卡片标题 H3 | 17 / 1.35 | 500 | -0.01em | `--ink` |
-| 转写 / 对话正文 | 18 / 1.6 | 400 | 0 | 当前 `--ink`,其余 `--muted` |
-| 正文 / 摘要 | 15 / 1.6 | 400 | 0 | `--ink-3` |
-| 说明文字 | 13–14 / 1.5 | 400 | 0 | `--ink-3` / `--muted` |
-| 标签(全大写) | 11 | 500 | 0.08em | `--muted` |
+| 页面标题 H1 | 24 / 1.25 | 500 | -0.02em | `--ink` |
+| 区块标题 H2 | 18 / 1.3 | 500 | -0.01em | `--ink` |
+| 卡片标题 H3 | 15 / 1.35 | 500 | -0.01em | `--ink` |
+| 跟读句(Stage 2 练习中) | 22 / 1.5–1.75,窄屏 19 | 500 | 0 | `--ink` |
+| 转写 / 对话正文 | 16 / 1.6 | 400 | 0 | 当前 `--ink`,其余 `--muted` |
+| 正文 / 摘要 | 14 / 1.6 | 400 | 0 | `--ink-3` |
+| 说明文字 | 13 / 1.5 | 400 | 0 | `--ink-3` / `--muted` |
 | 时间戳 / 元信息 | 12 | 400 | 0 | `--muted` |
+| 标签(全大写)/ 最小字号 | 11 | 500 | 0.08em | `--muted` |
+| 指标数字 | 24(Review 单项总分 32) | 500 | -0.02em | `--ink` |
+| Logo `libitu.` | 20(全站统一) | 600 | -0.02em | `--brand` |
 
-标题用 500,不全部加粗;层级靠字号和颜色拉开。原 Stage 3 页的 700 字重和 34px 标题改为 H1 30 / 500。
+2026-11-20 字号修订:应用页整体收紧一档(H1 30→24、H2 22→18、H3 17→15、转写 18→16、正文 15→14),Landing 的 Display / 结尾标题 / 营销 H2 保持不变。HTML 文字不得小于 11px;SVG 图表内文字随 viewBox 缩放,不受此限制。字号只通过 `packages/ui/src/tokens.css` 的 `--text-*` 变量引用(`--text-h1/h2/h3/reading/body/help/meta/label/metric/score/prompt/prompt-sm`),不在页面 CSS 中写死像素值;图标字形、头像首字母和 logo 除外。
+
+标题用 500,不全部加粗;层级靠字号和颜色拉开。原 Stage 3 页的 700 字重和 34px 标题改为 H1 / 500。
 
 ## 6. 间距与布局
 
@@ -231,7 +236,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 ### 9.4 列表行与键值行
 
-- **记录行**(Original videos、Recent practice、Practice history):不做卡片。行间 1px `--line-soft`,内边距 18px 0;左:16px `--ink-3` 线性图标;中:标题 15px / 500 + 元信息(`类型 · 日期 · 数量`);右:文字链接 + ↗。
+- **记录行**(Original videos、Recent practice、Practice history):不做卡片。行间 1px `--line-soft`,内边距 18px 0;左:16px `--ink-3` 线性图标;中:标题 14px / 500 + 元信息(`类型 · 日期 · 数量`);右:文字链接 + ↗。
 - **日期分组**:标题 14px / 500,组间距 32px。
 - **状态**写进元信息文字(In progress / Completed),不用彩色徽章。
 - **键值行**(Session at a glance):左 `--muted` 标签,右 `--ink` 数值,行间 `--line-soft`;无数据显示 `—`。
@@ -239,8 +244,8 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 ### 9.5 指标与评分
 
-- **概览卡**:`--surface`,14px,内边距 24px;左:56px 黑色头像 + 姓名;右:4 项指标(数字 30px / 500,标签 13px `--muted`)。
-- **评分标签页**(Task fit / Language transfer / Scenario fit / Naturalness):4 列,选中项 2px `--brand` 底线;数值 30px / 500 + `/ 100`;3px 进度条(轨道 `--line`,填充 `--ink`);未评估显示 17px `--muted` 的 `Not assessed` + 1px 虚线。分数不着色。**My learning 的反馈和 Stage 5 的 Assessment 使用同一个组件。**
+- **概览卡**:`--surface`,14px,内边距 24px;左:56px 黑色头像 + 姓名;右:4 项指标(数字 24px / 500,标签 13px `--muted`)。
+- **评分标签页**(Task fit / Language transfer / Scenario fit / Naturalness):4 列,选中项 2px `--brand` 底线;数值 24px / 500 + `/ 100`;3px 进度条(轨道 `--line`,填充 `--ink`);未评估显示 15px `--muted` 的 `Not assessed` + 1px 虚线。分数不着色。**My learning 的反馈和 Stage 5 的 Assessment 使用同一个组件。**
 - 免责说明 12–13px `--muted`,写明「描述这次对话,不是整体英语水平」。
 
 ### 9.6 图表
@@ -265,7 +270,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 ### 9.9 对话组件(Stage 4)
 
-- **消息行**:两列网格,左 56px 放角色标签(Partner / You,标签样式),右放 18px / 1.6 正文。靠角色标签区分说话人,不用气泡底色。
+- **消息行**:两列网格,左 56px 放角色标签(Partner / You,标签样式),右放 16px / 1.6 正文。靠角色标签区分说话人,不用气泡底色。
 - **纠正块** `Another way to say it`:`--surface` 块,14px 圆角,内边距 14×18;被更正的词用 `--brand` 下划线。
 - **阶段分隔**:1px 横线 + 阶段名(标签样式),如 Tension。
 - **目标卡**:默认 `--surface`;状态用文字(Used on your own / Modeled once / Not reached);当前目标用 `--brand` 描边;Reveal 为文字链接。
@@ -299,7 +304,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 **当前句与录音区**
 
-- 当前句 26px / 1.75,居中。识别偏差:多说的词用 `+ the`(`--muted`);被识别成别的词的原词加 1.5px `--ink` 虚线下划线,下方 小字 `recognized “helping”`。不用橙色。
+- 当前句 22px / 1.75,居中。识别偏差:多说的词用 `+ the`(`--muted`);被识别成别的词的原词加 1.5px `--ink` 虚线下划线,下方 小字 `recognized “helping”`。不用橙色。
 - 匹配状态一行:对勾图标 + mono(`96.2% of words matched · three-layer analysis eligible`)。
 - 操作行:`Listen`(次)、`Record again`(**主按钮,整屏唯一**)、`Replay mine`(次)、删除图标按钮(`--ink-3`,带 `aria-label`)、时长使用 UI 字体。`Back to segments` 只保留页面右上角,不再做第二个黑色大按钮。
 - 破坏性操作(Delete captured reference、Delete analysis、Delete practice record)一律用普通文字链接 `--ink-2`,不用红色;执行前二次确认。
@@ -308,7 +313,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 **三层标签页**
 
 - 用标签页(9.2),标签只写 Sound / Rhythm / Melody,去掉原来的对勾徽章。只有被锁定的层才显示锁图标和 `Locked`(如匹配率 60–85% 时 Rhythm / Melody 锁定)。
-- 每层顶部:H2 层名 + 一句 15px `--ink-3` 说明 + 右侧次按钮 `Notes`。
+- 每层顶部:H2 层名 + 一句 14px `--ink-3` 说明 + 右侧次按钮 `Notes`。
 - **Feedback / Tip 不再占右栏**,默认折叠在 `Notes` 里;展开后是 `--surface` 卡,左 Feedback、右 Tip。图表因此可以使用主列全宽。
 
 **Sound 层**
@@ -322,7 +327,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
   | 文本规则候选 | 实心浅色标签,不用虚线;状态在块标题里说一次,不在每个标记上重复 | `Possible reading · GA conditions` |
   | 已确认实现(后续) | 标签后加对勾 | `Confirmed` + 人工或检测器来源;本轮不出现 |
   原则:虚线在整套设计里只表示「不确定」(Rhythm 柱)和「参考声音」(Melody 线),**不再用于 Sound 候选**。候选来自文本和词典,与哪个声音无关,所以只有一份,不分 Reference / Your voice。Sound 不再呈现元音时长测量面板;录音尚未检查时用一行文字说明,不重复画一遍标记流。同一个 /t/ 的备选读法不画成同时发生;同一事件(如 d+j 融合)去重后只显示一个类别;不同位置的事件可以并存(如 button 同时有 `[ʔ]` 与 `n̩`)。`All` 下每个词位最多露出两个类别标记,其余折成独立的 `+N` 按钮,点击或 Enter / Space 在解释卡展开完整类别列表,再次点击收起;同类候选不重复占名额,详情保留所有候选;连读弧单独占边界。
-- **双行 Sound 块**(以用户后续浏览器反馈为准):`Reference` + `Reading cues · GA conditions`、`Your voice` + `Practice targets · not checked`;词流 19px,词间距 12×6px,自动换行。两行均为原文／词典提示,不暗示两条录音都已检测;旧 take 缺少参考分析时明确提示。点击词选中(`--surface` 底),**解释卡紧贴所选行下方**。遮盖块由原词同字体实际宽度决定,按钮保留触控面积;两行同步逐词揭示,计数不重复。Review 保留 Ref cues / Your targets 两条提示轨,与声学证据可用性分开。
+- **双行 Sound 块**(以用户后续浏览器反馈为准):`Reference` + `Reading cues · GA conditions`、`Your voice` + `Practice targets · not checked`;词流 18px,词间距 12×6px,自动换行。两行均为原文／词典提示,不暗示两条录音都已检测;旧 take 缺少参考分析时明确提示。点击词选中(`--surface` 底),**解释卡紧贴所选行下方**。遮盖块由原词同字体实际宽度决定,按钮保留触控面积;两行同步逐词揭示,计数不重复。Review 保留 Ref cues / Your targets 两条提示轨,与声学证据可用性分开。
 - **没有独立图例**。每个 chip 左侧带一个色块(圆点,选中时加白圈)和该句的候选数(如 `‿ Linking 2`;只是候选数,不是发生次数);为 0 的 chip 变灰但仍可点,点后显示空状态。chip 的 `title` 带类别说明和例句(如 `Coalescence: two sounds blend into one · did you → dʒ`);选中某类时,筛选行下方一行 mono 显示同一句。
 - **Learning target 行**:`Learning target · General American · select a word or linking arc for its explanation` + 次按钮 `Hide text` / `Show text`。隐藏时参考词变成 `--line-soft` 词块,点击单个词逐个揭示;隐藏状态下,子类、面板、解释卡、tooltip 和 aria-label 都不得泄漏词的内容(面板里的词和音标用 `••••` 代替)。
 - **空状态**(候选为空与音频未检查可以同时成立,分别显示,不合并成 `No X in this sentence`):
@@ -441,7 +446,7 @@ Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组�
 
 - 宽 880px(最大 100%),圆角 14px,白底,无阴影;外层蒙层 `rgba(12,10,9,.45)`;最大高度约 92vh,内容区单独滚动。右上角关闭为圆形图标按钮(`aria-label="Close"`);Esc 和点击蒙层也可关闭;焦点困在弹窗内,关闭后回到触发处。
 - 顶部(不随内容滚动):标签样式 `Corpus detail`、H2 标题(规范化学习词条)、元信息(`kind · level · register · tags`)。
-- 原文上下文卡(`--surface`,12px 圆角,内边距 16×20):标签样式 `Original context` + 视频标题(14px / 500)+ 右侧次按钮 `▶ 0:38`(播放该句,时间写 `0:38`,不带毫秒);上一句 / 下一句 14px `--muted`;当前句 17px / 1.65,**选中的短语用 2px `--brand` 下划线(chunk 实线,idiom 虚线)**,不再用蓝色竖条和蓝色高亮底。
+- 原文上下文卡(`--surface`,12px 圆角,内边距 16×20):标签样式 `Original context` + 视频标题(14px / 500)+ 右侧次按钮 `▶ 0:38`(播放该句,时间写 `0:38`,不带毫秒);上一句 / 下一句 14px `--muted`;当前句 16px / 1.65,**选中的短语用 2px `--brand` 下划线(chunk 实线,idiom 虚线)**,不再用蓝色竖条和蓝色高亮底。
 - 标签页 `Explain / Syntax` 吸顶(`position: sticky`),选中项紫色下划线(9.2)。
 
 **Explain 内容顺序**(区块之间 1px `--line-soft` 分隔,上下内边距 16px；按 2026-11-06 确认保留当前实现)
