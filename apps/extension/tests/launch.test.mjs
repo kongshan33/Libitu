@@ -102,18 +102,18 @@ function harness() {
   return { state, calls, tabs, records, listeners, dispatch, restart };
 }
 
-test("both entry points wait for bounded caption capture before opening Stage 1", async () => {
+test("Stage 1 opens while browser captions are still pending", async () => {
   const h = harness();
   let finishCaptions;
   h.state.captions = new Promise((resolve) => { finishCaptions = resolve; });
   const opening = h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
   await nextTurn();
-  assert.equal(h.calls.some(([type]) => type === "open"), false);
-  finishCaptions({ ...snapshot, transcriptText: "0:01\tCaptured before the page opened." });
+  assert.equal(h.calls.some(([type]) => type === "open"), true);
+  finishCaptions({ ...snapshot, transcriptText: "0:01\tCaptured while the page loaded." });
   const opened = await opening;
   assert.equal(opened.opened, true);
   await nextTurn();
-  assert.ok(h.calls.findIndex(([type]) => type === "LIBITU_GET_YOUTUBE_SNAPSHOT") < h.calls.findIndex(([type]) => type === "open"));
+  assert.equal(h.calls.filter(([type]) => type === "LIBITU_GET_YOUTUBE_SNAPSHOT").length, 1);
   const stage = h.tabs.get(2);
   const url = new URL(stage.url);
   assert.equal(url.searchParams.get("sourceUrl"), video.url);
@@ -122,7 +122,7 @@ test("both entry points wait for bounded caption capture before opening Stage 1"
   assert.equal(url.searchParams.has("contentId"), false);
   const handoffId = url.searchParams.get("handoffId");
   const reading = h.dispatch({ type: "LIBITU_READ_HANDOFF", handoffId }, { tab: stage, frameId: 0, url: stage.url });
-  assert.equal((await reading).transcriptText, "0:01\tCaptured before the page opened.");
+  assert.equal((await reading).transcriptText, "0:01\tCaptured while the page loaded.");
   h.listeners.click(video);
   await nextTurn();
   assert.equal(h.calls.filter(([type]) => type === "open").length, 1);
@@ -199,16 +199,16 @@ const json3Track = {
   events: [{ tStartMs: 1040, dDurationMs: 850, segs: [{ utf8: "A" }, { utf8: " caption.", tOffsetMs: 120 }] }]
 };
 
-test("JSON3 acquisition completes before opening Stage 1, persists safe timing, and skips DOM capture", async () => {
+test("pending JSON3 is shared with the open import tab and skips DOM capture", async () => {
   const h = harness();
   let finish;
   h.state.captionTrack = new Promise((resolve) => { finish = resolve; });
   const opening = h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
   await nextTurn();
-  assert.equal(h.calls.some(([type]) => type === "open"), false);
+  assert.equal(h.calls.some(([type]) => type === "open"), true);
   finish({ captionTrack: structuredClone(json3Track) });
   assert.equal((await opening).opened, true);
-  assert.ok(h.calls.findIndex(([type]) => type === "json3") < h.calls.findIndex(([type]) => type === "open"));
+
   const stage = h.tabs.get(2);
   const handoffId = new URL(stage.url).searchParams.get("handoffId");
   const reading = h.dispatch({ type: "LIBITU_READ_HANDOFF", handoffId }, { tab: stage, frameId: 0, url: stage.url });
@@ -233,7 +233,8 @@ test("automatic caption preparation is best-effort and restores a captions-off p
   assert.ok(h.calls.some(([type]) => type === "prepare"));
   finish({ captionTrack: structuredClone(json3Track) });
   assert.equal((await opening).opened, true);
-  assert.ok(h.calls.findIndex(([type]) => type === "restore") < h.calls.findIndex(([type]) => type === "open"));
+  await nextTurn();
+  assert.ok(h.calls.findIndex(([type]) => type === "restore") > h.calls.findIndex(([type]) => type === "open"));
 });
 
 test("block-only JSON3 remains usable without a DOM wait or invented offsets", async () => {
@@ -259,8 +260,12 @@ test("old JSON3 captures cannot attach after A to B to A navigation", async () =
   h.listeners.updated(1, { url: video.url });
   finish({ captionTrack: json3Track });
   const result = await opening;
-  assert.match(result.error, /changed while captions were loading/);
-  assert.equal(h.calls.some(([type]) => type === "open"), false);
+  assert.equal(result.opened, true);
+  const stage = h.tabs.get(2);
+  const handoffId = new URL(stage.url).searchParams.get("handoffId");
+  const handoff = await h.dispatch({ type: "LIBITU_READ_HANDOFF", handoffId }, { tab: stage, frameId: 0, url: stage.url });
+  assert.equal(handoff.captionTrack, undefined);
+  assert.equal(handoff.transcriptText, undefined);
   assert.equal(h.calls.some(([type]) => type === "LIBITU_GET_YOUTUBE_SNAPSHOT"), false);
 });
 
@@ -365,6 +370,9 @@ test("closing the import tab clears its captions but closing the source preserve
   const h = harness();
   await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
   const key = Object.keys(h.records).find((key) => key.startsWith("libituHandoff:"));
+  const stage = h.tabs.get(2);
+  await h.dispatch({ type: "LIBITU_READ_HANDOFF", handoffId: new URL(stage.url).searchParams.get("handoffId") },
+    { tab: stage, frameId: 0, url: stage.url });
   h.listeners.removed(1);
   await nextTurn();
   assert.ok(h.records[key]);
@@ -382,9 +390,10 @@ test("closing the source during capture never resurrects the removed handoff", a
   h.listeners.removed(1);
   await nextTurn();
   finish({ captionTrack: structuredClone(json3Track) });
-  assert.ok((await launching).error);
+  assert.ok((await launching).opened);
+  await nextTurn();
   assert.equal(Object.keys(h.records).filter((key) => key.startsWith("libituHandoff:")).length, 0);
-  assert.equal(h.calls.some(([type]) => type === "open"), false);
+  assert.equal(h.calls.some(([type]) => type === "open"), true);
 });
 
 test("handoff count and serialized byte budget evict oldest records", async () => {
@@ -404,7 +413,14 @@ test("handoff count and serialized byte budget evict oldest records", async () =
 test("oversized captions and storage failures return actionable errors and allow retry", async () => {
   const h = harness();
   h.state.captions = Promise.resolve({ ...snapshot, transcriptText: "x".repeat(4 * 1024 * 1024) });
-  assert.match((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).error, /too large/);
+  await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" });
+  const stage = h.tabs.get(2);
+  const handoffId = new URL(stage.url).searchParams.get("handoffId");
+  const result = await h.dispatch({ type: "LIBITU_READ_HANDOFF", handoffId }, { tab: stage, frameId: 0, url: stage.url });
+  assert.match(result.error, /too large/);
+  h.tabs.delete(2);
+  h.listeners.removed(2);
+  await nextTurn();
   h.state.captions = Promise.resolve({ ...snapshot, transcriptText: "0:01\tRetry captions" });
   h.state.failStorage = true;
   assert.match((await h.dispatch({ type: "LIBITU_OPEN_STAGE_ONE" })).error, /could not store/);

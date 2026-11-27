@@ -322,7 +322,25 @@ export async function resolveLearningSource(source: StageOneSource, signal?: Abo
   let transcriptText = source.transcriptText;
   let captionTrack = readCaptionTrack(source.captionTrack);
   if (source.handoffId && (!transcriptText || !captionTrack)) {
-    const captions = await readExtensionCaptions(source.handoffId, signal);
+    const handoff = readExtensionCaptions(source.handoffId, signal);
+    const canonical = canonicalVideoSource(source.sourceUrl);
+    const videoId = canonical && new URL(canonical).searchParams.get("v");
+    if (videoId) {
+      const lookup = new AbortController();
+      const abortLookup = () => lookup.abort();
+      signal?.addEventListener("abort", abortLookup, { once: true });
+      try {
+        const cached = request<{ content_id: string; source_url: string } | null>(
+          `/api/content/youtube/${videoId}/timed-practice`, { signal: lookup.signal, cache: "no-store" }
+        ).catch(() => null);
+        const hit = await Promise.race([cached, handoff.then(() => null)]);
+        if (hit && canonicalVideoSource(hit.source_url) === canonical) return hit;
+      } finally {
+        lookup.abort();
+        signal?.removeEventListener("abort", abortLookup);
+      }
+    }
+    const captions = await handoff;
     transcriptText ??= captions.transcriptText;
     captionTrack ??= captions.captionTrack;
   }

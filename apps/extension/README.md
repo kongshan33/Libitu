@@ -22,7 +22,7 @@ It can:
 - Read the current video ID, canonical URL, and title without waiting for captions
 - Passively observe the player's current-video English JSON3 fetch/XHR responses from document start, retaining only sanitized millisecond events and segment offsets; if no usable response is observed, retain the existing timestamped DOM-caption fallback
 - Recover the content-script connection after an extension reload by injecting it into the active YouTube watch tab
-- Run bounded caption preflight before opening the import page, leave content/processing API work to the Web app, and focus the existing reader on repeated clicks
+- Open the import page alongside bounded caption capture, leave content/processing API work to the Web app, and focus the existing reader on repeated clicks
 - Hand browser captions to Stage 1 through a same-origin bridge and a 15-minute `chrome.storage.session` record, without putting transcript text in the URL
 - Let the import page resolve content identity, then let the content workspace read existing results, ensure missing work and explicitly retry failed generations
 - Keep the player button disabled with a hover reason for non-English or unknown-language videos, and show an action badge, title, and in-player message for unsupported toolbar clicks
@@ -62,7 +62,7 @@ After updating the unpacked extension, reload it at `chrome://extensions`, refre
 
 The observer keeps at most four current-video tracks / 4 MiB for 15 minutes and copies at most two responses concurrently. Each copy has a 2 MiB decoded-body limit and two-second read deadline; cancelling it never aborts the original player request. At most four pending XHR observations retain listeners, which are removed on completion, reuse, navigation or page exit. Navigation and page exit invalidate old response generations, including A-to-B-to-A changes. Word-offset tracks take precedence over block-only tracks. Only sanitized captions remain in page memory; no request headers or signed URLs are cached.
 
-Stage 1 opens after a bounded passive preflight following the existing lightweight metadata/language gate. The extension first checks observed page-memory captions and can wait up to six seconds for the observer's page event, without making a subtitle network request; it then uses the finite DOM-caption fallback and opens the import page. Server caption fallback belongs to subsequent processing. A response completed afterward becomes available on a later learner retry. Block-only JSON3 remains usable without invented offsets. Failed initial acquisition retains the existing server caption-text fallback, and a source-page navigation during the wait is rejected rather than attaching stale captions.
+After the video and English-language checks pass, the extension starts caption capture and opens the import tab concurrently. A ready cached player track skips caption controls. Otherwise the extension gives the observer 1.2 seconds, then the transcript panel up to 2.5 seconds. The import page can reuse a completed word-timed practice while the capture is pending. On a miss it consumes the handoff and the API checks for provider word offsets when browser timing is unavailable. Source navigation during capture discards stale captions.
 
 The same 15-minute session handoff returns `transcriptText` for compatibility and optional `captionTrack`:
 

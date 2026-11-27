@@ -108,7 +108,8 @@ def test_old_client_cannot_erase_matching_rich_caption_source(isolated_sources):
     resolve(text="0:01\tWe think about it.")
     assert store.content_caption_tracks[content.content_id] == source
     resolve(text="0:01\tThese are different words.")
-    assert content.content_id not in store.content_caption_tracks
+    assert store.content_caption_tracks[content.content_id] == source
+    assert store.content_transcripts[content.content_id] == caption_track_to_text(source)
 
 
 def test_mismatching_source_does_not_retime_existing_blueprint(isolated_sources):
@@ -117,6 +118,22 @@ def test_mismatching_source_does_not_retime_existing_blueprint(isolated_sources)
     original = blueprint_service.personalize_blueprint(store.blueprints[content.content_id], None)
     store.content_caption_tracks[content.content_id] = track()
     assert blueprint_service.personalize_blueprint(original, None).transcript == original.transcript
+
+
+def test_saved_word_timed_edition_replaces_untimed_display_and_sentence_lookup(isolated_sources):
+    content = resolve(text="0:01\tSpeaker: We think about it.")
+    job_service.create_or_resume_job(JobCreateRequest(content_id=content.content_id))
+    original = store.blueprints[content.content_id]
+    old = blueprint_service.personalize_blueprint(original, None)
+    source = track()
+    resolve(source)
+    store.blueprints[content.content_id] = original  # Durable semantic snapshot from the earlier import.
+    response = TestClient(app).get(f"/api/blueprints/{content.content_id}")
+    assert response.status_code == 200
+    row = response.json()["transcript"][0]
+    assert row["word_timings"] and row["parts"] == ["We think about it."]
+    assert blueprint_service.find_blueprint_sentence(original, row["id"]).start_ms == 1125
+    assert blueprint_service.find_blueprint_sentence(original, old.transcript[0].id) is None
 
 
 def test_queue_payload_roundtrips_raw_offsets_without_signed_urls(monkeypatch):
@@ -447,3 +464,27 @@ def test_required_result_reads_still_surface_failures(ready_optional_source, mon
         read = lambda: job_service.get_job(ready_optional_source.job.id)
     with pytest.raises(TimeoutError, match="Required result cache"):
         read()
+
+
+@pytest.mark.parametrize("cached", [False, True])
+def test_plain_url_import_reads_timed_source_once(monkeypatch, isolated_sources, cached):
+    from types import SimpleNamespace
+
+    if cached:
+        resolve(text="0:01\tSpeaker: We think about it.")
+    source = track()
+    probes = []
+    def probe(video_id, language, *, timed_only):
+        probes.append((video_id, timed_only))
+        return source
+
+    monkeypatch.setattr(content_resolver, "find_import_caption_track", probe)
+    monkeypatch.setattr(content_resolver, "get_settings", lambda: SimpleNamespace(queue_is_configured=True))
+    monkeypatch.setattr(processing_queue, "get_content", lambda *_: None)
+    monkeypatch.setattr(processing_queue, "save_content", lambda *_: None)
+    monkeypatch.setattr(processing_queue, "invalidate_content", lambda *_: None)
+    content = resolve()
+    resolve()
+    assert probes == [("captiontest", cached)]
+    assert store.content_caption_tracks[content.content_id] == source
+    assert store.content_transcripts[content.content_id] == caption_track_to_text(source)

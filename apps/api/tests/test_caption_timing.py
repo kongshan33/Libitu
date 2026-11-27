@@ -246,7 +246,7 @@ def test_rich_provider_fallback_preserves_duration_and_never_claims_word_offsets
         is_generated = False
 
     fetched = Fetched([SimpleNamespace(text="We agree.", start=1.234, duration=2.345)])
-    monkeypatch.setattr(youtube_transcript, "YouTubeTranscriptApi", lambda: SimpleNamespace(fetch=lambda *args, **kwargs: fetched))
+    monkeypatch.setattr(youtube_transcript, "YouTubeTranscriptApi", lambda **_: SimpleNamespace(list=lambda _: SimpleNamespace(find_transcript=lambda _: SimpleNamespace(fetch=lambda: fetched))))
     source = youtube_transcript.fetch_youtube_caption_track("test-video")
     assert source.version == "youtube-snippets-v1" and source.kind == "manual"
     assert source.events[0].tStartMs == 1234 and source.events[0].dDurationMs == 2345
@@ -260,7 +260,7 @@ def test_rich_provider_fallback_preserves_duration_and_never_claims_word_offsets
 @pytest.mark.parametrize("start,duration", [(float("nan"), 1), (float("inf"), 1), (-1, 1), (1, -1)])
 def test_provider_bad_timing_fails_safely(monkeypatch, start, duration):
     fetched = [SimpleNamespace(text="private words", start=start, duration=duration)]
-    monkeypatch.setattr(youtube_transcript, "YouTubeTranscriptApi", lambda: SimpleNamespace(fetch=lambda *args, **kwargs: fetched))
+    monkeypatch.setattr(youtube_transcript, "YouTubeTranscriptApi", lambda **_: SimpleNamespace(list=lambda _: SimpleNamespace(find_transcript=lambda _: SimpleNamespace(fetch=lambda: fetched))))
     with pytest.raises(youtube_transcript.TranscriptUnavailableError, match="invalid caption timing"):
         youtube_transcript.fetch_youtube_caption_track("test-video")
 
@@ -293,3 +293,22 @@ def test_caption_cue_spanning_segments_preserves_spoken_word_offsets():
     assert rows[0].text == "We agree."
     assert [(word.text, word.start_ms) for word in rows[0].word_timings] == [("We", 1334), ("agree.", 1734)]
     assert caption_track_matches_text(source, "0:01\tWe agree.", "en")
+
+
+def test_srv3_provider_track_keeps_offsets_and_rejects_wrong_video(monkeypatch):
+    from contextlib import nullcontext
+
+    xml = b'<timedtext format="3"><body><p t="400" d="1600" w="1"><s>We</s><s t="340"> agree.</s></p></body></timedtext>'
+    url = "https://www.youtube.com/api/timedtext?v=test-video&fmt=srv3"
+    with youtube_transcript._CaptionSession() as session:
+        calls = []
+
+        def get(request_url, **kwargs):
+            calls.append(request_url)
+            return nullcontext(SimpleNamespace(status_code=200, iter_content=lambda _: [xml]))
+
+        monkeypatch.setattr(session, "get", get)
+        assert youtube_transcript._read_srv3(session, url, "wrong-video", "en") is None
+        track = youtube_transcript._read_srv3(session, url, "test-video", "en")
+    assert calls == [url]
+    assert [w.start_ms for w in format_track(track)[0].word_timings] == [400, 740]

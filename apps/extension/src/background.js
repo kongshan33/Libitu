@@ -56,7 +56,7 @@ void (async () => {
   }
   await handoffOperation(() => {});
 })().catch(() => {});
-const CAPTION_OBSERVER_WAIT_MS = 6_000;
+const CAPTION_OBSERVER_WAIT_MS = 1_200;
 const SUPPORTED_LANGUAGE_BASES = new Set(["en"]);
 const ENGLISH_ONLY_MESSAGE = "Libitu currently supports English videos only.";
 const UNKNOWN_LANGUAGE_MESSAGE = "Libitu could not verify that this video is in English.";
@@ -83,7 +83,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     for (const [key, record] of Object.entries(records)) {
       // Ready captions can still be imported after closing the source video.
       if (key.startsWith(HANDOFF_PREFIX) && (record.stageTabId === tabId
-        || (record.sourceTabId === tabId && !record.stageTabId))) await chrome.storage.session.remove(key);
+        || (record.sourceTabId === tabId && (record.status !== "ready" || !record.stageTabId)))) await chrome.storage.session.remove(key);
     }
   }).catch(() => {});
 });
@@ -172,18 +172,9 @@ async function openStageOne(tab, videoId) {
     status: "pending"
   };
   await writeHandoff(id, record, true);
-  // Give the YouTube player a bounded opportunity to finish its caption
-  // request before opening Stage 1. This removes the common click-time race
-  // while retaining the existing DOM/provider fallback after the deadline.
-  const captured = await capture(record);
-  if (captured?.stale) {
-    throw new Error("The YouTube video changed while captions were loading. Try again.");
-  }
-  const current = (await chrome.storage.session.get(HANDOFF_PREFIX + id))[HANDOFF_PREFIX + id];
-  if (!current || current.snapshot.videoId !== videoId
-    || (navigationVersions.get(tab.id)?.version ?? 0) !== navigationVersion) {
-    throw new Error("The YouTube video changed while captions were loading. Try again.");
-  }
+  // The import page joins this same capture through its pending handoff.
+  // Start it while the source tab is active, without delaying the new tab.
+  void capture(record).catch(() => {});
   const params = new URLSearchParams({
     sourceUrl: snapshot.canonicalUrl,
     title: snapshot.title,
@@ -349,7 +340,7 @@ function capture(record) {
         try {
           const prepared = await withTimeout(chrome.scripting.executeScript({
             target: { tabId: record.sourceTabId }, world: "MAIN",
-            args: [record.snapshot.videoId], func: prepareYouTubeCaptions
+            args: [record.snapshot.videoId, record.snapshot.language], func: prepareYouTubeCaptions
           }), 2_500);
           captionPreparation = prepared?.[0]?.result;
         } catch { /* Automatic caption enabling is best-effort. */ }
@@ -425,7 +416,7 @@ function capture(record) {
 // action when an English automatic track is advertised. It does not read or
 // reconstruct the track URL, and the caller restores the previous caption
 // state after the player has had a chance to request JSON3.
-async function prepareYouTubeCaptions(expectedVideoId) {
+async function prepareYouTubeCaptions(expectedVideoId, language) {
   const current = () => {
     try {
       const url = new URL(window.location.href);
@@ -434,6 +425,9 @@ async function prepareYouTubeCaptions(expectedVideoId) {
     } catch { return false; }
   };
   if (!current()) return { status: "stale" };
+  if (globalThis.__libituCaptionObserverV1?.read?.(expectedVideoId, language)?.status === "ready") {
+    return { status: "already_observed" };
+  }
   const parse = (value) => {
     if (value && typeof value === "object") return value;
     if (typeof value !== "string") return undefined;

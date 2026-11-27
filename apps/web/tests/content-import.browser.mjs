@@ -32,6 +32,8 @@ try {
       pending.push(route);
       resolveReceived(route);
     });
+    await page.route("**/api/content/youtube/*/timed-practice", route =>
+      route.fulfill({ headers, json: null }));
     await page.goto(`${origin}/practice/import?sourceUrl=${encodeURIComponent(shadowBlueprint.source_url)}&handoffId=matching-handoff`);
     await page.waitForFunction(() => typeof window.__releaseImportCaptions === "function");
     const skeleton = page.locator('.reader-shell[aria-busy="true"]');
@@ -61,6 +63,12 @@ try {
     assert.equal(new URL(page.url()).search, "");
     assert.deepEqual(state.errors, []);
     console.log(`Import handoff/resolve skeleton, reduced motion, media isolation and retry passed at ${width}px`);
+    await page.route("**/api/content/youtube/*/timed-practice", route =>
+      route.fulfill({ headers, json: { content_id: fixtureContentId, source_url: shadowBlueprint.source_url } }));
+    await page.goto(`${origin}/practice/import?sourceUrl=${encodeURIComponent(shadowBlueprint.source_url)}&handoffId=slow-capture`);
+    await page.waitForURL(`${origin}/practice/${fixtureContentId}`);
+    await page.getByRole("button", { name: "Choose a segment to shadow", exact: true }).waitFor();
+    assert.equal(pending.length, 2, "a timed practice opens without another resolve or releasing captions");
     await context.close();
   }
 } finally { await browser.close(); }

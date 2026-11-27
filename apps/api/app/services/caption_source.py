@@ -1,5 +1,6 @@
 """Caption provenance and reload support, separate from semantic analysis/media."""
 
+from collections.abc import Iterable
 from hashlib import sha256
 import logging
 import re
@@ -7,9 +8,9 @@ import re
 from app.config import get_settings
 from app.integrations import processing_queue
 from app.integrations.supabase_repository import get_supabase_repository
-from app.schemas.captions import CaptionTrack
+from app.schemas.captions import CaptionTrack, CaptionWordTiming
 from app.services import store
-from app.services.transcript_formatter import filter_filler_tokens, parse_transcript
+from app.services.transcript_formatter import caption_track_matches_text, filter_filler_tokens, parse_caption_track, parse_transcript
 
 
 logger = logging.getLogger(__name__)
@@ -26,9 +27,23 @@ def transcript_signature(text: str) -> tuple[str, ...]:
     return tuple(re.findall(r"\w+(?:'\w+)*", text))
 
 
-def get_caption_track(content_id: str, *, include_durable: bool = True) -> CaptionTrack | None:
+def has_highlight_interval(words: Iterable[CaptionWordTiming]) -> bool:
+    return any(word.end_ms is not None and 0 < word.end_ms - word.start_ms <= 2000 for word in words)
+
+
+def has_word_intervals(track: CaptionTrack | None) -> bool:
+    if track is None or track.version != "youtube-json3-v1":
+        return False
+    return has_highlight_interval(
+        word for row in parse_caption_track(track, track.language) for word in row.word_timings or []
+    )
+
+
+def get_caption_track(content_id: str, *, include_durable: bool = True, verify_source: bool = False) -> CaptionTrack | None:
     track = store.content_caption_tracks.get(content_id)
     if track is not None:
+        if verify_source and not caption_track_matches_text(track, store.content_transcripts.get(content_id, ""), track.language):
+            return None
         return track
     if not get_settings().queue_is_configured:
         return None
@@ -44,5 +59,8 @@ def get_caption_track(content_id: str, *, include_durable: bool = True) -> Capti
         logger.warning("Optional caption timing read failed: %s", type(error).__name__)
         return None
     if queued is not None and queued.caption_track is not None:
-        return queued.caption_track
+        track = queued.caption_track
+        if verify_source and not caption_track_matches_text(track, queued.transcript_text or "", track.language):
+            return None
+        return track
     return None

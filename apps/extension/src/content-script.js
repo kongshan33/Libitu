@@ -101,7 +101,7 @@ async function readTranscriptText(isCurrent) {
   const transcriptButton = findTranscriptButton();
   if (transcriptButton) {
     transcriptButton.click();
-    transcript = await waitForTranscript(6000, isCurrent);
+    transcript = await waitForTranscript(2500, isCurrent);
   }
   return transcript;
 }
@@ -196,13 +196,13 @@ function refreshEntry() {
     entryButton.addEventListener("click", async () => {
       entryButton.disabled = true;
       entryButton.dataset.state = "capturing";
-      entryButton.title = "Preparing captions before opening Libitu…";
+      entryButton.title = "Opening Libitu…";
       entryStatus.dataset.mode = "progress";
       entryStatus.textContent = "";
       const pendingStatus = entryStatus;
       const progressTimer = setTimeout(() => {
         if (entryStatus === pendingStatus && entryButton.dataset.state === "capturing") {
-          pendingStatus.textContent = "Waiting for YouTube captions before opening Libitu…";
+          pendingStatus.textContent = "Opening your practice page…";
         }
       }, 600);
       try {

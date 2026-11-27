@@ -4,10 +4,11 @@ from uuid import NAMESPACE_URL, uuid5
 
 from app.config import get_settings
 from app.integrations import processing_queue
+from app.integrations.youtube_transcript import find_import_caption_track
 from app.integrations.supabase_repository import get_supabase_repository
 from app.schemas.content import ContentKind, ContentResolveRequest, ContentResolveResponse
 from app.services import store
-from app.services.caption_source import transcript_signature
+from app.services.caption_source import has_word_intervals, transcript_signature
 from app.services.transcript_formatter import caption_track_matches_text, caption_track_to_text
 
 
@@ -24,10 +25,22 @@ def resolve_content(payload: ContentResolveRequest) -> ContentResolveResponse:
     previous_transcript = store.content_transcripts.get(content_id) or (queued.transcript_text if queued else None)
     previous_track = store.content_caption_tracks.get(content_id) or (queued.caption_track if queued else None)
     track = payload.caption_track
+    if (settings.queue_is_configured and payload.kind == ContentKind.youtube
+        and not has_word_intervals(track)
+        and not has_word_intervals(previous_track)):
+        track = find_import_caption_track(
+            normalized_key.removeprefix("youtube:"), payload.language, timed_only=bool(previous_transcript or track or payload.transcript_text),
+        ) or track
     transcript = (caption_track_to_text(track) if track is not None else payload.transcript_text or "").strip()
     if not transcript:
         transcript = (payload.transcript_text or previous_transcript or "").strip()
         track = None
+    if (previous_track is not None and previous_track != track
+        and normalized_key == f"youtube:{previous_track.video_id}"
+        and (previous_track.language or "").lower().split("-")[0] == (payload.language or "en").lower().split("-")[0]
+        and has_word_intervals(previous_track) and not has_word_intervals(track)):
+        track = previous_track
+        transcript = caption_track_to_text(track)
     if track is None and previous_track is not None and caption_track_matches_text(previous_track, transcript, payload.language):
         track = previous_track
     text_changed = bool(transcript and (

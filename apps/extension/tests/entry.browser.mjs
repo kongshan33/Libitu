@@ -80,6 +80,13 @@ try {
   await youtube.screenshot({ path: "/tmp/libitu-youtube-entry-desktop.png", fullPage: true });
   await youtube.evaluate(async () => { await fetch("/api/timedtext?v=first-video&lang=en&fmt=json3").then(response => response.json()); });
   await youtube.waitForFunction(() => globalThis.__libituCaptionObserverV1?.read("first-video", "en").status === "ready");
+  await worker.evaluate(() => {
+    chrome.tabs.onCreated.addListener(function recordOpen(tab) {
+      if (!(tab.pendingUrl || tab.url || "").startsWith("http://localhost:3000/practice/import")) return;
+      globalThis.__importTabCreated = Date.now();
+      chrome.tabs.onCreated.removeListener(recordOpen);
+    });
+  });
   const startedAt = Date.now();
   const opened = context.waitForEvent("page", { timeout: 45_000 }).catch(() => null);
   await button.click();
@@ -100,6 +107,8 @@ try {
   await stage.evaluate(() => window.requestCaptions());
   await stage.waitForFunction(() => window.handoff?.phase === "ready");
   assert.equal(await stage.evaluate(() => window.handoff.transcriptText), "0:01.000\tFirst video captions.");
+  const tabOpenMs = (await worker.evaluate(() => globalThis.__importTabCreated)) - startedAt;
+  assert.ok(Number.isFinite(tabOpenMs) && tabOpenMs >= 0);
   const firstViewMs = Date.now() - startedAt;
   step = "reuse pending import";
   const pagesBefore = context.pages().length;
@@ -195,7 +204,7 @@ try {
   await stage.screenshot({ path: "/tmp/libitu-stage-one-entry-mobile.png", fullPage: true });
   assert.equal(await stage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ firstViewMs, checks: "real unpacked extension, English-only gate, SPA entry, v4 import handoff, canonical tab reuse, mobile" }));
+  console.log(JSON.stringify({ tabOpenMs, firstViewMs, checks: "real unpacked extension, English-only gate, SPA entry, v4 import handoff, canonical tab reuse, mobile" }));
 } catch (error) {
   console.error("Failed step:", step);
   for (const page of context.pages()) {

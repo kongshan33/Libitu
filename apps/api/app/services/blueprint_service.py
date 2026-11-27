@@ -26,7 +26,7 @@ from app.schemas.blueprint import (
 from app.schemas.content import ContentResolveResponse
 from app.schemas.captions import CaptionTrack
 from app.services import store
-from app.services.caption_source import caption_fingerprint, get_caption_track
+from app.services.caption_source import caption_fingerprint, get_caption_track, has_highlight_interval
 from app.services.transcript_formatter import (
     ParsedTranscriptLine,
     merge_transcript_fragments,
@@ -307,20 +307,14 @@ def _with_unified_sentences(
 
     if not blueprint.transcript:
         return blueprint
+    already_timed = has_highlight_interval(word for row in blueprint.transcript for word in row.word_timings or [])
     track = (
-        get_caption_track(blueprint.content_id, include_durable=blueprint.caption_fingerprint is None)
+        get_caption_track(blueprint.content_id, include_durable=not already_timed, verify_source=True)
         if caption_track is _AUTO_CAPTION_TRACK else cast(CaptionTrack | None, caption_track)
     )
     fingerprint = caption_fingerprint(track) if track is not None else None
     if fingerprint is not None and fingerprint == blueprint.caption_fingerprint:
         return blueprint
-    # Timing upgrades may reuse semantic analysis only for the very same spoken
-    # source words. A different caption track must never retime unrelated evidence.
-    if track is not None and not caption_track_matches_text(
-        track, "\n".join(_transcript_text(line) for line in blueprint.transcript), track.language,
-    ):
-        track = None
-        fingerprint = None
     if track is None and (
         blueprint.segmentation_version
         and blueprint.segmentation_version.startswith((f"{SEGMENTATION_VERSION}-", "sentence-v3-"))
@@ -334,6 +328,18 @@ def _with_unified_sentences(
             _sentence_views.move_to_end(key)
             return _sentence_views[key]
         result = build_caption_timing_view(blueprint, track)
+        candidate_timed = has_highlight_interval(word for row in result.transcript for word in row.word_timings or [])
+        if already_timed and not candidate_timed:
+            return blueprint
+        if track is not None and not caption_track_matches_text(
+            track, "\n".join(_transcript_text(line) for line in blueprint.transcript), track.language,
+        ):
+            # A different edition can supply its own display text and timing only
+            # when it is the saved English source for this exact YouTube content.
+            if (not candidate_timed or already_timed
+                or (track.language or "").lower().split("-")[0] != "en"
+                or str(uuid5(NAMESPACE_URL, f"youtube:{track.video_id}")) != blueprint.content_id):
+                return blueprint
         _sentence_views[key] = result
         while len(_sentence_views) > _MAX_SENTENCE_VIEWS:
             _sentence_views.popitem(last=False)
@@ -385,7 +391,10 @@ def find_blueprint_sentence(blueprint: Blueprint, sentence_id: str) -> Transcrip
     if track is not None and not caption_track_matches_text(
         track, "\n".join(_transcript_text(line) for line in blueprint.transcript), track.language,
     ):
-        return None
+        current = _with_unified_sentences(blueprint)
+        if current.caption_fingerprint != caption_fingerprint(track):
+            return None
+        return next((row for row in current.transcript if row.id == sentence_id), None)
     current = _with_unified_sentences(blueprint, caption_track=track)
     line = next((row for row in current.transcript if row.id == sentence_id), None)
     if line is not None:

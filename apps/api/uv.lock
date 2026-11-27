@@ -769,6 +769,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "certifi" },
     { name = "clerk-backend-api" },
+    { name = "defusedxml" },
     { name = "en-core-web-sm" },
     { name = "fastapi" },
     { name = "httpx" },
@@ -776,6 +777,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "python-multipart" },
     { name = "python-socks" },
+    { name = "requests" },
     { name = "sherpa-onnx" },
     { name = "sherpa-onnx-core" },
     { name = "spacy" },
@@ -801,6 +803,7 @@ dev = [
 requires-dist = [
     { name = "certifi", specifier = ">=2024.7.4" },
     { name = "clerk-backend-api", specifier = ">=6.0.1" },
+    { name = "defusedxml", specifier = ">=0.7,<1" },
     { name = "en-core-web-sm", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "faster-whisper", marker = "extra == 'acoustics'", specifier = "==1.2.1" },
@@ -814,6 +817,7 @@ requires-dist = [
     { name = "python-multipart", specifier = "==0.0.32" },
     { name = "python-socks", extras = ["asyncio"], specifier = ">=2.7,<3" },
     { name = "pywavelets", marker = "extra == 'acoustics'", specifier = "==1.8.0" },
+    { name = "requests", specifier = ">=2.32,<3" },
     { name = "sherpa-onnx", specifier = ">=1.13.6,<2" },
     { name = "sherpa-onnx-core", specifier = ">=1.13.6,<2" },
     { name = "spacy", specifier = "==3.8.16" },
