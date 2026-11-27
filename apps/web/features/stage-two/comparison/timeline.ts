@@ -52,6 +52,34 @@ export function wordColumnWidth(column: TimelineColumn, zoom: number, labelWidth
   return Math.min(columnWidth(column, zoom, labelWidth), Math.max(48, Math.ceil(labelWidth) + 20, wordDuration * zoom));
 }
 
+export function wordHighlightWidth(column: TimelineColumn, zoom: number, wordPx: number, voices: readonly TimelineVoiceName[] = ['reference', 'yours']) {
+  // Keep Rhythm/Melody highlights tight to measured word duration so minimum
+  // readable label padding and trailing gaps are not painted as active speech.
+  const durations = voices.flatMap(v => column[v].duration === null ? [] : [column[v].duration]);
+  if (!durations.length) return wordPx;
+  return Math.min(wordPx, Math.max(4, Math.max(...durations) * zoom));
+}
+
+export function timelinePlayheadX(columns: TimelineColumn[], voice: TimelineVoiceName, timeMs: number, zoom: number, labels: number[]): number | null {
+  if (!Number.isFinite(timeMs) || timeMs < 0) return null;
+  const timeSec = timeMs / 1000;
+  let left = 0;
+  for (let i = 0; i < columns.length; i++) {
+    const column = columns[i];
+    const evidence = column[voice];
+    const width = columnWidth(column, zoom, labels[i]);
+    if (evidence.duration !== null) {
+      const start = evidence.start;
+      const end = start + (evidence.duration + evidence.gap) / 1000;
+      if (timeSec >= start && timeSec < end) {
+        return Math.min(left + width, left + (timeSec - start) * 1000 * zoom);
+      }
+    }
+    left += width;
+  }
+  return null;
+}
+
 export function fitTimelineZoom(columns: TimelineColumn[], labels: number[], available: number) {
   const width = (zoom: number) => columns.reduce((sum, column, i) => sum + columnWidth(column, zoom, labels[i]), 0);
   if (available <= width(.06)) return .06;
