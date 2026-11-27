@@ -52,3 +52,5 @@ __pycache__/
 .ruff_cache/
 .venv/
 .models
+# Tiko coordinator state, if a state directory is ever created inside this repository
+.tiko/
