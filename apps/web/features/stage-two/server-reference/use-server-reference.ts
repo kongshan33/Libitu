@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SentenceUnit } from "@libitu/types/stage-two";
+import { toast } from "@/components/ui/Toast";
 import type { ReferenceApi, ServerReference } from "./api";
 
 export function useServerReference(api: ReferenceApi | undefined, content: string, segment: string,
@@ -136,14 +137,21 @@ export function useServerReference(api: ReferenceApi | undefined, content: strin
         setAudioSource(null);
         for (const url of urls.current.values()) URL.revokeObjectURL(url);
         urls.current.clear();
+        toast.success("File reference deleted");
       } else {
-        const row = typeof action === "string" ? await api.control(reference.id, action, controller.signal)
-          : await api.upload(reference.id, action, controller.signal);
+        const isFileUpload = typeof action !== "string";
+        const row = isFileUpload ? await api.upload(reference.id, action, controller.signal)
+          : await api.control(reference.id, action, controller.signal);
         setReference(row);
+        if (isFileUpload) toast.success("Reference file uploaded");
         if (row.state === "queued") setRevision(value => value + 1);
       }
     } catch (failure) {
-      if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "Reference request failed.");
+      if (!controller.signal.aborted) {
+        const message = failure instanceof Error ? failure.message : "Reference request failed.";
+        setError(message);
+        toast.error(typeof action !== "string" ? "Reference upload failed" : "Reference request failed", { description: message });
+      }
     } finally { if (!controller.signal.aborted) setBusy(false); }
   }
   async function play() {

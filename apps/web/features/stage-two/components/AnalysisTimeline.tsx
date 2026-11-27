@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import type { PracticeAnalysis } from '../persistence/practice-api';
+import type { PracticeAnalysis, SignalProsody } from '../persistence/practice-api';
 import type { ComparisonView } from '../comparison/view';
 import { columnWidth, wordColumnWidth, envelopePath, fitTimelineZoom, timelinePitchPath, timelineColumns, timelineTicks, type TimelineVoice } from '../comparison/timeline';
 import { useAnalysisSelection } from '../comparison/AnalysisSelection';
@@ -18,11 +18,14 @@ const name = (voice: VoiceName) => voice === 'reference' ? 'Reference' : 'You';
 const duration = (voice: TimelineVoice) => voice.duration === null ? 'unavailable' : `${Math.round(voice.duration)} ms`;
 const prominence = (voice: TimelineVoice) => voice.prominence === null ? 'not evaluated' : `${voice.prominence.toFixed(2)}${voice.uncertain ? ' (uncertain)' : ''}`;
 
-export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls = false, playback, concealed:concealedProp, onConcealedChange }: {
+export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls = false, referenceOnly = false, referenceSignal, playback, concealed:concealedProp, onConcealedChange, reserveSoundLane = layers.includes('sound') }: {
   view: ComparisonView; data: PracticeAnalysis | null; layers: PracticeLayer[]; sentenceId: string; voiceControls?: boolean;
+  referenceOnly?: boolean; referenceSignal?: SignalProsody | null;
   playback?: ComparisonPlayback;concealed?:boolean;onConcealedChange?(value:boolean):void;
+  /** Review keeps cue room while layers toggle; single-layer Rhythm/Melody use word labels only. */
+  reserveSoundLane?: boolean;
 }) {
-  const columns = useMemo(() => timelineColumns(view, data), [view, data]);
+  const columns = useMemo(() => timelineColumns(view, data, referenceSignal), [view, data, referenceSignal]);
   const marks = useMemo(() => soundMarks(view), [view]);
   const { selected, select } = useAnalysisSelection(sentenceId);
   const playing = usePlayingWord(view, playback);
@@ -43,7 +46,7 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
   // Reserve the bounded cue lane even at minimum zoom and when filtering.
   const labelWidths = columns.map((column, index) => Math.max(
     labelMeasurements?.words === wordsKey ? labelMeasurements.widths[index] : column.text.length * 16,
-    wordSoundCategories(marks,index,soundFilter).length>2?224:marks.some(m=>(m.candidate?.anchor?.token_index??m.start)===index)?180:100));
+    !reserveSoundLane ? 0 : wordSoundCategories(marks,index,soundFilter).length>2?224:marks.some(m=>(m.candidate?.anchor?.token_index??m.start)===index)?180:100));
   useEffect(() => {
     let cancelled = false;
     const measure = () => {
@@ -61,11 +64,18 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
     return () => { cancelled = true; };
   }, [wordsKey]);
   const scroll = useRef<HTMLDivElement>(null), buttons = useRef<(HTMLButtonElement | null)[]>([]);
+  // Open with the whole sentence fitted, never enlarged past 100%; label minimums keep words readable.
+  const initialFit = useRef(false);
+  useEffect(() => {
+    if (initialFit.current || labelMeasurements?.words !== wordsKey || !scroll.current?.clientWidth) return;
+    initialFit.current = true;
+    setZoom(Math.min(.18, Math.max(.06, fitTimelineZoom(columns, labelWidths, scroll.current.clientWidth))));
+  });
   const drag = useRef<{ x: number; left: number; moved: boolean; id: number } | null>(null);
   const suppressClick = useRef(false);
   const hasReference = columns.some(c => c.reference.duration !== null);
   const activeVoices = voices.filter(v => shown.includes(v) && (v === 'yours' || hasReference));
-  const visibleVoices = activeVoices.length ? activeVoices : ['yours'] as VoiceName[];
+  const visibleVoices: VoiceName[] = referenceOnly ? ['reference'] : activeVoices.length ? activeVoices : ['yours'];
   const sound = layers.includes('sound'), rhythm = layers.includes('rhythm'), melody = layers.includes('melody');
   const width = columns.reduce((sum, c, i) => sum + columnWidth(c, zoom, labelWidths[i]), 0);
   const ticks = visibleVoices.length === 1 ? timelineTicks(columns, zoom, labelWidths, visibleVoices[0]) : [];
@@ -172,6 +182,7 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
         </div>
       </div>
     </div>}
+    {(rhythm||melody)&&columns.length?<p className={styles.mono}>Word width follows duration. Drag to pan.</p>:null}
     {sound?<><p className={styles.mono}>Reference reading cues · Your voice practice targets · Not checked in either recording.</p>
       <SoundDetails id={explanationId} view={view} marks={marks} index={selected} markId={selectedMark} allowed={allowed} filter={soundFilter} voice={selectedMark||expandedMore===`${selectedSoundVoice}:${selected}`?selectedSoundVoice:undefined} expanded={expandedMore===`${selectedSoundVoice}:${selected}`} onClose={()=>{select(null);setSelectedMark(null);setExpandedMore(null);}}/></>:null}
     {selectedColumn && allowed(selectedColumn.index) && (rhythm||melody) ? <div className={styles.readout} aria-live="polite"><strong>{selectedColumn.text}</strong>

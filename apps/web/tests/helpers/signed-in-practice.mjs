@@ -4,7 +4,10 @@ export async function installSignedInPractice(page, { serverAnalysis = false } =
   await page.addInitScript(({serverAnalysis}) => {
     const owner = "practice-browser-fixture";
     // These suites exercise local media unless they explicitly request analysis.
-    try { localStorage.setItem(`libitu:server-analysis:v1:${owner}`, serverAnalysis ? 'on' : 'off'); }
+    try {
+      localStorage.setItem(`libitu:server-analysis:v1:${owner}`, serverAnalysis ? 'on' : 'off');
+      localStorage.setItem(`libitu:recording-retention:v1:${owner}`, 'off');
+    }
     catch { /* Opaque-origin fixture frames do not own the app preference. */ }
     const user = { id: owner, organizationMemberships: [] };
     const session = { id: "session-fixture", user, status: "active",

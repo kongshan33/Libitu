@@ -28,9 +28,9 @@ function voice(word: Word | undefined, next: Word | undefined, index: number, si
     frames: frames.filter(f => finite(f.time) && f.time >= start && f.time < end + gap / 1000).map(f => ({ ...f, time: f.time - start })) };
 }
 
-export function timelineColumns(view: ComparisonView, data: PracticeAnalysis | null): TimelineColumn[] {
+export function timelineColumns(view: ComparisonView, data: PracticeAnalysis | null, liveReferenceSignal?: SignalProsody | null): TimelineColumn[] {
   const result = data && ['completed', 'needs_review'].includes(data.state) ? data.result : null;
-  const referenceSignal = result?.comparison === 'available' ? result.reference?.rhythm_signal : null;
+  const referenceSignal = result?.comparison === 'available' ? result.reference?.rhythm_signal : liveReferenceSignal;
   const learnerSignal = result?.learner.rhythm_signal;
   const referenceFrames = signalFrames(referenceSignal), learnerFrames = signalFrames(learnerSignal);
   return view.yours.words.map((word, index) => {

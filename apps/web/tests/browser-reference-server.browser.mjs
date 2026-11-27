@@ -204,16 +204,18 @@ try {
   assert.equal(await page.getByText('Uploading the original audio for analysis.',{exact:true}).count(),0);
   assert.equal(prepares,0);assert.equal(uploads,0,'checking references is read-only');
   await page.locator('.stage-two-audio-settings > summary').click();
-  const analysisToggle=page.getByRole('checkbox',{name:'Server analysis',exact:true});
-  const retentionToggle=page.getByRole('checkbox',{name:'Keep new recordings in my account for later playback',exact:true});
+  const analysisToggle=page.getByRole('checkbox',{name:'Analyze new takes',exact:true});
+  const retentionToggle=page.getByRole('checkbox',{name:'Save audio for replay',exact:true});
   assert.equal(await page.locator('.stage-two-audio-settings input[type=checkbox]').count(),2);
   assert.equal(await analysisToggle.isChecked(),true,'server analysis defaults on');
-  assert.equal(await retentionToggle.isChecked(),false,'history audio retention stays separately off');
+  assert.equal(await retentionToggle.isChecked(),true,'replay storage defaults on');
   await analysisToggle.uncheck();
   assert.equal(await page.locator('.shadow-reference-guide').count(),0);
-  assert.equal(await retentionToggle.isChecked(),false);
+  assert.equal(await retentionToggle.isChecked(),true);
+  await retentionToggle.uncheck();
   await analysisToggle.check();
-  await page.getByRole('checkbox',{name:'Keep new recordings in my account for later playback',exact:true}).check();
+  assert.equal(await retentionToggle.isChecked(),false);
+  await retentionToggle.check();
   await page.locator('.shadow-reference-module[data-phase="off"]').waitFor();
   assert.equal(await page.getByText('Checking reference…',{exact:true}).count(),0);
   assert.equal(await page.locator('.shadow-reference-spinner').count(),0,'read-only recovery has no analysis loading state');
@@ -228,7 +230,7 @@ try {
   await page.getByText('Reference audio is off',{exact:true}).waitFor();
   assert.equal(prepares,0);assert.equal(uploads,0,'read-only recovery retry must not prepare or upload audio');
   await page.locator('.stage-two-audio-settings > summary').click();
-  await page.getByRole('checkbox',{name:'Server analysis',exact:true}).check();
+  await page.getByRole('checkbox',{name:'Analyze new takes',exact:true}).check();
   assert.equal(await page.getByRole('button',{name:'Record sentence',exact:true}).isDisabled(),false);
   await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('r');
   await page.getByText('Recording your voice',{exact:true}).waitFor();
@@ -290,8 +292,8 @@ try {
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     await panel.screenshot({path:join(artifacts,`browser-${layer.toLowerCase()}-${viewport.width}.png`)});
   }
-  await page.getByRole('checkbox',{name:'Server analysis',exact:true}).uncheck();
-  assert.equal(await page.locator('.practice-save-banner').count(),0,'all uploads finish before refreshing');await page.reload({waitUntil:'domcontentloaded',timeout:60000});await page.getByText('Reference audio ready',{exact:true}).waitFor();
+  await page.getByRole('checkbox',{name:'Analyze new takes',exact:true}).uncheck();
+  assert.equal(await page.locator('[data-toast-viewport] [data-pending="true"]').count(),0,'all uploads finish before refreshing');await page.reload({waitUntil:'domcontentloaded',timeout:60000});await page.getByText('Reference audio ready',{exact:true}).waitFor();
   assert.equal(await page.locator('.shadow-reference-module').getAttribute('data-phase'),'ready');
   assert.equal(await page.locator('.shadow-reference-module').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(225, 245, 238)');
   await page.locator('.shadow-reference-module').screenshot({path:`${artifacts}/reference-ready-${viewport.width}.png`});
@@ -301,9 +303,9 @@ try {
   assert.equal(await analysisToggle.isChecked(),false,'off persists after refresh');
   assert.equal(await page.locator('.shadow-reference-guide').count(),0);
   await analysisToggle.check();
-  assert.equal(await retentionToggle.isChecked(),false,'analysis never enables historical audio retention');
+  assert.equal(await retentionToggle.isChecked(),true,'replay preference survives refresh independently of analysis');
   await page.locator('.stage-two-audio-settings > summary').click();
-  await page.locator('.shadow-reference-manage summary').click();
+  await page.getByRole('button',{name:'More reference actions',exact:true}).click();
   await page.getByRole('button',{name:'Delete captured reference',exact:true}).click();await page.getByText('Reference deleted.',{exact:true}).first().waitFor();
   assert.equal(await page.getByRole('button',{name:'Record sentence',exact:true}).isDisabled(),false,'deleted reference does not block learner-only recording');
   await page.getByRole('tab',{name:'Melody',exact:true}).click();await page.waitForFunction(()=>document.querySelectorAll('.paired-reference-trace circle').length===0);

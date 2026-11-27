@@ -13,12 +13,19 @@ export class CaptureUploads {
   private entries = new Map<string,CaptureEntry>();
   private listeners = new Set<()=>void>();
   private abort = new AbortController();
+  private _uploadedVersion = 0;
   constructor(private api: ReferenceApi, private encode = async (clip: ReferenceAnalysisClip, signal: AbortSignal) =>
     (await import('./capture-audio')).captureWav(clip,signal)) {}
   subscribe(listener:()=>void) { this.listeners.add(listener); return ()=>{this.listeners.delete(listener);}; }
   get(key: string) { return this.entries.get(key); }
   get pending() { return [...this.entries.values()].filter(e=>e.pending).length; }
   get pendingUploads() { return [...this.entries.values()].filter(e=>e.pending && e.clip).length; }
+  get uploadedVersion() { return this._uploadedVersion; }
+  get uploadErrors() {
+    return [...this.entries.entries()]
+      .filter(([, entry]) => Boolean(entry.error && entry.clip))
+      .map(([key, entry]) => ({ key, message: entry.error! }));
+  }
   private publish() { for (const notify of this.listeners) notify(); }
   private failed(entry: CaptureEntry, error: unknown, fallback: string) {
     if (error instanceof ReferenceApiError && error.status === 410 && entry.row) {
@@ -101,7 +108,7 @@ export class CaptureUploads {
         if((entry.row as ServerReference).state==='deleted')return null;
         entry.row=row;
       }
-      this.abort.signal.throwIfAborted(); entry.clip=null; this.poll(entry); return entry.row.id;
+      this.abort.signal.throwIfAborted(); entry.clip=null; this._uploadedVersion += 1; this.poll(entry); return entry.row.id;
     })().catch(error=>{ this.failed(entry,error,'Reference upload failed. Keep this page open and retry.'); throw error; })
       .finally(()=>{entry.running=undefined;entry.pending=false;if(!this.abort.signal.aborted)this.publish();});
     return entry.running;

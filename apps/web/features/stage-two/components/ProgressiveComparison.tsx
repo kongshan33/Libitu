@@ -1,7 +1,7 @@
 import type { SignalPair, SignalProsody } from '../persistence/practice-api';
 import styles from './ProgressiveComparison.module.css';
 
-function Curve({ signal, layer, label, scale }: { signal: SignalProsody; layer: 'rhythm' | 'melody'; label: string; scale: number }) {
+export function SignalCurve({ signal, layer, label, scale }: { signal: SignalProsody; layer: 'rhythm' | 'melody'; label: string; scale: number }) {
   const values = layer === 'melody' ? signal.pitch_st : signal.prominence;
   // Nulls break the path: never draw invented pitch across unvoiced gaps.
   let drawing = false;
@@ -36,8 +36,8 @@ export function ProgressiveComparison({ pair, layer, fine = false }: { pair: Sig
     {layer === 'rhythm' && (!fine || !signals.every(v => v.duration_evaluated)) ? <p>Lengthening is not evaluated here. Emphasis expressed through duration remains uncertain.</p> : null}
     {!pair.reference ? <p role="status">Your voice is analyzed independently. No Reference comparison is available.</p> : null}
     <div className={styles.curves}>
-      {pair.reference ? <Curve signal={pair.reference} layer={layer} label="Reference" scale={scale}/> : null}
-      <Curve signal={pair.learner} layer={layer} label="Your voice" scale={scale}/>
+      {pair.reference ? <SignalCurve signal={pair.reference} layer={layer} label="Reference" scale={scale}/> : null}
+      <SignalCurve signal={pair.learner} layer={layer} label="Your voice" scale={scale}/>
     </div>
     <small>{layer === 'melody' ? `Shared vertical scale: ±${scale.toFixed(1)} semitones.` : `Shared vertical scale: 0–${scale.toFixed(2)} relative units.`} Curves are not time-aligned.</small>
     {layer === 'rhythm' && words.length ? <div className={styles.table}><table>

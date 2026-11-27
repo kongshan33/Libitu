@@ -35,7 +35,7 @@ export function QuickReviewAnalysis({content,sentence,take,api,reload,takeContro
       </div>
       <div className={styles.takeSelection}><span>Take</span>{takeControls}</div>
       {guide.error ? <p className="ui-retry-notice" role="alert">{guide.error} <Button size="sm" onClick={guide.retry}>Retry sound guide</Button></p> : null}
-      <AnalysisTimeline concealed={concealed} onConcealedChange={onConcealedChange} key={`${sentence.id}:${data?.id??"live"}`} view={view} data={data} layers={shown.filter(available)} sentenceId={sentence.id} voiceControls playback={playback}/>
+      <AnalysisTimeline concealed={concealed} onConcealedChange={onConcealedChange} key={`${sentence.id}:${data?.id??"live"}`} view={view} data={data} layers={shown.filter(available)} sentenceId={sentence.id} voiceControls reserveSoundLane playback={playback}/>
     </section> : !pending && !take.error && data?.state !== 'failed' ? <div className={styles.lockedOverview} role="status">
       {locked ? <LockKeyhole size={15} aria-hidden="true"/> : null}{locked ? 'Analysis locked' : 'Analysis unavailable'}
     </div> : null}

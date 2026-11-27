@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { AudioLines, LoaderCircle, Power, X } from "lucide-react";
 import type { useBufferedReference } from "../reference/use-buffered-reference";
 
-export function BufferedReferencePanel({ capture, playable, children, compact = false, quiet = false, presentation }: {
+export function BufferedReferencePanel({ capture, playable, children, compact = false, quiet = false, actions, presentation }: {
   capture: ReturnType<typeof useBufferedReference>;
   playable: boolean;
   children?: React.ReactNode;
   compact?: boolean;
   quiet?: boolean;
+  actions?: React.ReactNode;
   presentation?: { phase: "idle" | "preparing" | "analyzing" | "ready" | "review"; title: string; description: string };
 }) {
   const { state } = capture;
@@ -64,6 +65,7 @@ export function BufferedReferencePanel({ capture, playable, children, compact = 
           {enabled ? <Button variant="secondary" size="md" type="button" aria-label="Turn off audio preparation" onClick={capture.disable}><Power aria-hidden="true" /> Turn off</Button>
             : setup ? <Button variant="secondary" size="md" type="button" aria-label="Cancel audio setup" onClick={capture.disable}><X aria-hidden="true" /> Cancel</Button>
               : <Button variant="secondary" size="md" type="button" disabled={!playable} onClick={capture.enable}><AudioLines aria-hidden="true" /> Enable reference audio</Button>}
+          {actions}
         </div>
       </div>
       {state.error ? <p role="alert" className="stage-two-recording-error">{state.error}</p> : null}

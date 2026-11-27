@@ -7,9 +7,10 @@ import modeStyles from '../quick/QuickShadowing.module.css';
 import { DirectionButton } from "@/components/ui/direction-button";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/Toast";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Pause, Play, Trash2 } from "lucide-react";
 import type { StageOneSegment, TranscriptLine } from "@libitu/types/stage-one";
 import type { SentenceUnit } from "@libitu/types/stage-two";
 import { WorkspacePlayer } from "../../learning-workspace/MediaHost";
@@ -21,6 +22,7 @@ import { useSentenceRecording } from "../recording/use-sentence-recording";
 import { SavedTakeReplay } from "./SavedTakeReplay";
 import { SentenceRecordingPanel } from "./SentenceRecordingPanel";
 import { PracticeSettings } from "./PracticeSettings";
+import { STANDARD_PLAYBACK_RATES } from "../practice/playback-speed";
 import { referencePhase as resolveReferencePhase } from "../practice/reference-phase";
 import { recordingReference } from '../practice/recording-reference';
 import { referenceStatus } from '../practice/reference-status';
@@ -43,12 +45,14 @@ import { useBufferedReferenceContext } from "../reference/use-buffered-reference
 import type { ReferenceAnalysisCache } from "../analysis/reference-analysis-cache";
 import { useBufferedAnalysis } from "../analysis/use-buffered-analysis";
 import { AudioSettings } from "./AudioSettings";
+import { MoreActions } from "./MoreActions";
 import { BufferedReferencePanel } from "./BufferedReferencePanel";
 import { usePracticePersistence } from "../persistence/PracticePersistence";
 import { PracticeHistory } from "../persistence/PracticeHistory";
 import { usePracticeProgress } from "../persistence/use-practice-progress";
 import { usePracticeAnalysis } from "../persistence/use-practice-analysis";
 import { PracticeAnalysisPanel } from "./PracticeAnalysisPanel";
+import { ReferenceLayer } from './ReferenceLayer';
 import { LayerComparison } from "./LayerComparison";
 import { useServerReference } from "../server-reference/use-server-reference";
 import { ServerReferencePanel } from "../server-reference/ServerReferencePanel";
@@ -74,7 +78,7 @@ const noLocalRecording: AudioAnalysisView = { features: null, pending: false, er
 type TakeSelections = Record<string, { id: string | null; take?: string }>;
 
 export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcript, onBack, timingRecovery,
-  sharedReferenceCache, captureGeneration = 1, modes }: StageTwoProps & {modes?: ReactNode}) {
+  sharedReferenceCache, captureGeneration = 1, modes, rate: controlledRate, onRateChange }: StageTwoProps & {modes?: ReactNode; rate?: number; onRateChange?(rate: number): void}) {
   const sentences = useMemo(() => buildSentenceUnits(contentId, segment, transcript), [contentId, segment, transcript]);
   const [skipShort,setSkipShort]=useState(true);
   const [directoryCollapsed, setDirectoryCollapsed] = useState(false);
@@ -102,7 +106,6 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
   const cancelReferenceRef = useRef<(() => void) | null>(null);
   const persistence = usePracticePersistence();
   const outbox = persistence?.outbox;
-  const [retainRecording, setRetainRecording] = useState(false);
   const takeContext = useRef<{ rate: number; textVisible: boolean; textSupport:TextSupport; retain: boolean; analyze: boolean; referenceId: string | null; resolveReference?:()=>Promise<string|null> } | null>(null);
   const api = persistence?.api;
   const [selectionState, setSelectionState] = useState<{ api: PracticeApi | undefined; content: string; items: TakeSelections } | null>(null);
@@ -189,7 +192,15 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState((selected?.startMs ?? segment.startMs ?? 0) / 1000);
   const [rates, setRates] = useState<number[]>([1]);
-  const [rate, setRate] = useState(1);
+  const [localRate, setLocalRate] = useState(1);
+  const rate = controlledRate ?? localRate;
+  const setRate = useCallback((next: number) => {
+    setLocalRate(next);
+    onRateChange?.(next);
+  }, [onRateChange]);
+  const rateRef = useRef(rate);
+  useEffect(() => { rateRef.current = rate; }, [rate]);
+  const syncRateOnReadyRef = useRef<number | null>(null);
   const cloud = useServerReference(persistence?.referenceApi, contentId, segment.id,
     selected, sentences[selectedIndex + 1] ?? null, scope, rate, loop, Boolean(persistence?.analyze));
   useEffect(()=>{if(cloud.reference?.state==='deleted')setReferenceRevision(v=>v+1);},[cloud.reference?.state]);
@@ -204,7 +215,12 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
   useAudioWordClock(cloud.audioRef,cloud.audioUrl,wordClock,cloud.available,
     (scope==='sentence'?selected?.startMs??0:segment.startMs??0)/1000);
   const referencePlaying = cloud.available ? cloud.playing : playing;
-  const effectiveRates = cloud.available ? [0.5, 0.75, 1, 1.25, 1.5, 2] : rates;
+  const effectiveRates: readonly number[] = cloud.available ? STANDARD_PLAYBACK_RATES : rates;
+  const applyPlaybackRate = useCallback((value: number) => {
+    syncRateOnReadyRef.current = null;
+    setRate(value);
+    if (!cloud.available) playerRef.current?.setPlaybackRate(value);
+  }, [cloud.available, setRate]);
   const [layer, setLayer] = useState<PracticeLayer>("sound");
   const layerWorkspaceRef = useRef<HTMLDivElement>(null);
   const reviewKey = `${selected?.id}:${analysisAttempt}`;
@@ -212,8 +228,14 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
   const soundConcealed = soundVisibility?.key === reviewKey && soundVisibility.hidden;
   const practiceBusy=recording.isBusy();
   const analysisPresentation=layerPresentation(savedAnalysis.data,reviewing,practiceBusy);
-  const locks=analysisPresentation.locked;
-  const activeLayer=locks[layer]?'sound':layer;
+  const bufferedCovered = Boolean(selected && activeBufferedReference?.covers({ start: selected.startMs / 1000, end: selected.endMs / 1000 }));
+  const hasReference = Boolean(selected && (comparisonServer || (cloud.available ? cloud.audioUrl :
+    bufferedCovered || analysisPending || features || recordingReference(captured.row, contentId, segment.id, selected))));
+  const liveReference = useMemo(() => comparisonView({ sentence: selected, guide: soundGuide.data,
+    server: comparisonServer, reference: features, yours: null, data: null }),
+    [selected, soundGuide.data, comparisonServer, features]);
+  const locks = hasReference ? undefined : analysisPresentation.locked;
+  const activeLayer=locks?.[layer]?'sound':layer;
   const collapseDirectory = directoryCollapsed || practiceBusy;
   const sourceTokens=useMemo(()=>practiceTokens(selected?.text??''),[selected?.text]);
   const visible=visiblePositions(sourceTokens,supportMode,revealed);
@@ -235,13 +257,13 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
 
 
   function startRecording() {
-    if (!outbox?.canRecord()) return;
+    if (!persistence?.outbox.canRecord()) return;
     if (!selected||recording.isBusy()||referenceBusy)return;
     // Freeze an eligible optional Reference; learner analysis can run independently.
     const reference = recordingReference(recordingReferenceRow, contentId, segment.id, selected);
     const snapshot=supportSnapshot(supportMode,visible,revealed);
-    takeContext.current = { rate, textVisible: Boolean(visible.length), textSupport:snapshot, retain: retainRecording,
-      analyze: persistence?.analyze ?? false, referenceId: reference?.id ?? null };
+    takeContext.current = { rate, textVisible: Boolean(visible.length), textSupport:snapshot, retain: persistence.retain,
+      analyze: persistence.analyze, referenceId: reference?.id ?? null };
     setPractice(current=>({...current,sentence:selected.id,reviewing:false}));
     setLayer('sound');
     recording.start();
@@ -268,7 +290,6 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
     return () => { cancelReferenceRef.current = null; };
   }, [suspendBuffered]);
 
-  const bufferedCovered = Boolean(selected && activeBufferedReference?.covers({ start: selected.startMs / 1000, end: selected.endMs / 1000 }));
   useEffect(() => {
     if (!bufferPreparing) return;
     if (activeBufferedReference?.state.phase !== "enabled") {
@@ -425,6 +446,7 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
     activeBufferedReference.suspend();
     bufferedAnalysis.retry();
     setBufferPreparing(true);
+    syncRateOnReadyRef.current = null;
     playerRef.current?.setPlaybackRate(1);
     playerRef.current?.playRange(Math.max(0, selected.startMs / 1000 - 0.5), selected.endMs / 1000 + 0.3, { loop: false });
   }
@@ -448,6 +470,22 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
         : serverReferenceStatus?.description ?? (referencePhase==='ready' ? 'Reference ready for this sentence.'
           : bufferedCovered ? 'This sentence is available in the local audio buffer.' : 'Prepare the original audio before recording for comparison.'),
   };
+
+  function renderLayer(layer: PracticeLayer, learner: ReactNode) {
+    const status = analysisPresentation.statuses[layer].state;
+    const paired = (status === 'available' || status === 'partial') && comparison.reference.evidence?.source === 'saved_analysis';
+    const learnerShown = analysisPresentation.visible && status !== 'locked';
+    return <>
+      {hasReference && !paired ? <ReferenceLayer key={selected?.id} heading={!learnerShown} layer={layer} view={liveReference}
+        measurement={comparisonServer} features={features} status={referencePresentation.description}/> : null}
+      {learnerShown ? learner : null}
+      {hasReference && status === 'locked' ? <p>Your voice · {layer === 'sound' ? '60' : '85'}% word matching required.</p> : null}
+    </>;
+  }
+
+  const canPrepareReference = activeBufferedReference?.state.phase === "enabled" && selected && selected.endMs - selected.startMs <= 60_000
+                    && !bufferPreparing && !analysisPending && (!features || features.quality.status !== "usable" || analysisError
+                      || (["error", "unreliable"].includes(referenceAnalysis.alignment.phase) && !referenceAnalysis.alignment.canRetry));
 
   return (
     <section className={`stage-two-shadow ${styles.workspace}`} aria-label="Stage 2 shadowing">
@@ -518,8 +556,22 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
                   onTimeChange={(value) => {
                     if (!cloud.available || playing) setTime(value);
                     if (cloud.available && playing) wordClock.publish(value, true);
-                  }} onPlaybackChange={handleReferencePlayback} onReady={setRates}
-                  onPlaybackRateChange={(value) => { if (!cloud.available) setRate(value); }}
+                  }} onPlaybackChange={handleReferencePlayback} onReady={(available) => {
+                    setRates(available);
+                    if (!cloud.available && rateRef.current !== 1 && available.includes(rateRef.current)) {
+                      syncRateOnReadyRef.current = rateRef.current;
+                      playerRef.current?.setPlaybackRate(rateRef.current);
+                    }
+                  }}
+                  onPlaybackRateChange={(value) => {
+                    if (cloud.available) return;
+                    if (syncRateOnReadyRef.current !== null) {
+                      const target = syncRateOnReadyRef.current;
+                      if (value === 1 && target !== 1) return;
+                      syncRateOnReadyRef.current = null;
+                    }
+                    setRate(value);
+                  }}
                   onTelemetry={handleTelemetry} />
               </div>
               <div className="stage-two-shadow-player-meta">
@@ -537,25 +589,26 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
               }} /> : null}
             <div className="stage-two-operation-panel">
               <div className="stage-two-practice-audio">
-                {cloud.available ? <ServerReferencePanel session={cloud} sentenceId={selected?.id} analysisEnabled={Boolean(persistence?.analyze)} /> : activeBufferedReference ? <BufferedReferencePanel compact quiet presentation={referencePresentation} capture={activeBufferedReference} playable={playable && Boolean(selected)}>
-                  {activeBufferedReference.state.phase === "enabled" && selected && selected.endMs - selected.startMs <= 60_000
-                    && !bufferPreparing && !analysisPending && (!features || features.quality.status !== "usable" || analysisError
-                      || (["error", "unreliable"].includes(referenceAnalysis.alignment.phase) && !referenceAnalysis.alignment.canRetry))
-                    ? <Button variant="secondary" size="sm" type="button" onClick={prepareBufferedSentence}>Prepare this sentence at 1×</Button> : null}
-                  {bufferPreparing ? <Button variant="secondary" size="md" type="button" onClick={pauseReference}>Cancel preparation</Button> : null}
-                  {!captured.entry?.error && (analysisError || bufferedAnalysis.error) ? <p className="ui-retry-notice" role="alert">{analysisError ?? bufferedAnalysis.error}
-                    <Button variant="secondary" size="md" type="button" onClick={() => { bufferedAnalysis.retry(); retry(); }}>Retry reference analysis</Button></p> : null}
-                {!cloud.available ? <div className={captured.entry?.error || captured.row && ['failed', 'cancelled', 'partially_completed'].includes(captured.row.state) ? "ui-retry-notice" : "capture-analysis-status"} aria-label="Browser reference analysis">
-                  {captured.entry?.error?<p role="alert">{captured.entry.error}</p>:null}
-                  {persistence?.analyze&&(captured.entry?.error||captured.row&&['failed','cancelled','partially_completed','awaiting_upload'].includes(captured.row.state))?<Button variant="secondary" size="md" onClick={captured.retry}>{captured.row?.state==='awaiting_upload'||captured.entry?.error?"Retry reference upload":serverReferenceStatus?.action ?? "Retry reference analysis"}</Button>:null}
-                  {captured.row?.state==='deleted'?<Button variant="secondary" size="md" onClick={captured.retry}>Prepare a new reference</Button>:null}
-                  {captured.row&&captured.row.state!=='deleted'?<button className="analysis-text-action" type="button" onClick={()=>{if(window.confirm("Delete this captured reference?"))void captured.remove()?.then(()=>setReferenceRevision(v=>v+1));}}>Delete captured reference</button>:null}
-                </div>:null}
+                {cloud.available ? <ServerReferencePanel session={cloud} sentenceId={selected?.id} analysisEnabled={Boolean(persistence?.analyze)} /> : activeBufferedReference ? <BufferedReferencePanel compact quiet presentation={referencePresentation} capture={activeBufferedReference} playable={playable && Boolean(selected)}
+                  actions={<>
+                    {canPrepareReference && <Button variant="secondary" size="sm" onClick={prepareBufferedSentence}>Prepare this sentence at 1×</Button>}
+                    {bufferPreparing && <Button variant="secondary" size="sm" onClick={pauseReference}>Cancel preparation</Button>}
+                    {persistence?.analyze && (captured.entry?.error || captured.row && ['failed', 'cancelled', 'partially_completed', 'awaiting_upload'].includes(captured.row.state)) &&
+                      <Button variant="secondary" size="sm" onClick={captured.retry}>{captured.row?.state === 'awaiting_upload' || captured.entry?.error ? "Retry reference upload" : serverReferenceStatus?.action ?? "Retry reference analysis"}</Button>}
+                    {captured.row?.state === 'deleted' && <Button variant="secondary" size="sm" onClick={captured.retry}>Prepare a new reference</Button>}
+                    {!captured.entry?.error && (analysisError || bufferedAnalysis.error) && <Button variant="secondary" size="sm" onClick={() => { bufferedAnalysis.retry(); retry(); }}>Retry reference analysis</Button>}
+                    {captured.row && captured.row.state !== 'deleted' && <MoreActions label="More reference actions">
+                      <Button variant="ghost" size="sm" leadingIcon={<Trash2 aria-hidden="true" />} onClick={() => {
+                        if (window.confirm("Delete this captured reference?")) void captured.remove()?.then(() => { setReferenceRevision(v => v + 1); toast.success("Captured reference deleted"); });
+                      }}>Delete captured reference</Button>
+                    </MoreActions>}
+                  </>}>
+                  {(captured.entry?.error || analysisError || bufferedAnalysis.error) && <p role="alert">{captured.entry?.error ?? analysisError ?? bufferedAnalysis.error}</p>}
                 </BufferedReferencePanel> : null}
 
               </div>
               <div className="stage-two-operation-footer">
-                <AudioSettings analyze={persistence?.analyze ?? false} retain={retainRecording} disabled={recording.isBusy()} onAnalyze={value => persistence?.setAnalyze(value)} onRetain={setRetainRecording} />
+                <AudioSettings disabled={recording.isBusy()} />
 
               </div>
             </div>
@@ -572,31 +625,31 @@ export function StageTwoDetailed({ contentId, segment, sourceUrl, title, transcr
               </Button>
               <SentenceRecordingPanel compact recording={{...recording,start:startRecording}}
                 savedDurationMs={retainedTake?.duration_ms}
-                savedReplay={!currentTakeSelected ? <SavedTakeReplay key={analysisAttempt} take={retainedTake} api={api} clock={learnerClock} onPlay={pauseReference} disabled={practiceBusy}/> : null}
+                savedReplay={!currentTakeSelected ? <SavedTakeReplay key={analysisAttempt} take={retainedTake} api={api} clock={learnerClock} onPlay={pauseReference} disabled={practiceBusy} size="lg"/> : null}
                 startDisabled={referenceBusy}
                 disabled={!outbox?.canRecord()||Boolean(captured.entry?.pending&&!captured.row)} sentenceNumber={selected?selectedIndex+1:null} historical={!currentTakeSelected}
                 onCancel={()=>{recording.recorder.cancel();if(recording.state.clip||analysisAttempt)setPractice(current=>({...current,reviewing:true}));}}/>
             </div>
             {!practiceBusy&&!reviewing?<p className="shadow-practice-hint">Listen, then say it back. Click a covered word to peek.</p>:null}
             {reviewing&&!practiceBusy?<div className="shadow-result-actions ui-button-group">
-              {savedAnalysis.data?.word_check?.tier==='below_60'?<><Button variant="secondary" onClick={()=>{const slower=effectiveRates.filter(v=>v<1).at(-1);if(slower===undefined)return;if(cloud.available)setRate(slower);else playerRef.current?.setPlaybackRate(slower);togglePlayback();}}>Listen slowly</Button>
+              {savedAnalysis.data?.word_check?.tier==='below_60'?<><Button variant="secondary" onClick={()=>{const slower=effectiveRates.filter(v=>v<1).at(-1);if(slower===undefined)return;applyPlaybackRate(slower);togglePlayback();}}>Listen slowly</Button>
                 <Button variant="secondary" onClick={()=>{setSupport('keywords');setPractice(current=>({...current,reviewing:false}));}}>Try with key words</Button></>:null}
               {nextIndex!==null?<Button aria-label="Continue to next sentence" variant="secondary" onClick={()=>navigate(1)}>Next sentence →</Button>:null}
             </div>:null}
             <PracticeSettings rate={rate} rates={effectiveRates} mode={supportMode} loop={activeLoop} scope={activeScope}
               reviewing={reviewing} disabled={referenceBusy||practiceBusy} hasSentence={Boolean(selected)}
               onMode={setSupport} onLoop={toggleLoop} onScope={changeScope}
-              onRate={value => cloud.available ? setRate(value) : playerRef.current?.setPlaybackRate(value)} />
+              onRate={applyPlaybackRate} />
             {timingRecovery}
           </section>
-          {reviewing&&!practiceBusy?<div className="shadow-analysis-workspace" ref={layerWorkspaceRef}>
-            <PracticeAnalysisPanel key={analysisAttempt??'none'} api={persistence?.api} attemptId={analysisAttempt} {...savedAnalysis}/>
-            {analysisPresentation.visible&&soundGuide.error?<p className="ui-retry-notice" role="alert">{soundGuide.error} <Button size="sm" onClick={soundGuide.retry}>Retry sound guide</Button></p>:null}
-            {analysisPresentation.visible?<PracticeLayers active={activeLayer} onChange={setLayer} locked={locks} badges={analysisPresentation.badges}
+          {(reviewing||hasReference)&&!practiceBusy?<div className="shadow-analysis-workspace" ref={layerWorkspaceRef}>
+            {reviewing?<PracticeAnalysisPanel key={analysisAttempt??'none'} api={persistence?.api} attemptId={analysisAttempt} {...savedAnalysis}/>:null}
+            {(hasReference||analysisPresentation.visible)&&soundGuide.error?<p className="ui-retry-notice" role="alert">{soundGuide.error} <Button size="sm" onClick={soundGuide.retry}>Retry sound guide</Button></p>:null}
+            {(hasReference||analysisPresentation.visible)?<PracticeLayers active={activeLayer} onChange={setLayer} locked={locks} badges={analysisPresentation.badges}
               gate={<><strong>Word matching comes first</strong><p>Sound opens at 60%. Rhythm and Melody open at 85%. Recognition feedback does not change these thresholds.</p></>}
-              sound={<PracticeLayerState label="Sound" status={analysisPresentation.statuses.sound} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:sound`} layer="sound" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} concealed={soundConcealed} onConcealedChange={hidden=>setSoundVisibility({key:reviewKey,hidden})}/></PracticeLayerState>}
-              rhythm={<PracticeLayerState label="Rhythm" status={analysisPresentation.statuses.rhythm} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:rhythm`} layer="rhythm" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} playback={{reference:wordClock,yours:learnerClock,referenceOffsetMs:selected?.startMs??0}}/></PracticeLayerState>}
-              melody={<PracticeLayerState label="Melody" status={analysisPresentation.statuses.melody} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:melody`} layer="melody" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} playbackActions={<><Button variant="secondary" disabled={referenceBusy||!comparison.reference.words.some(word=>word.duration!==null)} onClick={togglePlayback}>{referencePlaying?"Pause reference":"Play reference"}</Button>{currentTakeSelected?<Button variant="secondary" disabled={!recordingUrl} onClick={()=>void recording.toggleReplay()}>Play your voice</Button>:<SavedTakeReplay key={analysisAttempt} take={retainedTake} api={api} clock={learnerClock} onPlay={pauseReference} disabled={practiceBusy} label="Play your voice"/>}</>} playback={{reference:wordClock,yours:learnerClock,referenceOffsetMs:selected?.startMs??0}}/></PracticeLayerState>}/>:null}
+              sound={renderLayer('sound', <PracticeLayerState label="Sound" status={analysisPresentation.statuses.sound} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:sound`} layer="sound" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} concealed={soundConcealed} onConcealedChange={hidden=>setSoundVisibility({key:reviewKey,hidden})}/></PracticeLayerState>)}
+              rhythm={renderLayer('rhythm', <PracticeLayerState label="Rhythm" status={analysisPresentation.statuses.rhythm} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:rhythm`} layer="rhythm" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} playback={{reference:wordClock,yours:learnerClock,referenceOffsetMs:selected?.startMs??0}}/></PracticeLayerState>)}
+              melody={renderLayer('melody', <PracticeLayerState label="Melody" status={analysisPresentation.statuses.melody} waitingReference={savedAnalysis.data?.phase==='waiting_reference'}><LayerComparison key={`${selected?.id}:${analysisAttempt}:melody`} layer="melody" view={comparison} sentenceId={selected?.id} data={savedAnalysis.data} playbackActions={<><Button variant="secondary" disabled={referenceBusy||!comparison.reference.words.some(word=>word.duration!==null)} onClick={togglePlayback}>{referencePlaying?"Pause reference":"Play reference"}</Button>{currentTakeSelected?<Button variant="secondary" disabled={!recordingUrl} onClick={()=>void recording.toggleReplay()}>Play your voice</Button>:<SavedTakeReplay key={analysisAttempt} take={retainedTake} api={api} clock={learnerClock} onPlay={pauseReference} disabled={practiceBusy} label="Play your voice"/>}</>} playback={{reference:wordClock,yours:learnerClock,referenceOffsetMs:selected?.startMs??0}}/></PracticeLayerState>)}/>:null}
           </div>:null}
           <PracticeHistory selectedAnalysis={savedAnalysis.data} onAnalysisChanged={savedAnalysis.reload} key={selected?.id ?? "none"} contentId={contentId} sentenceId={selected?.id ?? null}
             onSelectedTake={setSelectedSavedTake} onAnalysisSelect={selectAnalysis} onViewAnalysis={id => {

@@ -264,7 +264,7 @@ try {
       assert.equal(await page.evaluate(() => window.__localWorkerStarts), workersBefore, "switching layers reuses inference");
       assert.equal(await page.evaluate(() => window.__localPlayer.state), 2, "layer switching never starts playback");
 
-      await page.getByRole("checkbox", { name: "Server analysis", exact: true }).check();
+      await page.getByRole("checkbox", { name: "Analyze new takes", exact: true }).check();
       await page.getByRole("button", { name: "Record sentence", exact: true }).click();
       await page.getByText("Recording your voice", { exact: true }).waitFor();
       await page.waitForTimeout(1400);

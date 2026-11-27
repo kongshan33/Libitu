@@ -52,6 +52,7 @@ function installFixture() {
   window.__authCalls = [];
   window.__setUser = (owner) => {
     sessionStorage.setItem("test-owner", owner ?? "");
+    if (owner) localStorage.setItem(`libitu:recording-retention:v1:${owner}`, "off");
     clerk.user = owner ? { id: owner, organizationMemberships: [] } : null;
     clerk.session = owner ? { id: `session-${owner}`, status: "active", user: clerk.user,
       lastActiveToken: { jwt: { claims: { sub: owner } } },
@@ -264,7 +265,7 @@ try {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
     await page.screenshot({ path: join(artifacts, `file-reference-${viewport.width}.png`), fullPage: true });
     await page.locator(".stage-two-audio-settings > summary").click();
-    await page.getByRole("checkbox", { name: "Server analysis", exact: true }).check();
+    await page.getByRole("checkbox", { name: "Analyze new takes", exact: true }).check();
     await page.getByRole("button", { name: "Record sentence", exact: true }).click();
     await page.getByText("Recording your voice", { exact: true }).waitFor();
     await page.waitForTimeout(3000);
@@ -354,14 +355,14 @@ try {
     await melody.screenshot({path:join(artifacts,`learner-melody-${viewport.width}.png`)});
     await page.reload({waitUntil:'domcontentloaded',timeout:60000});
     await page.getByText("Analysis saved. Compare your recording in Sound, Rhythm and Melody.", { exact: true }).waitFor();
-    assert.equal(await page.getByRole("checkbox", { name: "Server analysis", exact: true }).isChecked(), true);
+    assert.equal(await page.getByRole("checkbox", { name: "Analyze new takes", exact: true }).isChecked(), true);
 
     // A choice about future uploads must not hide previously saved analysis.
     await page.locator(".stage-two-audio-settings > summary").click();
-    await page.getByRole("checkbox", { name: "Server analysis", exact: true }).uncheck();
+    await page.getByRole("checkbox", { name: "Analyze new takes", exact: true }).uncheck();
     await page.reload({waitUntil:'domcontentloaded',timeout:60000});
     await page.getByText("Analysis saved. Compare your recording in Sound, Rhythm and Melody.", { exact: true }).waitFor();
-    assert.equal(await page.getByRole("checkbox", { name: "Server analysis", exact: true }).isChecked(), false);
+    assert.equal(await page.getByRole("checkbox", { name: "Analyze new takes", exact: true }).isChecked(), false);
     for (const layer of ["Sound", "Rhythm", "Melody"]) {
       await page.getByRole("tab", { name: layer, exact: true }).click();
       const restored = page.getByRole("region", { name: `Saved ${layer.toLowerCase()} word comparison`, exact: true });
@@ -483,8 +484,10 @@ try {
     await page.reload({waitUntil:'domcontentloaded',timeout:60000});
     await page.getByText(/Comparison withheld: the words or alignment need review/).waitFor();
     assert.equal(await page.locator(".paired-learner-trace circle").count(),0,"mismatched content cannot receive a curve");
+    await page.locator(".practice-history li").filter({has:page.getByRole("button",{name:"Delete analysis",includeHidden:true})}).first().getByRole("button",{name:"More take actions"}).click();
     await page.getByRole("button", { name: "Delete analysis", exact: true }).click();
     await page.getByText("Analysis deleted.", { exact: true }).waitFor();
+    await page.getByRole("button",{name:"More reference actions"}).click();
     await page.getByRole("button", { name: "Delete file reference", exact: true }).click();
     await page.getByText("Reference deleted.", { exact: true }).waitFor();
     assert.equal(await page.getByRole("button", { name: "Play sentence", exact: true }).isDisabled(), true);

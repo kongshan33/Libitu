@@ -1,4 +1,6 @@
 'use client';
+import { useState } from 'react';
+import { SegmentedControl } from '@/components/ui/Tabs';
 import { AnalysisSelection } from '../comparison/AnalysisSelection';
 import { useAuth } from '@clerk/nextjs';
 import { useCurrentLocation } from '../../navigation/use-current-location';
@@ -9,6 +11,7 @@ import styles from '../quick/QuickShadowing.module.css';
 export type ShadowMode = 'quick' | 'detailed' | 'review';
 export function StageTwoShadowing(props: StageTwoProps) {
   const {userId} = useAuth();
+  const [playbackRate, setPlaybackRate] = useState(1);
   const href = useCurrentLocation();
   const value = new URL(href, 'https://libitu.invalid').searchParams.get('shadowMode');
   const mode: ShadowMode = value === 'detailed' || value === 'review' ? value : 'quick';
@@ -18,12 +21,20 @@ export function StageTwoShadowing(props: StageTwoProps) {
     window.history.replaceState(null, '', url);
     window.dispatchEvent(new Event('libitu:stage-two-location'));
   }
-  const tabs = <nav className={styles.modes} aria-label="Shadow mode">
-    {(['quick', 'detailed', 'review'] as const).map(item => <button key={item} type="button" aria-current={mode === item ? 'page' : undefined}
-      onClick={() => changeMode(item)}>{item[0].toUpperCase()+item.slice(1)}</button>)}
-  </nav>;
+  const tabs = <SegmentedControl
+    as="nav"
+    ariaLabel="Shadow mode"
+    className={styles.modes}
+    items={[
+      { value: 'quick', label: 'Quick' },
+      { value: 'detailed', label: 'Detailed' },
+      { value: 'review', label: 'Review' }
+    ]}
+    value={mode}
+    onValueChange={changeMode}
+  />;
   return <AnalysisSelection>
-    {mode === 'detailed' ? <StageTwoDetailed {...props} modes={tabs}/> : null}
-    <QuickShadowing key={`${userId ?? 'anonymous'}:${props.contentId}:${props.segment.id}`} {...props} mode={mode} modes={tabs} onMode={changeMode}/>
+    {mode === 'detailed' ? <StageTwoDetailed {...props} modes={tabs} rate={playbackRate} onRateChange={setPlaybackRate}/> : null}
+    <QuickShadowing key={`${userId ?? 'anonymous'}:${props.contentId}:${props.segment.id}`} {...props} mode={mode} modes={tabs} onMode={changeMode} rate={playbackRate} onRateChange={setPlaybackRate}/>
   </AnalysisSelection>;
 }

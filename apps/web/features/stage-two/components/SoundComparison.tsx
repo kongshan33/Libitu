@@ -10,8 +10,8 @@ import { SoundDetails, SoundEmpty, SoundFilters } from './SoundExplorer';
 const voices = ['reference', 'yours'] as const;
 const voiceName = (voice:typeof voices[number]) => voice==='reference'?'Reference':'Your voice';
 
-export function SoundComparison({view,concealed,onConcealedChange,filter=allSound,onFilterChange}:{
-  filter?:SoundFilter;onFilterChange(value:SoundFilter):void;
+export function SoundComparison({view,concealed,onConcealedChange,filter=allSound,referenceOnly=false,onFilterChange}:{
+  referenceOnly?:boolean;filter?:SoundFilter;onFilterChange(value:SoundFilter):void;
   view:ComparisonView;concealed:boolean;onConcealedChange?(value:boolean):void;
 }) {
   const [revealed,setRevealed]=useState<number[]>([]);
@@ -23,6 +23,12 @@ export function SoundComparison({view,concealed,onConcealedChange,filter=allSoun
   const marks=useMemo(()=>soundMarks(view),[view]);
   const allowed=(index:number)=>!concealed||revealed.includes(index);
   const safeMarks=marks.filter(m=>Array.from({length:m.end-m.start},(_,i)=>m.start+i).every(allowed));
+  const boundaries = new Map(safeMarks.filter(mark => mark.kind === 'linking').map(mark => [mark.start, mark]));
+  const wordRuns: number[][] = [];
+  for (let index = 0; index < view.reference.words.length; index++) {
+    if (index === 0 || !boundaries.has(index - 1)) wordRuns.push([]);
+    wordRuns[wordRuns.length - 1].push(index);
+  }
   const close=()=>{setSelected(null);setSelectedMark(null);setExpandedMore(null);};
   return <div className={styles.root}>
     <SoundFilters filter={filter} onChange={value=>{onFilterChange(value);setSelectedMark(null);setExpandedMore(null);}} marks={marks} concealed={concealed}/>
@@ -32,12 +38,15 @@ export function SoundComparison({view,concealed,onConcealedChange,filter=allSoun
       <Button variant="secondary" type="button" aria-pressed={concealed} onClick={()=>{setRevealed([]);close();onConcealedChange?.(!concealed);}}>{concealed?'Show text':'Hide text'}</Button>
       {concealed?<small className={styles.mono} role="status">{revealed.length} / {view.reference.words.length} revealed</small>:null}
     </div>
-    {voices.map(voice=><div key={voice} className={styles.comparison} data-sound-voice={voice}>
+    {voices.filter(voice => !referenceOnly || voice === 'reference').map(voice=><div key={voice} className={styles.comparison} data-sound-voice={voice}>
       <div className={styles.voiceHeading}><h3>{voiceName(voice)}</h3><span className={styles.mono}>{voice==='reference'?'Reading cues · GA conditions':'Practice targets · not checked'}</span></div>
-      <div className={`${styles.words} sound-word-flow`} role="group" aria-label={`${voiceName(voice)} sound cues`}>
-        {view.reference.words.map((word,i)=>{
-          const covered=!allowed(i),link=safeMarks.find(m=>m.kind==='linking'&&m.start===i);
-          return <div key={i} className={`${styles.wordGroup} sound-word-group`} data-word-index={i}>
+      <div className={`${styles.words} sound-word-flow`} data-links={boundaries.size > 0} role="group" aria-label={`${voiceName(voice)} sound cues`}>
+        {wordRuns.map(run => <div className={styles.wordRun} key={run[0]}>{run.map(i=>{
+          const word = view.reference.words[i];
+          const covered=!allowed(i),link=boundaries.get(i);
+          const linkedBefore=boundaries.has(i - 1);
+          return <div key={i} className={`${styles.wordGroup} sound-word-group`} data-word-index={i} data-between-links={Boolean(link&&linkedBefore)}>
+            <div className={styles.wordColumn}>
             <button type="button" className={`${styles.word} sound-word-card`} aria-pressed={selectedVoice===voice&&selected===i&&!covered&&!selectedMark}
               aria-label={covered?`Reveal word ${i+1} · ${voiceName(voice)}`:`Explore ${word.text}, word ${i+1} · ${voiceName(voice)}`} aria-controls={explanationId}
               onClick={()=>{if(covered)setRevealed(items=>items.includes(i)?items:[...items,i]);setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(null);}}>
@@ -47,10 +56,11 @@ export function SoundComparison({view,concealed,onConcealedChange,filter=allSoun
             </button>
             {!covered?<SoundMore marks={safeMarks} index={i} filter={filter} word={word.text} voice={voiceName(voice)} controls={explanationId}
               expanded={expandedMore===`${voice}:${i}`} onToggle={()=>{if(expandedMore===`${voice}:${i}`)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(`${voice}:${i}`);}}}/>:null}
+            </div>
             {link?<SoundLink mark={link} filter={filter} selected={selectedVoice===voice&&selectedMark===link.id} controls={explanationId} voice={voiceName(voice)}
               onSelect={()=>{if(selectedVoice===voice&&selectedMark===link.id)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(link.id);setExpandedMore(null);}}}/>:null}
           </div>;
-        })}
+        })}</div>)}
       </div>
       <p className={`${styles.mono} ${styles.status}`}>{voice==='reference'
         ?`${view.reference.evidence?.source==='unavailable'&&view.saved?'Reference analysis unavailable for this take. ':''}Text and dictionary cues · not checked in the reference recording.`

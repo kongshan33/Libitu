@@ -10,7 +10,6 @@ const blueprint={id:'quick-blueprint',content_id:content,title:'Quick shadowing 
  segments:[{id:'quick-segment',sequence:1,title:'Practice with a steady rhythm',summary:'Practice.',start_ms:1000,end_ms:54000,transcript_start_index:0,transcript_end_index:4,phonology_tags:[]}]};
 function bootstrap(blueprint) {
  const owner='quick-browser-fixture';
- localStorage.setItem(`libitu:server-analysis:v1:${owner}`,'on');
  const user={id:owner,organizationMemberships:[]};
  const session={id:'fixture',user,status:'active',lastActiveToken:{jwt:{claims:{sub:owner}}},getToken:async()=>`header.${btoa(JSON.stringify({sub:owner}))}.fixture`};
  const resources={user,session,client:{sessions:[session]},organization:null};

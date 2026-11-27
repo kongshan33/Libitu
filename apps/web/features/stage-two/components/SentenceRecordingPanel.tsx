@@ -48,18 +48,18 @@ export function SentenceRecordingPanel({ recording, sentenceNumber, disabled = f
           </Button>
         )}
         {busy ? (
-          <Button variant="secondary" size="md" type="button" className="stage-two-record-cancel" aria-label="Cancel recording"
+          <Button variant="secondary" size="lg" type="button" className="stage-two-record-cancel" aria-label="Cancel recording"
             onClick={onCancel??(()=>recording.recorder.cancel())}><X aria-hidden="true" /> {compact ? "Cancel" : "Cancel recording"}</Button>
         ) : null}
         {state.clip ? (
           <>
-            {!historical?<><Button variant="secondary" size="md" type="button" className="stage-two-record-replay"
+            {!historical?<><Button variant="secondary" size="lg" type="button" className="stage-two-record-replay"
               aria-label={replaying ? "Pause recording" : "Replay recording"}
               disabled={busy || disabled} onClick={() => void recording.toggleReplay()}>
               {replaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
               {replaying ? compact ? "Pause mine" : "Pause recording" : compact ? "Replay mine" : "Replay recording"}
             </Button>
-            <Button variant="ghost" size="md" type="button" className="stage-two-record-delete" aria-label="Clear local recording" title="Clear local take; saved history is kept"
+            <Button variant="ghost" size="lg" type="button" className="stage-two-record-delete" aria-label="Clear local recording" title="Clear local take; saved history is kept"
               disabled={busy || disabled} onClick={() => { if(window.confirm("Clear this local recording? Saved history will remain."))recording.clear(); }}><Trash2 aria-hidden="true" />
               {!compact ? "Clear local recording" : null}</Button></>:null}
             <audio key={state.clip.url} ref={recording.attachAudio} src={state.clip.url} preload="metadata"

@@ -4,6 +4,7 @@ import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 import { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/Toast';
 import type { PracticeAnalysis, PracticeApi } from '../persistence/practice-api';
 import { matchLabel } from '../practice/flow';
 
@@ -21,8 +22,11 @@ export function PracticeOutcome({data,loading,pendingSave,requested,text,api,tak
     const signal=abort.current?.signal;
     if(!api||!takeId||!signal||busy)return;
     setBusy(true);setError(null);
-    try {await api.markRecognitionError(takeId,signal);if(!signal.aborted){setMarked(true);onMarked();}}
-    catch(cause){if(!signal.aborted)setError(cause instanceof Error?cause.message:'Please retry.');}
+    try {
+      await api.markRecognitionError(takeId,signal);
+      if(!signal.aborted){setMarked(true);onMarked();toast.success('Recognition error marked');}
+    }
+    catch(cause){if(!signal.aborted){const message=cause instanceof Error?cause.message:'Please retry.';setError(message);toast.error('Could not mark recognition error',{description:message});}}
     finally{if(!signal.aborted)setBusy(false);}
   }
   if (loading && !data && !pendingSave) return <ContentSkeleton label="Loading saved analysis…" rows={1} />;

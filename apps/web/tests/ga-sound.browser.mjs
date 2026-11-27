@@ -98,8 +98,18 @@ try{for(const width of [1400,390]){
    await scope.getByRole('heading',{name:'Reference',exact:true}).waitFor();await scope.getByRole('heading',{name:'Your voice',exact:true}).waitFor();
    assert.ok(await scope.locator('.sound-word-flow').evaluateAll(flows=>flows.every(el=>el.scrollWidth<=el.clientWidth+1)));
    assert.ok(await scope.locator('.sound-word-group').evaluateAll(groups=>groups.every(group=>{
-    const b=group.getBoundingClientRect();return [...group.querySelectorAll('strong,.sound-inline-badge,.sound-link')].every(el=>{const r=el.getBoundingClientRect();return r.left>=b.left-1&&r.right<=b.right+1;});
+    const b=group.getBoundingClientRect();return [...group.querySelectorAll('strong,.sound-word-marks .sound-inline-badge')].every(el=>{const r=el.getBoundingClientRect();return r.left>=b.left-1&&r.right<=b.right+1;});
    })),'cues fit natural word groups');
+   const links=scope.locator('.sound-link');
+   assert.ok(await links.count()>0);
+   assert.ok(await links.evaluateAll(nodes=>nodes.every(link=>link.lastElementChild.textContent.trim() && link.lastElementChild.getBoundingClientRect().top >= link.firstElementChild.getBoundingClientRect().bottom + 3)), 'each reading sits below its arc');
+   assert.ok(await scope.locator('.sound-word-flow').evaluateAll(flows=>flows.every(flow=>{
+    const badges=[...flow.querySelectorAll('.sound-word-marks .sound-inline-badge')].map(el=>el.getBoundingClientRect());
+    return [...flow.querySelectorAll('.sound-link')].every(link=>{
+     const arc=link.getBoundingClientRect();
+     return badges.every(b=>arc.right<=b.left||arc.left>=b.right||arc.bottom<=b.top||arc.top>=b.bottom);
+    });
+   })),'link buttons and word badges occupy separate lanes');
   }else{
    const check=async()=>assert.equal(await scope.locator('[data-sound-cues]').evaluateAll(rows=>rows.some(row=>{
     const b=row.getBoundingClientRect();return [...row.querySelectorAll('.sound-inline-badge')].some(n=>{const r=n.getBoundingClientRect();return r.left<b.left-1||r.right>b.right+1||r.top<b.top-1||r.bottom>b.bottom+1;});

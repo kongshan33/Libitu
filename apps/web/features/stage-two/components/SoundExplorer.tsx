@@ -1,4 +1,6 @@
 'use client';
+import { X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { SoundSubtype } from '@libitu/types/stage-two';
 import type { ComparisonView } from '../comparison/view';
 import { allSound, emptyPhenomenon, markMatches, markSymbol, phenomena, phenomenon, soundCount, soundExamples, soundGroups, wordSoundCategories, type SoundFilter, type SoundMark } from '../sound/phenomena';
@@ -66,7 +68,7 @@ export function SoundDetails({view,marks,index,allowed,filter,markId,id,onClose,
   const sorted=[...matching,...selected.filter(m=>!matching.includes(m))];
   return <section id={id} className={styles.details} aria-label="Sound explanation">
     <div className={styles.detailHeading}><h3>Explanation</h3><span className={styles.source}>Text rule · {view.sound?.version??'dictionary'}</span>
-      {index!==null&&onClose?<button type="button" onClick={onClose} aria-label="Close sound explanation">×</button>:null}</div>
+      {index!==null&&onClose?<Button variant="ghost" size="sm" shape="circle" className={styles.closeButton} onClick={onClose} aria-label="Close sound explanation"><X size={16} aria-hidden="true" /></Button>:null}</div>
     {visible&&expanded?<ul role="list" className={styles.expandedCues} aria-label={`All sound categories: ${view.reference.words[index!].text}`}>
       {wordSoundCategories(selected,index!,filter).map(mark=><li key={mark.kind}><SoundBadge kind={mark.kind}>{markSymbol(mark)}</SoundBadge><span>{phenomenon(mark.kind).label}</span></li>)}
     </ul>:null}

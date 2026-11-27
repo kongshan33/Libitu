@@ -6,8 +6,8 @@ import type { PracticeApi, PracticeAttempt } from '../persistence/practice-api';
 import type { CaptionWordClock } from '../../playback/caption-word-clock';
 import { useAudioWordClock } from '../../playback/use-audio-word-clock';
 
-export function SavedTakeReplay({ take, api, clock, onPlay, disabled = false, label = 'Replay mine' }: {
-  take: PracticeAttempt | null; api?: PracticeApi; clock: CaptionWordClock; onPlay(): void; disabled?: boolean; label?: string;
+export function SavedTakeReplay({ take, api, clock, onPlay, disabled = false, label = 'Replay mine', size = 'md' }: {
+  take: PracticeAttempt | null; api?: PracticeApi; clock: CaptionWordClock; onPlay(): void; disabled?: boolean; label?: string; size?: 'sm' | 'md' | 'lg';
 }) {
   const audio = useRef<HTMLAudioElement>(null), request = useRef<AbortController | null>(null);
   const [url, setUrl] = useState<string | null>(null), [playing, setPlaying] = useState(false);
@@ -34,7 +34,7 @@ export function SavedTakeReplay({ take, api, clock, onPlay, disabled = false, la
     } catch (cause) { if (!abort.signal.aborted) setError(cause instanceof Error ? cause.message : 'This recording could not play.'); }
     finally { if (!abort.signal.aborted) setLoading(false); }
   }
-  return <><Button variant="secondary" disabled={disabled || !api || take?.recording_state !== 'ready'} loading={loading} loadingLabel="Loading…" onClick={() => void play()}>
+  return <><Button variant="secondary" size={size} disabled={disabled || !api || take?.recording_state !== 'ready'} loading={loading} loadingLabel="Loading…" onClick={() => void play()}>
     {playing ? <Pause size={16}/> : <Play size={16}/>}{playing ? 'Pause mine' : label}</Button>
     <audio ref={audio} src={url ?? undefined} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)} onError={() => setError('This recording could not play. Try again.')}/>
     {error ? <span role="alert" className="saved-replay-error">{error}</span> : null}</>;

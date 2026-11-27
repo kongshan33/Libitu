@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { MoreActions } from "../components/MoreActions";
 import { PendingStatus } from "@/components/ui/PendingStatus";
 
 import { useState } from "react";
@@ -24,10 +25,12 @@ export function ServerReferencePanel({ session, sentenceId, analysisEnabled }: {
       <input type="file" accept="audio/*" disabled={busy || !analysisEnabled} onChange={event => {
         const file = event.target.files?.[0]; if (file) void session.act(file); event.target.value = "";
       }} /></label> : null}
+    <div className="reference-action-row">
     {pending ? <Button variant="secondary" size="md" type="button" disabled={busy || !!pendingAction} loading={pendingAction === "cancel"} loadingLabel="Cancelling…" onClick={() => void act("cancel")}>Cancel preparation</Button> : null}
     {reference && ["failed", "cancelled", "partially_completed"].includes(reference.state)
       ? <Button variant="secondary" size="md" type="button" disabled={busy || !!pendingAction || !analysisEnabled} loading={pendingAction === "retry"} loadingLabel="Requesting…" onClick={() => void act("retry")}>{status?.action ?? "Retry preparation"}</Button> : null}
-    {reference && reference.state !== "deleted" ? <Button className="analysis-text-action" variant="ghost" size="md" type="button" disabled={busy || !!pendingAction} loading={pendingAction === "delete"} loadingLabel="Deleting…" onClick={() => void act("delete")}>Delete file reference</Button> : null}
+    {reference && reference.state !== "deleted" ? <MoreActions label="More reference actions"><Button className="analysis-text-action" variant="ghost" size="md" type="button" disabled={busy || !!pendingAction} loading={pendingAction === "delete"} loadingLabel="Deleting…" onClick={() => void act("delete")}>Delete file reference</Button></MoreActions> : null}
+    </div>
     <PendingStatus pending={busy}>Updating reference…</PendingStatus>
     {error ? <p className="ui-retry-notice" role="alert">{error} <Button variant="secondary" size="md" type="button" onClick={session.retryConnection}>Check again</Button></p> : null}
     <small>Private file reference · retained for up to 30 days, within the source permission period. No pronunciation score.</small>

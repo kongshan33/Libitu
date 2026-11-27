@@ -5,10 +5,14 @@ import { PracticeHistory } from '../persistence/PracticeHistory';
 import { AudioSettings } from "../components/AudioSettings";
 import { useNavigationFocus } from "@/components/AppNavigation";
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ArrowLeft, Check, ChevronLeft, ChevronRight, Pause, Play, RotateCcw, SkipForward } from 'lucide-react';
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Pause, Play, RotateCcw, Settings2, SkipForward } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DirectionButton } from '@/components/ui/direction-button';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { SegmentedControl } from '@/components/ui/Tabs';
+import { PlaybackSpeedControl } from '../components/PlaybackSpeedControl';
 import { SentenceDirectory } from '../components/SentenceDirectory';
+import { STANDARD_PLAYBACK_RATES } from '../practice/playback-speed';
 import type { StageTwoProps } from '../components/StageTwoDetailed';
 import type { ShadowMode } from '../components/StageTwoShadowing';
 import type { TextSupport } from '../persistence/practice-api';
@@ -31,16 +35,16 @@ import { useCurrentLocation } from '../../navigation/use-current-location';
 import { useQuickReference } from './use-quick-reference';
 import { useQuickTakes, type QuickTake } from './use-quick-takes';
 import { QuickReviewAnalysis } from './QuickReviewAnalysis';
-import { clock, quickQueue, quickStatus, repeatDuration, type QuickPhase } from './flow';
+import { clock, listenProgressFraction, quickQueue, quickStatus, repeatDuration, shouldAcceptListenTime, type QuickListenSource, type QuickPhase } from './flow';
 import { startQuickPreparation } from './preparation';
 import styles from './QuickShadowing.module.css';
 import practiceStyles from '../components/StageTwoPractice.module.css';
 
-type Props = StageTwoProps & {mode: ShadowMode; modes: ReactNode; onMode(mode: ShadowMode): void};
+type Props = StageTwoProps & {mode: ShadowMode; modes: ReactNode; onMode(mode: ShadowMode): void; rate?: number; onRateChange?(rate: number): void};
 type Run = {ids: string[]; index: number; round: number; takes: Record<string, string>; skipped: string[]};
 const emptyRun: Run = {ids: [], index: 0, round: 1, takes: {}, skipped: []};
 
-export function QuickShadowing({contentId, segment, sourceUrl, title, transcript, onBack, mode, modes, onMode, timingRecovery}: Props) {
+export function QuickShadowing({contentId, segment, sourceUrl, title, transcript, onBack, mode, modes, onMode, timingRecovery, rate: controlledRate, onRateChange}: Props) {
   const active = mode !== 'detailed';
   const directoryId = useId();
   const sentences = useMemo(() => buildSentenceUnits(contentId, segment, transcript), [contentId, segment, transcript]);
@@ -59,12 +63,18 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const selected = sentences.find(sentence => sentence.id === selectedId) ?? sentences[0] ?? null;
   const [first, setFirst] = useState(0), [last, setLast] = useState(Math.max(0, sentences.length - 1));
   const [skipShort, setSkipShort] = useState(true), [chooseRange, setChooseRange] = useState(false);
-  const [rate, setRate] = useState(1), [auto, setAuto] = useState(true), [support, setSupport] = useState<TextSupport['mode']>('hidden');
-  const [retain, setRetain] = useState(false), [revealed, setRevealed] = useState<number[]>([]);
+  const [localRate, setLocalRate] = useState(1), [auto, setAuto] = useState(true), [support, setSupport] = useState<TextSupport['mode']>('hidden');
+  const rate = controlledRate ?? localRate;
+  const setRate = useCallback((next: number) => {
+    setLocalRate(next);
+    onRateChange?.(next);
+  }, [onRateChange]);
+  const [revealed, setRevealed] = useState<number[]>([]);
   const [reviewVisibility,setReviewVisibility]=useState<{key:string;hidden:boolean}|null>(null);
   const [error, setError] = useState('');
   const [preparationSeconds, setPreparationSeconds] = useState(2);
-  const [time, setTime] = useState(0), [videoReady, setVideoReady] = useState(false);
+  const [listenFraction, setListenFraction] = useState(0), [videoReady, setVideoReady] = useState(false);
+  const [activeListenSource, setActiveListenSource] = useState<QuickListenSource>('video');
   const [selectedTakeKey, setSelectedTakeKey] = useState<string | null>(null);
   const requestedTake = new URL(href, 'https://libitu.invalid').searchParams.get('takeId');
   const results = useQuickTakes(persistence?.api, contentId, mode === 'review', requestedTake ?? selectedTakeKey, sentences);
@@ -75,7 +85,7 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const [replay, setReplay] = useState<{key: string; url: string} | null>(null);
   const replayRequest = useRef<AbortController | null>(null);
   const replayObjectUrl = useRef<string | null>(null);
-  const epoch = useRef(0), listenSource = useRef<'reference' | 'video'>('video');
+  const epoch = useRef(0), listenSource = useRef<QuickListenSource>('video');
   const interrupted = useRef(false), ending = useRef(false);
   const frozen = useRef<{sentenceId: string; rate: number; retain: boolean; analyze: boolean; referenceId: string | null; support: TextSupport} | null>(null);
   const [referencePlaying, setReferencePlaying] = useState(false);
@@ -138,11 +148,11 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
     if (!state.persistence?.outbox.canRecord()) { setError('Sign in or retry pending saves before continuing.'); setPhase('paused'); stopPlayback(); return; }
     setPhase('requesting'); stopPlayback();
     const tokens = practiceTokens(state.selected.text);
-    frozen.current = {sentenceId: state.selected.id, rate: state.rate, retain, analyze: state.persistence.analyze,
+    frozen.current = {sentenceId: state.selected.id, rate: state.rate, retain: state.persistence.retain, analyze: state.persistence.analyze,
       referenceId: recordingReference(state.references.row, contentId, segment.id, state.selected)?.id ?? null,
       support: supportSnapshot(state.support, visiblePositions(tokens, state.support, state.revealed), state.revealed)};
     recordingRef.current.startWithDuration(repeatDuration(state.selected));
-  }, [contentId, segment.id, retain, setPhase, stopPlayback]);
+  }, [contentId, segment.id, setPhase, stopPlayback]);
 
   const listenEnded = useCallback(() => {
     if (phaseRef.current !== 'listening' || latest.current.mode !== 'quick' || document.visibilityState === 'hidden') return;
@@ -161,10 +171,12 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
     if (!references.url && !videoReady) return;
     const generation = ++epoch.current;
     const audio = referenceAudio.current;
-    listenSource.current = references.url ? 'reference' : 'video';
-    setTime(selected.startMs / 1000);
+    const source: QuickListenSource = references.url && audio ? 'reference' : 'video';
+    listenSource.current = source;
+    setActiveListenSource(source);
+    setListenFraction(0);
     setPhase('listening');
-    if (references.url && audio) {
+    if (source === 'reference' && audio) {
       audio.currentTime = 0; audio.playbackRate = rate;
       void audio.play().catch(() => { if (generation === epoch.current) { setError('Playback was blocked. Press Resume to try again.'); setPhase('paused'); } });
     } else {
@@ -172,6 +184,22 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
       player.current?.playRange(selected.startMs / 1000, selected.endMs / 1000, {loop: false});
     }
   }, [phase, active, mode, selected, references.url, references.loading, videoReady, rate, setPhase]);
+  useEffect(() => {
+    if (phase !== 'listening' || activeListenSource !== 'reference' || !selected) return;
+    let frame = 0;
+    const sync = () => {
+      const audio = referenceAudio.current;
+      if (audio && shouldAcceptListenTime(phaseRef.current, listenSource.current, 'reference')) {
+        setListenFraction(listenProgressFraction('reference', selected, {
+          audioCurrentTimeSeconds: audio.currentTime,
+          audioDurationSeconds: audio.duration,
+        }));
+      }
+      frame = window.requestAnimationFrame(sync);
+    };
+    frame = window.requestAnimationFrame(sync);
+    return () => window.cancelAnimationFrame(frame);
+  }, [phase, activeListenSource, selected]);
   useEffect(() => {
     if (!['loading', 'listening'].includes(phase)) return;
     const timer = setTimeout(() => {
@@ -240,7 +268,12 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
     if (!['requesting','recording','stopping'].includes(recording.state.phase) && mode === 'review' && reviewSentence && reviewSentence.id !== sentenceId) setSentenceId(reviewSentence.id);
   }, [mode, reviewSentence, sentenceId, recording.state.phase]);
   const replayUrl = take?.url ?? (replay?.key === take?.key ? replay?.url : null);
-  useAudioWordClock(referenceAudio, references.url, referenceClock, Boolean(references.url), (selected?.startMs ?? 0)/1000);
+  const useAudioReference = mode === 'review'
+    ? Boolean(references.url)
+    : phase === 'listening'
+      ? activeListenSource === 'reference'
+      : Boolean(references.url);
+  useAudioWordClock(referenceAudio, references.url, referenceClock, useAudioReference, (selected?.startMs ?? 0)/1000);
   useAudioWordClock(takeAudio, replayUrl ?? null, learnerClock, mode === 'review');
   useEffect(() => { replayRequest.current?.abort(); takeAudio.current?.pause(); setReplay(null);
     if (replayObjectUrl.current) { URL.revokeObjectURL(replayObjectUrl.current); replayObjectUrl.current = null; }
@@ -277,9 +310,9 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   const running = !['idle','done'].includes(phase);
   const duration = selected ? repeatDuration(selected) : 1;
   const fraction = phase === 'preparing' ? preparationSeconds / 2 : phase === 'recording' ? Math.max(0,1-recording.state.elapsedMs/duration)
-    : phase === 'listening' && selected ? Math.min(1, Math.max(0,(time*1000-selected.startMs)/(selected.endMs-selected.startMs))) : 0;
+    : phase === 'listening' && selected ? listenFraction : 0;
   const reviewHidden=Boolean(take&&reviewVisibility?.key===take.key&&reviewVisibility.hidden);
-  const showVideo = mode === 'review' ? !references.url && referencePlaying : running && (phase === 'listening' ? listenSource.current === 'video' : !references.url);
+  const showVideo = mode === 'review' ? !useAudioReference && referencePlaying : running && !useAudioReference;
 
   return <section hidden={!active} className={`stage-two-shadow ${practiceStyles.workspace} ${styles.workspace}`} aria-label="Stage 2 quick shadowing" data-analysis-mode={mode}>
     <header className={`stage-two-shadow-header ${styles.header}`}>
@@ -291,7 +324,18 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
         summary={`${practiced.length} practiced in this segment`} position={reviewSentence ? sentences.indexOf(reviewSentence) + 1 : null} total={sentences.length}
         collapsed={collapsed} listId={directoryId} toggleLabel={collapsed ? 'Expand review list' : 'Collapse review list'}
         onToggle={() => setCollapsed(value => !value)}
-        controls={!collapsed ? <div className={styles.filters}>{(['all','need','matched'] as const).map(value => <button key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{value === 'all' ? 'All' : value === 'need' ? 'Needs work' : 'Matched'}</button>)}</div> : null}>
+        controls={!collapsed ? <SegmentedControl
+          ariaLabel="Filter practiced sentences"
+          size="sm"
+          className={styles.filters}
+          value={filter}
+          onValueChange={setFilter}
+          items={[
+            { value: 'all', label: 'All' },
+            { value: 'need', label: 'Needs work' },
+            { value: 'matched', label: 'Matched' }
+          ]}
+        /> : null}>
         <ol id={directoryId}>
           {filtered.map(sentence => {const item = latestTakes.get(sentence.id)!; const number = sentences.indexOf(sentence) + 1; return <li key={sentence.id}>
             <button type="button" aria-current={reviewSentence?.id === sentence.id ? 'true' : undefined}
@@ -313,24 +357,37 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
           {mode === 'quick' && phase === 'idle' ? <>
             <div><h2>Quick shadowing</h2><p className={styles.intro}>Listen to each sentence, then say it right away. Keep practicing while analysis runs in the background. The details are waiting in Review.</p></div>
             <div className={styles.setup}>
-              <div><span>This run</span><p>Sentences {first+1}–{last+1} · {queue.length} to practice <small>· {last-first+1-queue.length} short ones skipped · about {Math.ceil(queue.reduce((sum,s) => sum+(s.endMs-s.startMs)*(1/rate+2),0)/60000)} min</small></p><button onClick={() => setChooseRange(!chooseRange)}>Change</button></div>
+              <div><span>This run</span><p>Sentences {first+1}–{last+1} · {queue.length} to practice <small>· {last-first+1-queue.length} short ones skipped · about {Math.ceil(queue.reduce((sum,s) => sum+(s.endMs-s.startMs)*(1/rate+2),0)/60000)} min</small></p><Button variant="ghost" size="sm" onClick={() => setChooseRange(!chooseRange)}>Change</Button></div>
               {chooseRange ? <div className={styles.range}><label>First sentence<input type="number" min={1} max={last+1} value={first+1} onChange={event => setFirst(Math.max(0,Math.min(last,Number(event.target.value)-1)))}/></label><label>Last sentence<input type="number" min={first+1} max={sentences.length} value={last+1} onChange={event => setLast(Math.max(first,Math.min(sentences.length-1,Number(event.target.value)-1)))}/></label><label><input type="checkbox" checked={skipShort} onChange={event => setSkipShort(event.target.checked)}/>Skip sentences under 4 words</label></div> : null}
 
-              <div><span>Speed</span><Choices<number> label="Playback speed" values={[0.75,1,1.25]} value={rate} onChange={setRate} labelOf={value => `${value}×`}/></div>
+              <div className={styles.speedRow}><span>Speed</span><PlaybackSpeedControl className={styles.speedControl} rate={rate} rates={STANDARD_PLAYBACK_RATES} onRate={setRate}/></div>
               <div><span>Time to repeat</span><p>2× the original sentence duration <small>· finish early with Done</small></p></div>
               <div><span>Text</span><Choices<TextSupport['mode']> label="Text support" values={['hidden','keywords','full'] as const} value={support} onChange={setSupport} labelOf={value => ({hidden:'Hidden',keywords:'Key words',full:'Full'})[value]}/></div>
               <div><span>After each sentence</span><Choices<boolean> label="Auto advance" values={[true,false]} value={auto} onChange={setAuto} labelOf={value => value ? 'Go on by itself' : 'Wait for me'}/></div>
             </div>
-            <div className="stage-two-operation-footer"><AudioSettings analyze={persistence?.analyze ?? false} retain={retain} disabled={recording.isBusy()} onAnalyze={value => persistence?.setAnalyze(value)} onRetain={setRetain} /></div>
+            <div className="stage-two-operation-footer"><AudioSettings disabled={recording.isBusy()} /></div>
           </> : null}
           {mode === 'quick' && phase !== 'idle' ? <div><div className={styles.strip} aria-label="Round progress">{run.ids.map((id,index) => {const item = results.takes.find(t => t.key === run.takes[id]); return <span key={id} data-status={item ? statusOf(item) : run.skipped.includes(id) ? 'skipped' : index === run.index && running ? 'current' : 'empty'} title={`Sentence ${sentences.findIndex(s => s.id === id)+1}: ${item ? statusOf(item) : run.skipped.includes(id) ? 'skipped' : 'not recorded'}`}/>;})}</div><div className={styles.progressLabel}><span>Round {run.round} · {phase === 'done' ? 'complete' : `Sentence ${Math.min(run.index+1,run.ids.length)} of ${run.ids.length}`}</span><span>No scoring while you practice</span></div></div> : null}
-          {active ? <div hidden={!showVideo} className={styles.video} data-dim={phase === 'recording'}><WorkspacePlayer ref={player} sourceUrl={sourceUrl ?? ''} title={title} wordClock={referenceClock}
-            onReady={() => setVideoReady(true)} onTimeChange={value => {setTime(value); if (phaseRef.current === 'listening' && listenSource.current === 'video' && selected && value*1000 >= selected.endMs-30) listenEnded();}}
-            onPlaybackChange={playing => {if (playing && recordingRef.current.isBusy()) {player.current?.pause(); return;} setReferencePlaying(playing);}}/>
+          {active ? <div hidden={!showVideo} className={styles.video} data-dim={phase === 'recording'}><WorkspacePlayer ref={player} sourceUrl={sourceUrl ?? ''} title={title} wordClock={useAudioReference ? undefined : referenceClock}
+            onReady={() => setVideoReady(true)} onTimeChange={value => {
+              if (!shouldAcceptListenTime(phaseRef.current, listenSource.current, 'video') || !selected) return;
+              setListenFraction(listenProgressFraction('video', selected, { videoTimeSeconds: value }));
+              if (value * 1000 >= selected.endMs - 30) listenEnded();
+            }}
+            onPlaybackChange={playing => {
+              if (playing && recordingRef.current.isBusy()) { player.current?.pause(); return; }
+              if (!useAudioReference) setReferencePlaying(playing);
+            }}/>
           </div> : null}
-          {active ? <audio ref={referenceAudio} src={references.url ?? undefined} preload="auto" onPlay={() => setReferencePlaying(true)} onPause={() => setReferencePlaying(false)} onEnded={listenEnded} onTimeUpdate={event => setTime((selected?.startMs ?? 0)/1000+event.currentTarget.currentTime)} onError={() => {if (phaseRef.current === 'listening') {pauseRun();setError('Reference audio could not play. Open Detailed to prepare it again.');}}}/> : null}
+          {active ? <audio ref={referenceAudio} src={references.url ?? undefined} preload="auto" onPlay={() => setReferencePlaying(true)} onPause={() => setReferencePlaying(false)} onEnded={() => { if (shouldAcceptListenTime(phaseRef.current, listenSource.current, 'reference')) listenEnded(); }} onTimeUpdate={event => {
+            if (!shouldAcceptListenTime(phaseRef.current, listenSource.current, 'reference') || !selected) return;
+            setListenFraction(listenProgressFraction('reference', selected, {
+              audioCurrentTimeSeconds: event.currentTarget.currentTime,
+              audioDurationSeconds: event.currentTarget.duration,
+            }));
+          }} onError={() => { if (phaseRef.current === 'listening' && listenSource.current === 'reference') { pauseRun(); setError('Reference audio could not play. Open Detailed to prepare it again.'); } }}/> : null}
           {mode === 'quick' && running && selected ? <>
-            {references.url && (phase !== 'listening' || listenSource.current === 'reference') ? <div className={styles.referenceBar}><i/>Reference audio · video stays hidden</div> : null}
+            {references.url && useAudioReference ? <div className={styles.referenceBar}><i/>Reference audio · video stays hidden</div> : null}
             <div className={styles.practice}>
               <span className={styles.phase} data-phase={phase}>{({loading:'GETTING READY',listening:'LISTEN',preparing:'GET READY',requesting:'MICROPHONE',recording:'YOUR TURN',saving:'SAVING',gap:'TAKE RECORDED',wait:'TAKE RECORDED',paused:'PAUSED',idle:'',done:''})[phase]}</span>
               <PracticePrompt sentence={selected} mode={support} revealed={revealed} onReveal={reveal} clock={referenceClock}/>
@@ -340,21 +397,31 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
                 {phase === 'recording' ? <Button variant="primary" size="lg" onClick={() => {setPhase('saving');recording.recorder.stop();}}><Check size={16}/>Done</Button> : null}
                 {phase === 'paused' ? <Button variant="primary" size="lg" disabled={!persistence?.outbox.canRecord()} onClick={resume}><Play size={16}/>Resume</Button> : null}
                 {phase === 'wait' ? <Button variant="primary" size="lg" onClick={() => advance()}>Next sentence <ChevronRight size={16}/></Button> : null}
-                {['loading','listening','preparing','requesting','recording','gap'].includes(phase) ? <Button variant="secondary" onClick={pauseRun}><Pause size={16}/>Pause</Button> : null}
-                {!['saving','gap','paused'].includes(phase) ? <Button variant="secondary" onClick={redo}><RotateCcw size={16}/>Redo</Button> : null}
-                {['loading','listening','preparing','requesting','paused'].includes(phase) ? <Button variant="secondary" onClick={() => {recording.recorder.cancel();advance(true);}}><SkipForward size={16}/>Skip</Button> : null}
-                {phase === 'paused' ? <Button variant="secondary" onClick={endRun}>End run</Button> : null}
+                {['loading','listening','preparing','requesting','recording','gap'].includes(phase) ? <Button variant="secondary" size="lg" onClick={pauseRun}><Pause size={16}/>Pause</Button> : null}
+                {!['saving','gap','paused'].includes(phase) ? <Button variant="secondary" size="lg" onClick={redo}><RotateCcw size={16}/>Redo</Button> : null}
+                {['loading','listening','preparing','requesting','paused'].includes(phase) ? <Button variant="secondary" size="lg" onClick={() => {recording.recorder.cancel();advance(true);}}><SkipForward size={16}/>Skip</Button> : null}
+                {phase === 'paused' ? <Button variant="secondary" size="lg" onClick={endRun}>End run</Button> : null}
               </div>
               {['paused','wait'].includes(phase) ? <Choices<TextSupport['mode']> label="Text support" values={['hidden','keywords','full'] as const} value={support} onChange={value => {setSupport(value);setRevealed([]);}} labelOf={value => ({hidden:'Hidden',keywords:'Key words',full:'Full'})[value]}/> : null}
-              {['listening','paused','wait'].includes(phase) ? <details className={styles.audioSettings}><summary>Settings · {rate}×</summary><Choices<number> label="Playback speed" values={[0.75,1,1.25]} value={rate} onChange={value => {if (phase === 'listening') pauseRun();setRate(value);}} labelOf={value => `${value}×`}/><p>Time to repeat: 2× the original sentence duration.</p><Choices<boolean> label="Auto advance" values={[true,false]} value={auto} onChange={setAuto} labelOf={value => value ? 'Go on by itself' : 'Wait for me'}/></details> : null}
+              {['listening','paused','wait'].includes(phase) ? <details className={styles.audioSettings}>
+                <summary><Settings2 size={13} aria-hidden="true"/>Settings · {rate}×</summary>
+                <div className={styles.audioSettingsPanel}>
+                  <PlaybackSpeedControl label="Speed" rate={rate} rates={STANDARD_PLAYBACK_RATES} onRate={value => {if (phase === 'listening') pauseRun();setRate(value);}}/>
+                  <div className={styles.audioSettingsField}>
+                    <span className={styles.audioSettingsLabel}>After each sentence</span>
+                    <Choices<boolean> label="Auto advance" values={[true,false]} value={auto} onChange={setAuto} labelOf={value => value ? 'Go on by itself' : 'Wait for me'}/>
+                  </div>
+                  <p className={styles.audioSettingsNote}>Time to repeat: 2× the original sentence duration.</p>
+                </div>
+              </details> : null}
             </div>
           </> : null}
-          {mode === 'quick' && phase === 'done'  ? <div className={styles.summary}><h2>Round {run.round} done</h2><div className={styles.counts}>{(['matched','close','redo'] as const).map(status => <div key={status} data-status={status}><b>{roundTakes.filter(t => statusOf(t) === status).length}</b><span>{status === 'redo' ? 'to redo' : status}</span></div>)}</div><p>{roundTakes.filter(t => statusOf(t) === 'pending').length} pending · {roundTakes.filter(t => ['failed','unchecked'].includes(statusOf(t))).length} unchecked or failed · {run.ids.length-roundTakes.length} skipped or not recorded</p><p className={styles.muted}>Word matching and acoustic analysis finish in the background. Open Review for each take’s status.</p><div className={`${styles.actions} ui-button-group`}><Button variant="primary" size="lg" onClick={() => startRun(need.length ? need : run.ids,run.round+1)}>{need.length ? `Practice the ${need.length} that need work` : 'Run again'}</Button><Button variant="secondary" size="lg" onClick={() => onMode('review')}>Review details</Button></div><button onClick={() => setPhase('idle')}>Change run settings</button><button onClick={onBack}>Back to segments</button></div> : null}
+          {mode === 'quick' && phase === 'done'  ? <div className={styles.summary}><h2>Round {run.round} done</h2><div className={styles.counts}>{(['matched','close','redo'] as const).map(status => <div key={status} data-status={status}><b>{roundTakes.filter(t => statusOf(t) === status).length}</b><span>{status === 'redo' ? 'to redo' : status}</span></div>)}</div><p>{roundTakes.filter(t => statusOf(t) === 'pending').length} pending · {roundTakes.filter(t => ['failed','unchecked'].includes(statusOf(t))).length} unchecked or failed · {run.ids.length-roundTakes.length} skipped or not recorded</p><p className={styles.muted}>Word matching and acoustic analysis finish in the background. Open Review for each take’s status.</p><div className={`${styles.actions} ui-button-group`}><Button variant="primary" size="lg" onClick={() => startRun(need.length ? need : run.ids,run.round+1)}>{need.length ? `Practice the ${need.length} that need work` : 'Run again'}</Button><Button variant="secondary" size="lg" onClick={() => onMode('review')}>Review details</Button></div><div className={`${styles.summaryLinks} ui-button-group`}><Button variant="ghost" size="sm" onClick={() => setPhase('idle')}>Change run settings</Button><Button variant="ghost" size="sm" onClick={onBack}>Back to segments</Button></div></div> : null}
           {mode === 'review' ? <>
             {results.history.loading && !take ? <ContentSkeleton label="Loading saved takes…" rows={2} /> : null}
             {results.history.error ? <p className="ui-retry-notice" role="alert">{results.history.error} <Button variant="secondary" size="md" onClick={results.retryHistory}>Retry history</Button></p> : null}
             {take && reviewSentence ? <>
-              <div className="stage-two-sentence-navigation"><Button variant="secondary" disabled={filtered.indexOf(reviewSentence) === 0} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)-1].id)}><ChevronLeft size={16}/>Previous</Button><span>Sentence {sentences.indexOf(reviewSentence)+1} · ~{clock(reviewSentence.startMs)}</span><Button variant="secondary" disabled={filtered.indexOf(reviewSentence) === filtered.length-1} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)+1].id)}>Next<ChevronRight size={16}/></Button></div>
+              <div className="stage-two-sentence-navigation"><DirectionButton variant="secondary" disabled={filtered.indexOf(reviewSentence) === 0} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)-1].id)}><ChevronLeft aria-hidden="true"/>Previous</DirectionButton><span>Sentence {sentences.indexOf(reviewSentence)+1} · ~{clock(reviewSentence.startMs)}</span><DirectionButton variant="secondary" disabled={filtered.indexOf(reviewSentence) === filtered.length-1} onClick={() => selectReview(filtered[filtered.indexOf(reviewSentence)+1].id)}>Next<ChevronRight aria-hidden="true"/></DirectionButton></div>
               <section className="shadow-practice-flow" aria-label="Take review">
               <PracticeOutcome concealed={reviewHidden} key={`outcome:${take.key}`} data={take.analysis ?? null} text={reviewSentence.text} loading={Boolean(take.id && !take.loaded)} pendingSave={!take.id} requested={take.requested} api={persistence?.api} takeId={take.id} onMarked={() => results.refresh(take.key)}/>
               <div className="shadow-practice-actions ui-button-group"><Button variant="secondary" size="lg" onClick={() => void playReference()} disabled={take.analysis?.result?.comparison !== 'available' || references.loading || !references.url && !sourceUrl}>{referencePlaying ? <Pause size={16}/> : <Play size={16}/>}Reference</Button><Button variant="secondary" size="lg" onClick={() => void playTake()} disabled={!replayUrl && (!take.id || take.recordingState !== 'ready')}><Play size={16}/>My take</Button><Button variant="primary" size="lg" onClick={() => startRun([reviewSentence.id])}>Practice again</Button>{take.durationMs != null ? <span className="stage-two-recording-timer" aria-label="Recording duration">{Math.floor(take.durationMs/60000)}:{String(Math.floor(take.durationMs/1000)%60).padStart(2,'0')}</span> : null}</div>
@@ -364,7 +431,11 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
               </section>
               <QuickReviewAnalysis concealed={reviewHidden} onConcealedChange={hidden=>setReviewVisibility({key:take.key,hidden})} key={`analysis:${take.key}`} content={contentId} sentence={reviewSentence} take={take} api={persistence?.api} reload={() => results.refresh(take.key)} playback={{reference:referenceClock,yours:learnerClock,referenceOffsetMs:reviewSentence.startMs}} takeControls={<div className={styles.takes} role="group" aria-label="Saved take">{sentenceTakes.map((item,index) => <button className="analysis-chip" key={item.key} aria-pressed={item.key === take.key} onClick={() => selectTake(item.key)}>Take {sentenceTakes.length-index} · {new Date(item.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}{item.durationMs ? ` · ${(item.durationMs/1000).toFixed(1)}s` : ''}{item.loaded && item.analysis?.result?.comparison !== 'available' ? ' · no Reference' : ''}</button>)}</div>}/>
               <PracticeHistory selectedAnalysis={take.analysis} onAnalysisChanged={()=>results.refresh(take.key)} key={reviewSentence.id} contentId={contentId} sentenceId={reviewSentence.id} selectedAnalysisId={take.id} onAnalysisSelect={id=>{if(id)selectTake(id);}} onViewAnalysis={selectTake} blocked={recording.isBusy()} onPlay={stopPlayback} playbackClock={learnerClock} onRecordDeleted={id=>{results.remove(id);if(take.id===id){const url=new URL(window.location.href);url.searchParams.delete('takeId');window.history.replaceState(null,'',url);window.dispatchEvent(new Event('libitu:stage-two-location'));setSelectedTakeKey(null);}}}/>
-            </> : !results.history.loading ? <div className={styles.empty}><h2>{practiced.length ? 'Nothing in this filter' : 'Nothing to review yet'}</h2><p>Run Quick shadowing. Your takes and their analysis will appear here.</p><Button variant="primary" onClick={() => onMode('quick')}>Go to Quick shadowing</Button></div> : null}
+            </> : !results.history.loading ? <EmptyState
+              title={practiced.length ? 'Nothing in this filter' : 'Nothing to review yet'}
+              description="Run Quick shadowing. Your takes and their analysis will appear here."
+              action={<Button variant="primary" onClick={() => onMode('quick')}>Go to Quick shadowing</Button>}
+            /> : null}
           </> : null}
           {error ? <p className="ui-retry-notice" role="alert">{error}</p> : null}
           {references.error && phase === 'idle' ? <p className={styles.muted}>Reference audio is unavailable. You can use video playback or prepare it in Detailed.</p> : null}
@@ -379,5 +450,15 @@ export function QuickShadowing({contentId, segment, sourceUrl, title, transcript
   </section>;
 }
 function Choices<T extends string | number | boolean>({label, values, value, onChange, labelOf}: {label: string; values: readonly T[]; value: T; onChange(value: T): void; labelOf(value: T): string}) {
-  return <div className={styles.choices} role="group" aria-label={label}>{values.map(item => <button key={String(item)} type="button" aria-pressed={item === value} onClick={() => onChange(item)}>{labelOf(item)}</button>)}</div>;
+  return <SegmentedControl
+    ariaLabel={label}
+    size="sm"
+    className={styles.choices}
+    value={String(value)}
+    onValueChange={(next) => {
+      const matched = values.find((item) => String(item) === next);
+      if (matched !== undefined) onChange(matched);
+    }}
+    items={values.map((item) => ({ value: String(item), label: labelOf(item) }))}
+  />;
 }

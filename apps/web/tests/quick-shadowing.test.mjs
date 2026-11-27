@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {quickQueue, quickStatus, repeatDuration} from '../features/stage-two/quick/flow.ts';
+import {listenProgressFraction, quickQueue, quickStatus, repeatDuration, shouldAcceptListenTime} from '../features/stage-two/quick/flow.ts';
 import {stageTwoLocation} from '../features/stage-two/location.ts';
 
 test('Quick duration is exactly twice source duration, independent of listening speed', () => {
@@ -66,4 +66,26 @@ test('a new playback receives a fresh preparation interval after pause', context
   assert.equal(requests,0);
   context.mock.timers.tick(1);
   assert.equal(requests,1);
+});
+
+test('Quick listen time updates only accept events from the active listening source', () => {
+  assert.equal(shouldAcceptListenTime('listening', 'reference', 'reference'), true);
+  assert.equal(shouldAcceptListenTime('listening', 'reference', 'video'), false);
+  assert.equal(shouldAcceptListenTime('listening', 'video', 'video'), true);
+  assert.equal(shouldAcceptListenTime('listening', 'video', 'reference'), false);
+  assert.equal(shouldAcceptListenTime('idle', 'video', 'video'), false);
+  assert.equal(shouldAcceptListenTime('loading', 'reference', 'reference'), false);
+  assert.equal(shouldAcceptListenTime('recording', 'reference', 'reference'), false);
+});
+
+test('listenProgressFraction tracks reference audio and video ranges without NaN or overshoot', () => {
+  const sentence = {startMs: 10_000, endMs: 14_000};
+  assert.equal(listenProgressFraction('reference', sentence, {audioCurrentTimeSeconds: 1.5, audioDurationSeconds: 3}), 0.5);
+  assert.equal(listenProgressFraction('reference', sentence, {audioCurrentTimeSeconds: 2, audioDurationSeconds: Number.NaN}), 0.5);
+  assert.equal(listenProgressFraction('reference', sentence, {audioCurrentTimeSeconds: 5, audioDurationSeconds: 3}), 1);
+  assert.equal(listenProgressFraction('reference', sentence, {audioCurrentTimeSeconds: -0.5, audioDurationSeconds: 3}), 0);
+  assert.equal(listenProgressFraction('video', sentence, {videoTimeSeconds: 12}), 0.5);
+  assert.equal(listenProgressFraction('video', sentence, {videoTimeSeconds: 0}), 0);
+  assert.equal(listenProgressFraction('video', sentence, {videoTimeSeconds: 20}), 1);
+  assert.equal(listenProgressFraction('video', {startMs: 5000, endMs: 5000}, {videoTimeSeconds: 5}), 0);
 });

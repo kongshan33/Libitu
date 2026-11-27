@@ -104,3 +104,13 @@ test('history statuses describe every take, with current analysis overriding an 
  assert.equal(takeAnalysisStatus({id:'a',analysis_state:'queued'},{id:'b',state:'completed'}),'Queued');
  assert.equal(takeAnalysisStatus({id:'a'}),'Not analyzed');
 });
+
+test('a prepared reference supplies timeline evidence before the learner records', () => {
+  const view = {reference:{words:[word(0,250)]}, yours:{words:[{text:'hello'}]}};
+  const [column] = timelineColumns(view, null, signal);
+  assert.equal(column.reference.duration, 250);
+  assert.equal(column.reference.prominence, .6);
+  assert.ok(column.reference.frames.some(frame => frame.pitch !== null));
+  assert.equal(column.yours.duration, null);
+  assert.deepEqual(column.yours.frames, []);
+});

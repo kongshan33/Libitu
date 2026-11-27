@@ -49,11 +49,11 @@ async function assertActionGeometry(page, width) {
  const row=page.locator('.shadow-practice-actions').filter({visible:true});
  const buttons=await row.locator('button').evaluateAll(nodes=>nodes.map(el=>({text:el.textContent,rect:el.getBoundingClientRect().toJSON()})));
  assert.equal(buttons.length,3);
- assert.ok(buttons.every(({rect})=>Math.abs(rect.height-44)<1),JSON.stringify(buttons));
+ assert.ok(buttons.every(({rect})=>Math.abs(rect.height-42)<1),JSON.stringify(buttons));
  if(width>1040) {
   assert.ok(buttons.every(({rect})=>Math.abs(rect.y-buttons[0].rect.y)<1),'main actions share one baseline');
   const timer=await row.locator('.stage-two-recording-timer').boundingBox();
-  assert.ok(Math.abs(timer.y+timer.height/2-buttons[0].rect.y-22)<1,'duration is centered with the buttons');
+  assert.ok(Math.abs(timer.y+timer.height/2-buttons[0].rect.y-21)<1,'duration is centered with the buttons');
  }
 }
 async function assertSettingsPosition(page) {
@@ -169,6 +169,7 @@ try{for(const width of (process.env.LIBITU_TEST_WIDTHS ?? '1192,390').split(',')
  assert.equal(await page.locator('.practice-analysis-status').count(),0);
  assert.equal(await page.getByText('Practice records are saved to your account.',{exact:false}).count(),0);
  assert.equal(await page.getByText('Continuous relative prominence is experimental',{exact:false}).count(),0);
+    await page.locator(".practice-history li").filter({has:page.getByRole("button",{name:"Delete analysis",includeHidden:true})}).first().getByRole("button",{name:"More take actions"}).click();
  assert.equal(await page.getByRole('region',{name:'Saved practice',exact:true}).getByRole('button',{name:'Delete analysis',exact:true}).count(),1);
  await page.getByRole('navigation',{name:'Shadow mode',exact:true}).getByRole('button',{name:'Quick',exact:true}).click();
  await page.getByRole('heading',{name:'Quick shadowing',exact:true}).waitFor();

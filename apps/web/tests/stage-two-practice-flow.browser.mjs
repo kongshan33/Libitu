@@ -106,7 +106,7 @@ try {for(const width of [1440,390]){
  await page.goto(entry,{waitUntil:'domcontentloaded',timeout:90000});try{await page.locator('.shadow-practice-prompt').waitFor();}catch(error){await page.screenshot({path:`${output}/failed-initial-${width}.png`,fullPage:true});throw error;}
  assert.equal(await page.locator('.stage-two-layers').count(),0,'layers hidden before recording');
  assert.equal(await page.locator('.shadow-word-mask').count(),5);assert.equal(await page.locator('.stage-two-sentences').getByText(texts[0],{exact:true}).count(),1);
- assert.equal(await page.locator('.stage-two-record-start').evaluate(el=>getComputedStyle(el).borderRadius),'999px');
+ assert.equal(await page.locator('.stage-two-record-start').evaluate(el=>getComputedStyle(el).borderRadius),'10px');
  assert.equal(await page.locator('.stage-two-record-start').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(12, 10, 9)');
  for(const text of ['Try another take, or move to the next sentence.','Sentence timings are approximate.','Listen first, then record your voice.'])assert.equal(await page.getByText(text,{exact:true}).count(),0);
  const originalUrl=page.url();
@@ -261,6 +261,7 @@ try {for(const width of [1440,390]){
  await page.waitForFunction(()=>document.querySelector('[role="tab"][aria-label="Melody"]')?.getAttribute('aria-selected')==='true');
  await page.getByRole('button',{name:'Detailed',exact:true}).click();
  await page.getByText('100% of words matched',{exact:false}).waitFor();
+    await page.locator(".practice-history li").filter({has:page.getByRole("button",{name:"Delete analysis",includeHidden:true})}).first().getByRole("button",{name:"More take actions"}).click();
  await page.getByRole('button',{name:'Delete analysis',exact:true}).click();
  await page.locator('.shadow-directory-status').first().filter({hasText:'Not passed · Best 60% words'}).waitFor();
  assert.equal(await page.locator('.stage-two-layers').count(),0,'deleted analysis hides layers');
@@ -277,7 +278,7 @@ try {for(const width of [1440,390]){
  });
  const expandedStyle=await directoryStyle();
  await page.getByRole('button',{name:'Collapse sentence list',exact:true}).click();
- await page.waitForFunction(()=>{const row=document.querySelector('.stage-two-sentences [aria-current="true"]');return getComputedStyle(row).backgroundColor==='rgb(90, 67, 214)'&&getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize==='10px';});
+ await page.waitForFunction(()=>{const row=document.querySelector('.stage-two-sentences [aria-current="true"]');return getComputedStyle(row).backgroundColor==='rgb(12, 12, 12)'&&getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize==='11px';});
  const collapsedStyle=await directoryStyle();
  await page.getByRole('button',{name:'Review',exact:true}).click();
  const review=page.getByRole('navigation',{name:'Practiced sentences',exact:true});
@@ -285,7 +286,7 @@ try {for(const width of [1440,390]){
  assert.deepEqual(await directoryStyle(),expandedStyle,'Detailed and Review share expanded directory styles');
  const selectedBeforeFold=new URL(page.url()).searchParams.get('sentenceId');
  await page.getByRole('button',{name:'Collapse review list',exact:true}).click();
- await page.waitForFunction(()=>{const row=document.querySelector('.stage-two-sentences [aria-current="true"]');return getComputedStyle(row).backgroundColor==='rgb(90, 67, 214)'&&getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize==='10px';});
+ await page.waitForFunction(()=>{const row=document.querySelector('.stage-two-sentences [aria-current="true"]');return getComputedStyle(row).backgroundColor==='rgb(12, 12, 12)'&&getComputedStyle(row.querySelector('.stage-two-sentence-number')).fontSize==='11px';});
  assert.deepEqual(await directoryStyle(),collapsedStyle,'Detailed and Review share collapsed directory styles');
  assert.equal(await page.getByRole('button',{name:'Expand review list',exact:true}).getAttribute('aria-expanded'),'false');
  assert.equal(new URL(page.url()).searchParams.get('sentenceId'),selectedBeforeFold,'folding preserves sentence selection');
