@@ -76,7 +76,7 @@ Initial redesign, before the DeepSeek comparison above: no database migration or
 
 Review's Sound track uses the same cue components: matching ten-color badges, typography, SVG linking arcs and dashed/question-mark learner targets. Keep the Review timeline and its other tracks; render linking at outgoing source boundaries only and reserve enough space to avoid clipping at Fit/minimum zoom.
 
-Use the newly supplied `design/prototypes/Stage 2 · Detailed (three-layer analysis)-html (1)/Shadow.dc.html` for Sound styling. It supersedes the permanent guidance sidebar below: Reference and Your voice occupy the full content width; Feedback/Tip is collapsed into Notes above the filters. Match the prototype's 19px words, gray/black filter pills, ten-color badges, SVG linking arcs and dashed unevaluated learner marks. Filtering dims unrelated cues without changing the sentence layout. Keep actual data availability, opt-in vowel measurements, IPA hover/focus and synchronized hide/peek. Left panels and analysis logic are unchanged.
+Use the newly supplied `design/prototypes/Stage 2 · Detailed (three-layer analysis)-html-2/Shadow.dc.html` for Sound styling. It supersedes the permanent guidance sidebar below: Reference and Your voice occupy the full content width; Feedback/Tip is collapsed into Notes above the filters. Match the prototype's 19px words, gray/black filter pills, ten-color badges, SVG linking arcs and dashed unevaluated learner marks. Filtering dims unrelated cues without changing the sentence layout. Keep actual data availability, opt-in vowel measurements, IPA hover/focus and synchronized hide/peek. Left panels and analysis logic are unchanged.
 
 ## Sound restoration exception — 2026-11-04
 
@@ -94,7 +94,7 @@ User feedback supersedes the duration-only word width and always-visible explana
 
 ## Shadow analysis presentation — 2026-11-04
 
-Detailed and Review follow sections 9.12–9.15 of `libitu 设计规范 v2.0(统一版).md`, with the existing left panels preserved by explicit user instruction. Detailed uses folded Notes and one layer at a time; Review uses an Overview with multiple tracks, exact saved-take selection and voice toggles. Shared word selection persists between the views. Current word-matching gates (60% Sound / 85% Rhythm and Melody), measurement uncertainty, recording privacy and retained-audio availability remain authoritative.
+Detailed and Review follow sections 9.12–9.15 of `libitu_设计规范_v2_1_统一版_.md`, with the existing left panels preserved by explicit user instruction. Detailed uses folded Notes and one layer at a time; Review uses an Overview with multiple tracks, exact saved-take selection and voice toggles. Shared word selection persists between the views. Current word-matching gates (60% Sound / 85% Rhythm and Melody), measurement uncertainty, recording privacy and retained-audio availability remain authoritative.
 
 The shared timeline uses actual saved measurements, source-word alignment, independent per-voice durations, drag-to-pan and explicit zoom/Fit controls. Unmatched words and unvoiced intervals stay blank. Optional saved 20ms pitch/energy frames support the new traces and loudness envelopes; older results retain their available coarse pitch and omit unavailable envelopes. No interpolated speech, stress classification or pronunciation accuracy claim is introduced. Destructive actions require confirmation. Review keeps Reference preparation and Audio settings absent, and How It Works remains removed.
 
@@ -155,7 +155,7 @@ and sorting still run over the full loaded collection. See
 ## Practice workspace visual direction — 2026-10-25
 
 For Stage 1, segment selection and Stage 2, the user-approved
-[ElevenLabs-style reference](libitu%20设计规范%20v1.0.md) replaces the earlier
+[ElevenLabs-style reference](libitu_设计规范_v2_1_统一版_.md) replaces the earlier
 purple-primary requirement with black primary buttons, neutral surfaces, pill
 controls and restrained typography. Keep other product pages unchanged. Preserve
 semantic learning/error colors and the existing analysis diagrams.
@@ -504,7 +504,7 @@ Reference boundaries and trim offsets remain approximate browser/caption timing.
 
 ### Stage 2 three-layer practice workspace
 
-Present Sound, Rhythm and Melody as three distinct tabs, defaulting to Sound. Match the layer structure of `design/prototypes/toneflow_stage2_three_layer.html`: synchronized layer shortcuts above the left sentence directory, a central canvas for the selected layer, and a right-side layer focus. On narrow screens the focus follows its canvas. Keep sentence navigation above a shared Listen and record area, followed by the three-layer workspace. On desktop, place the original video on the left with Play/Pause, Range, Loop and Speed directly underneath; place Enable practice audio and microphone Record/Stop/Replay beside it on the right. On narrow screens, stack video, playback controls, reference setup and microphone controls before the analysis tabs. Keep the entire operation area mounted independently of layer selection.
+Present Sound, Rhythm and Melody as three distinct tabs, defaulting to Sound. Match the layer structure of `design/prototypes/Stage 2 · Detailed (three-layer analysis)-html-2/Shadow.dc.html`: synchronized layer shortcuts above the left sentence directory, a central canvas for the selected layer, and a right-side layer focus. On narrow screens the focus follows its canvas. Keep sentence navigation above a shared Listen and record area, followed by the three-layer workspace. On desktop, place the original video on the left with Play/Pause, Range, Loop and Speed directly underneath; place Enable practice audio and microphone Record/Stop/Replay beside it on the right. On narrow screens, stack video, playback controls, reference setup and microphone controls before the analysis tabs. Keep the entire operation area mounted independently of layer selection.
 
 Use an accessible tab list with a selected tab, associated tab panels and roving keyboard focus. Left/Right wrap between the three tabs; Home/End select the first/last. A left-side shortcut selects its layer and scrolls the workspace into view. Changing a layer preserves the current sentence, playback, active recording, Sound filters/selection/revealed hints and analysis results. Keep inactive panels mounted but hidden. Layer selection must not seek, start or stop audio, fetch the same guide again, or launch a second analysis of the same recording.
 
@@ -866,7 +866,7 @@ Libitu is a focused learning tool. It should feel quiet, precise, and suitable f
 
 The implementation source is `packages/ui/src/tokens.css`. Update the token file and this table together when a semantic color changes. Base interface grays must have equal RGB channels; feature styles consume shared tokens or semantic aliases instead of copying a local palette. This covers backgrounds, text, borders, skeletons, media controls and neutral chart fills. Overlays use black with alpha. Normal body text needs at least 4.5:1 contrast against its actual surface.
 
-The full usage rules and approved Corpus filter state colors are in section 4 of `libitu 设计规范 v2.0(统一版).md`. Brand, status and Sound phenomenon palettes remain independent. In particular, Sound's beige WK badge is a category color, not a general-purpose gray. Keep it confined to phenomenon marks and legends. Reference/You Rhythm envelopes use `--line-soft`/`--line` in both Detailed and Review.
+The full usage rules and approved Corpus filter state colors are in section 4 of `libitu_设计规范_v2_1_统一版_.md`. Brand, status and Sound phenomenon palettes remain independent. In particular, Sound's beige WK badge is a category color, not a general-purpose gray. Keep it confined to phenomenon marks and legends. Reference/You Rhythm envelopes use `--line-soft`/`--line` in both Detailed and Review.
 
 ### Typography and fields
 
@@ -892,7 +892,7 @@ Use custom Radix-based selects for settings and filtering, including an explicit
 
 ### Shared application navigation
 
-As of 2026-11-02 the supplied `libitu 设计规范 v2.0(统一版).md` owns
+As of 2026-11-02 the supplied `libitu_设计规范_v2_1_统一版_.md` owns
 My learning and shared navigation visuals. A root-layout global bar shows the
 brand, left-aligned Practice / Mission / Corpus / My learning sections and account
 menu, with a neutral active pill. Below 720px sections move to bottom navigation.

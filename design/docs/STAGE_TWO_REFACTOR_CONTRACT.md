@@ -4,7 +4,7 @@ Updated: 2026-10-12. Status: steps 1–5 implemented. Backend word gating, durab
 
 ## Scope and precedence
 
-The user-approved target follows `libitu_stage2_video_top_prepare_flow (1).html` with the corrections below. This contract supersedes older Stage 2 presentation requirements only within this refactor. The prototype is reference material; demo timers, scores, correctness badges and browser chrome are not runtime requirements.
+The user-approved target follows `libitu_stage2_video_top_prepare_flow.html` with the corrections below. This contract supersedes older Stage 2 presentation requirements only within this refactor. The prototype is reference material; demo timers, scores, correctness badges and browser chrome are not runtime requirements.
 
 Reuse existing original-video reference acquisition, extension authorization, buffering, upload consent, cached analysis, source ownership, recovery and retry. Preserve the stable content MediaHost. Do not change reference-worker content verification to the learner's percentage gate. No new sound realization or sentence-stress detector is introduced.
 

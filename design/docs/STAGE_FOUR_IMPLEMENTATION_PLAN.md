@@ -6,7 +6,7 @@
 
 用户已确认首版包含**持续聆听、自动分轮、打断 AI 的实时语音**，同时保留文字输入。这一决定取代原规范“文字首版、语音后续”的范围。下列布局、接口、字段和供应商路线是实施建议，尚未通过生产集成验证。
 
-设计依据：`design/prototypes/libitu_stage4_ai_sandbox.html`、`design/assets/preview.webp`、`design/assets/preview (1).webp`。HTML 中的示例对话、计数、关键词脚本和 `sendPrompt` 是原型演示；参考图中的 ElevenLabs 品牌不代表供应商选型。
+设计依据：`design/prototypes/libitu_stage4_ai_sandbox.html`。HTML 中的示例对话、计数、关键词脚本和 `sendPrompt` 是原型演示；参考图中的 ElevenLabs 品牌不代表供应商选型。
 
 ## 1. 实现现状与本次边界
 

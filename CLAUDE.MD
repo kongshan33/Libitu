@@ -61,7 +61,7 @@ packages/
 design/
   docs/         Product, system, backend, and visual design docs
   prototypes/   Static HTML prototypes
-  assets/       Design images and previews
+  benchmarks/   Acoustic, model and teaching evaluation outputs
 ```
 
 ## Tech Stack

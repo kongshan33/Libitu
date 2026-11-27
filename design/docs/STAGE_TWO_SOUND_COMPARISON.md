@@ -11,7 +11,7 @@
 
 ## 本轮交付
 
-按照 `design/prototypes/toneflow_stage2_three_layer.html` 的结构，Sound、Rhythm、Melody 都展示同一历史练习中的 Reference / Your recording。左右对应的是同一句、同一词位置；不能把历史录音与当前播放的其他原音混合。右侧展示分项反馈，选词查看测量值。切句清除旧对比，刷新从服务器恢复，切换 layer 不重新分析。
+按照 `design/prototypes/Stage 2 · Detailed (three-layer analysis)-html-2/Shadow.dc.html` 的结构，Sound、Rhythm、Melody 都展示同一历史练习中的 Reference / Your recording。左右对应的是同一句、同一词位置；不能把历史录音与当前播放的其他原音混合。右侧展示分项反馈，选词查看测量值。切句清除旧对比，刷新从服务器恢复，切换 layer 不重新分析。
 
 - Sound：现已接入元音时长、候选辅音—元音边界的停顿测量及实验性接近度。十个现象筛选项保留各自状态，未支持的项目不显示分数。词典 IPA 和规则提示放在可展开的独立区域，不冒充实际发音。
 - Rhythm：双行文本上方是三个大小、深浅的实心琥珀色音节圆点；文本后方是停顿竖线和秒数；词卡展示各自的时长及条形。圆点来自词典约束的音节重音，不是检测到的句子重音。没有重复的 speech-and-pauses 时间轴。

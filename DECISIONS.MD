@@ -332,7 +332,7 @@ Review retains its multi-layer timeline but shares the revised Detailed Sound ba
 
 ## Revised Sound prototype supersedes the fixed guidance column — 2026-11-04
 
-The newly supplied `Stage 2 · Detailed (three-layer analysis)-html (1)/Shadow.dc.html` is the requested Sound visual reference. Use full-width text flows and a collapsed-by-default Notes control with Feedback/Tip above the filters, superseding the earlier permanent right Sound guidance column. Follow its ten-color palette and solid Reference/dashed unevaluated learner cue treatment; filter by dimming unrelated marks while preserving text placement. Keep measured vowels opt-in, source-derived cues distinct from acoustic verdicts, existing concealment in both rows and mobile touch/keyboard access. The prototype's fixture data and other sections do not override application state, prior removals, left-panel layout or analysis logic.
+The newly supplied `Stage 2 · Detailed (three-layer analysis)-html-2/Shadow.dc.html` is the requested Sound visual reference. Use full-width text flows and a collapsed-by-default Notes control with Feedback/Tip above the filters, superseding the earlier permanent right Sound guidance column. Follow its ten-color palette and solid Reference/dashed unevaluated learner cue treatment; filter by dimming unrelated marks while preserving text placement. Keep measured vowels opt-in, source-derived cues distinct from acoustic verdicts, existing concealment in both rows and mobile touch/keyboard access. The prototype's fixture data and other sections do not override application state, prior removals, left-panel layout or analysis logic.
 
 ## Sound exception to the neutral analysis redesign — 2026-11-04
 
