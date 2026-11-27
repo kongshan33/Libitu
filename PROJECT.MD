@@ -1,5 +1,9 @@
 # Understand the Libitu project
 
+## Stage 2 Sound cue spacing and coalescence placement — 2026-11-27
+
+In Stage 2 Sound (both Detailed word flow and Review timeline), word-level phonetic cues now sit directly below each word (`4px` gap, top-aligned) without the previous `54px` reserved linking lane; multiple categories on a word stack downward from the top so single-category words stay close beneath the text instead of aligning to the bottom of stacked cues. Both `linking` and `coalescence` render between the two words as interactive boundary arcs (colored by category), while all other categories remain beneath the word. Root `pnpm lint`, `pnpm build`, and `pnpm test` (`@libitu/web` 556/556) pass; `ga-sound.browser.mjs` updated for the new geometry and coalescence boundary checks.
+
 ## Shadow audio settings — 2026-11-25
 
 Quick and Detailed enable analysis and replay storage by default. Both modes use the signed-in account’s saved choices in this browser.

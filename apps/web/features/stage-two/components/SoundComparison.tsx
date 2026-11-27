@@ -1,8 +1,8 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { useId, useMemo, useState } from 'react';
+import { Fragment, useId, useMemo, useState } from 'react';
 import type { ComparisonView } from '../comparison/view';
-import { allSound, soundMarks, type SoundFilter } from '../sound/phenomena';
+import { allSound, isBetweenWords, soundMarks, type SoundFilter, type SoundMark } from '../sound/phenomena';
 import styles from './SoundComparison.module.css';
 import { SoundLink, SoundMore, SoundWordCues } from './SoundCue';
 import { SoundDetails, SoundEmpty, SoundFilters } from './SoundExplorer';
@@ -23,7 +23,8 @@ export function SoundComparison({view,concealed,onConcealedChange,filter=allSoun
   const marks=useMemo(()=>soundMarks(view),[view]);
   const allowed=(index:number)=>!concealed||revealed.includes(index);
   const safeMarks=marks.filter(m=>Array.from({length:m.end-m.start},(_,i)=>m.start+i).every(allowed));
-  const boundaries = new Map(safeMarks.filter(mark => mark.kind === 'linking').map(mark => [mark.start, mark]));
+  const boundaries = new Map<number, SoundMark>();
+  for (const mark of safeMarks) if (isBetweenWords(mark) && !boundaries.has(mark.start)) boundaries.set(mark.start, mark);
   const wordRuns: number[][] = [];
   for (let index = 0; index < view.reference.words.length; index++) {
     if (index === 0 || !boundaries.has(index - 1)) wordRuns.push([]);
@@ -40,26 +41,27 @@ export function SoundComparison({view,concealed,onConcealedChange,filter=allSoun
     </div>
     {voices.filter(voice => !referenceOnly || voice === 'reference').map(voice=><div key={voice} className={styles.comparison} data-sound-voice={voice}>
       <div className={styles.voiceHeading}><h3>{voiceName(voice)}</h3><span className={styles.mono}>{voice==='reference'?'Reading cues · GA conditions':'Practice targets · not checked'}</span></div>
-      <div className={`${styles.words} sound-word-flow`} data-links={boundaries.size > 0} role="group" aria-label={`${voiceName(voice)} sound cues`}>
-        {wordRuns.map(run => <div className={styles.wordRun} key={run[0]}>{run.map(i=>{
+      <div className={`${styles.words} sound-word-flow`} role="group" aria-label={`${voiceName(voice)} sound cues`}>
+        {wordRuns.map(run => <div className={styles.wordRun} data-linked={run.length > 1 || undefined} key={run[0]}>{run.map(i=>{
           const word = view.reference.words[i];
           const covered=!allowed(i),link=boundaries.get(i);
-          const linkedBefore=boundaries.has(i - 1);
-          return <div key={i} className={`${styles.wordGroup} sound-word-group`} data-word-index={i} data-between-links={Boolean(link&&linkedBefore)}>
-            <div className={styles.wordColumn}>
-            <button type="button" className={`${styles.word} sound-word-card`} aria-pressed={selectedVoice===voice&&selected===i&&!covered&&!selectedMark}
-              aria-label={covered?`Reveal word ${i+1} · ${voiceName(voice)}`:`Explore ${word.text}, word ${i+1} · ${voiceName(voice)}`} aria-controls={explanationId}
-              onClick={()=>{if(covered)setRevealed(items=>items.includes(i)?items:[...items,i]);setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(null);}}>
-              <span className="sound-word-ipa">{!covered&&word.ipa?word.ipa:''}</span>
-              <strong className={covered?styles.peek:undefined} aria-hidden={covered||undefined}><span>{word.text}</span></strong>
-              <span className="sound-word-marks">{!covered?<SoundWordCues marks={safeMarks} index={i} filter={filter}/>:null}</span>
-            </button>
-            {!covered?<SoundMore marks={safeMarks} index={i} filter={filter} word={word.text} voice={voiceName(voice)} controls={explanationId}
-              expanded={expandedMore===`${voice}:${i}`} onToggle={()=>{if(expandedMore===`${voice}:${i}`)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(`${voice}:${i}`);}}}/>:null}
+          return <Fragment key={i}>
+            <div className={`${styles.wordGroup} sound-word-group`} data-word-index={i}>
+              <div className={styles.wordColumn}>
+              <button type="button" className={`${styles.word} sound-word-card`} aria-pressed={selectedVoice===voice&&selected===i&&!covered&&!selectedMark}
+                aria-label={covered?`Reveal word ${i+1} · ${voiceName(voice)}`:`Explore ${word.text}, word ${i+1} · ${voiceName(voice)}`} aria-controls={explanationId}
+                onClick={()=>{if(covered)setRevealed(items=>items.includes(i)?items:[...items,i]);setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(null);}}>
+                <span className="sound-word-ipa">{!covered&&word.ipa?word.ipa:''}</span>
+                <strong className={covered?styles.peek:undefined} aria-hidden={covered||undefined}><span>{word.text}</span></strong>
+                <span className="sound-word-marks">{!covered?<SoundWordCues marks={safeMarks} index={i} filter={filter}/>:null}</span>
+              </button>
+              {!covered?<SoundMore marks={safeMarks} index={i} filter={filter} word={word.text} voice={voiceName(voice)} controls={explanationId}
+                expanded={expandedMore===`${voice}:${i}`} onToggle={()=>{if(expandedMore===`${voice}:${i}`)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(null);setExpandedMore(`${voice}:${i}`);}}}/>:null}
+              </div>
             </div>
             {link?<SoundLink mark={link} filter={filter} selected={selectedVoice===voice&&selectedMark===link.id} controls={explanationId} voice={voiceName(voice)}
               onSelect={()=>{if(selectedVoice===voice&&selectedMark===link.id)close();else{setSelected(i);setSelectedVoice(voice);setSelectedMark(link.id);setExpandedMore(null);}}}/>:null}
-          </div>;
+          </Fragment>;
         })}</div>)}
       </div>
       <p className={`${styles.mono} ${styles.status}`}>{voice==='reference'

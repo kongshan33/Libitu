@@ -15,10 +15,11 @@ export function SoundBadge({kind,muted=false,title,children}:{kind:Phenomenon;mu
 export function SoundLink({mark,filter,selected=false,onSelect,controls,className='',voice}:{
   mark:SoundMark;filter:SoundFilter;selected?:boolean;onSelect():void;controls:string;className?:string;voice?:string;
 }) {
-  return <button type="button" className={`sound-link ${styles.palette} ${styles.link} ${className}`} data-phenomenon="linking"
-    data-muted={!markMatches(mark,filter)} aria-label={`Explain linking: ${mark.candidate?.source_text??`words ${mark.start+1}–${mark.end}`}${voice?` · ${voice}`:''}`}
+  const label = mark.kind === 'linking' ? 'linking' : phenomenon(mark.kind).label.toLowerCase();
+  return <button type="button" className={`sound-link ${styles.palette} ${styles.link} ${className}`} data-phenomenon={mark.kind}
+    data-muted={!markMatches(mark,filter)} aria-label={`Explain ${label}: ${mark.candidate?.source_text??`words ${mark.start+1}–${mark.end}`}${voice?` · ${voice}`:''}`}
     aria-expanded={selected} aria-controls={controls} onClick={onSelect}>
-    <SoundSymbol kind="linking"/><SoundBadge kind="linking">{markSymbol(mark)}</SoundBadge>
+    <SoundSymbol kind="linking"/><SoundBadge kind={mark.kind}>{markSymbol(mark)}</SoundBadge>
   </button>;
 }
 export function SoundWordCues({marks,index,filter}:{marks:SoundMark[];index:number;filter:SoundFilter}) {

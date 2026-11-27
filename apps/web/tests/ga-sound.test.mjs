@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { comparisonView, vowelComparison, vowelPace } from '../features/stage-two/comparison/view.ts';
-import { phenomena, soundGroups, wordSoundMarks, wordSoundCategories, soundMarks, soundCount, markSymbol, markMatches, emptyPhenomenon } from '../features/stage-two/sound/phenomena.ts';
+import { phenomena, soundGroups, isBetweenWords, wordSoundMarks, wordSoundCategories, soundMarks, soundCount, markSymbol, markMatches, emptyPhenomenon } from '../features/stage-two/sound/phenomena.ts';
 const word=(text,duration=300)=>({text,start_sec:0,end_sec:duration/1000,duration_ms:duration,pitch_curve_st:[],pause_after_ms:null,
  phones:[{label:'W',duration_ms:30},{label:'AO1',duration_ms:100},{label:'T',duration_ms:20},{label:'ER0',duration_ms:90}]});
 const voice=(words)=>({alignment_status:'aligned',content:{status:'matched'},quality_issues:[],words});
@@ -97,4 +97,16 @@ test('filter counts deduplicate alternatives within a category, not independent 
  const mark=(id,kind,group)=>({id,kind,candidate:{alternative_group:group}});
  assert.equal(soundCount([mark('g1','glottal','t'),mark('g2','glottal','t'),mark('s','syllabic',null)],'glottal'),1);
  assert.equal(soundCount([],'vowel_length'),0);
+});
+test('only linking and coalescence sit between words; all other categories remain under the word',()=>{
+ const marks=[
+  {id:'l',kind:'linking',start:0,end:2,candidate:{anchor:{type:'boundary',token_index:0}}},
+  {id:'c',kind:'coalescence',start:0,end:2,candidate:{anchor:{type:'boundary',token_index:0}}},
+  {id:'a',kind:'assimilation',start:0,end:2,candidate:{anchor:{type:'boundary',token_index:0}}},
+  {id:'u',kind:'unreleased',start:0,end:2,candidate:{anchor:{type:'boundary',token_index:0}}},
+  {id:'v',kind:'voicing',start:0,end:2,candidate:{anchor:{type:'boundary',token_index:0}}},
+  {id:'e',kind:'elision',start:0,end:2,candidate:{anchor:{type:'word',token_index:0}}},
+ ];
+ assert.deepEqual(marks.filter(isBetweenWords).map(m=>m.kind),['linking','coalescence']);
+ assert.deepEqual(wordSoundMarks(marks,0).map(m=>m.kind),['assimilation','unreleased','voicing','elision']);
 });

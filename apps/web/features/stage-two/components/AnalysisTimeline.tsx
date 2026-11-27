@@ -5,7 +5,7 @@ import type { ComparisonView } from '../comparison/view';
 import { columnWidth, wordColumnWidth, envelopePath, fitTimelineZoom, timelinePitchPath, timelineColumns, timelineTicks, type TimelineVoice } from '../comparison/timeline';
 import { useAnalysisSelection } from '../comparison/AnalysisSelection';
 import { usePlayingWord, type ComparisonPlayback } from '../comparison/use-playing-word';
-import { allSound, soundMarks, wordSoundCategories, type SoundFilter } from '../sound/phenomena';
+import { allSound, isBetweenWords, soundMarks, wordSoundCategories, type SoundFilter } from '../sound/phenomena';
 import type { PracticeLayer } from './PracticeLayers';
 import styles from './AnalysisTimeline.module.css';
 import { SoundLink, SoundMore, SoundWordCues } from './SoundCue';
@@ -143,7 +143,7 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
             const px = columnWidth(column, zoom, labelWidths[index]);
             const wordPx = wordColumnWidth(column, zoom, labelWidths[index]);
             const covered=!allowed(index);
-            const link=sound?safeMarks.find(m=>m.kind==='linking'&&m.start===index):undefined;
+            const link=sound?safeMarks.find(m=>isBetweenWords(m)&&m.start===index):undefined;
             const overflow=wordSoundCategories(safeMarks,index,soundFilter).length>2;
             const pauses = visibleVoices.flatMap(v => column[v].pause ? [`${name(v)} pause ${(column[v].pause! / 1000).toFixed(2)} s`] : []);
             return <div key={index} className={styles.slot} style={{width:px}}>
@@ -168,7 +168,7 @@ export function AnalysisTimeline({ view, data, layers, sentenceId, voiceControls
               {melody ? <span className={styles.melody} style={{width:px}}/> : null}
               {!sound ? <span className={styles.word}>{covered?'•••':column.text}</span> : null}
             </button>
-            {sound&&!covered&&overflow?<div className={styles.soundMoreControls} style={{insetInlineStart:wordPx-92}}>{voices.map(voice=><SoundMore key={voice} marks={safeMarks} index={index} filter={soundFilter}
+            {sound&&!covered&&overflow?<div className={styles.soundMoreControls} style={{insetInlineStart:wordPx-108}}>{voices.map(voice=><SoundMore key={voice} marks={safeMarks} index={index} filter={soundFilter}
               word={column.text} voice={voice==='reference'?'Reference':'Your voice'} controls={explanationId} expanded={selected===index&&expandedMore===`${voice}:${index}`}
               onToggle={()=>{if(selected===index&&expandedMore===`${voice}:${index}`){select(null);setExpandedMore(null);}else{select(index);setSelectedSoundVoice(voice);setSelectedMark(null);setExpandedMore(`${voice}:${index}`);}}}/>)}</div>:null}
             {link?<div className={styles.soundLinks}>{voices.map(voice=><SoundLink key={voice} mark={link} filter={soundFilter} voice={voice==='reference'?'Reference':'Your voice'}

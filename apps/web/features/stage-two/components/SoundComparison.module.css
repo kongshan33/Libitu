@@ -8,33 +8,28 @@
 .voiceHeading { display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 12px; }
 .voiceHeading h3 { margin:0;font-size:var(--text-label);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted); }
 .words { display:flex;align-items:flex-start;flex-wrap:wrap;gap:16px 18px;margin-top:12px; }
-/* Each word is a column: word, a reserved linking lane, then its cues stacked vertically (max two) and +N.
-   A linking arc is centered on the gap it describes, inside the reserved lane, so it takes no word spacing
-   and never overlaps a cue. The lane is reserved only when the sentence has a linking cue. */
-.wordRun { display:flex;flex-wrap:wrap;align-items:flex-start;gap:inherit;max-inline-size:100%; }
-.wordGroup { position:relative;display:flex;align-items:flex-start;gap:4px;max-width:100%; }
+/* Each word is a top-aligned column so its first cue sits right below the text and extra cues stack downward.
+   Between-word cues (linking and coalescence) sit in flow between the two words so they never push word cues down. */
+.wordRun { display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px 18px;max-inline-size:100%; }
+.wordRun[data-linked=true] { column-gap:4px; }
+.wordGroup { position:relative;display:flex;align-items:flex-start;max-width:100%; }
 .wordColumn { display:flex;flex-direction:column;align-items:center;gap:4px;min-inline-size:0;max-inline-size:100%; }
-.word { position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:0;min-inline-size:24px;min-block-size:48px;max-inline-size:100%;padding:2px 4px;border:0;border-radius:6px;background:transparent;text-align:center;cursor:pointer;color:var(--ink);font-family:var(--font-ui); }
+.word { position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;min-inline-size:24px;min-block-size:32px;max-inline-size:100%;padding:2px 4px;border:0;border-radius:6px;background:transparent;text-align:center;cursor:pointer;color:var(--ink);font-family:var(--font-ui); }
 .word[aria-pressed=true] { background:var(--surface); }
 .word:hover { background:var(--line-soft); }
 .word strong { font-size:var(--text-h2);line-height:1.3;font-weight:400;color:var(--ink);overflow-wrap:anywhere; }
 .word :global(.sound-word-ipa) { position:absolute;bottom:100%;left:0;z-index:1;pointer-events:none;inline-size:max-content;max-inline-size:100%;overflow-wrap:anywhere;border-radius:5px;padding:3px 6px;background:var(--ink);color:white;font-size:var(--text-meta);line-height:1.4;visibility:hidden;opacity:0;transition:opacity 150ms ease-out; }
 .word:hover :global(.sound-word-ipa),.word:focus :global(.sound-word-ipa) { visibility:visible;opacity:1; }
 .word :global(.sound-word-ipa):empty { display:none; }
-.word :global(.sound-word-marks) { display:flex;flex-direction:column;align-items:center;gap:4px;margin-block-start:calc(var(--sound-link-lane) + 4px);min-block-size:0; }
+.word :global(.sound-word-marks) { display:flex;flex-direction:column;align-items:center;gap:4px;margin-block-start:4px;min-block-size:0; }
 .word :global(.sound-word-marks):empty { display:none; }
-.words { --sound-link-lane:0px; }
-.words[data-links=true] { --sound-link-lane:54px; }
-/* A word between two linking arcs is widened so the two arc labels cannot touch. */
-.wordGroup[data-between-links=true] .word { min-inline-size:44px; }
 .wordColumn > :global(.sound-more) { align-self:center;min-block-size:22px;padding:0 6px;margin-block-start:-2px; }
-.wordGroup > :global(.sound-link) { position:absolute;z-index:1;inset-block-start:28px;inset-inline-start:calc(100% + 9px);transform:translateX(-50%);min-block-size:0;block-size:var(--sound-link-lane);padding:0 3px;justify-content:flex-start;gap:5px; }
-.wordGroup:has(> :global(.sound-link)) { min-block-size:calc(28px + var(--sound-link-lane)); }
+.wordRun > :global(.sound-link) { margin-block-start:14px;min-block-size:0;padding:0 3px 2px;justify-content:flex-start;gap:5px; }
 .status { margin:12px 0 0; }
 .peek { display:block;border-radius:6px;background:var(--line-soft);min-inline-size:8px; }
 .peek > span { visibility:hidden;user-select:none; }
 .word:focus-visible { outline:var(--focus-ring);outline-offset:var(--focus-offset); }
-@media(max-width:600px),(pointer:coarse) { .word { min-inline-size:44px; }.wordColumn > :global(.sound-more) { min-block-size:44px;min-inline-size:44px; }.wordGroup > :global(.sound-link) { min-inline-size:44px; }.revealBar > button { min-height:44px; } }
+@media(max-width:600px),(pointer:coarse) { .word { min-inline-size:44px;min-block-size:44px; }.wordColumn > :global(.sound-more) { min-block-size:44px;min-inline-size:44px; }.wordRun > :global(.sound-link) { min-inline-size:44px;min-block-size:44px; }.revealBar > button { min-height:44px; } }
 @media(prefers-reduced-motion:reduce) { .word :global(.sound-word-ipa) { transition:none; } }
 
-.wordGroup > :global(.sound-link) > span:first-child { block-size:22px;line-height:22px;padding:0; }
+.wordRun > :global(.sound-link) > span:first-child { block-size:20px;line-height:1;padding-block-end:6px; }

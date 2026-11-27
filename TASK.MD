@@ -1,5 +1,11 @@
 # Complete the next Libitu milestone
 
+## Stage 2 Sound cue spacing and coalescence placement — 2026-11-27
+
+- [x] Remove the `54px` vertical linking-lane offset in Detailed Sound so word cues sit close (`4px`) beneath each word and stack top-down, keeping single-cue words top-aligned rather than bottom-aligned.
+- [x] Place both `linking` and `coalescence` between words as in-flow boundary arcs in Detailed and Review, while keeping all other Sound categories beneath the word.
+- [x] Update unit and browser assertions (`ga-sound.test.mjs`, `ga-sound.browser.mjs`) and verify root `pnpm lint`, `pnpm build`, and `pnpm test` (`@libitu/web` 556/556 pass).
+
 ## Shadow audio settings — 2026-11-25
 
 - [x] Default both audio settings to on and use the same independent preferences for Quick and Detailed takes.

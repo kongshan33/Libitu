@@ -64,11 +64,11 @@
 .soundActions summary:focus-visible { outline:var(--focus-ring);outline-offset:var(--focus-offset); }
 @media(max-width:600px),(pointer:coarse) { .soundActions > button,.soundActions summary { min-height:44px; } }
 
-.tags { position:relative;align-items:center;padding-inline:4px 48px; }
-.soundLinks { position:absolute;inset-inline-end:2px;inset-block-start:28px;z-index:2;max-inline-size:48px;display:flex;flex-direction:column; }
+.tags { position:relative;align-items:center;padding-inline:4px 64px; }
+.soundLinks { position:absolute;inset-inline-end:2px;inset-block-start:28px;z-index:2;max-inline-size:64px;display:flex;flex-direction:column; }
 .soundLinks > button { block-size:48px;min-block-size:48px; }
 .sound:has(+ .rhythm) { border-block-end:1px solid var(--line-soft); }
 
-.tags[data-overflow=true] { padding-inline-end:92px; }
+.tags[data-overflow=true] { padding-inline-end:108px; }
 .soundMoreControls { position:absolute;inset-block-start:28px;z-index:2;display:flex;flex-direction:column; }
 .soundMoreControls > button { block-size:48px;min-block-size:48px;inline-size:44px; }

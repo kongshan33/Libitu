@@ -96,10 +96,11 @@ export function emptyPhenomenon(kind:Phenomenon|'all', subtype:SoundSubtype|'all
 // Specific transformations appear before general contextual cues. Alternative
 // realizations share one event in All and expand together in the detail card.
 const priority:Phenomenon[]=['reduced_form','coalescence','flap','glottal','syllabic','unreleased','elision','voicing','assimilation','weak_form','linking','vowel_length'];
+export const isBetweenWords = (mark: Pick<SoundMark, 'kind'>) => mark.kind === 'linking' || mark.kind === 'coalescence';
 export function wordSoundMarks(marks:SoundMark[], index:number) {
   const events=new Map<string,SoundMark>();
   for(const mark of marks) {
-    if(index!==(mark.candidate?.anchor?.token_index??mark.start)||mark.kind==='linking')continue;
+    if(index!==(mark.candidate?.anchor?.token_index??mark.start)||isBetweenWords(mark))continue;
     const key=mark.candidate?.alternative_group??`${mark.kind}:${mark.start}:${mark.end}:${mark.candidate?.anchor?.phone_index??''}`;
     if(!events.has(key))events.set(key,mark);
   }

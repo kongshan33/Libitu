@@ -41,7 +41,7 @@ async function linking(scope){
  const filterGlyph=await scope.getByRole('button',{name:'Linking',exact:true}).locator('[class*=arc]').innerText();
  assert.equal(filterGlyph,'‿');assert.ok(await arcs.count()>1,'test more than one boundary');
  for(const index of [0,1]){
-  const arc=arcs.nth(index),source=(await arc.getAttribute('aria-label')).replace('Explain linking: ','').split(' · ')[0];
+  const arc=arcs.nth(index),source=(await arc.getAttribute('aria-label')).replace(/^Explain (?:linking|coalescence): /,'').split(' · ')[0];
   assert.equal(await arc.locator('[class*=arc]').innerText(),filterGlyph);
   await arc.focus();await page.keyboard.press('Enter');assert.equal(await arc.getAttribute('aria-expanded'),'true');
   assert.equal(await arc.getAttribute('aria-controls'),await card.getAttribute('id'));
@@ -102,6 +102,14 @@ try{for(const width of [1400,390]){
    })),'cues fit natural word groups');
    const links=scope.locator('.sound-link');
    assert.ok(await links.count()>0);
+   assert.ok(await scope.locator('.sound-link[data-phenomenon=coalescence]').count()>0,'coalescence sits between words');
+   assert.equal(await scope.locator('.sound-word-marks [data-phenomenon=coalescence]').count(),0,'coalescence is not duplicated under the word');
+   assert.ok(await scope.locator('.sound-word-card').evaluateAll(cards=>cards.every(card=>{
+    const strong=card.querySelector('strong'),firstBadge=card.querySelector('.sound-word-marks .sound-inline-badge');
+    if(!strong||!firstBadge)return true;
+    const gap=firstBadge.getBoundingClientRect().top-strong.getBoundingClientRect().bottom;
+    return gap>=0&&gap<=10;
+   })),'word cues sit close beneath each word and stay top-aligned');
    assert.ok(await links.evaluateAll(nodes=>nodes.every(link=>link.lastElementChild.textContent.trim() && link.lastElementChild.getBoundingClientRect().top >= link.firstElementChild.getBoundingClientRect().bottom + 3)), 'each reading sits below its arc');
    assert.ok(await scope.locator('.sound-word-flow').evaluateAll(flows=>flows.every(flow=>{
     const badges=[...flow.querySelectorAll('.sound-word-marks .sound-inline-badge')].map(el=>el.getBoundingClientRect());
