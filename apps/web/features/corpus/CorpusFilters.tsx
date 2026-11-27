@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { SavedCorpusRecord } from "./corpus-storage";
 import { sourceKey, type LibraryFilters } from "./library";
 import { scenarioGroups, scenarioOptions } from "./scenario-filters";
@@ -141,7 +142,7 @@ export function CorpusFilters({ records, filters, onChange }: {
       onToggle={event => setOpen(event.newState === "open")}>
       <div className={styles.filterHeader}>
         <h2>Filters</h2>
-        <button type="button" className={styles.filterClose} aria-label="Close filters" onClick={() => closePanel(true)}><X size={18} aria-hidden="true" /></button>
+        <Button variant="ghost" size="sm" shape="square" aria-label="Close filters" onClick={() => closePanel(true)}><X size={16} aria-hidden="true" /></Button>
       </div>
       <div className={styles.filterBody}>
         {facets.map(({ key, title, options }) => <div key={key} className={styles.filterRow} role="group" aria-label={title}>
@@ -154,11 +155,11 @@ export function CorpusFilters({ records, filters, onChange }: {
         </div>)}
       </div>
       <div className={styles.filterActions}>
-        <button type="button" className={styles.filterReset} disabled={!selectedCount}
+        <Button variant="secondary" size="sm" disabled={!selectedCount}
           onClick={() => onChange({ kind: [], tags: [], level: [], scenario: [], register: [], source: [] })}>
           <X size={14} aria-hidden="true" />Clear all filters
-        </button>
-        <button type="button" className={styles.filterDone} onClick={() => closePanel(true)}>Done</button>
+        </Button>
+        <Button variant="primary" size="sm" onClick={() => closePanel(true)}>Done</Button>
       </div>
     </div>
   </div>;

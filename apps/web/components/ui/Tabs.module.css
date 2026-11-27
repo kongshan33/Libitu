@@ -1,0 +1,200 @@
+/* Shared dual-mode Tabs (underline + segmented) and SegmentedControl styles. */
+
+.underline {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.underline.stretch {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.underline .tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+
+.underline[data-size="sm"] .tab {
+  min-height: 36px;
+  padding: 6px 0 8px;
+}
+
+.underline .tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--brand);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.underline[data-accent="ink"] .tab::after {
+  background: var(--ink);
+}
+
+.underline .tab:hover:not(:disabled) {
+  color: var(--ink-2);
+}
+
+.underline .tab[aria-selected="true"] {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.underline .tab[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.underline .tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+.underline .tab:disabled {
+  color: var(--muted);
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* Segmented track: neutral grey track + elevated white active thumb. */
+.segmented {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 2px;
+  min-height: 36px;
+  padding: 4px;
+  border-radius: var(--radius-control);
+  background: var(--line-soft);
+  max-width: 100%;
+}
+
+.segmented[data-size="sm"] {
+  min-height: 32px;
+  padding: 3px;
+  border-radius: var(--radius-md);
+}
+
+.segmented.stretch {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+.segmented .tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-3);
+  font: inherit;
+  font-size: var(--text-help);
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.segmented[data-size="sm"] .tab {
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-meta);
+}
+
+.segmented.iconOnly .tab {
+  width: 30px;
+  padding: 0;
+}
+
+.segmented[data-size="sm"].iconOnly .tab {
+  width: 26px;
+  padding: 0;
+}
+
+.segmented .tab:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--surface-hover);
+}
+
+.segmented .tab:is([aria-selected="true"], [aria-current="page"], [aria-pressed="true"]) {
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--border-subtle);
+  box-shadow: var(--shadow-natural-xs);
+}
+
+.segmented .tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.segmented .tab:disabled {
+  color: var(--muted);
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+@media (pointer: coarse) {
+  .underline .tab,
+  .underline[data-size="sm"] .tab {
+    min-height: 44px;
+  }
+
+  .segmented .tab,
+  .segmented[data-size="sm"] .tab {
+    min-height: 36px;
+  }
+
+  .segmented.iconOnly .tab,
+  .segmented[data-size="sm"].iconOnly .tab {
+    width: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .underline .tab,
+  .underline .tab::after,
+  .segmented .tab {
+    transition: none;
+  }
+}

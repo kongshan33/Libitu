@@ -4,6 +4,7 @@ import { currentAuthReturnUrl } from "@/features/navigation/return-location";
 
 import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 import { Button, ButtonLink } from "@/components/ui/button";
 
@@ -27,7 +28,16 @@ export function ProfileError({ error, retry }: { error: Error; retry: () => void
 }
 
 export function HistoryList({ items, timezone, detailed = false }: { items: HistoryItem[]; timezone: string; detailed?: boolean }) {
-  if (!items.length) return <div className={styles.empty}><Mic size={24} aria-hidden="true" /><h3>Your next practice starts here</h3><p>Open a video, save a shadowing take or contribute to a Mission to start your history.</p><ButtonLink variant="secondary" size="md" href="/loadout" className={styles.secondary}>Start a Mission <ArrowUpRight size={15} aria-hidden="true" /></ButtonLink></div>;
+  if (!items.length) return (
+    <EmptyState
+      headingLevel="h3"
+      density="compact"
+      icon={<Mic size={20} aria-hidden="true" />}
+      title="Your next practice starts here"
+      description="Open a video, save a shadowing take or contribute to a Mission to start your history."
+      action={<ButtonLink variant="secondary" size="md" href="/loadout" className={styles.secondary}>Start a Mission <ArrowUpRight size={15} aria-hidden="true" /></ButtonLink>}
+    />
+  );
   return <ul className={styles.historyList}>{items.map((item) => {
     const Icon = item.kind === "video" ? Video : item.kind === "shadowing" ? Mic : MessageCircle;
     const href = historyHref(item);
@@ -87,12 +97,16 @@ function FilteredHistory({ owner, timezone, kind, offset, onMore }: { owner: str
     {groupHistory(items, timezone).map((group) => <section className={styles.historyGroup} key={group.label} aria-label={group.label}>
       <h2>{group.label}</h2><HistoryList items={group.items} timezone={timezone} detailed />
     </section>)}
-    {!items.length && !pending && !error ? kind === "all" ? <HistoryList items={items} timezone={timezone} /> :
-      <div className={styles.empty}>{kind === "video" ? <Video size={24} aria-hidden="true" /> : kind === "shadowing" ? <Mic size={24} aria-hidden="true" /> : <MessageCircle size={24} aria-hidden="true" />}
-        <h3>{kind === "video" ? "No videos yet" : kind === "shadowing" ? "No saved shadowing takes yet" : "No Missions practiced yet"}</h3>
-        <p>{kind === "video" ? "Open a video while signed in to find it here." : kind === "shadowing" ? "Practice a sentence and save your take to find it here." : "Contribute a speaking turn to a Mission to find it here."}</p>
-        <ButtonLink variant="secondary" size="md" href={kind !== "speaking" ? "/" : "/loadout"} className={styles.secondary}>{kind !== "speaking" ? "Explore practice" : "Start a Mission"}<ArrowUpRight size={15} aria-hidden="true" /></ButtonLink>
-      </div> : null}
+    {!items.length && !pending && !error ? kind === "all" ? <HistoryList items={items} timezone={timezone} /> : (
+      <EmptyState
+        headingLevel="h3"
+        density="compact"
+        icon={kind === "video" ? <Video size={20} aria-hidden="true" /> : kind === "shadowing" ? <Mic size={20} aria-hidden="true" /> : <MessageCircle size={20} aria-hidden="true" />}
+        title={kind === "video" ? "No videos yet" : kind === "shadowing" ? "No saved shadowing takes yet" : "No Missions practiced yet"}
+        description={kind === "video" ? "Open a video while signed in to find it here." : kind === "shadowing" ? "Practice a sentence and save your take to find it here." : "Contribute a speaking turn to a Mission to find it here."}
+        action={<ButtonLink variant="secondary" size="md" href={kind !== "speaking" ? "/" : "/loadout"} className={styles.secondary}>{kind !== "speaking" ? "Explore practice" : "Start a Mission"}<ArrowUpRight size={15} aria-hidden="true" /></ButtonLink>}
+      />
+    ) : null}
     {error ? <ProfileError error={error} retry={() => setAttempt((value) => value + 1)} /> : null}
     {pending && !items.length ? <ContentSkeleton label="Loading practice history…" /> : null}
     {next !== null && !error ? <div className={styles.feedFooter}><Button variant="secondary" size="md" type="button" loading={pending} loadingLabel="Loading practice…" onClick={() => onMore(next)}>Load more practice</Button></div> : null}

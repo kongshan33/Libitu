@@ -19,10 +19,9 @@
 .emptyLibrary h3 { font-size: var(--text-body); font-weight: 500; margin: 0 0 10px; }
 .emptyLibrary p { color: var(--color-text-secondary); font-size: var(--text-meta); line-height: 1.7; }
 .emptyLibrary a { display: inline-flex; align-items: center; gap: 6px; color: #534ab7; font-size: var(--text-meta); margin-top: 10px; min-height: 36px; }
-.startButton { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; border-width: 1px; border-style: solid; padding: 12px; font: inherit; font-size: var(--text-help); }
-.startButton:hover:not(:disabled) { background: #303035; }
+.startButton { width: 100%; min-height: 44px; }
 .page button:focus-visible, .page a:focus-visible, .page input:focus-visible, .page textarea:focus-visible, .page select:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
-.page button:disabled:not(.startButton) { opacity: var(--opacity-disabled); cursor: not-allowed; }
+.page button:not(:global(.ui-button)):disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
 .sessionMain { max-width: 920px; margin: auto; padding: 28px 32px 45px; }
 .savedBadge { display: flex; align-items: center; gap: 6px; color: #197658; font-size: var(--text-label); margin: 28px 0 14px; }
 .sessionGoal { font-size: var(--text-h2); line-height: 1.6; color: #493b75; margin: 15px 0 24px; overflow-wrap: anywhere; }
@@ -40,9 +39,6 @@
 .patternSlots div { display: flex; gap: 8px; margin-top: 7px; }
 .patternSlots dt { font-family: var(--font-ui); font-weight: 500; }
 .patternSlots dd { margin: 0; }
-.page :global(.ui-button) { border-radius: 999px; }
-.page :global(.ui-button[data-variant="primary"]), .page .startButton { background: #111; color: #fff; border-color: #111; box-shadow: none; }
-.page .startButton:disabled { opacity: .45; }
 @media (max-width: 800px) { .page { padding: 24px 16px 40px; } .page button, .back { min-height: 44px; } }
 @media (max-width: 480px) { .page { padding: 20px 12px 32px; } .sessionMain { padding: 20px 16px; } .sessionMain h1 { font-size: var(--text-h1); } .savedItems { grid-template-columns: minmax(0, 1fr); } .sessionSettings { flex-wrap: wrap; gap: 20px; } }
 
@@ -57,20 +53,10 @@
 .reference > header > a span { color: var(--muted); }
 .reference > header nav a { border-radius: 999px; color: var(--ink-2); font-size: var(--text-body); font-weight: 400; }
 .reference > header nav a[aria-current="page"] { background: var(--ink); color: #fff; font-weight: 500; }
-.reference :global(.ui-button[data-variant][data-size][data-shape]) {
-  --button-bg: transparent; --button-fg: var(--ink); --button-edge: var(--line-strong);
-  --button-hover: var(--surface); --button-pressed: var(--line-soft);
-  border: 1px solid var(--button-edge); border-radius: 999px; box-shadow: none;
-  background: var(--button-bg); color: var(--button-fg);
-}
-.reference :global(.ui-button[data-variant="primary"][data-size][data-shape]) { --button-bg: var(--ink); --button-fg: #fff; --button-edge: transparent; --button-hover: var(--ink-2); --button-pressed: var(--ink); }
-.reference :global(.ui-button[data-variant="ghost"][data-size][data-shape]) { --button-edge: transparent; }
-.reference :global(.ui-button-spinner) { display: none; }
 .reference :global(.ui-field[data-field][data-shape]) { background: var(--bg); color: var(--ink); border-color: var(--line-strong); border-radius: 10px; }
 .reference :global(.ui-field[data-field][data-shape]):focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-color: var(--line-strong); }
 .reference :global(.ui-field[data-field][data-shape]):disabled { background: var(--line); color: var(--muted); opacity: 1; }
-.reference :global(.ui-button[data-variant][data-size][data-shape]):hover:not(:disabled) { box-shadow: none; border-color: var(--button-edge); background: var(--button-hover); }
-.reference :global(.ui-button[data-variant][data-size][data-shape]):disabled, .reference button:disabled:not([aria-pressed]) { background: var(--line); color: var(--muted); border-color: transparent; opacity: 1; box-shadow: none; cursor: not-allowed; }
+.reference button:not(:global(.ui-button)):disabled:not([aria-pressed]) { background: var(--line); color: var(--muted); border-color: transparent; opacity: 1; box-shadow: none; cursor: not-allowed; }
 .reference button:disabled[aria-pressed] { opacity: 1; cursor: not-allowed; }
 .reference svg { stroke-width: 1.5; }
 .reference button:focus-visible, .reference a:focus-visible, .reference input:focus-visible, .reference textarea:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }

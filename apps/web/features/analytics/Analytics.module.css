@@ -5,5 +5,4 @@
 @media(prefers-reduced-motion:reduce){.scoreCard{transition:none}}
 .practicePanel{display:flex;flex-direction:column;gap:12px;min-width:0}.practicePanel label{display:flex;flex-direction:column;gap:7px;font-size:var(--text-help)}.practicePanel button{white-space:normal}.practiceReview{display:flex;flex-direction:column;gap:12px;min-width:0}.practiceReview h3{font-size:var(--text-meta);margin:0}.practiceReview article{border:1px solid var(--color-border-tertiary);border-radius:var(--radius-md);background:white;padding:12px;font-size:var(--text-body);overflow-wrap:anywhere;line-height:1.6}.practiceReview dl{margin:10px 0 0}.practiceReview dt{font-weight:600}.practiceReview dd{margin:3px 0 10px}.practiceReview dd span{display:block}.refactor>h3{padding:12px 16px;margin:0;font-size:var(--text-help)}
 
-.page :global(.ui-button)[data-variant][data-size][data-shape] {   border-radius: 999px;    box-shadow: none; }
 .nextSteps :global(.ui-button)[data-variant][data-size][data-shape] { text-align: left; justify-content: space-between; }

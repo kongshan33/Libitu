@@ -3,7 +3,7 @@ export type Appearance = {
   variant?: ButtonVariant;
   /** `inherit` preserves existing feature geometry during migration. */
   size?: "sm" | "md" | "lg" | "inherit";
-  shape?: "default" | "pill" | "circle";
+  shape?: "default" | "pill" | "circle" | "square";
   recording?: boolean;
   className?: string;
 };

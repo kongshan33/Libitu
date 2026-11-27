@@ -32,7 +32,7 @@ export function MissionFeedback({ data, loading }: { data: ProfileData | null; l
               : unavailable === "version_mismatch" ? "This overview uses the current scoring rubric. You can still open the earlier report from practice history."
               : unavailable === "invalid_result" ? "A saved report could not be summarized. Open it from practice history to check its status."
                 : "End a Mission to receive feedback on your goal, language use, scenario fit and naturalness. Saved results will appear here."}</p></div>
-            <DirectionLink href="/profile/history" className={styles.textLink}>View practice history <ArrowRight size={14} aria-hidden="true" /></DirectionLink>
+            <DirectionLink variant="ghost" href="/profile/history" className={styles.textLink}>View practice history <ArrowRight size={14} aria-hidden="true" /></DirectionLink>
           </div>}
   </section>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { DirectionButton } from "@/components/ui/direction-button";
+import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/field";
 
@@ -48,7 +48,7 @@ export function VideoEntry() {
 
   return <form className={styles.entryForm} onSubmit={submit} noValidate aria-busy={pending}>
     <label className={styles.srOnly} htmlFor="video-url">YouTube video link</label>
-    <div className={styles.entryRow} data-input-group>
+    <div className={styles.entryRow} data-input-group data-composer="inline">
       <div className={`ui-field-surface ${styles.inputWrap}`} data-field-surface>
         <Link2 size={19} aria-hidden="true" />
         <Input appearance="bare" ref={input} id="video-url" name="videoUrl" type="url" inputMode="url" autoComplete="off"
@@ -56,9 +56,9 @@ export function VideoEntry() {
           value={value} onChange={(event) => changeValue(event.target.value)}
           aria-invalid={Boolean(error)} aria-describedby={`video-help${error ? " video-error" : ""}`} />
       </div>
-      <DirectionButton {...routeIntent} variant="primary" className={styles.primaryButton} type="submit" loading={pending} loadingLabel="Opening video…">
+      <Button {...routeIntent} variant="primary" size="lg" shape="pill" className={styles.primaryButton} type="submit" loading={pending} loadingLabel="Opening video…">
         Analyze video<ArrowRight size={17} aria-hidden="true" />
-      </DirectionButton>
+      </Button>
     </div>
     <p id="video-error" className={styles.error} role="alert">{error}</p>
     <p id="video-help" className={styles.srOnly}>No sign-in required · English videos with available captions</p>

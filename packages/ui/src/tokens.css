@@ -47,12 +47,22 @@
   --color-border-secondary: var(--line-strong);
   --color-border-primary: var(--ink-3);
 
+  /* Optical neutral alpha ramp for borders and subtle fills across light surfaces.
+     Body/UI text stays on opaque tokens above to preserve >= 4.5:1 contrast. */
+  --surface-tint: rgb(0 0 0 / 2%);
+  --surface-hover: rgb(0 0 0 / 4.3%);
+  --border-subtle: rgb(0 0 0 / 7.5%);
+  --border-control: rgb(0 0 0 / 10%);
+  --border-strong: rgb(0 0 0 / 16%);
+
   --color-brand-dot: #9b93d9;
   --color-overlay: rgb(0 0 0 / 32%);
 
   --color-danger: #a3372b;
   --color-danger-strong: #862b22;
+  --color-danger-pressed: #6e251f;
   --color-danger-subtle: #fff0ed;
+  --color-danger-subtle-pressed: #f9ded8;
 
   --field-background: var(--color-background-primary);
   --field-border: var(--color-border-secondary);
@@ -83,33 +93,54 @@
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
+  --radius-control: 10px;
   --radius-lg: 12px;
+  --radius-card: 14px;
   --radius-xl: 16px;
+  --radius-full: 9999px;
 
-  --shadow-soft:
-    rgb(0 0 0 / 7.5%) 0 0 0 0.5px inset,
+  /* Multi-stop optical shadows: hairline edge ring + progressive soft diffusion. */
+  --shadow-natural-xs:
     rgb(0 0 0 / 6%) 0 0 0 1px,
-    rgb(0 0 0 / 4%) 0 4px 8px;
+    rgb(0 0 0 / 6%) 0 1px 1px -0.5px,
+    rgb(0 0 0 / 6%) 0 3px 3px -1.5px;
 
-  --shadow-warm:
-    rgb(0 0 0 / 4%) 0 6px 16px;
+  --shadow-natural-sm:
+    rgb(0 0 0 / 6%) 0 0 0 1px,
+    rgb(0 0 0 / 6%) 0 1px 1px -0.5px,
+    rgb(0 0 0 / 6%) 0 3px 3px -1.5px,
+    rgb(0 0 0 / 6%) 0 6px 6px -3px,
+    rgb(0 0 0 / 2%) 0 12px 12px -6px;
 
-  --shadow-popover:
-    rgb(0 0 0 / 8%) 0 0 0 0.5px,
-    rgb(0 0 0 / 8%) 0 8px 24px,
-    rgb(0 0 0 / 4%) 0 2px 6px;
+  --shadow-natural-md:
+    rgb(0 0 0 / 6%) 0 0 0 1px,
+    rgb(0 0 0 / 6%) 0 1px 1px -0.5px,
+    rgb(0 0 0 / 6%) 0 3px 3px -1.5px,
+    rgb(0 0 0 / 6%) 0 6px 6px -3px,
+    rgb(0 0 0 / 4%) 0 12px 12px -6px,
+    rgb(0 0 0 / 4%) 0 24px 24px -12px;
 
-  --shadow-dialog:
-    rgb(0 0 0 / 8%) 0 0 0 0.5px,
-    rgb(0 0 0 / 9%) 0 20px 56px,
-    rgb(0 0 0 / 4%) 0 4px 12px;
+  --shadow-soft: var(--shadow-natural-xs);
+
+  /* Compatibility alias for legacy --shadow-warm references. */
+  --shadow-warm: var(--shadow-natural-xs);
+
+  --shadow-popover: var(--shadow-natural-sm);
+
+  --shadow-dialog: var(--shadow-natural-md);
+
+  --motion-instant: 90ms;
+  --motion-fast: 160ms;
+  --motion-normal: 220ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0.32, 0.72, 0, 1);
 
   --focus-ring: 2px solid var(--purple-600);
   --focus-offset: 3px;
   --opacity-disabled: 0.5;
   --button-height-sm: 32px;
-  --button-height-md: 40px;
-  --button-height-lg: 44px;
+  --button-height-md: 36px;
+  --button-height-lg: 42px;
   --button-gap: 8px;
   --button-group-gap: 12px;
 }

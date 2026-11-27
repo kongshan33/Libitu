@@ -97,7 +97,7 @@ try {
       await page.getByRole("heading", { name: "Align the migration plan", exact: true }).waitFor();
       const conversation = page.getByRole("region", { name: "Conversation", exact: true });
       const startPaint = await conversation.getByRole("button", { name: "Start conversation", exact: true }).evaluate(element => ({ background: getComputedStyle(element).backgroundColor, radius: getComputedStyle(element).borderRadius }));
-      assert.deepEqual(startPaint, { background: "rgb(12, 10, 9)", radius: "999px" }, "shared buttons retain neutral pill design");
+      assert.deepEqual(startPaint, { background: "rgb(12, 10, 9)", radius: "10px" }, "shared buttons retain neutral rounded design");
       await openTargets(page, width);
       const sidebar = page.getByRole("complementary", { name: "Training sidebar" });
       await sidebar.getByRole("heading", { name: "on the same page", exact: true }).waitFor();

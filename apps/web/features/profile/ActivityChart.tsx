@@ -3,6 +3,7 @@
 import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { useContentMotion } from "@/components/ui/use-content-motion";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+import { Tabs } from "@/components/ui/Tabs";
 
 import { useState } from "react";
 import type { ActivityPoint, ProfileData, ProfileRange } from "./types";
@@ -40,15 +41,17 @@ export function ActivityChart({ data, range, onRange, loading }: {
         {([["4w", "Last 4 weeks"], ["3m", "Last 3 months"], ["all", "All time"]] as const).map(([value, label]) =>
           <button type="button" key={value} aria-pressed={range === value} onClick={() => onRange(value)}>{label}</button>)}
       </div>
-      <div className={styles.metricGroup} role="tablist" aria-label="Activity metric">
-        {metrics.map((item) => <button type="button" key={item.key} role="tab" id={`activity-${item.key}`} aria-controls="activity-panel" tabIndex={metric === item.key ? 0 : -1} aria-selected={metric === item.key} onKeyDown={event => {
-          const index = metrics.findIndex(value => value.key === metric);
-          const next = event.key === "ArrowRight" ? (index + 1) % 3 : event.key === "ArrowLeft" ? (index + 2) % 3 : event.key === "Home" ? 0 : event.key === "End" ? 2 : null;
-          if (next !== null) { event.preventDefault(); setMetric(metrics[next].key); document.getElementById(`activity-${metrics[next].key}`)?.focus(); }
-        }} onClick={() => setMetric(item.key)}>
-          {item.label}
-        </button>)}
-      </div>
+      <Tabs
+        variant="underline"
+        size="sm"
+        ariaLabel="Activity metric"
+        className={styles.metricGroup}
+        items={metrics.map((item) => ({ value: item.key, label: item.label }))}
+        value={metric}
+        onValueChange={setMetric}
+        idPrefix="activity"
+        panelId="activity-panel"
+      />
       <div ref={chartRef} className={styles.chart} id="activity-panel" role="tabpanel" tabIndex={0} aria-labelledby={`activity-${metric}`} aria-busy={loading}>
         {loading && !data ? <ContentSkeleton label="Loading activity…" /> : !data ? <div className={styles.chartMessage}>Activity is unavailable.</div>
           : !known ? <div className={styles.chartMessage}>Dates aren’t available for this activity yet.</div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { LoadoutFunction } from "@libitu/types/speaking";
 import type { SavedCorpusRecord } from "../../corpus/corpus-storage";
 import { expressionText } from "../draft";
@@ -79,7 +80,7 @@ export function CorpusDrawer({ records, selectedKeys, disabled, query: controlle
       <header className={styles.drawerHeader}>
         <div className={styles.drawerTitle}>
           <h2 id={titleId}>All corpus</h2>
-          <button className={styles.closeButton} type="button" aria-label="Close corpus drawer" onClick={onClose}><X size={17} aria-hidden="true" /></button>
+          <Button variant="ghost" size="sm" shape="circle" aria-label="Close corpus drawer" onClick={onClose}><X size={16} aria-hidden="true" /></Button>
         </div>
         <label className={styles.searchLabel} htmlFor={searchId}>Search corpus</label>
         <div className={styles.searchField}>
@@ -113,7 +114,7 @@ export function CorpusDrawer({ records, selectedKeys, disabled, query: controlle
 
       <footer className={styles.drawerFooter}>
         <span id={countId} aria-live="polite">{selected.size} / 5 selected</span>
-        <button type="button" className={`${styles.button} ${styles.doneButton}`} onClick={onClose}>Done</button>
+        <Button variant="primary" size="md" onClick={onClose}>Done</Button>
       </footer>
     </div>
   </dialog>;

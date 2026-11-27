@@ -1,0 +1,63 @@
+/* Shared empty-state surface aligned with optical neutral alpha tokens. */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  min-height: 184px;
+  padding: 36px 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--surface-tint);
+  color: var(--ink-3);
+}
+
+.compact {
+  min-height: 148px;
+  padding: 24px 20px;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+  color: var(--ink-3);
+}
+
+.icon svg {
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-h3);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.description {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--ink-3);
+  font-size: var(--text-body);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.action {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}

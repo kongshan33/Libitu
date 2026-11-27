@@ -13,9 +13,7 @@
 .heading p { margin: 8px 0 0; color: var(--ink-3); font-size: var(--text-body); line-height: 1.6; }
 .heading .collectionSummary { margin-top: 12px; font-family: var(--font-mono); font-size: var(--text-meta); color: var(--muted); }
 .guestNotice { margin: 20px 0 0; padding: 12px 16px; border-radius: 14px; background: var(--surface); color: var(--ink-3); font-size: var(--text-help); line-height: 1.5; }
-.tabs { display: flex; gap: 28px; margin: 28px 0 0; border-bottom: 1px solid var(--line-soft); }
-.tabs button { border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); padding: 10px 0; font-size: var(--text-body); line-height: 1.5; }
-.tabs button[aria-selected=true], .tabs button[aria-pressed=true] { color: var(--ink); font-weight: 500; border-bottom-color: var(--brand); }
+.tabs { margin: 28px 0 0; }
 .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-top: 20px; }
 .search { display: flex; align-items: center; flex: 1 1 300px; gap: 12px; min-width: 0; height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--muted); }
 .search input { flex: 1; min-width: 0; width: 100%; border: 0; outline: none; background: transparent; color: var(--ink); padding: 0; font: inherit; }
@@ -30,8 +28,6 @@
 .filterPanel:is(:popover-open, [data-open=true]) { display: flex; flex-direction: column; }
 .filterHeader { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 20px 8px; flex-shrink: 0; }
 .filterHeader h2 { margin: 0; font-size: var(--text-body); font-weight: 500; }
-.filterClose { display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); }
-.filterClose:hover { background: var(--surface); color: var(--ink); }
 .filterBody { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 8px 20px 16px; }
 .filterRow { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: start; gap: 16px; }
 .filterRow + .filterRow { margin-top: 16px; }
@@ -58,23 +54,13 @@
 .sourceOptions button[aria-pressed=true] svg { opacity: 1; }
 .sourceCount { flex-shrink: 0; font-size: var(--text-meta); font-variant-numeric: tabular-nums; color: var(--muted); }
 .filterActions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--line-soft); flex-shrink: 0; }
-.filterReset, .filterDone { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 32px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink-2); font-size: var(--text-help); line-height: 20px; }
-.filterReset:hover:not(:disabled) { background: var(--surface); }
-.filterReset:disabled { color: var(--muted); opacity: .5; }
-.filterDone { border-color: var(--ink); background: var(--ink); color: var(--bg); }
-.filterDone:hover { background: var(--ink-2); }
-.textButton { padding: 8px 10px; background: transparent; border: 0; border-radius: 999px; color: var(--ink-2); white-space: nowrap; }
-.textButton:hover { color: var(--ink); background: var(--surface); }
+.textButton { white-space: nowrap; }
 .viewControls { display: flex; align-items: center; gap: 8px; margin-left: auto; min-width: 0; }
 .sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { height: 40px; min-width: 0; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--bg); box-shadow: none; color: var(--ink-2); font-size: var(--text-body); }
 .sort:global(.ui-select-trigger)[data-state=open], .sort:global(.ui-select-trigger):hover { border-color: var(--line-strong); background: var(--surface); }
 .sortMenu:global(.ui-select-content) { color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
 .sortMenu :global(.ui-select-item) { color: var(--ink-3); font-size: var(--text-body); }
 .sortMenu :global(.ui-select-item[data-highlighted]), .sortMenu :global(.ui-select-item[data-state=checked]) { color: var(--ink); background: var(--line-soft); }
-.viewToggle { display: flex; gap: 2px; }
-.viewToggle button { display: inline-flex; justify-content: center; align-items: center; width: 34px; height: 34px; border: 0; border-radius: 999px; background: none; color: var(--muted); }
-.viewToggle button:hover { background: var(--line-soft); color: var(--ink); }
-.viewToggle button[aria-pressed=true] { background: var(--ink); color: var(--bg); }
 .results { margin-top: 20px; }
 .resultMeta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--muted); font-size: var(--text-help); line-height: 1.5; }
 .resultMeta > span:last-child { text-align: right; }
@@ -105,9 +91,6 @@
 .tray small { display: block; color: var(--muted); font-size: var(--text-meta); line-height: 1.5; margin-top: 4px; }
 .tray > p { flex-basis: 100%; margin: 0; color: var(--color-danger); font-size: var(--text-help); line-height: 1.6; }
 .tray a { color: var(--ink-2); }
-.empty { display: flex; align-items: center; flex-direction: column; text-align: center; gap: 12px; padding: 48px 24px; border: 1px dashed var(--line-strong); border-radius: 14px; color: var(--muted); }
-.empty h2 { color: var(--ink); font-size: var(--text-h2); line-height: 1.3; font-weight: 500; margin: 0; }
-.empty p { margin: 0 0 4px; font-size: var(--text-body); line-height: 1.5; color: var(--ink-3); }
 .error { padding: 16px; background: var(--color-danger-subtle); color: var(--color-danger); border-radius: 14px; line-height: 1.6; }
 .notice { padding: 12px 16px; background: var(--surface); color: var(--ink-3); border-radius: 14px; }
 .help { font-size: var(--text-help); color: var(--muted); line-height: 1.6; }
@@ -138,25 +121,11 @@
 .dialog :global(.analysis-stack h2) { color: var(--ink); font-size: var(--text-h3); font-weight: 500; }
 .dialog :global(.mini-chip-row > span), .dialog :global(.pattern-row) { background: var(--surface); border: 0; color: var(--ink-3); }
 
-/* Scope the v2 controls above the legacy global button variants. */
-.page :global(.ui-button)[data-variant][data-size][data-shape],
-.dialog :global(.ui-button)[data-variant][data-size][data-shape] { display: inline-flex; align-items: center; justify-content: center;     border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--ink);    box-shadow: none; text-decoration: none; transition: background 160ms ease-out; }
-.page :global(.ui-button)[data-variant][data-size][data-shape]:hover:not(:disabled),
-.dialog :global(.ui-button)[data-variant][data-size][data-shape]:hover:not(:disabled) { background: var(--surface); }
-.page :global(.ui-button)[data-variant=primary][data-size][data-shape],
-.dialog :global(.ui-button)[data-variant=primary][data-size][data-shape] {  border-color: var(--ink); background: var(--ink); color: var(--bg);   }
-.page :global(.ui-button)[data-variant=primary][data-size][data-shape]:hover:not(:disabled),
-.dialog :global(.ui-button)[data-variant=primary][data-size][data-shape]:hover:not(:disabled) { background: var(--ink-2); border-color: var(--ink-2); }
-.page :global(.ui-button)[data-variant=primary] svg { transition: transform 160ms ease-out; }
+/* Keep only feature-specific icon motion and icon-button dimensions; paint lives in button.css. */
+.page :global(.ui-button)[data-variant=primary] svg { transition: transform var(--motion-fast) var(--ease-standard); }
 .page :global(.ui-button)[data-variant=primary]:hover svg { transform: translateX(3px); }
-.page :global(.ui-button)[data-variant=ghost][data-size][data-shape],
-.dialog :global(.ui-button)[data-variant=ghost][data-size][data-shape] { border-color: transparent; color: var(--ink-3); }
 .page .iconButton:global(.ui-button)[data-variant][data-size][data-shape],
 .dialog .iconButton:global(.ui-button)[data-variant][data-size][data-shape] { flex-shrink: 0; width: 32px; height: 32px; min-height: 32px; padding: 0; }
-.dialog :global(.ui-button)[data-variant=danger][data-size][data-shape],
-.dialog :global(.ui-button)[data-variant=danger-solid][data-size][data-shape] { color: var(--color-danger); }
-.page :global(.ui-button)[data-variant][data-size][data-shape]:disabled,
-.dialog :global(.ui-button)[data-variant][data-size][data-shape]:disabled { background: var(--line); border-color: var(--line); color: var(--muted); opacity: 1; }
 
 @media (max-width: 1000px) {
   .list .card { grid-template-columns: 140px minmax(0, 1fr); gap: 12px 20px; }
@@ -169,7 +138,7 @@
   .heading h1 { font-size: var(--text-h1); }
   .search { flex-basis: 100%; max-width: none; height: 44px; }
   .filterPill { height: 44px; font-size: var(--text-help); padding: 0 12px; }
-  .filterOptions button, .sourceOptions button, .textButton { min-height: 44px; }
+  .filterOptions button, .sourceOptions button { min-height: 44px; }
   .viewControls { flex: 1; margin-left: auto; justify-content: flex-end; gap: 4px; }
   .filterRow { grid-template-columns: 1fr; gap: 8px; }
   .filterLabel { padding: 0; }
@@ -177,11 +146,8 @@
   .filterHeader { padding: 12px 16px 4px; }
   .filterBody { padding: 8px 16px 16px; }
   .filterActions { padding: 12px 16px; }
-  .filterClose, .filterReset, .filterDone { min-height: 44px; }
-  .filterClose { width: 44px; }
   .sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { padding: 0 10px; font-size: var(--text-help); }
   .sort:global(.ui-select-trigger.ui-field)[data-field][data-shape] { height: 44px; }
-  .viewToggle button { width: 44px; height: 44px; }
   .cardTop input { width: 20px; height: 20px; }
   .list .card { display: flex; align-items: stretch; }
   .tray { left: 12px; right: 12px; bottom: calc(82px + env(safe-area-inset-bottom)); padding: 16px; gap: 12px 8px; }
@@ -208,7 +174,7 @@
 /* Corpus cards preview the same speaking frame as the shared detail. */
 .patternPreview { margin: 0; font: var(--text-meta)/1.7 var(--font-mono); color: var(--ink-3); overflow-wrap: anywhere; }
 
-@media (pointer:coarse) { .filterPill,.filterOptions button,.sourceOptions button,.textButton { min-height:44px; }.viewToggle button { min-width:44px;min-height:44px; }.cardTop label { min-width:44px;min-height:44px; } }
+@media (pointer:coarse) { .filterPill,.filterOptions button,.sourceOptions button,.textButton { min-height:44px; }.cardTop label { min-width:44px;min-height:44px; } }
 
 .selectionControl { display:grid;place-items:center;min-width:32px;min-height:32px;flex:none;cursor:pointer; }
 @media(pointer:coarse) { .selectionControl { min-width:44px;min-height:44px; } }

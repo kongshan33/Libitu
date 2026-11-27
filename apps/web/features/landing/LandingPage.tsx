@@ -83,10 +83,10 @@ export function LandingPage() {
         <div><h2 id="extension-title">Add Libitu to Chrome</h2><p>With the Libitu Chrome extension installed, open an English video and click Libitu in the player or browser toolbar. Available captions travel with you into your workspace.</p>
           {!extensionUrl ? <p className={styles.extensionNote}>The Chrome Web Store install link is not available here yet. You can start by pasting a video link above.</p> : null}
         </div>
-        {extensionUrl ? <a {...buttonAppearance({ variant: "secondary", size: "md", className: styles.extensionButton })}  href={extensionUrl} target="_blank" rel="noopener noreferrer">Add to Chrome<ArrowRight size={15} aria-hidden="true" /></a> : null}
+        {extensionUrl ? <a {...buttonAppearance({ variant: "secondary", size: "md", shape: "pill", className: styles.extensionButton })}  href={extensionUrl} target="_blank" rel="noopener noreferrer">Add to Chrome<ArrowRight size={15} aria-hidden="true" /></a> : null}
       </section>
 
-      <section className={styles.closing} aria-labelledby="closing-title"><p className={styles.kicker}>ONE VIDEO. SOMETHING TO SAY.</p><h2 id="closing-title">Start with something you want to watch.</h2><a {...buttonAppearance({ variant: "primary", size: "md", className: styles.primaryButton })}  href="#video-url">Paste a video link<ArrowRight size={17} aria-hidden="true" /></a></section>
+      <section className={styles.closing} aria-labelledby="closing-title"><p className={styles.kicker}>ONE VIDEO. SOMETHING TO SAY.</p><h2 id="closing-title">Start with something you want to watch.</h2><a {...buttonAppearance({ variant: "primary", size: "lg", shape: "pill", className: styles.primaryButton })}  href="#video-url">Paste a video link<ArrowRight size={17} aria-hidden="true" /></a></section>
     </main>
     <footer className={styles.footer}><BrandLogo className={styles.logo} /><span>Make it your English.</span><nav aria-label="Footer navigation"><a href="#how-it-works">How it works</a><Link href="/profile">My learning</Link></nav></footer>
   </div>;

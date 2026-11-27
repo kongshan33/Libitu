@@ -12,19 +12,11 @@
 .ui-field[data-field][data-shape]::placeholder { color: var(--field-placeholder); opacity: 1; }
 .ui-field[data-field][data-shape]:hover:not(:disabled):not(:focus-visible),
 .ui-field-surface[data-field-surface]:hover:not(:has(:disabled)):not(:focus-within) { border-color: var(--color-text-tertiary); }
-.ui-field[data-field][data-shape]:focus-visible,
-.ui-field-surface[data-field-surface]:has(:focus-visible) {
+/* Radix Select triggers (button) keep the shared keyboard focus ring; text inputs/textareas use the single 1px black inset boundary below. */
+.ui-select-trigger.ui-field[data-field][data-shape]:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
   border-color: var(--purple-600);
-  box-shadow: none;
-}
-/* Textarea focus stays neutral; outline does not change layout geometry. */
-textarea.ui-field[data-field][data-shape]:focus-visible,
-.ui-field-surface[data-field-surface]:has(textarea:focus-visible) {
-  outline: 1px solid var(--color-text-tertiary);
-  outline-offset: var(--focus-offset);
-  border-color: var(--field-border);
   box-shadow: none;
 }
 .ui-field[data-field][data-shape]:disabled,
@@ -62,6 +54,8 @@ textarea.ui-field[data-field][data-shape]:focus-visible,
   outline: 1px solid var(--ink) !important;
   outline-offset: -1px !important;
   border-color: transparent !important;
+}
+[data-input-group]:not([data-composer]):has(:is(input, textarea):focus) {
   box-shadow: none !important;
 }
 [data-input-group] :is(input, textarea):focus,

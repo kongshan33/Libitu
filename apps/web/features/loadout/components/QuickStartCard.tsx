@@ -57,13 +57,13 @@ export function QuickStartCard({ picks, logic, scene, scenarioLabel, difficultyL
     {adjustOpen ? children : null}
 
     <div className={`${styles.heroActions} ui-button-group`}>
-      <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroStart}`} disabled={unavailable || startDisabled || !picks.length} loading={busy} loadingLabel="Preparing mission…" onClick={onStart}>
+      <Button variant="secondary" size="lg" type="button" className={styles.heroStart} disabled={unavailable || startDisabled || !picks.length} loading={busy} loadingLabel="Preparing mission…" onClick={onStart}>
         Quick start
       </Button>
-      <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable || !picks.length} onClick={onShuffle}>
+      <Button variant="secondary" size="lg" type="button" className={styles.heroSecondary} disabled={unavailable || !picks.length} onClick={onShuffle}>
         Shuffle picks
       </Button>
-      <Button variant="secondary" size="lg" type="button" className={`${styles.button} ${styles.heroSecondary}`} disabled={unavailable} onClick={onAdjust} aria-expanded={adjustOpen}>
+      <Button variant="secondary" size="lg" type="button" className={styles.heroSecondary} disabled={unavailable} onClick={onAdjust} aria-expanded={adjustOpen}>
         {adjustOpen ? "Done" : "Adjust"}
       </Button>
       <p className={styles.preferenceSummary}>{[scenarioLabel, difficultyLabel, feedbackLabel].filter(Boolean).join(" · ")}</p>

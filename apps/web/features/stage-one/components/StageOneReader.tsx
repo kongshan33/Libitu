@@ -9,6 +9,7 @@ import { DirectionButton } from "@/components/ui/direction-button";
 import { Textarea } from "@/components/ui/field";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/Toast";
 
 import { FlowNavigation } from "@/components/FlowNavigation";
 
@@ -531,7 +532,7 @@ export function StageOneReader() {
       <section ref={readerRevealRef} className="reader-shell" aria-label="Libitu stage 1 ingest reader" aria-busy={isNavigating}>
         <FlowNavigation title={blueprint?.title ?? sourceTitle} current={stageOneView === "reader" ? 0 : 1}
           steps={[{ label: "Ingest", onClick: closeSegmentPicker }, { label: "Shadow", onClick: isReady ? () => navigate("picker") : undefined }]}
-          exit={<button type="button" onClick={() => navigate("picker")}>Back to segments</button>} />
+          exit={<Button variant="secondary" size="sm" onClick={() => navigate("picker")}>Back to segments</Button>} />
 
         {stageOneView !== "reader" && status !== "failed" && status !== "unsupported"
           && (status === "loading" || (stageOneView !== "picker" && !selectedSegment) || (stageOneView === "shadow" && !authLoaded)) ? (
@@ -798,7 +799,17 @@ export function StageOneReader() {
                       title={saveLabel}
                       aria-pressed={saved}
                       data-feedback={saved && activeTab !== "saved" ? "success" : undefined}
-                      onClick={() => record ? void corpus.remove(record) : void saveCorpusItem(item)}
+                      onClick={() => {
+                        if (record) {
+                          void corpus.remove(record).then((removed) => {
+                            if (removed) toast("Removed from corpus", { id: "stage-one-corpus-toggle" });
+                          });
+                        } else {
+                          void saveCorpusItem(item).then((savedRecord) => {
+                            if (savedRecord) toast.success("Saved to corpus", { id: "stage-one-corpus-toggle" });
+                          });
+                        }
+                      }}
                     >
                       {saved ? activeTab === "saved" ? <Trash2 /> : <Check /> : <Plus />}
                     </button>

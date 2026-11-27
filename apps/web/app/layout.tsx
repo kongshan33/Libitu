@@ -10,6 +10,7 @@ import "@/components/ui/retry-notice.css";
 import "@/components/ui/motion.css";
 import "@/features/learning-workspace/practice-theme.css";
 import { PracticePersistence } from "@/features/stage-two/persistence/PracticePersistence";
+import { ToastViewport } from "@/components/ui/Toast";
 
 const inter = localFont({
   src: [
@@ -35,6 +36,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body>
         <ClerkProvider><PracticePersistence><AppNavigation>{children}</AppNavigation></PracticePersistence></ClerkProvider>
+        <ToastViewport />
       </body>
     </html>
   );

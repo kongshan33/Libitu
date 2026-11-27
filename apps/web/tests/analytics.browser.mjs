@@ -28,7 +28,7 @@ try {
       assert.equal(await adjust.evaluate(n => getComputedStyle(n).fontSize), "14px");
       const actionBoxes = await page.locator('.ui-button-group .ui-button').evaluateAll(nodes => nodes.map(el => el.getBoundingClientRect().toJSON()));
       assert.equal(actionBoxes.length, 3);
-      assert.ok(actionBoxes.every(box => Math.abs(box.height - 44) < 1), JSON.stringify(actionBoxes));
+      assert.ok(actionBoxes.every(box => Math.abs(box.height - 42) < 1), JSON.stringify(actionBoxes));
       assert.ok(actionBoxes.every(box => Math.abs(box.width - actionBoxes[0].width) < 1));
       assert.equal(await page.getByRole("tab").count(), 4);
       assert.equal(await page.getByText("Fluency", { exact: true }).count(), 0);

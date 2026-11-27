@@ -2,7 +2,9 @@
 
 import { useCallback, useState } from "react";
 import { ArrowUp, ChevronDown, Pause, Square } from "lucide-react";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { DirectionLink } from "@/components/ui/direction-button";
+import { Composer } from "@/components/ui/Composer";
 import { ConversationHeader, MissionIntro, StageGuide, ConversationToolbar, VoiceSurface, VoiceCallButton, MicrophoneButton, MicrophoneBar, ConversationHint, ConversationMessage, RecastLine, StageDivider, TargetPanel, type HintPresentation } from "../ConversationPresentation";
 import { freeHints, hints, previewStates, scene, targets, type PreviewState } from "./fixtures";
 import styles from "../Speaking.module.css";
@@ -47,12 +49,12 @@ export function ConversationPreview() {
     const content = state === "free" ? freeHints : hints;
     setHint(help?.status === "unavailable" ? content.direction : help?.level === "direction" ? content.opening : help?.level === "opening" ? content.example : help?.level === "example" ? null : content.direction);
   }
-  const start = <button type="button" className={styles.primary} disabled={state === "connecting"} onClick={() => chooseState("live")}>{startLabel}</button>;
+  const start = <Button variant="primary" size="md" className={styles.primary} disabled={state === "connecting"} onClick={() => chooseState("live")}>{startLabel}</Button>;
   const previewTargets = state === "free" ? [] : targets.map(target => ({ ...target,
     used: !ready && target.used, modeled: !ready && state !== "uncertain" && target.modeled,
     current: !ready && target.current,
     status: ready ? "Not started" : target.current && skipped ? "Skipped" : target.current && state === "uncertain" ? "Example delivery uncertain" : target.status,
-    actions: !ready && target.current && !ended ? <div className={styles.targetActions}><button type="button" className={styles.itemHelp} disabled={offline || speaking || skipped || !!draft} onClick={advanceHint}>Hint</button><button type="button" className={styles.itemHelp} disabled={offline} onClick={() => { setSkipped(value => !value); setHint(null); }}>{skipped ? "Undo skip" : "Doesn’t fit this scene"}</button></div> : null,
+    actions: !ready && target.current && !ended ? <div className={styles.targetActions}><Button variant="ghost" size="sm" className={styles.itemHelp} disabled={offline || speaking || skipped || !!draft} onClick={advanceHint}>Hint</Button><Button variant="ghost" size="sm" className={styles.itemHelp} disabled={offline} onClick={() => { setSkipped(value => !value); setHint(null); }}>{skipped ? "Undo skip" : "Doesn’t fit this scene"}</Button></div> : null,
   }));
 
   return <><ConversationHeader title={scene.goal} loadoutHref="/loadout" account={<span className={styles.previewAvatar} aria-label="Preview account">S</span>} />
@@ -62,10 +64,10 @@ export function ConversationPreview() {
         <label>Simulated audio level <input aria-label="Simulated audio level" type="range" min="0" max="1" step="0.05" value={volume} onChange={event => setVolume(Number(event.target.value))} /></label>
         <p>Simulated UI preview · no microphone, provider connection, or saved learner data. Silence and hint states are selected manually.</p>
       </div>
-      <MissionIntro goal={state === "free" ? "A conversation at your own pace." : scene.goal} metadata={ended ? "Saved conversation · read-only review" : scene.metadata} setting={state === "free" ? undefined : scene.setting} actions={<><Link href="/loadout">Back to loadout</Link>{!ended ? <button type="button" onClick={() => chooseState("completed")}>End mission</button> : null}</>} />
+      <MissionIntro goal={state === "free" ? "A conversation at your own pace." : scene.goal} metadata={ended ? "Saved conversation · read-only review" : scene.metadata} setting={state === "free" ? undefined : scene.setting} actions={<><DirectionLink href="/loadout">Back to loadout</DirectionLink>{!ended ? <Button variant="secondary" size="md" className={styles.endButton} onClick={() => chooseState("completed")}>End mission</Button> : null}</>} />
       {state !== "free" ? <StageGuide title="Persuasive pitch" steps={[...scene.stages]} currentIndex={ready ? null : 1} statuses={ready ? undefined : ["completed", "current", "pending", "pending"]} /> : null}
       <div className={styles.workspace}><section className={styles.conversation} aria-label="Conversation">
-        <ConversationToolbar view={view} onView={setView} status={status} online={!offline} actions={<button type="button" className={styles.trainingToggle} aria-expanded={targetsOpen} aria-controls="preview-targets" onClick={() => setTargetsOpen(value => !value)}>Targets<ChevronDown size={14} aria-hidden="true" /></button>} />
+        <ConversationToolbar view={view} onView={setView} status={status} online={!offline} actions={<Button variant="secondary" size="sm" className={styles.trainingToggle} aria-expanded={targetsOpen} aria-controls="preview-targets" onClick={() => setTargetsOpen(value => !value)}>Targets<ChevronDown size={14} aria-hidden="true" /></Button>} />
         {state === "paused" || state === "error" ? <div className={styles.connectionNotice}><div><strong>{state === "paused" ? "Conversation paused" : "Connection lost"}</strong><p>Your transcript is saved. {state === "paused" ? "Resume when you are ready." : "Reconnect to continue."}</p></div></div> : null}
         {view === "voice" ? <VoiceSurface phase={state === "connecting" ? "connecting" : offline ? "idle" : speaking || state === "silence" ? "listening" : "speaking"} getOutputLevel={!speaking && state !== "silence" ? getLevel : undefined} getInputLevel={microphone ? getLevel : undefined} status={offline ? startLabel : speaking ? "Listening" : "Speaking"}
           callControl={!ended ? <VoiceCallButton connected={!offline} connecting={state === "connecting"} label={offline ? startLabel : "Pause conversation"} onClick={() => chooseState(offline ? "live" : "paused")} /> : undefined} speaker="AI partner · now"
@@ -85,9 +87,19 @@ export function ConversationPreview() {
           </div>}
         {view === "chat" ? <ConversationHint hint={help} speaking={false} /> : null}
         {!ended ? <div className={styles.composerArea}>
-          {view === "chat" ? <MicrophoneBar action={offline ? start : <button type="button" className={styles.chatPause} aria-label="Pause conversation" onClick={() => chooseState("paused")}><Pause size={16} aria-hidden="true" /><span>Pause conversation</span></button>} enabled={microphone} disabled={state === "connecting"} onClick={() => { if (offline) chooseState("live"); else setMicrophone(value => !value); }} status={status} active={!offline && microphone} /> : null}
-          <form className={styles.composer} onSubmit={event => { event.preventDefault(); if (draft.trim()) { setMessages(values => [...values, draft.trim()]); setDraft(""); setView("chat"); } }}><textarea aria-label="Message your AI partner" rows={1} maxLength={4000} placeholder={view === "voice" ? "Or send a message…" : "Type a reply…"} value={draft} onChange={event => { setDraft(event.target.value); }} /><button type="submit" className={styles.sendButton} aria-label="Send message" disabled={!draft.trim() || offline}><ArrowUp size={18} /></button></form>
-          <div className={styles.composerHelp}><span>Transcript is saved. Audio is not retained by Libitu.</span><button type="button" disabled={offline || speaking || !!draft || hint?.status === "loading"} onClick={advanceHint}>{label}</button></div>
+          {view === "chat" ? <MicrophoneBar action={offline ? start : <Button variant="ghost" size="sm" className={styles.chatPause} aria-label="Pause conversation" onClick={() => chooseState("paused")}><Pause size={16} aria-hidden="true" /><span>Pause conversation</span></Button>} enabled={microphone} disabled={state === "connecting"} onClick={() => { if (offline) chooseState("live"); else setMicrophone(value => !value); }} status={status} active={!offline && microphone} /> : null}
+          <Composer
+            variant="stacked"
+            className={styles.composer}
+            onSubmit={event => { event.preventDefault(); if (draft.trim()) { setMessages(values => [...values, draft.trim()]); setDraft(""); setView("chat"); } }}
+            meta={<span>Transcript is saved. Audio is not retained by Libitu.</span>}
+            actions={<>
+              <Button variant="secondary" size="sm" shape="pill" className={styles.composerHint} disabled={offline || speaking || !!draft || hint?.status === "loading"} onClick={advanceHint}>{label}</Button>
+              <Button variant="primary" size="md" shape="circle" type="submit" className={styles.sendButton} aria-label="Send message" disabled={!draft.trim() || offline}><ArrowUp size={18} /></Button>
+            </>}
+          >
+            <textarea aria-label="Message your AI partner" rows={1} maxLength={4000} placeholder={view === "voice" ? "Or send a message…" : "Type a reply…"} value={draft} onChange={event => { setDraft(event.target.value); }} />
+          </Composer>
         </div> : <div className={styles.review}><Square size={14} /><p>Mission complete. This preview has no saved report.</p></div>}
       </section><aside id="preview-targets" className={`${styles.sidebar} ${targetsOpen ? styles.sidebarOpen : ""}`} aria-label="Training sidebar"><TargetPanel targets={previewTargets} reveal={reveal} onReveal={() => setReveal(value => !value)} active={false} /></aside></div>
     </section></main></>;

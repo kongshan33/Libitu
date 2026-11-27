@@ -7,9 +7,12 @@ import { useAuth, useClerk } from "@clerk/nextjs";
 import { ArrowRight, BookOpen, LayoutGrid, List, Pencil, Search } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/field";
 import Link from "@/components/ui/PrefetchLink";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SegmentedControl, Tabs } from "@/components/ui/Tabs";
+import { toast } from "@/components/ui/Toast";
 import { useRouteIntent } from "../navigation/use-route-prefetch";
 import { addCorpusToDraft, expressionText } from "../loadout/draft";
 import { useSavedCorpus } from "./useSavedCorpus";
@@ -103,24 +106,26 @@ function LibraryContent({ owner }: { owner: string | null }) {
         </ButtonLink>
       </div>
       {!owner ? <p className={styles.guestNotice}>Saved on this device. Sign in to sync your collection across devices.</p> : null}
-      <div className={styles.tabs} role="tablist" aria-label="Corpus views">
-        {[false, true].map((highValue, index) => <button key={String(highValue)} id={`corpus-view-${index}`} type="button" role="tab"
-          aria-selected={filters.highValue === highValue} aria-controls="corpus-results" tabIndex={filters.highValue === highValue ? 0 : -1}
-          onClick={() => changeFilters({ highValue })} onKeyDown={event => {
-            if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-            event.preventDefault();
-            const next = event.key === "Home" ? 0 : event.key === "End" ? 1 : 1 - index;
-            changeFilters({ highValue: Boolean(next) });
-            event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role=tab]")[next]?.focus();
-          }}>{highValue ? "AI recommended" : "All items"}</button>)}
-      </div>
+      <Tabs
+        variant="underline"
+        ariaLabel="Corpus views"
+        className={styles.tabs}
+        items={[
+          { value: "all", label: "All items" },
+          { value: "recommended", label: "AI recommended" }
+        ]}
+        value={filters.highValue ? "recommended" : "all"}
+        onValueChange={(next) => changeFilters({ highValue: next === "recommended" })}
+        getTabId={(_, index) => `corpus-view-${index}`}
+        panelId="corpus-results"
+      />
       <search className={styles.toolbar} aria-label="Search and filter corpus">
         <label className={styles.search} data-input-group>
           <Search size={16} aria-hidden="true" />
           <Input appearance="bare" aria-label="Search corpus" type="search" placeholder="Search expressions, meanings, tags…" value={filters.query} onChange={event => changeFilters({ query: event.target.value })} />
         </label>
         <CorpusFilters records={corpus.records} filters={filters} onChange={changeFilters} />
-        {hasFilters ? <button className={styles.textButton} type="button" onClick={clearFilters}>Clear all</button> : null}
+        {hasFilters ? <Button variant="ghost" size="sm" className={styles.textButton} onClick={clearFilters}>Clear all</Button> : null}
         <div className={styles.viewControls}>
           <Select value={sort} onValueChange={value => { setSort(value as LibrarySort); setLimit(PAGE_SIZE); }}>
             <SelectTrigger className={styles.sort} aria-label="Sort corpus"><SelectValue /></SelectTrigger>
@@ -128,10 +133,16 @@ function LibraryContent({ owner }: { owner: string | null }) {
               {sorts.map(option => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
             </SelectContent>
           </Select>
-          <div className={styles.viewToggle} role="group" aria-label="Corpus layout">
-            <button type="button" aria-label="Grid view" aria-pressed={view === "grid"} onClick={() => setView("grid")}><LayoutGrid size={16} aria-hidden="true" /></button>
-            <button type="button" aria-label="List view" aria-pressed={view === "list"} onClick={() => setView("list")}><List size={16} aria-hidden="true" /></button>
-          </div>
+          <SegmentedControl
+            ariaLabel="Corpus layout"
+            iconOnly
+            items={[
+              { value: "grid", label: <LayoutGrid size={16} aria-hidden="true" />, ariaLabel: "Grid view" },
+              { value: "list", label: <List size={16} aria-hidden="true" />, ariaLabel: "List view" }
+            ]}
+            value={view}
+            onValueChange={setView}
+          />
         </div>
       </search>
       <div id="corpus-results" role="tabpanel" aria-labelledby={`corpus-view-${filters.highValue ? 1 : 0}`} tabIndex={0} className={styles.results}>
@@ -150,15 +161,21 @@ function LibraryContent({ owner }: { owner: string | null }) {
             <span>{selectedKeys.length} selected{hidden ? ` · ${hidden} hidden by filters` : ""}</span>
           </div>
         </div>
-        {corpus.ready && !corpus.records.length ? <div className={styles.empty}>
-          <BookOpen size={28} aria-hidden="true" /><h2>Your collection starts with one expression.</h2>
-          <p>Save useful language while listening or reading, then find it here.</p>
-          <ButtonLink href="/" variant="secondary" size="md">Find language to save <ArrowRight size={16} aria-hidden="true" /></ButtonLink>
-        </div> : corpus.ready && !matching.length ? <div className={styles.empty}>
-          <Search size={28} aria-hidden="true" /><h2>{filters.highValue && !hasFilters ? "No AI recommendations yet" : "No matching items"}</h2>
-          <p>{filters.highValue && !hasFilters ? "Saved items with an AI-rated learning value of 4 or 5 will appear here." : "Try a different search or clear your filters."}</p>
-          <Button variant="secondary" size="md" onClick={hasFilters ? clearFilters : () => changeFilters({ highValue: false })}>{hasFilters ? "Clear filters" : "View all items"}</Button>
-        </div> : null}
+        {corpus.ready && !corpus.records.length ? (
+          <EmptyState
+            icon={<BookOpen size={20} aria-hidden="true" />}
+            title="Your collection starts with one expression."
+            description="Save useful language while listening or reading, then find it here."
+            action={<ButtonLink href="/" variant="secondary" size="md">Find language to save <ArrowRight size={16} aria-hidden="true" /></ButtonLink>}
+          />
+        ) : corpus.ready && !matching.length ? (
+          <EmptyState
+            icon={<Search size={20} aria-hidden="true" />}
+            title={filters.highValue && !hasFilters ? "No AI recommendations yet" : "No matching items"}
+            description={filters.highValue && !hasFilters ? "Saved items with an AI-rated learning value of 4 or 5 will appear here." : "Try a different search or clear your filters."}
+            action={<Button variant="secondary" size="md" onClick={hasFilters ? clearFilters : () => changeFilters({ highValue: false })}>{hasFilters ? "Clear filters" : "View all items"}</Button>}
+          />
+        ) : null}
         <div ref={resultsRef} className={`${styles.items} ${view === "list" ? styles.list : ""}`}>
           {shown.map(record => <article key={record.key} className={`${styles.card} ${selectedKeys.includes(record.key) ? styles.selected : ""}`}>
             <div className={styles.cardTop}>
@@ -194,6 +211,9 @@ function LibraryContent({ owner }: { owner: string | null }) {
         const records = corpus.records.filter(record => deleteKeys.includes(record.key));
         const removed = await corpus.removeMany(records);
         setSelected(current => current.filter(key => !removed.includes(key)));
+        if (removed.length > 0) {
+          toast.success(`Removed ${removed.length} ${removed.length === 1 ? "item" : "items"} from corpus`);
+        }
         return removed.length === records.length;
       }} /> : null}
     {activeRecord && active ? <CorpusItemDialog key={active.key} record={activeRecord} initialEdit={active.edit} busy={corpus.busy} error={corpus.error} onClose={() => setActive(null)} onUpdate={corpus.update} onRemove={corpus.remove} onHydrate={corpus.hydrate} /> : null}

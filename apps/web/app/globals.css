@@ -15,7 +15,7 @@ body {
   background: var(--color-background-primary);
   color: var(--color-text-primary);
   font-family: var(--font-ui);
-  letter-spacing: 0.14px;
+  letter-spacing: 0;
 }
 
 button,
@@ -3431,27 +3431,6 @@ svg {
   color: inherit;
   cursor: pointer;
 }
-.practice-save-notifications {
-  position: fixed; z-index: 100; right: 24px; bottom: max(24px, env(safe-area-inset-bottom));
-  width: min(400px, calc(100% - 32px)); display: grid; gap: 10px;
-  max-height: calc(100dvh - 48px); overflow-y: auto;
-}
-.practice-save-banner {
-  display: flex; align-items: flex-start; gap: 12px; padding: 16px;
-  border: 1px solid var(--line); border-radius: 14px;
-  background: var(--surface); color: var(--ink-3);
-  box-shadow: none;
-  font-size: var(--text-help); line-height: 1.5; overflow-wrap: anywhere;
-}
-.practice-save-banner > svg { flex-shrink: 0; margin-top: 1px; }
-.practice-save-banner strong { display: block; font-weight: 600; }
-.practice-save-banner p { margin: 4px 0 0; color: inherit; }
-.practice-save-banner button { margin-top: 12px; }
-.practice-save-banner[data-state="error"] { background: var(--surface); border-color: var(--line); color: var(--ink-3); }
-.practice-save-spinner { animation: practice-save-spin 1s linear infinite; }
-@keyframes practice-save-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .practice-save-spinner { animation: none; } }
-@media (max-width: 600px) { .practice-save-notifications { right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); } }
 .practice-retention { display: flex; gap: 8px; align-items: center; min-height: 44px; }
 .practice-history { padding: 20px; margin: 16px 0; border: 1px solid var(--color-border-tertiary); border-radius: var(--radius-lg); background: var(--color-background-primary); }
 .practice-history h2 { margin: 0 0 8px; font-size: var(--text-reading); }
@@ -3463,6 +3442,16 @@ svg {
 .practice-history-meta time { font-weight: 500; }
 .practice-history-meta span, .practice-history-actions small { color: var(--color-text-secondary); font-size: var(--text-label); }
 .practice-history-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+ .practice-more-actions {
+  position:fixed;inset:auto;margin:4px 0;padding:4px;border:1px solid var(--border-subtle);
+  border-radius:var(--radius-control);background:var(--color-background-primary);box-shadow:var(--shadow-popover);
+  position-area:block-end span-inline-start;justify-self:end;position-try-fallbacks:flip-block,flip-inline;
+}
+@supports not (position-area:block-end) { .practice-more-actions { inset:0;margin:auto;width:max-content;height:max-content; } }
+.practice-more-actions:popover-open { display:grid;gap:2px; }
+.practice-more-actions .ui-button[data-size][data-shape] { justify-content:flex-start;white-space:nowrap;margin:0; }
+.take-load-more { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-subtle);font-size:var(--text-meta);color:var(--muted); }
+
 .practice-history-actions .ui-button { margin: 0; }
 @media (max-width: 600px) { .practice-history { padding: 14px; } }
 .practice-history audio { display: block; max-width: 100%; }
@@ -3470,7 +3459,7 @@ svg {
 /* File references share the compact media controls; layer colors stay in analysis. */
 .server-reference-status { font-size: var(--text-help); color: var(--text-secondary, #666); }
 .server-reference-status p { margin: 6px 0; }
-.server-reference-status button { margin: 4px 8px 4px 0; border: 1px solid var(--color-border-secondary); border-radius: 999px; background: var(--line-soft); padding: 8px 14px; min-height: 40px; color: #222; }
+.server-reference-status button:not(.ui-button) { margin: 4px 8px 4px 0; border: 1px solid var(--border-control); border-radius: var(--radius-control); background: var(--surface); padding: 6px 12px; min-height: 36px; color: var(--ink); }
 .server-reference-upload { display: grid; gap: 8px; margin: 8px 0; }
 .server-measurements { border: 1px solid var(--line); border-radius: var(--radius-xl); padding: 18px; margin-bottom: 16px; background: #fff; }
 .server-measurements h3 { font-size: var(--text-body); margin: 0 0 12px; }
@@ -3485,7 +3474,7 @@ svg {
 
 .practice-analysis-status, .prosody-comparison { padding: 16px 18px; border: 1px solid var(--color-border-tertiary); border-radius: var(--radius-lg); margin: 14px 0; background: var(--color-background-primary); }
 .practice-analysis-status p, .prosody-comparison p { font-size: var(--text-meta); line-height: 1.65; color: var(--color-text-secondary); overflow-wrap: anywhere; }
-.practice-analysis-status button { min-height: 40px; padding: 7px 12px; margin: 4px 6px 0 0; border: 1px solid var(--color-border-secondary); border-radius: 22px; background: var(--color-background-secondary); color: var(--color-text-primary); cursor: pointer; }
+.practice-analysis-status button:not(.ui-button) { min-height: 36px; padding: 6px 12px; margin: 4px 6px 0 0; border: 1px solid var(--border-control); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); cursor: pointer; }
 .prosody-comparison h3 { margin: 0; font-size: var(--text-body); }
 .prosody-word-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(145px,1fr)); gap: 8px; }
 .prosody-word { min-width: 0; padding: 10px; border-radius: var(--radius-md); background: var(--color-background-secondary); overflow-wrap: anywhere; }

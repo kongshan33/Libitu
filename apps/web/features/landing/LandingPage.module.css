@@ -24,7 +24,8 @@
 .subtitle { margin: 24px auto 40px; max-width: 560px; font-size: 18px; line-height: 1.6; color: var(--ink-3); text-wrap: pretty; }
 .desktopBreak { display: none; }
 .entryForm { max-width: 640px; margin: auto; text-align: left; }
-.entryRow { display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 22px; border-radius: 999px; background: var(--surface); outline: 1.5px solid transparent; transition: background 180ms ease-out, outline-color 180ms ease-out; }
+.entryRow { display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 22px; border: 1px solid var(--border-subtle); border-radius: 999px; background: var(--bg); box-shadow: var(--shadow-natural-md); outline: 1.5px solid transparent; transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), outline-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard); }
+.entryRow:hover:not(:focus-within) { border-color: var(--border-control); }
 .entryRow:focus-within { background: var(--bg); outline-color: var(--ink); }
 .inputWrap:global(.ui-field-surface)[data-field-surface] { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; border: 0; border-radius: 0; padding: 0; background: transparent; color: var(--muted); box-shadow: none; }
 .inputWrap input { height: 48px; padding: 0; border: 0; background: transparent; color: var(--ink); width: 100%; min-width: 0; font: inherit; font-size: 16px; scroll-margin-top: 40px; }
@@ -80,13 +81,8 @@
 .footer nav a { display: flex; align-items: center; min-height: 40px; }
 .srOnly, .skipLink:not(:focus) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skipLink:focus { position: absolute; z-index: 80; top: 10px; left: 10px; padding: 12px; background: var(--bg); color: var(--ink); }
-.page :global(.ui-button)[data-variant][data-size][data-shape] { display: inline-flex; align-items: center; justify-content: center;    border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--ink);    box-shadow: none;  transition: background 160ms ease-out; }
-.page :global(.ui-button)[data-variant][data-size][data-shape]:hover { background: var(--surface); }
-.page :global(.ui-button)[data-variant=primary][data-size][data-shape] {  background: var(--ink); border-color: var(--ink); color: var(--bg);   }
-.page :global(.ui-button)[data-variant=primary][data-size][data-shape]:hover { background: var(--ink-2); }
-.page :global(.ui-button)[data-variant=primary] svg { transition: transform 160ms ease-out; }
+.page :global(.ui-button)[data-variant=primary] svg { transition: transform var(--motion-fast) var(--ease-standard); }
 .page :global(.ui-button)[data-variant=primary]:hover svg { transform: translateX(3px); }
-.page :global(.ui-button)[data-variant][data-size][data-shape]:disabled { background: var(--line); color: var(--muted); border-color: var(--line); }
 .hero h1 span, .hero h1 em, .subtitle, .entryForm, .extensionEntry { animation: enter 700ms cubic-bezier(.2,.7,.2,1) backwards; }
 .hero h1 span { animation-delay: 90ms; }
 .hero h1 em { animation-delay: 180ms; }

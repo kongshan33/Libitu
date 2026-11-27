@@ -84,6 +84,7 @@ function browserFixture({ records, initialOwner, shadow, seedCorpus }) {
   window.__loadoutAuthCalls = [];
   window.__setLoadoutUser = (owner) => {
     sessionStorage.setItem("loadout-fixture-owner", owner ?? "");
+    if (owner) localStorage.setItem(`libitu:recording-retention:v1:${owner}`, "off");
     clerk.user = owner ? { id: owner, organizationMemberships: [] } : null;
     clerk.session = owner ? { id: `session-${owner}`, user: clerk.user, status: "active",
       lastActiveToken: { jwt: { claims: { sub: owner } } },

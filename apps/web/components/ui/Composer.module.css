@@ -1,0 +1,92 @@
+/* Floating focal prompt / speaking composer surface with optical multi-stop elevation. */
+
+.root {
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-natural-md);
+  color: var(--ink);
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+
+.root[data-elevation="sm"] {
+  box-shadow: var(--shadow-natural-sm);
+}
+
+.root:hover:not(:focus-within) {
+  border-color: var(--border-control);
+}
+
+.root[data-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 12px 10px 16px;
+  border-radius: 22px;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 18px;
+  border-radius: var(--radius-full);
+}
+
+.inputSlot {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+}
+
+.stacked .inputSlot {
+  width: 100%;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.meta {
+  min-width: 0;
+  flex: 1;
+  font-size: var(--text-meta);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .stacked {
+    padding: 10px 10px 10px 14px;
+    border-radius: 20px;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

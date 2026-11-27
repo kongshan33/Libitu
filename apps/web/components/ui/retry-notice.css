@@ -32,7 +32,7 @@
 .ui-retry-notice .ui-button[data-variant][data-size][data-shape]:not([data-shape="circle"]) {
   min-height: var(--button-height-md);
   margin: 0;
-  padding: 9px 14px;
+  padding: 7px 12px;
   font-size: var(--text-help);
   line-height: 20px;
   --button-icon-size: 16px;

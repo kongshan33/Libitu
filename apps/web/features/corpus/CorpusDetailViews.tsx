@@ -6,6 +6,7 @@ import type { CorpusItem, CorpusSelectionAnalysis, CorpusSelectionContext } from
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+import { Tabs } from "@/components/ui/Tabs";
 import { analyzeCorpusSelection, analyzeCorpusSyntax } from "../stage-one/api/stage-one-api";
 import { ExplainPanel, SyntaxPanel } from "./AnalysisPanels";
 import { CorpusFollowup } from "./CorpusFollowup";
@@ -77,16 +78,22 @@ export function CorpusDetailViews({ analysis, context, onAnalysis, onSaveNote, o
     if (tab === "syntax" && !error) void loadSyntax();
   }, [tab, error, loadSyntax]);
   return <div className={styles.views}>
-    <div className={styles.tabs} role="tablist" aria-label="Analysis views" onKeyDown={event => {
-      const tabs = ["explain", "syntax"] as const;
-      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-      event.preventDefault();
-      const next = event.key === "Home" ? "explain" : event.key === "End" ? "syntax" : tabs[tab === "explain" ? 1 : 0];
-      document.getElementById(`${id}-${next}`)?.focus();
-      if (next === "syntax") void loadSyntax(); else setTab(next);
-    }}>
-      {(["explain", "syntax"] as const).map(value => <button key={value} id={`${id}-${value}`} type="button" role="tab" aria-selected={tab === value} tabIndex={tab === value ? 0 : -1} aria-controls={`${id}-panel`} onClick={() => value === "syntax" ? void loadSyntax() : setTab(value)}>{value === "explain" ? "Explain" : "Syntax"}</button>)}
-    </div>
+    <Tabs
+      variant="underline"
+      ariaLabel="Analysis views"
+      className={styles.tabs}
+      items={[
+        { value: "explain", label: "Explain" },
+        { value: "syntax", label: "Syntax" }
+      ]}
+      value={tab}
+      onValueChange={(next) => {
+        if (next === "syntax") void loadSyntax();
+        else setTab(next);
+      }}
+      idPrefix={id}
+      panelId={`${id}-panel`}
+    />
     <div ref={panelRef} id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${tab}`} className={styles.panel}>
       <div hidden={tab !== "explain"}>
         {(current.schemaVersion ?? 1) < 3 || current.analysisSource === "fallback" ? <Button variant="secondary" size="sm" disabled={disabled || pending} loading={refreshing} loadingLabel="Refreshing…" onClick={() => void refreshExplain()}>Refresh explanation</Button> : null}

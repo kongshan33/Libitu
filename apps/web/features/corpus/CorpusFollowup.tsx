@@ -5,6 +5,8 @@ import type { CorpusSelectionContext } from "@libitu/types/stage-one";
 import { ArrowUp } from "lucide-react";
 import { useDelayedPending } from "@/components/ui/use-delayed-pending";
 import { Button } from "@/components/ui/button";
+import { Composer } from "@/components/ui/Composer";
+import { toast } from "@/components/ui/Toast";
 import { corpusContextPayload } from "../stage-one/api/stage-one-api";
 import styles from "./CorpusDetail.module.css";
 import { RestrictedMarkdown } from "./CorpusMarkdown";
@@ -69,18 +71,28 @@ export function CorpusFollowup({ context, comparison, suggestions, onSaveNote, d
   return <section className={styles.ask}>
     <h3>Ask about this</h3>
     <div className={styles.suggestions}>{questions.map(value => <button key={value} type="button" aria-pressed={question === value} disabled={status === "streaming" || saving} onClick={() => setQuestion(old => old === value ? "" : value)}>{value}</button>)}</div>
-    <form data-input-group className={styles.askForm} onSubmit={event => { event.preventDefault(); void ask(question); }}>
+    <Composer
+      variant="inline"
+      elevation="sm"
+      className={styles.askForm}
+      onSubmit={event => { event.preventDefault(); void ask(question); }}
+      actions={<Button variant="primary" size="sm" shape="circle" aria-label="Send question" disabled={!question.trim() || status === "streaming" || saving} type="submit"><ArrowUp size={16} /></Button>}
+    >
       <input aria-label="Ask about this expression" placeholder={`Ask about “${context.selectedText}”…`} maxLength={500} value={question} onChange={event => setQuestion(event.target.value)} disabled={status === "streaming" || saving} />
-      <Button variant="primary" size="sm" shape="circle" aria-label="Send question" disabled={!question.trim() || status === "streaming" || saving} type="submit"><ArrowUp size={16} /></Button>
-    </form>
+    </Composer>
     {turn ? <div className={styles.answer}><p className={styles.summary}>{turn.question}</p><RestrictedMarkdown text={turn.answer} />
       <p className={`${styles.meta} ${styles.answerStatus}`} role="status">{status === "streaming" ? answering ? "Answering…" : null : saved && noteIsDraft ? "Save the item to keep this note." : ""}</p>
-      {status === "complete" ? <button type="button" className={styles.noteAction} disabled={disabled || saved || saving} aria-busy={saving} onClick={async () => {
+      {status === "complete" ? <Button variant="ghost" size="sm" className={styles.noteAction} disabled={disabled || saved} loading={saving} loadingLabel="Saving…" onClick={async () => {
         setSaving(true); setError("");
-        try { const ok = await onSaveNote(`${turn.question}\n${turn.answer}`); setSaved(ok); if (!ok) setError("Note could not be saved. Please retry."); }
+        try {
+          const ok = await onSaveNote(`${turn.question}\n${turn.answer}`);
+          setSaved(ok);
+          if (ok) toast.success(noteIsDraft ? "Added to note draft" : "Saved to note");
+          else setError("Note could not be saved. Please retry.");
+        }
         catch { setError("Note could not be saved. Please retry."); }
         finally { setSaving(false); }
-      }}>{saving ? "Saving…" : saved ? noteIsDraft ? "Added to note draft" : "Saved to note" : "Save as note"}</button> : null}
+      }}>{saved ? noteIsDraft ? "Added to note draft" : "Saved to note" : "Save as note"}</Button> : null}
     </div> : null}
     {error ? <div className="ui-retry-notice" role="alert"><p>{error}</p>
       {status === "error" ? <Button variant="secondary" size="md" onClick={() => void ask(turn?.question ?? question)}>Retry answer</Button> : null}

@@ -24,7 +24,7 @@ try {for(const width of [1400,390]) for(const target of ['landing','corpus','loa
   return {text:el.textContent,size:el.dataset.size,height:r.height,font:css.fontSize,group:!!el.closest('.ui-button-group'),width:r.width,scroll:el.scrollWidth,client:el.clientWidth};
  }));
  assert.ok(metrics.length,`${target} has controls`);
- for(const m of metrics){const size=m.group?'lg':m.size;assert.ok(m.height>={sm:32,md:40,lg:44}[size]-1,JSON.stringify({target,m}));assert.equal(m.font,{sm:'12px',md:'13px',lg:'14px'}[size],JSON.stringify({target,m}));}
+ for(const m of metrics){assert.ok(m.height>={sm:32,md:36,lg:42}[m.size]-1,JSON.stringify({target,m}));assert.equal(m.font,{sm:'12px',md:'13px',lg:'14px'}[m.size],JSON.stringify({target,m}));}
  const groups=await page.locator('.ui-button-group').evaluateAll(nodes=>nodes.map(group=>[...group.querySelectorAll('.ui-button')].filter(el=>el.getClientRects().length&&el.dataset.size!=='inherit'&&el.dataset.shape!=='circle').map(el=>el.getBoundingClientRect().height)));
  for(const heights of groups)if(heights.length>1)assert.ok(Math.max(...heights)-Math.min(...heights)<1,JSON.stringify({target,heights}));
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${target} overflow`);

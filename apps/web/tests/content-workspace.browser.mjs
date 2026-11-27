@@ -78,7 +78,7 @@ try {
     state.practiceGate = new Promise(resolve => releaseSave = resolve);
     // This lifecycle fixture saves metadata only; acoustic analysis is covered separately.
     await page.locator('.stage-two-audio-settings').filter({ visible: true }).locator('summary').click();
-    await page.getByRole("checkbox", { name: "Server analysis", exact: true }).uncheck();
+    await page.getByRole("checkbox", { name: "Analyze new takes", exact: true }).uncheck();
     await page.getByRole("button", { name: "Record sentence", exact: true }).click();
     await page.getByText("Recording your voice", { exact: true }).waitFor();
     await page.waitForTimeout(800);
@@ -91,7 +91,7 @@ try {
     assert.equal(state.practiceCompleted, 0, "root outbox remains pending after leaving the workspace");
     const saved = page.waitForResponse(response => response.url().includes("/api/practice/attempts") && response.request().method() === "POST");
     releaseSave(); assert.equal((await saved).status(), 201);
-    await page.locator(".practice-save-banner").waitFor({ state: "detached" });
+    await page.locator('[data-toast-id="practice-save"][data-pending="true"]').waitFor({ state: "detached" });
     assert.equal(state.practiceRequests.length, 1); assert.equal(state.practiceCompleted, 1);
     await page.waitForFunction(() => window.__loadoutPlayers.every(player => player.destroyed));
     assert.equal(await frame.evaluate(node => node.isConnected), false, "leaving the workspace destroys the iframe");

@@ -10,10 +10,10 @@
 .flow li [aria-current] { background: var(--ink); color: var(--bg); }
 .flow li [aria-disabled] { color: var(--muted); }
 .flow li :is(a, button):hover { background: var(--surface); }
-.flow :is(a, button):focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.flow :is(a, button):not(:global(.ui-button)):focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .compact { display: none; }
 .exit { margin-left: auto; }
-.exit button { background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 14px; font-size: var(--text-help); white-space: nowrap; }
+.exit button:not(:global(.ui-button)) { background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 14px; font-size: var(--text-help); white-space: nowrap; }
 @media (max-width: 719px) {
   .flow { padding-inline: 16px; gap: 12px; flex-wrap: wrap; }
   .title { flex: 1; }
@@ -33,7 +33,7 @@
   .flow[data-focused="true"] { gap: 8px; }
   .flow[data-focused="true"] .dots { display: none; }
   .flow[data-focused="true"] .compact > button { padding-inline: 0; font-size: var(--text-meta); }
-  .flow[data-focused="true"] .exit button { padding-inline: 10px; font-size: var(--text-meta); }
+  .flow[data-focused="true"] .exit button:not(:global(.ui-button)) { padding-inline: 10px; font-size: var(--text-meta); }
 }
 
 .flow { gap: 16px; }
@@ -41,7 +41,6 @@
 .flow svg { stroke-width: 1.5; }
 .flow li :is(a, button) { transition: background 160ms ease-out, color 160ms ease-out; }
 .flow li [aria-current]:hover { background: var(--ink); color: var(--bg); }
-.exit button:global(.ui-button)[data-variant][data-size][data-shape] {   border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink); background: var(--bg);  box-shadow: none; }
-.exit button:hover { background: var(--surface); }
-@media (max-width: 719px) { .flow { gap: 12px; } .flow[data-focused=true] { gap: 8px; } .flow[data-focused=true] .exit button { padding-inline: 10px; font-size: var(--text-meta); } }
+.exit button:not(:global(.ui-button)):hover { background: var(--surface); }
+@media (max-width: 719px) { .flow { gap: 12px; } .flow[data-focused=true] { gap: 8px; } .flow[data-focused=true] .exit button:not(:global(.ui-button)) { padding-inline: 10px; font-size: var(--text-meta); } }
 @media (prefers-reduced-motion: reduce) { .flow * { transition: none; } }

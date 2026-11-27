@@ -489,7 +489,7 @@ try {
   const pendingPractice = shadowPage.waitForRequest((request) => request.url().includes("/api/practice/attempts") && request.method() === "POST");
   await shadowPage.getByRole("button", { name: "Stop recording", exact: true }).click();
   await pendingPractice;
-  await shadowPage.locator(".practice-save-banner").waitFor();
+  await shadowPage.locator('[data-toast-id="practice-save"][data-pending="true"]').waitFor();
   assert.equal(shadowState.practiceRequests.length, 1, "completed take entered the save outbox");
   await shadowPage.getByRole("link", { name: "Stage 3 - Mission", exact: true }).click();
   await shadowPage.getByRole("heading", { name: "Mission loadout", exact: true }).waitFor();
@@ -499,7 +499,7 @@ try {
   const savedResponse = shadowPage.waitForResponse((response) => response.url().includes("/api/practice/attempts") && response.request().method() === "POST");
   releasePractice();
   assert.equal((await savedResponse).status(), 202);
-  await shadowPage.locator(".practice-save-banner").waitFor({ state: "detached" });
+  await shadowPage.locator('[data-toast-id="practice-save"][data-pending="true"]').waitFor({ state: "detached" });
   assert.equal(shadowState.practiceCompleted, 1);
   assert.equal(shadowState.practiceRows.size, 1);
   assert.equal(shadowState.practiceRequests.length, 1, "navigation did not cancel or duplicate the save");

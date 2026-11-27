@@ -27,7 +27,7 @@ try {
     assert.ok(width < 720 ? navBox.y > 800 : navBox.y < 64);
     const cta = page.getByRole("link", { name: "Continue Mission", exact: true });
     assert.equal(await cta.evaluate(el => getComputedStyle(el).backgroundColor), "rgb(12, 10, 9)");
-    assert.equal(await cta.evaluate(el => getComputedStyle(el).borderRadius), "999px");
+    assert.equal(await cta.evaluate(el => getComputedStyle(el).borderRadius), "10px");
     await page.getByRole("tab", { name: /^Task fit/ }).press("ArrowRight");
     assert.equal(await page.getByRole("tab", { name: /^Language transfer/ }).getAttribute("aria-selected"), "true");
     assert.equal(await page.getByRole("tab", { name: /^Language transfer/ }).getByText("Not assessed").count(), 1);
