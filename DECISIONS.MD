@@ -1,5 +1,21 @@
 # Track Libitu decisions
 
+## Shadow audio settings — 2026-11-25
+
+Analyze new takes and Save audio for replay default to on. Each choice is stored independently for the signed-in account in this browser and captured when a recording starts.
+
+## Align web visual tokens, shared primitives, and action button system — 2026-11-24
+
+Informed by the logged-in ElevenLabs App product study (`design/docs/ELEVENLABS_APP_DESIGN_SPEC.md`) while keeping Libitu's learning semantic colors and existing page layouts intact, adopt the following product UI conventions across `packages/ui/src/tokens.css`, `apps/web/components/ui/`, `design/docs/libitu_设计规范_v2_1_统一版_.md`, `design/docs/VISUAL_SYSTEM.md`, and `design/docs/BUTTON_SYSTEM.md`:
+
+- **Optical neutral alpha & controlled elevation**: Add `--surface-tint`, `--surface-hover`, `--border-subtle`, `--border-control`, and `--border-strong` strictly for borders and subtle fills while keeping all text on opaque neutral tokens (`>= 4.5:1` contrast). Use multi-stop natural shadows (`--shadow-natural-xs/sm/md`) only for elevated interactive focal points (floating `Composer`, active segmented thumbs, popovers/dialogs) and the 6-layer dark glass shadow for `Toast`; ordinary content cards and list rows remain flat. Define global motion tokens (`--motion-instant: 90ms`, `--motion-fast: 160ms`, `--motion-normal: 220ms`, `--ease-standard`, `--ease-decelerate`).
+- **Shared UI primitives**: Standardize on `apps/web/components/ui/Tabs.tsx` (`underline` + `segmented` using `--line-soft` track and elevated `--bg` thumb) & `SegmentedControl`, `EmptyState.tsx` (`--surface-tint` + `1px solid var(--border-subtle)` + `--radius-card`, replacing dashed boxes), `Composer.tsx` (`stacked` and `inline`, preserving the single `1px` `--ink` inset focus boundary via `data-composer`), and `Toast.tsx` (`toast-store.ts`, mounted once in root `layout.tsx`).
+- **Action button system**: Switch default shared buttons from `999px` pill geometry to `10px` soft rounded corners (`--radius-control`), tighten the size ladder to `sm/md/lg = 32/36/42 px`, use `90ms` transitions, preserve per-variant disabled hierarchy, add `shape="square"` alongside `circle` and explicit `pill`, and have `.ui-button-group` respect declared sibling sizes. Feature CSS Modules must not override `.ui-button` colors, shadows, focus rings, or disabled states (dark surfaces such as the Loadout hero adapt only via `--button-*` custom properties). Tabs, filter chips, `aria-pressed` toggles, and selectable cards remain semantically separate from `<Button>`.
+
+## Keep frozen encoders for Speech Phenomena heads — 2026-11-24
+
+The pre-registered elision fine-tune (`timit-td_elision-finetune-v1-20261123-r01`) did not show a real gain: top-2 unfreezing failed the per-seed AP check, LoRA passed only nominally with a paired F1 interval spanning zero, and all arms scored 2.4–2.7 AP points below the frozen train-CV default. Keep raw Wav2Vec2 L6 + proxy + train CV for elision. Treat its output as a confidence-bearing hint rather than a hard learner error (precision about 82% on known dev labels). Any later fine-tune needs a new protocol; adding professional-source labels comes first. [Report](/Users/river/Documents/speech-phenomena/reports/td-elision-finetune-results-20261124.md).
+
 ## Use a compact token-owned type scale — 2026-11-20
 
 The user found application text too large and accepted the proposed scale: H1 24, H2 18, H3 15, reading 16, body 14, help 13, meta 12, label 11. This supersedes the 30/22/17/18/15 rows in v2.1 section 5; the Landing display, closing and marketing heading sizes stay. Font sizes are referenced only through `packages/ui/src/tokens.css` `--text-*` variables; 11px is the minimum for HTML text. SVG chart text (viewBox-scaled), icon glyphs, avatar initials and the 20px wordmark are explicit exceptions.

@@ -1,5 +1,21 @@
 # Build the Libitu MVP experience
 
+## Shadow audio settings — 2026-11-25
+
+Quick and Detailed default both Analyze new takes and Save audio for replay to on. Each toggle remembers the signed-in account’s choice in this browser across modes and reloads. The analysis toggle also controls analysis of newly captured references.
+
+## Visual tokens, shared primitives, and button system alignment — 2026-11-24
+
+Informed by the logged-in ElevenLabs App product study (`ELEVENLABS_APP_DESIGN_SPEC.md`) while preserving Libitu's learning semantic colors and existing layouts, `packages/ui/src/tokens.css`, `libitu_设计规范_v2_1_统一版_.md`, `VISUAL_SYSTEM.md`, and `BUTTON_SYSTEM.md` are now aligned on:
+
+- **Optical neutral alpha & elevation tokens**: `--surface-tint`, `--surface-hover`, `--border-subtle`, `--border-control`, `--border-strong` for borders/subtle fills (body/UI text stays on opaque tokens for `>= 4.5:1` contrast); intermediate radii (`--radius-control: 10px`, `--radius-card: 14px`, `--radius-full`); multi-stop natural shadows (`--shadow-natural-xs/sm/md`, aliasing `--shadow-soft`/`--shadow-warm`/`--shadow-popover`/`--shadow-dialog`) restricted to elevated interactive focal points while ordinary cards stay flat; global motion tokens (`--motion-instant: 90ms`, `--motion-fast: 160ms`, `--motion-normal: 220ms`, `--ease-standard`, `--ease-decelerate`).
+- **Shared UI primitives (`apps/web/components/ui/`)**: dual-mode WAI-ARIA `Tabs` (`underline` + `segmented` with `--line-soft` track and elevated `--bg` active thumb) & `SegmentedControl`, `EmptyState` (`--surface-tint`, `1px solid var(--border-subtle)`, `--radius-card`), floating `Composer` (`stacked` and `inline`, preserving the single `1px` `--ink` inset focus boundary via `data-composer`), and dark glassmorphic `Toast` (`toast-store.ts`, mounted once in root `layout.tsx`).
+- **Action button system**: default `10px` soft rounded corner (`--radius-control`), tightened height ladder (`sm/md/lg = 32/36/42 px`), `90ms` transitions, per-variant disabled hierarchy, explicit `shape="pill"` / `shape="circle"` / `shape="square"`, `.ui-button-group` respecting declared sibling sizes, feature CSS override cleanup, and migration of remaining raw action `<button>` controls onto `<Button>` / `<ButtonLink>` / `<DirectionButton>` / `<DirectionLink>` (while keeping tabs, filter chips, `aria-pressed` switches, and selectable cards independent).
+
+## Detailed shadowing reference analysis — 2026-11-22
+
+After the selected sentence’s reference audio is captured, Detailed opens Sound, Rhythm and Melody before a learner take. Reference measurements appear as analysis finishes. Learner Sound still requires 60% word matching and covers only matched words below 85%. Rhythm and Melody require 85%.
+
 ## GA Sound — implemented 2026-11-07
 
 Latest user scope: postpone audio phenomenon detection/evidence integration. Limit compact word labels to two distinct categories, with an independent `+N` button toggling the complete category list in the explanation card. Keep nonmatching inline marks and arcs at 20% through hover, focus and expansion; do not dim source words, status or explanation content. Detailed and Review share these rules.

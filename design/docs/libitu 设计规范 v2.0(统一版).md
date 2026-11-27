@@ -1,5 +1,7 @@
 # libitu 设计规范 v2.0(统一版)
 
+> **历史归档版本（已由 v2.1 取代）**：当前全站视觉、共享组件与按钮规范（含 2026-11-23/24 光学中性 Alpha 阶梯、共享原语与 10px / 32-36-42px 按钮体系升级）请以 [`libitu_设计规范_v2_1_统一版_.md`](./libitu_设计规范_v2_1_统一版_.md)、[`VISUAL_SYSTEM.md`](./VISUAL_SYSTEM.md)、[`BUTTON_SYSTEM.md`](./BUTTON_SYSTEM.md) 与 [`packages/ui/src/tokens.css`](../../packages/ui/src/tokens.css) 为准。
+
 ElevenLabs 风格 · 合并 v1.1 与 Stage 3–5 页面 · 覆盖全部 10 个页面 · 2026-11-01 · 配色修订 2026-11-06
 
 ## 0. 这一版做了什么

@@ -25,9 +25,12 @@ Core product references:
 
 - `design/docs/MVP_SYSTEM_DESIGN.md`
 - `design/docs/Libitu_Design_Spec.md`
+- `design/docs/libitu_设计规范_v2_1_统一版_.md` (unified web visual and component spec)
+- `design/docs/VISUAL_SYSTEM.md` (web tokens, fields, shared primitives, and visual conventions)
+- `design/docs/BUTTON_SYSTEM.md` (shared action button roles, `10px` radius, `32/36/42px` scale, and state rules)
 - `design/docs/BACKEND_SYSTEM_DESIGN.md`
 - `design/docs/DATA_ARCHITECTURE.md`
-- `design/docs/DESIGN.md` (non-canonical visual reference)
+- `design/docs/DESIGN.md` and `design/docs/ELEVENLABS_APP_DESIGN_SPEC.md` (non-canonical external visual references)
 - `design/docs/DEVELOPMENT_ROADMAP.md`
 - `design/docs/STAGE_TWO_FILE_REFERENCE_ARCHITECTURE.md` (registered file adapters implemented; general remote acquisition planned)
 
@@ -169,7 +172,8 @@ Extension:
 - Use shared types from `@libitu/types` where the shape is product-level.
 - Use `@libitu/core` only for pure logic with no React, DOM, Next.js, or browser APIs.
 - Use `next/link` for internal navigation.
-- The design language is restrained, dense, product-oriented, and based on the tokens in `packages/ui/src/tokens.css`.
+- The design language is restrained, dense, product-oriented, and based on the tokens in `packages/ui/src/tokens.css`, `design/docs/libitu_设计规范_v2_1_统一版_.md`, `design/docs/VISUAL_SYSTEM.md`, and `design/docs/BUTTON_SYSTEM.md`.
+- Reuse shared primitives under `apps/web/components/ui/`: `Button` / `ButtonLink` / `DirectionButton` / `DirectionLink` (default `10px` `--radius-control`, `32/36/42px` ladder; no page-level paint/shadow/focus/disabled overrides except dark-surface `--button-*` custom properties), dual-mode `Tabs` (`underline` + `segmented`) / `SegmentedControl`, `EmptyState`, `Composer` (`stacked` + `inline`), `Toast` / `toast-store`, and `field` (`Input`, `Textarea`, `SelectField`). Keep tabs, filter chips, `aria-pressed` toggles, and selectable cards semantically separate from `<Button>`.
 
 ## API Conventions
 

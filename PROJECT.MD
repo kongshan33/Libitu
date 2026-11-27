@@ -1,8 +1,29 @@
 # Understand the Libitu project
 
+## Shadow audio settings — 2026-11-25
+
+Quick and Detailed enable analysis and replay storage by default. Both modes use the signed-in account’s saved choices in this browser.
+
+## Web visual tokens, shared primitives, and button system alignment — 2026-11-24
+
+Completed the product-UI visual upgrade across `packages/ui/src/tokens.css` and `apps/web`:
+
+- **Tokens & focus boundaries**: Added optical neutral alpha border/surface tokens (`--surface-tint`, `--surface-hover`, `--border-subtle`, `--border-control`, `--border-strong`), danger pressed states (`--color-danger-pressed`, `--color-danger-subtle-pressed`), intermediate radii (`--radius-control: 10px`, `--radius-card: 14px`, `--radius-full`), multi-stop natural shadows (`--shadow-natural-xs/sm/md`), and global motion tokens (`--motion-instant: 90ms`, `--motion-fast: 160ms`, `--motion-normal: 220ms`, `--ease-standard`, `--ease-decelerate`). Scoped purple keyboard focus rings in `field.css` to Radix Select triggers so text fields and composers keep a single 1px `--ink` inset focus boundary.
+- **Shared primitives**: Extracted and integrated dual-mode `Tabs` (`underline` + `segmented`) / `SegmentedControl` and `EmptyState` across Corpus, Stage 2, and Profile; added floating `Composer` (`stacked` for Stage 4 Speaking, `inline` for Landing video entry and Corpus follow-up) and dark glassmorphic `Toast` (`toast-store.ts`, mounted in `apps/web/app/layout.tsx`) for non-blocking corpus/note confirmations.
+- **Action button system (P0–P2)**: Unified button paint/disabled/motion rules in `button.css`, switched default buttons to `10px` (`--radius-control`) and `32/36/42 px` (`sm/md/lg`) with explicit `pill`/`circle`/`square` shapes, stopped `.ui-button-group` from forcing `lg`, removed feature CSS button overrides, and migrated remaining raw action `<button>` controls (Speaking workspace/preview, Stage 1 exit, Stage 2 SoundExplorer/QuickShadowing, Loadout CorpusDrawer, CorpusFilters) onto shared `<Button>`/`<ButtonLink>`/`<DirectionLink>` primitives.
+- **Docs & verification**: Synchronized `design/docs/libitu_设计规范_v2_1_统一版_.md`, `VISUAL_SYSTEM.md`, `BUTTON_SYSTEM.md`, `Libitu_Design_Spec.md`, `DESIGN.md`, `ELEVENLABS_APP_DESIGN_SPEC.md`, `STAGE_TWO_FILE_REFERENCE_ARCHITECTURE.md`, `CLAUDE.MD`, and `DECISIONS.MD` (plus historical banners on v1.0 / v2.0). Root `pnpm lint` (0 errors; 1 pre-existing warning in `AnalysisTimeline.tsx:69`), `pnpm build` (3/3), and `pnpm test` (`@libitu/web` 548/548; API & extension cached pass) pass; local Chrome `.browser.mjs` visual checks remain pending.
+
+## Speech Phenomena research heads — 2026-11-24
+
+The independent research repository has three TIMIT-trained reference-audio heads, all on frozen encoders: tap (Linear, dev F1 about 97.5%), T/D elision (raw Wav2Vec2 layer 6 + 2,000 proxy rows + L2 logistic regression chosen by train-only speaker-grouped CV; dev F1 80.8%, AP 82.9%, unseen-prompt F1 73.9%) and coalescence (layer 8, dev AP 95.7% on only 20 known labels). An encoder fine-tune of elision on Kaggle did not beat the frozen default: every fit early-stopped at step 120 and then overfit. Elision remains limited by label quantity and by 327 unknown dev candidates. Libitu does not import these models; integration is not started. [Fine-tune report](/Users/river/Documents/speech-phenomena/reports/td-elision-finetune-results-20261124.md) · [training overview](/Users/river/Documents/speech-phenomena/reports/training-approach-overview.md).
+
+## Detailed shadowing reference analysis — 2026-11-22
+
+After the selected sentence’s reference audio is captured, Detailed opens Sound, Rhythm and Melody before a learner take. Reference measurements appear as analysis finishes. Learner Sound still requires 60% word matching and covers only matched words below 85%. Rhythm and Melody require 85%.
+
 ## Compact application type scale — 2026-11-20
 
-At the user's request, application pages use one step smaller type: H1 30→24, H2 22→18, H3 17→15, transcript/conversation 18→16, body 15→14; Stage 2 practice prompts 23–27→22 (narrow 19), metrics 30→24. About 790 literal `font-size`/`font` sizes across 25 Web CSS files now reference `--text-*` tokens; HTML text below 11px (8.5–10px, mostly Stage 2/Loadout metadata and Sound badges) is raised to 11. Landing marketing display sizes, SVG chart text, icon glyphs and avatar initials are unchanged; the wordmark is 20px everywhere. Layout, color and behavior are unchanged. Root lint/build/test pass (API 1,996 cached; Web 540; Extension 124 cached). Measured at 1440px and 390px on Landing, Stage 1, segments, Stage 2 Quick/Detailed top and Corpus via local fixtures; Loadout, My learning, history, Stage 4/5 and the Detailed Sound guide body were not visually rechecked because the fixtures cannot render them. See `design/docs/VISUAL_SYSTEM.md`.
+At the user's request, application pages use one step smaller type: H1 30→24, H2 22→18, H3 17→15, transcript/conversation 18→16, body 15→14; Stage 2 practice prompts 23–27→22 (narrow 19), metrics 30→24. About 790 literal `font-size`/`font` sizes across 25 Web CSS files now reference `--text-*` tokens; HTML text below 11px (8.5–10px, mostly Stage 2/Loadout metadata and Sound badges) is raised to 11. Landing marketing display sizes, SVG chart text, icon glyphs and avatar initials are unchanged; the wordmark is 20px everywhere. Layout, color and behavior are unchanged. Root lint/build/test pass (API 1,996 cached; Web 540; Extension 124 cached). Measured at 1440px and 390px on Landing, Stage 1, segments, Stage 2 Quick/Detailed top and Corpus via local fixtures. The Nov 22 signed-in fixture checks covered Loadout, My learning, Practice history, Stage 4 chat, the Stage 5 report and both Detailed and Review Sound bodies at the same widths. See the compact type scale entry in `TASK.MD` for browser evidence. See `design/docs/VISUAL_SYSTEM.md`.
 
 ## Public presentation and commercial intent — 2026-11-14
 

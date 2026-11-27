@@ -1,6 +1,6 @@
 # Explore the Libitu visual reference
 
-> **Status: non-canonical reference.** This document captures an earlier visual study inspired by ElevenLabs. Follow `Libitu_Design_Spec.md` and `packages/ui/src/tokens.css` for current product UI rules. Do not copy landing-page treatments, large radii, pill controls, negative letter spacing, or decorative gradients into the application unless a later accepted decision calls for them.
+> **Status: non-canonical reference.** This document captures an earlier marketing-site visual study of ElevenLabs (see [`ELEVENLABS_APP_DESIGN_SPEC.md`](./ELEVENLABS_APP_DESIGN_SPEC.md) for the later logged-in ElevenLabs App product study). Follow [`Libitu_Design_Spec.md`](./Libitu_Design_Spec.md), [`libitu_设计规范_v2_1_统一版_.md`](./libitu_设计规范_v2_1_统一版_.md), [`VISUAL_SYSTEM.md`](./VISUAL_SYSTEM.md), [`BUTTON_SYSTEM.md`](./BUTTON_SYSTEM.md), and [`packages/ui/src/tokens.css`](../../packages/ui/src/tokens.css) for current Libitu product UI rules. Do not copy landing-page treatments, warm shadows, large radii, pill controls, negative letter spacing, or decorative gradients into the application unless a later accepted decision calls for them.
 
 ## Accepted Libitu adaptation — 2026-10-03
 

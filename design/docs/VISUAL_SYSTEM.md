@@ -4,7 +4,7 @@
 
 Replace the warm UI gray ramp with neutral shared tokens: ink #0C0C0C, hover #262626, links #404040, descriptions #525252, muted text #6B6B6B, strong borders #D4D4D4, lines #E5E5E5, soft surfaces #EDEDED, cards #FAFAFA and video/dark inset #191919. Practice, Loadout, Mission, reports, skeletons, playback controls and dialog backdrops now inherit or reference these tokens instead of copied warm palettes or literals. The reference Rhythm envelope uses the shared soft gray. Sound phenomenon colors and status/brand palettes remain independent; saved content, layout and interactions are unchanged. The extension's existing gray UI already has equal RGB channels.
 
-Base gray tokens are owned by `packages/ui/src/tokens.css`. Their RGB channels must be equal; features reference these tokens or semantic aliases rather than declaring another base palette. Component-specific neutral states, such as Corpus filter options, follow section 4 of `libitu 设计规范 v2.0(统一版).md`. Keep ordinary text at least 4.5:1 against its actual background. Brand, status and Sound category colors are explicit exceptions; Sound's WK beige must not become a generic control background.
+Base gray tokens are owned by `packages/ui/src/tokens.css`. Their RGB channels must be equal; features reference these tokens or semantic aliases rather than declaring another base palette. Component-specific neutral states, such as Corpus filter options, follow section 4 of `libitu_设计规范_v2_1_统一版_.md`. Keep ordinary text at least 4.5:1 against its actual background. Brand, status and Sound category colors are explicit exceptions; Sound's WK beige must not become a generic control background.
 
 ## Typography
 
@@ -52,6 +52,25 @@ Page backgrounds and outer gutters use the white primary background. Keep neutra
 
 Use `SelectField` for controlled option lists and the Radix primitives for custom compositions. Empty values are encoded internally so All sources remains a selectable choice. Trigger arrows have 16 px horizontal inset; options have background highlights without borders or outlines, with a light 1 px menu edge and soft shadow. Native visible selects are no longer used.
 
-Use `DirectionButton` and `DirectionLink` for back/next navigation: 40 px minimum height, 16 px icons and 8 px gaps. Retain multiline card dimensions. Reader bottom padding is zero, with shell height accounting only for the top gutter.
+Use `DirectionButton` and `DirectionLink` for back/next navigation: 36 px minimum height (`md`, 10 px `--radius-control` default radius), 16 px icons and 8 px gaps. Retain multiline card dimensions. Reader bottom padding is zero, with shell height accounting only for the top gutter.
 
 Loadout follow-up: draft-save status keeps its layout footprint when hidden, with delayed visual feedback for normal-motion users. Textarea focus uses one 1 px black inset outline with a transparent border and no shadow. Directional links default to secondary outlined styling. Existing navigation wording is unchanged.
+
+## Shared token cleanup — 2026-11-23
+
+`packages/ui/src/tokens.css` adds optical neutral alpha tokens (`--surface-tint`, `--surface-hover`, `--border-subtle`, `--border-control`, `--border-strong`) strictly for borders and subtle fills while keeping text on opaque tokens (`>= 4.5:1` contrast). It also adds missing intermediate radius tokens (`--radius-control: 10px`, `--radius-card: 14px`, `--radius-full`), multi-stop optical shadow tokens (`--shadow-natural-xs/sm/md`, aliasing `--shadow-soft`, `--shadow-warm`, `--shadow-popover`, `--shadow-dialog`), and global motion tokens (`--motion-fast`, `--motion-normal`, `--ease-standard`, `--ease-decelerate`) so shared transitions in `globals.css`, `button.css` and `field.css` resolve outside `.practice-redesign`. `apps/web/app/globals.css` resets legacy `body` tracking from `0.14px` to `0`, and `apps/web/components/ui/field.css` scopes keyboard purple focus rings to Radix Select triggers so dead input/textarea focus rules no longer contradict the single 1 px black inset focus boundary.
+
+## Shared Tabs and EmptyState primitives — 2026-11-24
+
+`apps/web/components/ui/Tabs.tsx` (`Tabs.module.css`, `tabs-navigation.ts`) provides dual-mode WAI-ARIA `Tabs` (`underline` with animated bottom indicator for panel/section dimensions, and `segmented` with a `--line-soft` track and elevated `--bg` active pill using `--shadow-natural-xs`), plus `SegmentedControl` for navigation (`as="nav"` with `aria-current="page"`) and toggle-group (`role="group"` with `aria-pressed`) switches that share the segmented surface. `apps/web/components/ui/EmptyState.tsx` (`EmptyState.module.css`) provides a shared empty-state card (`--surface-tint`, `--border-subtle`, `--radius-card`, configurable heading level and compact/default density). Initial adoption covers Corpus Library, Corpus Detail, Stage 2 Shadow mode / Review empty state, and Profile Activity / Practice History.
+
+## Floating Composer and Toast primitives — 2026-11-24
+
+`apps/web/components/ui/Composer.tsx` (`Composer.module.css`) introduces the floating focal input surface (`variant="stacked"` for multi-line speaking/prompt cards and `variant="inline"` for single-line entry bars), pairing a crisp `--bg` surface, `--border-subtle` edge and `--shadow-natural-sm/md` optical diffusion while preserving the 1 px black inset focus boundary in `field.css` (`data-composer`). Initial adoption covers Stage 4 Speaking (`ConversationWorkspace` + `ConversationPreview`), Corpus Detail follow-up (`CorpusFollowup`), and the Landing YouTube entry bar (`VideoEntry`). `apps/web/components/ui/Toast.tsx` (`Toast.module.css`, `toast-store.ts`) provides a dark glassmorphic notification pill (6-layer optical glass shadow, tone-colored status dot, hover/focus auto-dismiss pause, Escape dismissal, polite/assertive live regions, zero DOM footprint when empty), mounted once in `apps/web/app/layout.tsx` and wired to non-blocking corpus save/remove, batch delete, and note-save confirmations.
+
+## Action button system alignment — 2026-11-24
+
+Shared buttons (`apps/web/components/ui/button.css`, `button-appearance.ts`, `design/docs/BUTTON_SYSTEM.md`) now default to a `10px` soft rounded corner (`--radius-control`), tighten the height ladder to `32 / 36 / 42 px` (`sm` / `md` / `lg`), use `90ms` (`--motion-instant`) transitions with `--ease-standard`, preserve per-variant disabled hierarchy, and support `shape="square"` alongside `circle` and `pill` for symmetrical icon buttons. `.ui-button-group` respects declared sibling sizes rather than forcing `lg`. Feature CSS overrides across Corpus, Loadout, Profile, Stage 1, Stage 2, Speaking, and shared navigation were cleaned up and remaining raw action `<button>` controls migrated onto `<Button>` / `<ButtonLink>` / `<DirectionLink>` (while keeping tabs, filter chips, `aria-pressed` toggles, and selectable cards independent).
+
+
+

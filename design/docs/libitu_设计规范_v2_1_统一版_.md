@@ -1,15 +1,15 @@
 # libitu 设计规范 v2.1(统一版)
 
-ElevenLabs 风格 · 合并 v1.1 与 Stage 3–5 页面 · 覆盖全部 10 个页面 · 2026-11-01 · 配色修订 2026-11-06
+ElevenLabs App 产品风格 · 合并 v1.1 与 Stage 3–5 页面 · 覆盖全部 10 个页面 · 2026-11-01 · 配色修订 2026-11-06 · 视觉与组件系统对齐 2026-11-24
 
 ## 0. 这一版做了什么
 
 - 一套规则覆盖全部页面:Landing、Stage 1 摄取、选段、Stage 2 跟读、Stage 3 Loadout、Stage 4 对话、Stage 5 报告、My learning、Practice history、Corpus。
 - **导航改为三层:全局栏 / 流程栏 / 专注模式**(第 2 节),取代原来每页各画一套的顶栏。
 - 统一颜色语义:紫色只表示「当前 / 已选中 / 已播放」。Stage 3 页面里的靛蓝色、描边卡片、黑色大卡片,改为本规范的样式。
-- 界面基础灰阶统一为中性灰(第 4 节),由共享 token 管理;语音现象、品牌与状态语义色独立保留。
+- 界面基础灰阶统一为中性灰(第 4 节),由共享 token 管理;2026-11-23 补充光学中性 Alpha 边框/表面色阶、中间档圆角、多阶自然阴影与全局动效 token,语音现象、品牌与状态语义色独立保留。
 - Sound 层按 GA 执行方案(2026-11-07)重做:12 个一级现象、Elision 子类、Reference / Your voice 双行提示、清浊条件下的元音相对长度和解释卡(以 2026-11-07 用户补充要求为准);Detailed 与 Review 共用(9.12、9.15)。
-- 统一选中表达、标签页与筛选 pill 的区别、状态文字、空状态和动效。
+- 统一选中表达、标签页与筛选 pill 的区别、状态文字、空状态和动效;2026-11-24 抽离共享双模式 `Tabs` / `SegmentedControl`、`EmptyState`、悬浮 `Composer` 与暗色毛玻璃 `Toast`,并将全站操作按钮升级为 `10px` 柔圆角 + `32/36/42px` 尺寸阶梯(详见 `BUTTON_SYSTEM.md` 与 `VISUAL_SYSTEM.md`)。
 - 第 15 节是各页面的迁移清单。
 
 ## 1. 产品结构与页面清单
@@ -58,7 +58,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 - 步骤胶囊只写名称,不带数字:当前 = 黑底白字;已完成 = 对勾 + 名称(`--ink-3`),可点击返回;未开始 = `--muted`,未解锁时不可跳。步骤之间用 14px 的 1px `--line-strong` 横线连接,顺序靠位置、对勾和连接线表达。
 - Practice 显示 Ingest → Shadow;Mission 显示 Loadout → Conversation → Report。
-- 黑底胶囊只用于「流程里的当前步骤」和「分段控件的当前项」;全局栏当前分区用浅灰底,两者不会混淆。
+- 黑底胶囊用于「流程里的当前步骤」与筛选 pill/chip;分段控件当前项使用浅灰轨道(`--line-soft`)上的白底微悬浮滑块(`--bg` + `--shadow-natural-xs`);全局栏当前分区用浅灰底(`--line-soft`),三者语义清晰、互不混淆。
 - 标题单行省略,最大 420px。
 - 去掉数字的原因:分区已经把步骤分成两组,数字 1–5 要跨分区才有意义,而流程栏每次只显示其中一组。
 
@@ -79,7 +79,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 ## 3. 设计原则
 
-1. **安静**:近乎单色,白底黑字,靠留白和字号层级区分信息,不靠描边、阴影和多种颜色。
+1. **安静**:近乎单色,白底黑字,靠留白和字号层级区分信息,普通卡片与列表保持扁平克制;标准多阶自然阴影(`--shadow-natural-*`)仅用于悬浮输入焦点(`Composer`)、分段激活滑块、弹层/对话框与毛玻璃 `Toast`,不靠重描边和多种颜色制造层次。
 2. **内容是主角**:Stage 1 的主角是转写和语料,Stage 2 是声音和录音,Stage 4 是对话,界面退后。
 3. **音频是视觉核心**:波形、播放游标、录音按钮优先投入设计精力。
 4. **颜色有语义**:紫色是唯一的品牌色,只表示「当前位置 / 已选中 / 已播放」。
@@ -98,13 +98,30 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 | `--ink-2` | #404040 | 文字链接 |
 | `--ink-3` | #525252 | 摘要、卡片说明、未选中分区 |
 | `--muted` | #6B6B6B | 次级文字、时间戳。**允许用于文字的最浅灰**(白底约 5.3:1,浅灰底 #EDEDED 约 4.6:1) |
-| `--line-strong` | #D4D4D4 | 描边按钮、虚线框、空心圆点、未播放波形 |
-| `--line` | #E5E5E5 | 进度条底色、弹层描边 |
-| `--line-soft` | #EDEDED | 分割线、当前分区底色、隐藏词块 |
-| `--surface` | #FAFAFA | 卡片、音频条、消息块 |
-| `--bg` | #FFFFFF | 页面底色 |
+| `--line-strong` | #D4D4D4 | 常规输入框边框、空心圆点、未播放波形 |
+| `--line` | #E5E5E5 | 进度条底色、实心禁用按钮底色、弹层分割 |
+| `--line-soft` | #EDEDED | 分割线、分段控件轨道、当前分区底色、隐藏词块 |
+| `--surface` | #FAFAFA | 卡片、音频条、消息块、soft 按钮底色 |
+| `--bg` | #FFFFFF | 页面底色、悬浮输入盒与浮层底色 |
 | `--video-bg` | #191919 | 视频窗口 |
 | `--brand` | #5A43D6 | 唯一品牌色(白底约 6.6:1) |
+
+**光学中性 Alpha 阶梯与危险操作语义色(2026-11-23/24 新增):**
+
+| Token | 色值 | 用途 |
+| --- | --- | --- |
+| `--surface-tint` | `rgb(0 0 0 / 2%)` | 空状态卡片等极轻中性底面 |
+| `--surface-hover` | `rgb(0 0 0 / 4.3%)` | `secondary` / `ghost` 按钮与分段项悬停底 |
+| `--border-subtle` | `rgb(0 0 0 / 7.5%)` | 空状态、悬浮 `Composer`、标签页底线、激活分段滑块与禁用描边按钮 |
+| `--border-control` | `rgb(0 0 0 / 10%)` | 默认 `secondary` 描边按钮与悬浮输入盒悬停边 |
+| `--border-strong` | `rgb(0 0 0 / 16%)` | `secondary` 按钮悬停/按下边界 |
+| `--color-danger` | `#A3372B` | 危险操作文字、`danger-solid` 实底、错误态边框 |
+| `--color-danger-strong` | `#862B22` | `danger-solid` 悬停 |
+| `--color-danger-pressed` | `#6E251F` | `danger-solid` 按下 |
+| `--color-danger-subtle` | `#FFF0ED` | `danger` / `danger-outline` 悬停底 |
+| `--color-danger-subtle-pressed` | `#F9DED8` | `danger` / `danger-outline` 按下底 |
+
+*光学 Alpha 变量仅用于边框与极浅表面,正文与控件文字继续使用不透明中性 token(`--ink` / `--ink-2` / `--ink-3` / `--muted`),确保至少 4.5:1 对比度。*
 
 **中性灰使用规则(全项目):**
 
@@ -172,15 +189,24 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 ## 7. 圆角、边框、阴影
 
-| 元素 | 圆角 |
-| --- | --- |
-| 按钮、分区链接、步骤胶囊、音频条、标签、pill、搜索框 | 999px |
-| 视频窗口 | 16px |
-| 卡片、弹层、消息块、空状态框 | 14px |
-| 时间轴分段、隐藏词块 | 8–12px |
+2026-11-23/24 对齐 ElevenLabs App 产品端圆角与光学阴影体系(详见 `packages/ui/src/tokens.css` 与 `VISUAL_SYSTEM.md`):
 
-- **阴影:全站不使用。**
-- **边框:尽量不用。** 区域用 `--surface` 浅底区分。仅在这些情况用描边:描边按钮(`--line-strong`);选中 / 当前卡片(`--brand` 1.5px,内缩 outline);空状态虚线框;筛选弹层(`--line`,浮在卡片上方需要边界)。分隔用 1px `--line-soft` 或 `--line`。
+| Token / 圆角 | 数值 | 适用元素 |
+| --- | --- | --- |
+| `--radius-xs` / `sm` / `md` | 4 / 6 / 8px | 微标签、紧凑分段项(`sm`)、常规文本输入框与字段 |
+| `--radius-control` | **10px** | **默认操作按钮、方形图标按钮(`shape="square"`)、分段控件轨道、空状态图标框** |
+| `--radius-lg` | 12px | 时间轴分段、中等浮块 |
+| `--radius-card` | 14px | 卡片、弹层、消息块、空状态卡片、多行 `Toast` |
+| `--radius-xl` | 16px | 视频窗口 |
+| 堆叠悬浮输入盒 | 22px | `Composer` (`variant="stacked"`,窄屏 20px) |
+| `--radius-full` | 9999px | 显式 `shape="pill"` 胶囊按钮、圆形工具按钮(`shape="circle"`)、单行 `Composer inline`、分区链接、步骤胶囊、音频条、筛选 pill、单行 `Toast` |
+
+- **阴影(受控光学多阶阴影):** 常规内容卡片与列表行保持**无阴影**,不引入任何暖色或手写散落阴影。悬浮焦点与浮层统一引用 `packages/ui/src/tokens.css` 的多阶自然阴影(发丝外环 `0 0 0 1px rgb(0 0 0 / 6%)` + 指数柔光扩散):
+  - `--shadow-natural-xs`(别名 `--shadow-soft` / `--shadow-warm`):分段控件激活白块、轻抬浮控件。
+  - `--shadow-natural-sm`(别名 `--shadow-popover`):筛选/菜单弹层、`Composer` 轻悬浮(`data-elevation="sm"`)。
+  - `--shadow-natural-md`(别名 `--shadow-dialog`):对话框、核心悬浮 `Composer`(Stage 4 对话输入、Landing 视频入口、Corpus 追问)。
+  - 暗色毛玻璃 6 层阴影:专用于底部全局 `Toast` 胶囊(见 9.11)。
+- **边框:** 尽量克制,普通区块优先靠 `--surface` 浅底和留白区分。使用描边时优先采用光学 Alpha 边界:空状态卡片、悬浮 `Composer`、激活分段滑块与标签页底线用 `--border-subtle`(7.5%);描边次按钮默认 `--border-control`(10%),悬停/按下 `--border-strong`(16%);选中/当前卡片用 `--brand` 1.5px 内缩 outline;常规输入框边框用 `--line-strong`,列表分割线用 1px `--line-soft` 或 `--line`。
 
 ## 8. 图标
 
@@ -190,43 +216,53 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 ### 9.1 按钮
 
-| 类型 | 样式 | 用法 |
+2026-11-24 对齐 `BUTTON_SYSTEM.md` 与 `apps/web/components/ui/button.css`:所有操作按钮统一使用 `<Button>` / `<ButtonLink>` / `<DirectionButton>` / `<DirectionLink>`(外部原生锚点使用 `buttonAppearance`),页面 CSS Modules 不再覆写按钮颜色、阴影、焦点环或禁用态(深色卡片如 Loadout Hero 仅允许通过 `--button-*` CSS 变量适配)。
+
+| 变体 (`variant`) | 样式与交互态 | 用法 |
 | --- | --- | --- |
-| 主按钮 | 黑底白字,全圆;尺寸按下表,不按主次角色区分高度 | 每屏一个,按页面主任务判定 |
-| 次按钮 | 白底,1px `--line-strong`,悬停 `--surface`;尺寸与同组主按钮一致 | 其他操作 |
-| 文字链接 | 14px `--ink-2`,悬停 `--ink`,无底 | 导航、查看更多、`Clear` |
-| 圆形播放 | 36px 黑底,白色图标 | 句子、参考音频 |
-| 录音按钮 | 64px 黑色圆,中心白点;录音中变方形 | Stage 2、Stage 4。不用红色或紫色 |
+| `primary` | `--ink` 底白字;悬停 `--ink-hover`;按下 `--ink-2` | 每屏唯一主操作,按页面主任务判定 |
+| `secondary` | 白底 + 1px `--border-control`;悬停 `--surface-hover` + `--border-strong` | 常规次要操作、返回/下一步方向导航 |
+| `soft` | `--surface` 底;悬停 `--line-soft`;按下 `--line` | 轻量辅助操作 |
+| `ghost` | 透明底;悬停 `--surface-hover` | 关闭、展开、轻工具与退出入口 |
+| `danger` | `--color-danger` 红色文字透明底;悬停 `--color-danger-subtle`;按下 `--color-danger-subtle-pressed` | 进入破坏性确认的轻量入口 |
+| `danger-outline` | 白底 + 红色细边;悬停 `--color-danger-subtle` | 浅底上需明确边界的破坏性操作 |
+| `danger-solid` | `--color-danger` 底白字;悬停 `--color-danger-strong`;按下 `--color-danger-pressed` | 弹窗内最终不可逆确认 |
+| `record` | `--ink` 底白字;悬停 `--ink-hover`;按下 `--ink-2`(录音中保持中性,不用红/紫) | 语音/跟读录音主入口 |
+| 专用媒体圆钮 | 36px 圆形播放 / 56px 球底通话 / 64px 黑色录音圆(录音中变方形) | Stage 2、Stage 4 专用音视频控制 |
 
-共享尺寸以 `apps/web/components/ui/button.css` 为准,字重统一 500:
+共享尺寸与形状以 `apps/web/components/ui/button.css` 为准,字重统一 500,过渡统一 `--motion-instant`(90ms) + `--ease-standard`:
 
-| size | 最小高度 | 字号 / 行高 | 内边距(纵 / 横) | 图标 / 间距 |
-| --- | --- | --- | --- | --- |
-| sm | 32px | 12 / 18px | 6 / 10px | 14 / 6px |
-| md | 40px | 13 / 20px | 9 / 14px | 16 / 8px |
-| lg | 44px | 14 / 20px | 11 / 18px | 18 / 8px |
+| size | 最小高度 | 字号 / 行高 | 内边距(纵 / 横) | 图标 / 间距 | `circle` / `square` 图标尺寸 |
+| --- | --- | --- | --- | --- | --- |
+| `sm` | 32px | 12 / 18px | 6 / 10px | 14 / 6px | 32 × 32px(`padding: 0`) |
+| `md` | 36px | 13 / 20px | 7 / 12px | 16 / 8px | 36 × 36px(`padding: 0`) |
+| `lg` | 42px | 14 / 20px | 10 / 16px | 18 / 8px | 42 × 42px(`padding: 0`) |
 
-同组操作使用 `.ui-button-group`,统一为 lg,按钮间距 12px;不因主次、禁用或链接/按钮类型改变高度。粗指针设备触控高度至少 44px,圆形按钮宽度也至少 44px。`size="inherit"` 仅兼容已有特殊布局,不用于规避同组尺寸。共享按钮全圆,圆形工具用 circle。加载保留原标签占位,进度覆盖显示,不因 Loading/Saving 文字改变宽高。
+- **默认圆角与形态:** 共享按钮默认采用 `10px` 柔圆角(`--radius-control`),不再默认全药丸;需要胶囊风格时显式声明 `shape="pill"`(`--radius-full`),纯图标按钮使用 `shape="circle"` 或 `shape="square"`(`--radius-control`)并提供 `aria-label`。`DirectionButton` / `DirectionLink` 固定采用 `size="md"`(36px)+ 默认 10px 圆角与 16px 方向图标。
+- **按钮组与对齐:** 同组操作使用 `.ui-button-group`(间距 12px),容器尊重每个按钮声明的 `size`,不再强制拉高为 `lg`;同组相邻按钮应显式声明相同尺寸。粗指针设备触控高度与圆形按钮宽度均不小于 44px。`size="inherit"` 仅兼容已有特殊布局。
+- **分变体禁用态与加载态:** 实心变体(`primary` / `danger-solid` / `record`)禁用为 `--line` 底 + `--muted` 字;`secondary` / `danger-outline` 保留浅白底 + `--border-subtle` 弱描边;`soft` 保留 `--surface` 底;`ghost` / `danger` 保持透明底 + `--muted` 字。加载态保留原标签占位并以覆盖层显示进度(`aria-busy`),不因文字变化抖动宽高。主按钮箭头悬停位移仅用于 Landing。
 
-### 输入框规则
+### 输入框与悬浮输入盒(`Composer`)规则
 
-输入框、搜索框、textarea、原生及 Radix select 复用共享字段样式。默认白底、中性灰边框和占位文字;字号、内边距及宽度按所在布局设置。默认圆角 8px,pill 字段 22px,复合搜索框沿用外层形状。
+输入框、搜索框、textarea、原生及 Radix select 复用共享字段样式(`apps/web/components/ui/field.css`)。默认白底、中性灰边框和占位文字;字号、内边距及宽度按所在布局设置。默认圆角 8px,pill 字段 22px,复合搜索框沿用外层形状。
 
-聚焦只显示一条 1px 黑色边界(`--ink`,内缩 outline -1px),原 border 透明,无阴影或第二层紫色焦点圈。组合输入使用 `data-input-group`,由外层绘制焦点边界,内部输入不再绘制。错误在未聚焦时用错误色边框,聚焦时仍保持单条黑边,通过错误文字与 `aria-invalid` 表达错误。禁用用浅灰底和原生 disabled;保留 label 与键盘访问语义。复选框、单选框、滑块和文件控件不套用文本输入规则。按钮/链接的键盘焦点仍遵循共享 focus token。
+聚焦只显示一条 1px 黑色边界(`--ink`,内缩 outline -1px),原 border 透明,无阴影或第二层紫色焦点圈(键盘紫色焦点环仅限定在 Radix Select 触发器与按钮/链接)。组合输入使用 `data-input-group`,由外层绘制焦点边界,内部输入不再绘制。错误在未聚焦时用错误色边框,聚焦时仍保持单条黑边,通过错误文字与 `aria-invalid` 表达错误。禁用用浅灰底和原生 disabled;保留 label 与键盘访问语义。复选框、单选框、滑块和文件控件不套用文本输入规则。
 
-禁用:`--line` 底 + `--muted` 字。主按钮的箭头图标悬停时右移 3px。
+**悬浮焦点输入盒(`Composer`,2026-11-24 新增):** 核心对话、追问与视频链接入口使用共享 `apps/web/components/ui/Composer.tsx`(`data-composer`),纯白 `--bg` 底 + `1px solid var(--border-subtle)` + `--shadow-natural-md`(或轻档 `elevation="sm"` 对应 `--shadow-natural-sm`),悬停边界加深至 `--border-control`,聚焦仍沿用单一 1px `--ink` 内缩边界。提供两种布局变体:`variant="stacked"`(多行输入 + 底部 meta/actions 行,圆角 22px,用于 Stage 4 Speaking)和 `variant="inline"`(单行全圆 `--radius-full`,用于 Landing YouTube 链接输入栏与 `elevation="sm"` 的 Corpus 详情追问)。
 
 ### 9.2 选择与切换
 
-一句话区分:**标签页换内容,分段控件换模式,pill / chip 做过滤。**
+一句话区分:**标签页换内容,分段控件换模式,pill / chip 做过滤。** 共享实现见 `apps/web/components/ui/Tabs.tsx`(`Tabs` 与 `SegmentedControl`)。
 
-| 组件 | 用途 | 选中态 |
+| 组件 | 用途 | 样式与选中态 |
 | --- | --- | --- |
-| 标签页 | 切换同一页的内容视图(All items / High value、评分维度、图表系列) | 2px `--brand` 下划线 + `--ink` 500 |
-| 分段控件 | 同一内容的模式切换,选项不超过 4 个(Voice / Chat、Quick / Detailed / Review) | 容器 `--surface`、内边距 4,当前项黑底白字 |
-| 筛选 pill | 列表过滤,无容器(All practice / Videos / Shadowing) | 黑底白字 |
-| Chip | 弹层或区块内的多选标签 | 黑底白字 |
+| 底线标签页 (`Tabs variant="underline"`) | 切换同一页的内容视图(Corpus All/High value、Detail Explain/Syntax、评分维度、图表系列) | 底部 `1px solid var(--border-subtle)`,选中项 `--ink` 500 + 居中展开 2px `--brand`(或 `accent="ink"` 对应 `--ink`)下划线 |
+| 分段控件 (`Tabs variant="segmented"` / `SegmentedControl`) | 同一内容的模式切换或视图切换,选项不超过 4 个(Voice / Chat、Quick / Detailed / Review、Grid / List、Activity / History) | 轨道 `--line-soft`、圆角 `--radius-control`(10px)、内边距 4px(sm 为 3px / 8px 圆角);当前项抬起为白底 `--bg` + `--ink` 500 + `1px solid var(--border-subtle)` + `--shadow-natural-xs`(支持 `aria-selected` / `aria-current="page"` / `aria-pressed`) |
+| 筛选 pill | 列表过滤,无容器(All practice / Videos / Shadowing) | 黑底白字(`aria-pressed`) |
+| Chip | 弹层或区块内的多选标签 | 黑底白字(`aria-pressed`) |
 | 手风琴行 | 进阶设置折叠(Mission preferences 等) | 右侧摘要 + 箭头,展开时箭头旋转 180° |
+
+*注:黑底白字胶囊保留给流程栏当前步骤(`FlowNavigation`)与筛选 pill/chip;分段模式切换统一采用浅灰轨道 + 白色微悬浮滑块。*
 
 ### 9.3 卡片
 
@@ -256,7 +292,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 - 工具条一行:搜索框(40px 全圆,`--surface` 底,无描边)+ 筛选 pill + 排序 + 视图切换。
 - 筛选 pill:40px,`--line-soft` 底;有选中项时黑底白字并写数量(`Difficulty · 2`)。
-- 弹层:白底、1px `--line`、14px 圆角、内边距 16px、宽 320px、最大高 360px 内部滚动,出现在 pill 下方 8px;一次只开一个,点空白处关闭;弹层内 `Clear` 只清本组,行末 `Clear all` 清全部。
+- 弹层:白底、1px `--border-subtle` + `--shadow-natural-sm`、14px 圆角、内边距 16px、宽 320px、最大高 360px 内部滚动,出现在 pill 下方 8px;一次只开一个,点空白处关闭;弹层内 `Clear` 只清本组,行末 `Clear all` 清全部。
 - 规则:同组多选为「或」,不同组为「且」;每次显示 15 条,`Load more` 追加;无结果显示空状态。
 
 ### 9.8 音频、转写与录音(Stage 1 / 2)
@@ -279,8 +315,9 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 - **进入页面默认持续流动,移除 Play/Pause animation 按钮**。未连接和暂停通话也保留基础动效。基础时间倍率为 1.4;真实播放和已授权麦克风的低/中/高频及 RMS 分别推动纹理、流体扰动和内部亮带,不做整球伸缩。麦克风反馈不等待服务端语音状态;仅可视化压缩:RMS ≤ .0015 归零,.12 满幅,响应 28ms、回落 160ms,不改变实际音频增益。未播放队列不参与,静音、打断、暂停和断线后对应音量归零。
 - 流体速度/压力场 128px、染料场 512px,压力迭代 3 次,消散 .98、模糊 1.2;不支持半浮点渲染时仍保留纹理噪声动效。尊重系统“减少动态效果”,隐藏标签页和离屏停帧;画布至少 2 倍超采样,上限 60fps/1024px。WebGL 不可用或上下文丢失时显示静态球,恢复后重建。逐帧更新不触发整个会话 React 重渲染,静态模式保留状态文字和通话操作。不同声音和交互历史会产生不同帧,不宣称实况逐帧相同。
 - **模式切换**:分段控件 Voice / Chat;状态用小圆点 + 文字(Listening / Speaking)。
+- **输入栏与操作按钮**:Chat 输入区采用共享悬浮 `Composer`(`variant="stacked"`,圆角 22px + `--shadow-natural-md`);发送按钮使用 36px 圆形主按钮(`shape="circle"`),提示按钮使用 `shape="pill"`,展开/关闭工具按钮使用 `shape="square"`,退出/暂停/打断等均复用共享 `<Button>` 变体。
 - **暂停 / 断线**:行内提示块(`--surface`)+ 一句说明 + 一个操作按钮。不用红色,不弹窗。
-- **提示 Hint**:由文字链接展开,显示在输入区上方。
+- **提示 Hint**:由共享按钮展开,显示在输入区上方。
 
 ### 9.10 报告组件(Stage 5)
 
@@ -290,9 +327,12 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 - **Session at a glance**:键值行。
 - **Keep the practice going**:`Retry this mission` 为主按钮;`Adjust loadout`、`New mission` 为次按钮。
 
-### 9.11 空状态、加载、错误
+### 9.11 空状态、加载、错误与轻量通知
 
-空状态:1px 虚线 `--line-strong` 框,14px,标题 + 一句建议 + 次按钮。加载:`--line-soft` 骨架块或一行文字(Preparing…)。错误:行内提示块 + 重试按钮,不用红色。数据缺失显示 `—`。
+- **空状态(`EmptyState`,2026-11-24 统一):** 使用共享 `apps/web/components/ui/EmptyState.tsx`,替代原 1px 虚线框。底色 `--surface-tint`,实线描边 `1px solid var(--border-subtle)`,圆角 `--radius-card`(14px),提供常规(最小高 184px / 36×24px 内边距)与紧凑(`compact`,最小高 148px / 24×20px)两种密度;可选 40×40 白底图标盒(`--radius-control` + `--border-subtle`),居中排列标题(`--text-h3` / 500)、一句建议与操作按钮。
+- **加载:** `--line-soft` 骨架块或一行文字(Preparing…);按钮内进行中动作使用 `loading` + `loadingLabel` 占位覆盖。
+- **错误:** 行内提示块 + 重试按钮,不用大面积红色。数据缺失显示 `—`。
+- **轻量通知(`Toast`,2026-11-24 新增):** 非阻塞操作反馈(语料收藏/移除、批量删除、笔记保存等)使用挂载于根布局的暗色毛玻璃胶囊 `apps/web/components/ui/Toast.tsx`(`toast-store.ts`):底部居中悬浮,`rgb(24 24 27 / 88%)` + `backdrop-filter: blur(12px) saturate(140%)` + 6 层光学玻璃阴影,单行全圆(`--radius-full`)、含副说明时为 14px 圆角(`--radius-card`);左侧 7px 状态微光圆点区分 `neutral` / `success` / `info` / `error`;支持悬停/聚焦暂停自动消失、`Esc` 关闭及 `polite`/`assertive` 实时区域播报,无消息时不渲染 DOM。
 
 ### 9.12 三层分析(Stage 2 Detailed)
 
@@ -307,20 +347,20 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 - 当前句 22px / 1.75,居中。识别偏差:多说的词用 `+ the`(`--muted`);被识别成别的词的原词加 1.5px `--ink` 虚线下划线,下方 小字 `recognized “helping”`。不用橙色。
 - 匹配状态一行:对勾图标 + mono(`96.2% of words matched · three-layer analysis eligible`)。
 - 操作行:`Listen`(次)、`Record again`(**主按钮,整屏唯一**)、`Replay mine`(次)、删除图标按钮(`--ink-3`,带 `aria-label`)、时长使用 UI 字体。`Back to segments` 只保留页面右上角,不再做第二个黑色大按钮。
-- 破坏性操作(Delete captured reference、Delete analysis、Delete practice record)一律用普通文字链接 `--ink-2`,不用红色;执行前二次确认。
+- 破坏性操作(Delete captured reference、Delete analysis、Delete practice record)使用中性灰操作，执行前二次确认。视频下方的 Reference 操作放在同一行，删除收进 `⋯` 菜单。
 - 重复的错误提示合并为一处:参考音频卡里一条说明 + 一个次按钮 `Retry reference upload`;`Turn off`、`Audio settings`、`How it works` 为文字链接。
 
 **三层标签页**
 
 - 用标签页(9.2),标签只写 Sound / Rhythm / Melody,去掉原来的对勾徽章。只有被锁定的层才显示锁图标和 `Locked`(如匹配率 60–85% 时 Rhythm / Melody 锁定)。
-- 每层顶部:H2 层名 + 一句 14px `--ink-3` 说明 + 右侧次按钮 `Notes`。
+- 每层顶部:H2 层名 + 一句 14px `--ink-3` 说明 + 右侧次按钮 `Notes`。仅有参考音时同样显示。
 - **Feedback / Tip 不再占右栏**,默认折叠在 `Notes` 里;展开后是 `--surface` 卡,左 Feedback、右 Tip。图表因此可以使用主列全宽。
 
 **Sound 层**
 
 - **现象过滤**:`All` + 四个带组名的筛选组,共 **12 个一级 chip**(**保留现象符号**;组名用 `.lbl` 标签样式,组内 chip 同一行,空间不够时整组换行,组本身超过屏宽时允许组内换行,手机不得横向溢出;选中黑底白字):`Connect`:`‿ Linking`、`t͡ʃ Coalescence`、`≈ Assimilation`;`Reduce`:`ə Weakening`、`’ Reduced forms`、`∅ Elision`;`Consonant`:`ɾ T/D tap`、`ʔ Glottalization`、`p̚ Unreleased`、`n̩ Syllabic`、`◐ Voicing change`;`Vowel`:`ː Vowel length`。选中某类后,其他类的标记和弧线降到 20% 不透明度,悬停、聚焦和弧线展开时仍保持 20%;正文、状态和说明保持可读。切换筛选不改变词序、不启停媒体、不请求重新分析。学习目标固定为 General American,界面显示 `Learning target · General American`,不放口音切换器。
 - **二级子类**:含子类的一级入口在 chip 行下方出现一行 `Subtype` + chip(目前只有 Elision:`All elision / T–D / H / Other`);切换一级时重置为 All。T/D drop 与 H-drop 不再是一级 chip,沿用 `EL` 颜色。未支持的子类可以查看,但显示 `Suggestions for this subtype are not available yet.`,不能伪装成零次发生。
-- **标注样式**(色板见第 4 节例外):每个现象一个 11px 小标签,**文字是具体变化,不是类别缩写**:`n→m`、`t→∅`、`h→∅`、`v→f`、`d+j→dʒ`、`[ɾ]`、`[ʔ]`、`[əv]`、`n̩`、`l̩`、`p̚`;文本已给出的缩约写 `= going to`。Linking 的筛选框、Detailed 与 Review 统一使用同一 `‿` 下弧线,禁止改画上弧线;词间下弧线为独立按钮,下方可附具体连接音。点击或键盘激活时,Reading cues / 时间轴下方出现该边界对应的解释卡,再次点击可收起;切换弧线只展示新边界的候选。低饱和底色 + 同色深字,5px 圆角,放在单词下方;类别名放在 `title` 里,键盘/触屏通过解释卡读取。图标和音标:省略用 `∅`(不用 IPA 元音 `ø`),融合用 `t͡ʃ` / `dʒ`(不用旧连字 `ʤ`);`≈`、`◐`、`’` 是 UI 类别图标,不得出现在音标串里。
+- **标注样式**(色板见第 4 节例外):每个现象一个 11px 小标签,**文字是具体变化,不是类别缩写**:`n→m`、`t→∅`、`h→∅`、`v→f`、`d+j→dʒ`、`[ɾ]`、`[ʔ]`、`[əv]`、`n̩`、`l̩`、`p̚`;文本已给出的缩约写 `= going to`。Linking 的筛选框、Detailed 与 Review 统一使用同一 `‿` 下弧线,禁止改画上弧线;词间下弧线为独立按钮,Detailed 在下弧下方另起一行显示具体连接音，两者之间留白；Review 时间轴也可在弧下标注连接音。点击或键盘激活时,Reading cues / 时间轴下方出现该边界对应的解释卡,再次点击可收起;切换弧线只展示新边界的候选。低饱和底色 + 同色深字,5px 圆角,放在单词下方;类别名放在 `title` 里,键盘/触屏通过解释卡读取。图标和音标:省略用 `∅`(不用 IPA 元音 `ø`),融合用 `t͡ʃ` / `dʒ`(不用旧连字 `ʤ`);`≈`、`◐`、`’` 是 UI 类别图标,不得出现在音标串里。
 - **证据状态**(颜色之外必须保留文字或形状):
   | 状态 | 样式 | 文案 |
   | --- | --- | --- |
@@ -328,6 +368,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
   | 已确认实现(后续) | 标签后加对勾 | `Confirmed` + 人工或检测器来源;本轮不出现 |
   原则:虚线在整套设计里只表示「不确定」(Rhythm 柱)和「参考声音」(Melody 线),**不再用于 Sound 候选**。候选来自文本和词典,与哪个声音无关,所以只有一份,不分 Reference / Your voice。Sound 不再呈现元音时长测量面板;录音尚未检查时用一行文字说明,不重复画一遍标记流。同一个 /t/ 的备选读法不画成同时发生;同一事件(如 d+j 融合)去重后只显示一个类别;不同位置的事件可以并存(如 button 同时有 `[ʔ]` 与 `n̩`)。`All` 下每个词位最多露出两个类别标记,其余折成独立的 `+N` 按钮,点击或 Enter / Space 在解释卡展开完整类别列表,再次点击收起;同类候选不重复占名额,详情保留所有候选;连读弧单独占边界。
 - **双行 Sound 块**(以用户后续浏览器反馈为准):`Reference` + `Reading cues · GA conditions`、`Your voice` + `Practice targets · not checked`;词流 18px,词间距 12×6px,自动换行。两行均为原文／词典提示,不暗示两条录音都已检测;旧 take 缺少参考分析时明确提示。点击词选中(`--surface` 底),**解释卡紧贴所选行下方**。遮盖块由原词同字体实际宽度决定,按钮保留触控面积;两行同步逐词揭示,计数不重复。Review 保留 Ref cues / Your targets 两条提示轨,与声学证据可用性分开。
+- **词列结构**:每个词一列,自上而下为:词 → 连读弧泳道(本句有 Linking 时才预留)→ 现象标签纵向堆叠(最多两个)→ `+N`。连读弧居中放在两个词之间的空隙内、只占泳道,不挤开词距,也不与标签重叠;两侧都有连读弧的短词加宽到 44px。
 - **没有独立图例**。每个 chip 左侧带一个色块(圆点,选中时加白圈)和该句的候选数(如 `‿ Linking 2`;只是候选数,不是发生次数);为 0 的 chip 变灰但仍可点,点后显示空状态。chip 的 `title` 带类别说明和例句(如 `Coalescence: two sounds blend into one · did you → dʒ`);选中某类时,筛选行下方一行 mono 显示同一句。
 - **Learning target 行**:`Learning target · General American · select a word or linking arc for its explanation` + 次按钮 `Hide text` / `Show text`。隐藏时参考词变成 `--line-soft` 词块,点击单个词逐个揭示;隐藏状态下,子类、面板、解释卡、tooltip 和 aria-label 都不得泄漏词的内容(面板里的词和音标用 `••••` 代替)。
 - **空状态**(候选为空与音频未检查可以同时成立,分别显示,不合并成 `No X in this sentence`):
@@ -361,7 +402,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 **Takes**
 
-- 每次录音一行 `--surface` 圆角卡;当前选中 = 白底 + 1.5px `--brand` 描边。行内:时间 15px / 500 + 元信息 + `No retained audio` + `View analysis`(次)+ `Delete practice record`(文字链接)。隐私说明 13px `--muted`。
+- 每次录音一行记录行(9.4),不做卡片,行间 1px `--line-soft`;当前查看的 take = `--surface` 圆角底 + 时间后中性 `Viewing` 小标签,不用紫色描边。左侧:时间 15px / 500,下方元信息(时长 · 倍速 · 文字支持)和状态(`Analyzed · No retained audio`);每页最多三条，可翻页查看更早或更新的录音。查看分析和加载录音用带无障碍名称的图标按钮，删除音频、分析和练习记录收进该行的 `⋯` 菜单。隐私说明 13px `--muted`。
 
 **相对原页面去掉的:** 红色和橙色文字(Reference / Your voice 的彩色标题、红色删除按钮)、层标签上的对勾徽章、右侧 Layer focus 栏、27 行表格、重复的状态消息、第二个黑色 `Back to segments` 大按钮。**保留的:** 语音现象标注样式(色板、LK 弧线、`?` 虚线)和过滤 chip 上的现象符号。
 
@@ -385,7 +426,7 @@ Landing 未登录:logo + How it works + Sign in;已登录:右侧改为 My learni
 
 - **不做的事:** 不把 Rhythm 和 Melody 画成双纵轴叠在同一张图里。每层各有一条轨道,各用自己的纵轴,只共享词轴(横向)。轨道之间 1px `--line-soft` 分隔。
 - **选中同步**:点任意轨道里的一个词,整列(所有可见轨道)显示 `--brand` 描边,下方一行读数。选中词在 Detailed 的 Rhythm、Melody 标签页里保持一致。
-- **层开关**:关闭一层时,该轨道和左侧轨道标签一起消失,其余轨道自动上移,列宽不变。全部关闭时显示虚线空状态框「Turn on at least one layer」。
+- **层开关**:关闭一层时,该轨道和左侧轨道标签一起消失,其余轨道自动上移,列宽不变。全部关闭时显示共享空状态卡(`EmptyState`,见 9.11)「Turn on at least one layer」。
 - **参考音频可用时**:两个声音的区分、泳道和读数见 9.15。
 - **说明文字**:图例一行元信息(标记含义、柱高刻度、曲线单位),下方 13px `--muted` 声明数据性质。
 
@@ -444,7 +485,7 @@ Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组�
 
 **弹窗容器**
 
-- 宽 880px(最大 100%),圆角 14px,白底,无阴影;外层蒙层 `rgba(12,10,9,.45)`;最大高度约 92vh,内容区单独滚动。右上角关闭为圆形图标按钮(`aria-label="Close"`);Esc 和点击蒙层也可关闭;焦点困在弹窗内,关闭后回到触发处。
+- 宽 880px(最大 100%),圆角 14px,白底 + `--shadow-natural-md`(`--shadow-dialog`);外层蒙层 `rgba(12,10,9,.45)`;最大高度约 92vh,内容区单独滚动。右上角关闭为圆形/方形共享图标按钮(`aria-label="Close"`);Esc 和点击蒙层也可关闭;焦点困在弹窗内,关闭后回到触发处。
 - 顶部(不随内容滚动):标签样式 `Corpus detail`、H2 标题(规范化学习词条)、元信息(`kind · level · register · tags`)。
 - 原文上下文卡(`--surface`,12px 圆角,内边距 16×20):标签样式 `Original context` + 视频标题(14px / 500)+ 右侧次按钮 `▶ 0:38`(播放该句,时间写 `0:38`,不带毫秒);上一句 / 下一句 14px `--muted`;当前句 16px / 1.65,**选中的短语用 2px `--brand` 下划线(chunk 实线,idiom 虚线)**,不再用蓝色竖条和蓝色高亮底。
 - 标签页 `Explain / Syntax` 吸顶(`position: sticky`),选中项紫色下划线(9.2)。
@@ -463,7 +504,7 @@ Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组�
 
 **Ask about this**
 
-- 3 个追问建议 chip(`ask_suggestions`,点击填入输入框,选中 = 黑底白字,再点取消;点击发送才请求)+ 一个 48px 全圆输入框(`--surface` 底,右侧黑色圆形发送按钮)。
+- 3 个追问建议 chip(`ask_suggestions`,点击填入输入框,选中 = 黑底白字,再点取消;点击发送才请求)+ 共享悬浮 `Composer`(`variant="inline"`, `elevation="sm"`, 白底 + `--border-subtle` + `--shadow-natural-sm`, 右侧 `32px` 圆形主发送按钮 `shape="circle"`)。
 - 回答显示在输入框下方的 `--surface` 圆角块(15px / 1.7),流式输出,受限 Markdown(加粗、短列表、行内代码,无标题和表格);块底部:文字链接 `Save as note`(保存到该条语料的笔记,点后变为 `Saved to note`)+ 说明。
 - 回答限定在这个表达及其上下文内;无关问题给出一句引导。
 - 已保存的追问追加到原有笔记,Reader 与 Corpus library 详情均在 `My note` 中完整展示,复用受限 Markdown。Reader 缩略卡片只显示最多 140 字符、两行的纯文本预览,不展开整段回答;保存失败不显示为已保存笔记。
@@ -505,10 +546,10 @@ Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组�
 
 **应用内页面(克制):**
 
-- 时长 120–200ms,`ease-out`;只动颜色、透明度、位置。
-- 悬停:次按钮底变 `--surface`,卡片底变 `--line-soft`,文字链接变 `--ink`。
-- 焦点:按钮和链接用 2px `--brand` 外轮廓(offset 3px);输入框聚焦只显示 1px `--ink` 内缩轮廓,不叠加边框或阴影。
-- 弹层出现 160ms:从上方 4px 淡入。
+- 全局动效 token 定义在 `packages/ui/src/tokens.css`:`--motion-instant: 90ms`(按钮悬停/按下微交互)、`--motion-fast: 160ms`(标签页、分段滑块、悬浮 `Composer`、弹层、`Toast`)、`--motion-normal: 220ms`;曲线使用 `--ease-standard: cubic-bezier(0.4, 0, 0.2, 1)` 与 `--ease-decelerate: cubic-bezier(0.32, 0.72, 0, 1)`;只动颜色、边框、透明度、阴影与轻量位移。
+- 悬停:主按钮底变 `--ink-hover`;次按钮底变 `--surface-hover` 且边加深为 `--border-strong`;卡片底变 `--line-soft`;文字链接变 `--ink`。
+- 焦点:按钮、链接与 Radix Select 触发器用 2px `--brand` 外轮廓(offset 3px);文本输入框与 `Composer` 聚焦只显示 1px `--ink` 内缩轮廓,不叠加第二层紫色焦点圈。
+- 弹层与 `Toast` 出现 160ms(`--motion-fast`):轻位移淡入,关闭 `prefers-reduced-motion` 下全部过渡与关键帧。
 
 **Landing(营销页例外):**
 
@@ -541,17 +582,40 @@ Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组�
 
 ```css
 :root {
-  --ink-hover: #262626;
-  --ink: #0C0C0C;  --ink-2: #404040;  --ink-3: #525252;  --muted: #6B6B6B;
-  --line-strong: #D4D4D4;  --line: #E5E5E5;  --line-soft: #EDEDED;
-  --surface: #FAFAFA;  --bg: #FFFFFF;  --video-bg: #191919;
-  --brand: #5A43D6;
-  --font: Inter, system-ui, sans-serif;
-  --mono: var(--font-ui); /* 兼容别名,不使用等宽字体 */
-  --r-pill: 999px;  --r-card: 14px;  --r-video: 16px;
-  --page-max: 1280px;  --content-w: 1080px;  --page-wide: 1440px;
-  --nav-h: 64px;  --flow-h: 52px;
-  --ease: cubic-bezier(.2, .7, .2, 1);
+  /* 基础中性灰阶与品牌色 */
+  --ink: #0c0c0c;  --ink-hover: #262626;  --ink-2: #404040;  --ink-3: #525252;  --muted: #6b6b6b;
+  --line-strong: #d4d4d4;  --line: #e5e5e5;  --line-soft: #ededed;
+  --surface: #fafafa;  --bg: #ffffff;  --video-bg: #191919;
+  --brand: #5a43d6;
+
+  /* 光学中性 Alpha 阶梯(仅用于边框与极浅表面,正文仍用不透明 token) */
+  --surface-tint: rgb(0 0 0 / 2%);
+  --surface-hover: rgb(0 0 0 / 4.3%);
+  --border-subtle: rgb(0 0 0 / 7.5%);
+  --border-control: rgb(0 0 0 / 10%);
+  --border-strong: rgb(0 0 0 / 16%);
+
+  /* 危险操作语义色 */
+  --color-danger: #a3372b;  --color-danger-strong: #862b22;  --color-danger-pressed: #6e251f;
+  --color-danger-subtle: #fff0ed;  --color-danger-subtle-pressed: #f9ded8;
+
+  /* 字体与圆角 */
+  --font-ui: var(--font-inter, Inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ui); /* 兼容别名,不使用等宽字体 */
+  --radius-xs: 4px;  --radius-sm: 6px;  --radius-md: 8px;  --radius-control: 10px;
+  --radius-lg: 12px;  --radius-card: 14px;  --radius-xl: 16px;  --radius-full: 9999px;
+
+  /* 多阶光学自然阴影(别名: --shadow-soft/warm -> xs, --shadow-popover -> sm, --shadow-dialog -> md) */
+  --shadow-natural-xs: rgb(0 0 0 / 6%) 0 0 0 1px, rgb(0 0 0 / 6%) 0 1px 1px -0.5px, rgb(0 0 0 / 6%) 0 3px 3px -1.5px;
+  --shadow-natural-sm: rgb(0 0 0 / 6%) 0 0 0 1px, rgb(0 0 0 / 6%) 0 1px 1px -0.5px, rgb(0 0 0 / 6%) 0 3px 3px -1.5px, rgb(0 0 0 / 6%) 0 6px 6px -3px, rgb(0 0 0 / 2%) 0 12px 12px -6px;
+  --shadow-natural-md: rgb(0 0 0 / 6%) 0 0 0 1px, rgb(0 0 0 / 6%) 0 1px 1px -0.5px, rgb(0 0 0 / 6%) 0 3px 3px -1.5px, rgb(0 0 0 / 6%) 0 6px 6px -3px, rgb(0 0 0 / 4%) 0 12px 12px -6px, rgb(0 0 0 / 4%) 0 24px 24px -12px;
+
+  /* 动效与控件尺寸 */
+  --motion-instant: 90ms;  --motion-fast: 160ms;  --motion-normal: 220ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0.32, 0.72, 0, 1);
+  --button-height-sm: 32px;  --button-height-md: 36px;  --button-height-lg: 42px;
+  --button-gap: 8px;  --button-group-gap: 12px;
 }
 ```
 
@@ -581,11 +645,11 @@ Rhythm 标签页、Melody 标签页和 Review 总览共用同一个时间轴组�
 - `practice-theme.css`、Quick、Loadout、Mission 等局部样式继承共享灰阶,不另建页面级基础色板。
 - 通用背景、文字与边框使用 token,不新增硬编码灰阶。Corpus 筛选专用状态色及 Sound/状态语义色按第 4 节的适用范围管理,不得用机械替换色值的方式合并。
 
-### 16.3 共用组件(`@libitu/ui`)
+### 16.3 共用组件(`apps/web/components/ui/` 与 `@libitu/ui`)
 
-- 先做 Button(primary / secondary / link)、Tabs、SegmentedControl、FilterPill、Card、ListRow、EmptyState,用 CSS Module 写。
-- 变体和状态用属性驱动:`data-variant`、`aria-pressed`、`aria-selected`、`data-state`,样式与无障碍属性是同一套。
-- 按钮焦点:`:focus-visible` 2px `--brand` outline,offset 3px。
+- 已落地的共享原语(CSS Modules + 共享 token):`Button` / `ButtonLink` / `DirectionButton` / `DirectionLink`(8 种变体、4 种形态、32/36/42px 尺寸)、`Tabs`(`underline` + `segmented`) / `SegmentedControl`、`EmptyState`、`Composer`(`stacked` + `inline`)、`Toast` + `toast-store`、`Input` / `Textarea` / `NativeSelect` / `SelectField`。
+- 变体和状态用属性驱动:`data-variant`、`data-size`、`data-shape`、`data-composer`、`aria-pressed`、`aria-selected`、`aria-current`、`data-state`,样式与无障碍属性是同一套。
+- 按钮与链接焦点:`:focus-visible` 2px `--brand` outline,offset 3px;输入框与 `Composer` 聚焦为 1px `--ink` 内缩 outline。
 - 动态值(进度条宽度等)给 CSS 变量赋值:`style={{ '--progress': ... }}`,CSS 里写 `width: var(--progress)`。
 
 ### 16.4 图标
@@ -629,7 +693,7 @@ Radix 各包版本保持一致。Chrome 扩展内的弹层需要把 Portal 的 `
 
 ### 16.9 防止回退
 
-- stylelint 建议:用 `color-no-hex` 约束通用颜色,共享 token 文件及第 4 节列明的组件状态/语义色声明单独配置例外;禁止 `box-shadow`(`none` 除外),把「全站无阴影」变成机器检查。
+- stylelint / 审查建议:用 `color-no-hex` 约束通用颜色,共享 token 文件及第 4 节列明的组件状态/语义色声明单独配置例外;阴影只允许引用 `--shadow-natural-*`(及其语义别名)与 `Toast` 玻璃影,禁止手写散落阴影或暖色阴影;功能页 CSS Modules 不得覆写 `.ui-button` 的颜色、阴影、焦点环或禁用态(深色表面仅通过 `--button-*` 变量适配)。
 - 改 `globals.css` 前,用 Playwright 给关键页面存截图基线,改完对比。
 - 新旧样式出现覆盖冲突时,可把旧的 `globals.css` 内容放进 `@layer legacy`。这会改变覆盖关系,改完需逐页检查。
 

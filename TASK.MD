@@ -1,11 +1,42 @@
 # Complete the next Libitu milestone
 
+## Shadow audio settings — 2026-11-25
+
+- [x] Default both audio settings to on and use the same independent preferences for Quick and Detailed takes.
+
+## Web visual system & button alignment — 2026-11-24
+
+- [x] Token cleanup in `packages/ui/src/tokens.css` (optical neutral alpha ramp, intermediate radii, `--shadow-natural-xs/sm/md`, global motion tokens) and focus-ring scoping in `globals.css` / `field.css`.
+- [x] Extract and adopt shared dual-mode `Tabs` (`underline` + `segmented`) / `SegmentedControl` and `EmptyState` primitives across Corpus, Stage 2, and Profile.
+- [x] Add floating `Composer` (`stacked` + `inline`) and dark glassmorphic `Toast` (`toast-store.ts`) primitives and integrate across Stage 4 Speaking, Landing, Corpus, and Stage 1.
+- [x] Execute action button P0 (state/disabled/override cleanup, `.ui-button-group` sizing), P1 (`10px` default radius, `32/36/42px` ladder, `square` shape, updated `.browser.mjs` assertions), and P2 (migrate remaining raw action `<button>` controls and prune dead feature CSS).
+- [x] Sync the updated visual & button specifications across `libitu_设计规范_v2_1_统一版_.md`, `VISUAL_SYSTEM.md`, `BUTTON_SYSTEM.md`, `Libitu_Design_Spec.md`, `DESIGN.md`, `ELEVENLABS_APP_DESIGN_SPEC.md`, `STAGE_TWO_FILE_REFERENCE_ARCHITECTURE.md`, `CLAUDE.MD`, `DECISIONS.MD`, and `PROJECT.MD`.
+- [x] Verify static checks and unit tests (`pnpm lint`, `pnpm build`, `pnpm test` — 548/548 `@libitu/web` tests pass).
+- [ ] Run local Chrome `.browser.mjs` visual/button regression checks (`button-consistency`, `speaking-design`, `stage-two-practice-flow`, `unified-navigation`) at 1440px and 390px.
+
+## Speech Phenomena research heads — 2026-11-24
+
+- [x] Tap (flap) head: frozen encoder + Linear, dev F1 about 97.5%; MLP brought no stable gain. [Report](/Users/river/Documents/speech-phenomena/reports/timit-mlp-results-20261115.md).
+- [x] Elision and coalescence heads: train-only speaker-grouped CV selection, TIMIT proxy rows and train-only layer selection adopted. Defaults are raw Wav2Vec2 L6 (elision, dev F1 80.8% / AP 82.9%) and L8 (coalescence, dev AP 95.7% on 20 known labels). [Layer selection](/Users/river/Documents/speech-phenomena/reports/layer-selection-results-20261122.md).
+- [x] Elision encoder fine-tune v1 (frozen / top-2 unfreeze / LoRA r=8, Kaggle T4): no real gain over the frozen default; frozen default kept. [Report](/Users/river/Documents/speech-phenomena/reports/td-elision-finetune-results-20261124.md).
+- [ ] Assimilation (/n/→[m]/[ŋ]) head: automatic localization and training protocol on the sealed source audit.
+- [ ] More professional-source elision labels, especially for the 327 dev unknowns, before any further fine-tuning.
+- [ ] Production integration remains gated; no detector release yet.
+
+## Stage 2 Detailed controls — 2026-11-23
+
+- [x] Show the linking sound directly below the arc and keep linked words together when they fit. Checked the arc, the two-label limit and the keyboard-operated `+N` disclosure in local Chrome at 1440px and 390px.
+- [x] Limit Takes to three rows per page, use icon actions and place removal in the take and reference overflow menus. Signed-in fixture screenshots of the Sound rows, saved takes and expanded reference controls are in `output/playwright/detailed-controls/`.
+
 ## Compact type scale — 2026-11-20
 
 - [x] Revise v2.1 section 5 and related component sizes; add `--text-*` tokens for every application text role.
 - [x] Replace literal Web CSS font sizes with tokens and raise HTML text below 11px; root lint/build/test pass.
 - [x] Browser-check Landing, Stage 1, segments, Stage 2 Quick and Corpus at 1440px / 390px.
-- [ ] Visually recheck Loadout, My learning, Practice history, Stage 4, Stage 5 and the Stage 2 Detailed/Review Sound body with signed-in data; the existing `stage-two-sound.browser.mjs` already fails before this change (non-UUID fixture content ID returns 404).
+- [x] On Nov 22, visually checked populated Loadout picks and preview, My learning metrics, Practice history rows, Stage 4 chat turns, and Stage 5 report scores at 1440px and 390px. The headings, labels and values fit at both widths. No horizontal page overflow or compact-type regression was observed.
+- [x] Checked Stage 2 Detailed and Review Sound at the same widths using the valid content UUID from `ga-sound-fixture.mjs` and a saved paired take. Inspected the wrapping category filters, paired word cues and scrollable Review timeline. Both pages fit the viewport.
+
+Browser evidence is local Chrome with synthetic signed-in identities and API responses. Screenshots are in `output/playwright/compact-type/`. The original `stage-two-sound.browser.mjs` still uses a non-UUID content ID.
 
 ## Public README and release scope — 2026-11-14
 

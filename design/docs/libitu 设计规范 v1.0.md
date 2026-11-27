@@ -1,5 +1,7 @@
 # libitu 设计规范 v1.0
 
+> **历史归档版本（已由 v2.1 取代）**：当前全站视觉、共享组件与按钮规范请以 [`libitu_设计规范_v2_1_统一版_.md`](./libitu_设计规范_v2_1_统一版_.md)、[`VISUAL_SYSTEM.md`](./VISUAL_SYSTEM.md)、[`BUTTON_SYSTEM.md`](./BUTTON_SYSTEM.md) 与 [`packages/ui/src/tokens.css`](../../packages/ui/src/tokens.css) 为准。
+
 ElevenLabs 风格 · 适用于 Stage 1 摄取、选段、Stage 2 跟读 · 2026-10-24
 
 ## 1. 设计原则
